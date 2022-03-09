@@ -80,6 +80,22 @@ func (p *GetQueryParams) Values() url.Values {
 	return v
 }
 
+// todo: could possibly use github.com/google/go-querystring here
+type GetPreviousCloseQueryParams struct {
+	Adjusted bool
+}
+
+// todo: maybe return map[string]string here (especially if we add a GetPathParams type)
+func (p *GetPreviousCloseQueryParams) Values() url.Values {
+	v := url.Values{}
+
+	if !p.Adjusted {
+		v.Add("adjusted", "false")
+	}
+
+	return v
+}
+
 // todo: not a fan of the Sprintf, maybe a GetPathParams type would be cleaner (and easier to godoc)
 func (ac *Client) Get(ctx context.Context, ticker string, multiplier int, resolution string, from, to time.Time, params *GetQueryParams, opts ...client.Option) (*GetResponse, error) {
 	res := &GetResponse{}
@@ -89,6 +105,13 @@ func (ac *Client) Get(ctx context.Context, ticker string, multiplier int, resolu
 	return res, err
 }
 
-// todo: GetPreviousDay
+// todo: GetPreviousClose
+func (ac *Client) GetPreviousClose(ctx context.Context, ticker string, params *GetPreviousCloseQueryParams, opts ...client.Option) (*GetResponse, error) {
+	res := &GetResponse{}
+	u := fmt.Sprintf("/v2/aggs/ticker/%s/prev", ticker)
+	err := ac.Call(ctx, http.MethodGet, u, params, res, opts...)
+
+	return res, err
+}
 
 // todo: GetGroupedDaily

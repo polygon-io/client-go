@@ -37,3 +37,24 @@ func TestAggs(t *testing.T) {
 	}
 	fmt.Println(string(b))
 }
+
+func TestAggsPreviousClose(t *testing.T) {
+	c := polygon.New(client.HTTPBaseConfig{
+		URL:        "https://api.polygon.io",
+		Key:        os.Getenv("API_KEY"),
+		MaxRetries: 3,
+	})
+
+	res, err := c.Aggregates.GetPreviousClose(context.Background(), "AAPL", &aggregates.GetPreviousCloseQueryParams{
+		Adjusted: true,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	b, err := res.MarshalJSON()
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(string(b))
+}
