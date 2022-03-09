@@ -11,17 +11,19 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
+// todo: add comments for godoc
+// todo: could use internal if we don't want outside packages to use this directly
+
+// Params defines an interface that path parameter and query parameter types must implement.
 type Params interface {
 	Values() url.Values
 }
 
-// todo: naming / improve the usability of this
 // HTTPBase provides functionality to make API requests via HTTP.
 type HTTPBase struct {
-	HTTP *resty.Client
+	rc *resty.Client
 }
 
-// todo: naming
 type HTTPBaseConfig struct {
 	URL        string
 	Key        string
@@ -37,7 +39,7 @@ func New(config HTTPBaseConfig) HTTPBase {
 	rc.SetTimeout(10 * time.Second)
 
 	return HTTPBase{
-		HTTP: rc,
+		rc: rc,
 	}
 }
 
@@ -50,10 +52,6 @@ func (b *HTTPBase) Call(ctx context.Context, method, url string, params Params, 
 		return newErrorResponse(res)
 	}
 
-	if err := u.UnmarshalJSON(res.Body()); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -61,7 +59,7 @@ func (b *HTTPBase) Call(ctx context.Context, method, url string, params Params, 
 func (b *HTTPBase) newRequest(ctx context.Context, params Params, u json.Unmarshaler, opts ...Option) *resty.Request {
 	options := mergeOptions(opts...)
 
-	req := b.HTTP.R().SetContext(ctx)
+	req := b.rc.R().SetContext(ctx)
 	if params != nil {
 		req.SetQueryParamsFromValues(params.Values())
 	}

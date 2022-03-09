@@ -5,6 +5,8 @@ import (
 	"github.com/polygon-io/client-golang/rest/client"
 )
 
+// todo: add comments for godoc
+
 type polygonClient struct {
 	Aggregates *aggregates.Client
 	// todo: Trades, Quotes, etc
