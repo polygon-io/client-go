@@ -93,3 +93,28 @@ func TestAggsGroupedDaily(t *testing.T) {
 	}
 	fmt.Println(string(b))
 }
+
+func TestAggsDailyOpenClose(t *testing.T) {
+	c := polygon.New(client.HTTPBaseConfig{
+		URL:        "https://api.polygon.io",
+		Key:        os.Getenv("API_KEY"),
+		MaxRetries: 3,
+	})
+
+	res, err := c.Aggregates.GetDailyOpenClose(context.Background(), aggregates.GetDailyOpenCloseParams{
+		Ticker: "AAPL",
+		Date:   time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
+		QueryParams: &aggregates.GetDailyOpenCloseQueryParams{
+			Adjusted: true,
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	b, err := res.MarshalJSON()
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(string(b))
+}

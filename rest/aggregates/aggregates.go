@@ -10,9 +10,10 @@ import (
 // todo: add comments for godoc
 
 const (
-	GetPath              = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
-	GetPreviousClosePath = "/v2/aggs/ticker/{ticker}/prev"
-	GetGroupedDailyPath  = "/v2/aggs/grouped/locale/{locale}/market/{marketType}/{date}"
+	GetPath               = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
+	GetPreviousClosePath  = "/v2/aggs/ticker/{ticker}/prev"
+	GetGroupedDailyPath   = "/v2/aggs/grouped/locale/{locale}/market/{marketType}/{date}"
+	GetDailyOpenClosePath = "/v1/open-close/{stocksTicker}/{date}"
 )
 
 type Client struct {
@@ -34,5 +35,11 @@ func (ac *Client) GetPreviousClose(ctx context.Context, params GetPreviousCloseP
 func (ac *Client) GetGroupedDaily(ctx context.Context, params GetGroupedDailyParams, opts ...client.Option) (*AggsResponse, error) {
 	res := &AggsResponse{}
 	err := ac.Call(http.MethodGet, GetGroupedDailyPath, params, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
+	return res, err
+}
+
+func (ac *Client) GetDailyOpenClose(ctx context.Context, params GetDailyOpenCloseParams, opts ...client.Option) (*DailyOpenCloseResponse, error) {
+	res := &DailyOpenCloseResponse{}
+	err := ac.Call(http.MethodGet, GetDailyOpenClosePath, params, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
 	return res, err
 }

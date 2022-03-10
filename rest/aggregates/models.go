@@ -150,3 +150,47 @@ func (p GetGroupedDailyParams) Query() map[string]string {
 
 	return q
 }
+
+// easyjson:json
+type DailyOpenCloseResponse struct {
+	client.BaseResponse
+	Symbol     string    `json:"symbol"`
+	From       time.Time `json:"from"`
+	Open       float64   `json:"open"`
+	High       float64   `json:"high"`
+	Low        float64   `json:"low"`
+	Close      float64   `json:"close"`
+	Volume     float64   `json:"volume"`
+	AfterHours float64   `json:"afterHours"`
+	PreMarket  float64   `json:"preMarket"`
+}
+
+type GetDailyOpenCloseParams struct {
+	Ticker      string
+	Date        time.Time
+	QueryParams *GetDailyOpenCloseQueryParams
+}
+
+type GetDailyOpenCloseQueryParams struct {
+	Adjusted bool
+}
+
+func (p GetDailyOpenCloseParams) Path() map[string]string {
+	return map[string]string{
+		"ticker": p.Ticker,
+		"date":   fmt.Sprint(p.Date.Format("2006-01-02")),
+	}
+}
+
+func (p GetDailyOpenCloseParams) Query() map[string]string {
+	q := map[string]string{}
+	if p.QueryParams == nil {
+		return q
+	}
+
+	if !p.QueryParams.Adjusted {
+		q["adjusted"] = "false"
+	}
+
+	return q
+}
