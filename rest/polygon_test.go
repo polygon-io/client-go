@@ -2,6 +2,7 @@ package polygon_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
@@ -37,7 +38,7 @@ func TestAggs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	b, err := res.MarshalJSON()
+	b, err := json.Marshal(res)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -61,7 +62,7 @@ func TestAggsPreviousClose(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	b, err := res.MarshalJSON()
+	b, err := json.Marshal(res)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -87,7 +88,7 @@ func TestAggsGroupedDaily(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	b, err := res.MarshalJSON()
+	b, err := json.Marshal(res)
 	if err != nil {
 		t.Fatal(err)
 	}
