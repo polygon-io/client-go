@@ -12,6 +12,11 @@ import (
 
 // todo: add comments for godoc
 
+const (
+	GetPath              = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
+	GetPreviousClosePath = "/v2/aggs/ticker/{ticker}/prev"
+)
+
 type Client struct {
 	client.HTTPBase
 }
@@ -121,15 +126,13 @@ func (p GetPreviousCloseQueryParams) Values() map[string]string {
 
 func (ac *Client) Get(ctx context.Context, pathParams GetPathParams, queryParams *GetQueryParams, opts ...client.Option) (*AggsResponse, error) {
 	res := &AggsResponse{}
-	url := "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
-	err := ac.Call(http.MethodGet, url, pathParams, queryParams, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
+	err := ac.Call(http.MethodGet, GetPath, pathParams, queryParams, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
 	return res, err
 }
 
 func (ac *Client) GetPreviousClose(ctx context.Context, pathParams GetPreviousClosePathParams, queryParams *GetPreviousCloseQueryParams, opts ...client.Option) (*AggsResponse, error) {
 	res := &AggsResponse{}
-	url := "/v2/aggs/ticker/{ticker}/prev"
-	err := ac.Call(http.MethodGet, url, pathParams, queryParams, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
+	err := ac.Call(http.MethodGet, GetPreviousClosePath, pathParams, queryParams, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
 	return res, err
 }
 
