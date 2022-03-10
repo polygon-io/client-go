@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"net/url"
 	"strconv"
 	"time"
 
@@ -40,7 +39,7 @@ type Aggregate struct {
 }
 
 // easyjson:json
-type GetResponse struct {
+type AggsResponse struct {
 	client.BaseResponse
 	Ticker       string      `json:"ticker,omitempty"`
 	QueryCount   int         `json:"queryCount"`
@@ -49,7 +48,24 @@ type GetResponse struct {
 	Aggs         []Aggregate `json:"results,omitempty"`
 }
 
-// todo: could possibly use github.com/google/go-querystring here
+type GetPathParams struct {
+	Ticker     string
+	Multiplier int
+	Resolution string
+	From       time.Time
+	To         time.Time
+}
+
+func (p GetPathParams) Values() map[string]string {
+	return map[string]string{
+		"ticker":     p.Ticker,
+		"multiplier": fmt.Sprint(p.Multiplier),
+		"resolution": fmt.Sprint(p.Resolution),
+		"from":       fmt.Sprint(p.From.UnixMilli()),
+		"to":         fmt.Sprint(p.To.UnixMilli()),
+	}
+}
+
 type GetQueryParams struct {
 	Sort     string
 	Limit    int32
@@ -57,60 +73,63 @@ type GetQueryParams struct {
 	Explain  bool
 }
 
-// todo: maybe return map[string]string here (especially if we add a GetPathParams type)
-func (p *GetQueryParams) Values() url.Values {
-	v := url.Values{}
+func (p GetQueryParams) Values() map[string]string {
+	v := map[string]string{}
 
 	if p.Sort != "" {
-		v.Add("sort", p.Sort)
+		v["sort"] = p.Sort
 	}
 
 	if p.Limit != 0 {
-		v.Add("limit", strconv.FormatInt(int64(p.Limit), 10))
+		v["limit"] = strconv.FormatInt(int64(p.Limit), 10)
 	}
 
 	if !p.Adjusted {
-		v.Add("adjusted", "false")
+		v["adjusted"] = "false"
 	}
 
 	if p.Explain {
-		v.Add("explain", "true")
+		v["explain"] = "true"
 	}
 
 	return v
 }
 
-// todo: could possibly use github.com/google/go-querystring here
+type GetPreviousClosePathParams struct {
+	Ticker string
+}
+
+func (p GetPreviousClosePathParams) Values() map[string]string {
+	return map[string]string{
+		"ticker": p.Ticker,
+	}
+}
+
 type GetPreviousCloseQueryParams struct {
 	Adjusted bool
 }
 
-// todo: maybe return map[string]string here (especially if we add a GetPathParams type)
-func (p *GetPreviousCloseQueryParams) Values() url.Values {
-	v := url.Values{}
+func (p GetPreviousCloseQueryParams) Values() map[string]string {
+	v := map[string]string{}
 
 	if !p.Adjusted {
-		v.Add("adjusted", "false")
+		v["adjusted"] = "false"
 	}
 
 	return v
 }
 
-// todo: not a fan of the Sprintf, maybe a GetPathParams type would be cleaner (and easier to godoc)
-func (ac *Client) Get(ctx context.Context, ticker string, multiplier int, resolution string, from, to time.Time, params *GetQueryParams, opts ...client.Option) (*GetResponse, error) {
-	res := &GetResponse{}
-	u := fmt.Sprintf("/v2/aggs/ticker/%s/range/%d/%s/%d/%d", ticker, multiplier, resolution, from.UnixMilli(), to.UnixMilli())
-	err := ac.Call(ctx, http.MethodGet, u, params, res, opts...)
-
+func (ac *Client) Get(ctx context.Context, pathParams GetPathParams, queryParams *GetQueryParams, opts ...client.Option) (*AggsResponse, error) {
+	res := &AggsResponse{}
+	url := "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
+	err := ac.Call(http.MethodGet, url, pathParams, queryParams, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
 	return res, err
 }
 
-// todo: GetPreviousClose
-func (ac *Client) GetPreviousClose(ctx context.Context, ticker string, params *GetPreviousCloseQueryParams, opts ...client.Option) (*GetResponse, error) {
-	res := &GetResponse{}
-	u := fmt.Sprintf("/v2/aggs/ticker/%s/prev", ticker)
-	err := ac.Call(ctx, http.MethodGet, u, params, res, opts...)
-
+func (ac *Client) GetPreviousClose(ctx context.Context, pathParams GetPreviousClosePathParams, queryParams *GetPreviousCloseQueryParams, opts ...client.Option) (*AggsResponse, error) {
+	res := &AggsResponse{}
+	url := "/v2/aggs/ticker/{ticker}/prev"
+	err := ac.Call(http.MethodGet, url, pathParams, queryParams, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
 	return res, err
 }
 

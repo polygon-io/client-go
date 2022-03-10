@@ -5,10 +5,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
+)
+
+const (
+	HeaderRequestID = "X-Request-ID"
 )
 
 // todo: add comments for godoc
@@ -16,7 +20,7 @@ import (
 
 // Params defines an interface that path parameter and query parameter types must implement.
 type Params interface {
-	Values() url.Values
+	Values() map[string]string
 }
 
 // HTTPBase provides functionality to make API requests via HTTP.
@@ -30,7 +34,6 @@ type HTTPBaseConfig struct {
 	MaxRetries int
 }
 
-// todo: config or options?
 func New(config HTTPBaseConfig) HTTPBase {
 	rc := resty.New()
 	rc.SetBaseURL(config.URL)
@@ -43,8 +46,8 @@ func New(config HTTPBaseConfig) HTTPBase {
 	}
 }
 
-func (b *HTTPBase) Call(ctx context.Context, method, url string, params Params, u json.Unmarshaler, opts ...Option) error {
-	req := b.newRequest(ctx, params, u, opts...)
+func (b *HTTPBase) Call(method, url string, pathParams Params, queryParams Params, u json.Unmarshaler, opts ...Option) error {
+	req := b.newRequest(pathParams, queryParams, u, opts...)
 	res, err := req.Execute(method, url)
 	if err != nil {
 		return err
@@ -55,17 +58,19 @@ func (b *HTTPBase) Call(ctx context.Context, method, url string, params Params, 
 	return nil
 }
 
-// todo: try using url params and automatic unmarshaling
-func (b *HTTPBase) newRequest(ctx context.Context, params Params, u json.Unmarshaler, opts ...Option) *resty.Request {
+func (b *HTTPBase) newRequest(pathParams Params, queryParams Params, u json.Unmarshaler, opts ...Option) *resty.Request {
 	options := mergeOptions(opts...)
 
-	req := b.rc.R().SetContext(ctx)
-	if params != nil {
-		req.SetQueryParamsFromValues(params.Values())
+	req := b.rc.R().SetContext(options.Ctx)
+	if pathParams != nil {
+		req.SetPathParams(pathParams.Values())
+	}
+	if queryParams != nil {
+		req.SetQueryParams(queryParams.Values())
 	}
 
 	if options.RequestID != nil {
-		req.SetHeader("X-Request-ID", *options.RequestID) // todo: add a constant for this
+		req.SetHeader(HeaderRequestID, *options.RequestID)
 	}
 
 	if options.APIKey != nil {
@@ -122,7 +127,7 @@ func newErrorResponse(res *resty.Response) *ErrorResponse {
 
 	statusErr := &ErrorResponse{
 		StatusCode: res.StatusCode(),
-		RequestID:  res.Header().Get("X-Request-ID"),
+		RequestID:  res.Header().Get(HeaderRequestID),
 	}
 
 	statusErr.Status = errRes.Status
@@ -149,6 +154,9 @@ type Options struct {
 
 	// Headers to apply to the request
 	Headers http.Header
+
+	// Ctx is a user provided context to allow the caller to control the request better
+	Ctx context.Context
 }
 
 // Option changes the configuration of Options.
@@ -176,6 +184,18 @@ func WithHeader(key, value string) Option {
 		}
 
 		o.Headers.Add(key, value)
+	}
+}
+
+// WithContext sets the context for an Option.
+func WithContext(ctx context.Context) Option {
+	return func(o *Options) {
+		switch c := ctx.(type) {
+		case *gin.Context:
+			o.Ctx = c.Request.Context()
+		default:
+			o.Ctx = ctx
+		}
 	}
 }
 

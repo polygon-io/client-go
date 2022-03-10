@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson2eca82f0DecodeGithubComPolygonIoClientGolangRestAggregates(in *jlexer.Lexer, out *GetResponse) {
+func easyjson2eca82f0DecodeGithubComPolygonIoClientGolangRestAggregates(in *jlexer.Lexer, out *AggsResponse) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -91,7 +91,7 @@ func easyjson2eca82f0DecodeGithubComPolygonIoClientGolangRestAggregates(in *jlex
 		in.Consumed()
 	}
 }
-func easyjson2eca82f0EncodeGithubComPolygonIoClientGolangRestAggregates(out *jwriter.Writer, in GetResponse) {
+func easyjson2eca82f0EncodeGithubComPolygonIoClientGolangRestAggregates(out *jwriter.Writer, in AggsResponse) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -174,26 +174,26 @@ func easyjson2eca82f0EncodeGithubComPolygonIoClientGolangRestAggregates(out *jwr
 }
 
 // MarshalJSON supports json.Marshaler interface
-func (v GetResponse) MarshalJSON() ([]byte, error) {
+func (v AggsResponse) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
 	easyjson2eca82f0EncodeGithubComPolygonIoClientGolangRestAggregates(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
-func (v GetResponse) MarshalEasyJSON(w *jwriter.Writer) {
+func (v AggsResponse) MarshalEasyJSON(w *jwriter.Writer) {
 	easyjson2eca82f0EncodeGithubComPolygonIoClientGolangRestAggregates(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
-func (v *GetResponse) UnmarshalJSON(data []byte) error {
+func (v *AggsResponse) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
 	easyjson2eca82f0DecodeGithubComPolygonIoClientGolangRestAggregates(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *GetResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
+func (v *AggsResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson2eca82f0DecodeGithubComPolygonIoClientGolangRestAggregates(l, v)
 }
 func easyjson2eca82f0DecodeGithubComPolygonIoClientGolangRestAggregates1(in *jlexer.Lexer, out *Aggregate) {

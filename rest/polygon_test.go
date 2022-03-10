@@ -13,6 +13,7 @@ import (
 )
 
 // todo: write some tests, just verifying that the client works for now
+
 func TestAggs(t *testing.T) {
 	c := polygon.New(client.HTTPBaseConfig{
 		URL:        "https://api.polygon.io",
@@ -20,13 +21,20 @@ func TestAggs(t *testing.T) {
 		MaxRetries: 3,
 	})
 
-	from := time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local)
-	to := from.Add(10 * 24 * time.Hour)
-	res, err := c.Aggregates.Get(context.Background(), "AAPL", 1, "day", from, to, &aggregates.GetQueryParams{
+	pathParams := aggregates.GetPathParams{
+		Ticker:     "AAPL",
+		Multiplier: 1,
+		Resolution: "day",
+		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local),
+		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.Local),
+	}
+	queryParams := &aggregates.GetQueryParams{
 		Adjusted: true,
 		Sort:     "asc",
 		Limit:    10,
-	})
+	}
+
+	res, err := c.Aggregates.Get(context.Background(), pathParams, queryParams)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,9 +53,14 @@ func TestAggsPreviousClose(t *testing.T) {
 		MaxRetries: 3,
 	})
 
-	res, err := c.Aggregates.GetPreviousClose(context.Background(), "AAPL", &aggregates.GetPreviousCloseQueryParams{
+	pathParams := aggregates.GetPreviousClosePathParams{
+		Ticker: "AAPL",
+	}
+	queryParams := &aggregates.GetPreviousCloseQueryParams{
 		Adjusted: true,
-	})
+	}
+
+	res, err := c.Aggregates.GetPreviousClose(context.Background(), pathParams, queryParams)
 	if err != nil {
 		t.Fatal(err)
 	}
