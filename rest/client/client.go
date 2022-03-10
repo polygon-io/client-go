@@ -47,8 +47,8 @@ func New(config HTTPBaseConfig) HTTPBase {
 	}
 }
 
-func (b *HTTPBase) Call(method, url string, params Params, u json.Unmarshaler, opts ...Option) error {
-	req := b.newRequest(params, u, opts...)
+func (b *HTTPBase) Call(method, url string, params Params, response json.Unmarshaler, opts ...Option) error {
+	req := b.newRequest(params, response, opts...)
 	res, err := req.Execute(method, url)
 	if err != nil {
 		return err
@@ -59,7 +59,7 @@ func (b *HTTPBase) Call(method, url string, params Params, u json.Unmarshaler, o
 	return nil
 }
 
-func (b *HTTPBase) newRequest(params Params, u json.Unmarshaler, opts ...Option) *resty.Request {
+func (b *HTTPBase) newRequest(params Params, response json.Unmarshaler, opts ...Option) *resty.Request {
 	options := mergeOptions(opts...)
 
 	req := b.rc.R().SetContext(options.Ctx)
@@ -78,7 +78,7 @@ func (b *HTTPBase) newRequest(params Params, u json.Unmarshaler, opts ...Option)
 
 	req.SetHeaderMultiValues(options.Headers)
 
-	req.SetResult(u).SetError(&BaseResponse{})
+	req.SetResult(response).SetError(&BaseResponse{})
 
 	return req
 }

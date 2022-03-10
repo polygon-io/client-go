@@ -1,6 +1,7 @@
 package aggregates
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -8,7 +9,6 @@ import (
 	"github.com/polygon-io/client-golang/rest/client"
 )
 
-// easyjson:json
 type Aggregate struct {
 	Ticker            string  `json:"T,omitempty"`
 	Volume            float64 `json:"v"`
@@ -30,7 +30,6 @@ type Aggregate struct {
 	EndTimestamp      int64   `json:"e,omitempty"`
 }
 
-// easyjson:json
 type AggsResponse struct {
 	client.BaseResponse
 	Ticker       string      `json:"ticker,omitempty"`
@@ -38,6 +37,17 @@ type AggsResponse struct {
 	ResultsCount int         `json:"resultsCount"`
 	Adjusted     bool        `json:"adjusted"`
 	Aggs         []Aggregate `json:"results,omitempty"`
+}
+
+func (ar *AggsResponse) UnmarshalJSON(data []byte) error {
+	type aggsResponse AggsResponse
+	var v aggsResponse
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+
+	*ar = AggsResponse(v)
+	return nil
 }
 
 type GetParams struct {
@@ -61,7 +71,7 @@ func (p GetParams) Path() map[string]string {
 		"ticker":     p.Ticker,
 		"multiplier": fmt.Sprint(p.Multiplier),
 		"resolution": fmt.Sprint(p.Resolution),
-		"from":       fmt.Sprint(p.From.UnixMilli()), // todo: decide if we want to do Format("2006-01-02") instead of UnixMilli()
+		"from":       fmt.Sprint(p.From.UnixMilli()),
 		"to":         fmt.Sprint(p.To.UnixMilli()),
 	}
 }
