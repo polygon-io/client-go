@@ -67,3 +67,29 @@ func TestAggsPreviousClose(t *testing.T) {
 	}
 	fmt.Println(string(b))
 }
+
+func TestAggsGroupedDaily(t *testing.T) {
+	c := polygon.New(client.HTTPBaseConfig{
+		URL:        "https://api.polygon.io",
+		Key:        os.Getenv("API_KEY"),
+		MaxRetries: 3,
+	})
+
+	res, err := c.Aggregates.GetGroupedDaily(context.Background(), aggregates.GetGroupedDailyParams{
+		Locale:     "global",
+		MarketType: "crypto",
+		Date:       time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
+		QueryParams: &aggregates.GetGroupedDailyQueryParams{
+			Adjusted: true,
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	b, err := res.MarshalJSON()
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(string(b))
+}

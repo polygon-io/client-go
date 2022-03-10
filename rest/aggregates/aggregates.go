@@ -15,6 +15,7 @@ import (
 const (
 	GetPath              = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
 	GetPreviousClosePath = "/v2/aggs/ticker/{ticker}/prev"
+	GetGroupedDailyPath  = "/v2/aggs/grouped/locale/{locale}/market/{marketType}/{date}"
 )
 
 type Client struct {
@@ -74,34 +75,34 @@ func (p GetParams) Path() map[string]string {
 		"ticker":     p.Ticker,
 		"multiplier": fmt.Sprint(p.Multiplier),
 		"resolution": fmt.Sprint(p.Resolution),
-		"from":       fmt.Sprint(p.From.UnixMilli()),
+		"from":       fmt.Sprint(p.From.UnixMilli()), // todo: decide if we want to do Format("2006-01-02") instead of UnixMilli()
 		"to":         fmt.Sprint(p.To.UnixMilli()),
 	}
 }
 
 func (p GetParams) Query() map[string]string {
-	v := map[string]string{}
+	q := map[string]string{}
 	if p.QueryParams == nil {
-		return v
+		return q
 	}
 
 	if p.QueryParams.Sort != "" {
-		v["sort"] = p.QueryParams.Sort
+		q["sort"] = p.QueryParams.Sort
 	}
 
 	if p.QueryParams.Limit != 0 {
-		v["limit"] = strconv.FormatInt(int64(p.QueryParams.Limit), 10)
+		q["limit"] = strconv.FormatInt(int64(p.QueryParams.Limit), 10)
 	}
 
 	if !p.QueryParams.Adjusted {
-		v["adjusted"] = "false"
+		q["adjusted"] = "false"
 	}
 
 	if p.QueryParams.Explain {
-		v["explain"] = "true"
+		q["explain"] = "true"
 	}
 
-	return v
+	return q
 }
 
 type GetPreviousCloseParams struct {
@@ -120,16 +121,48 @@ func (p GetPreviousCloseParams) Path() map[string]string {
 }
 
 func (p GetPreviousCloseParams) Query() map[string]string {
-	v := map[string]string{}
+	q := map[string]string{}
 	if p.QueryParams == nil {
-		return v
+		return q
 	}
 
 	if !p.QueryParams.Adjusted {
-		v["adjusted"] = "false"
+		q["adjusted"] = "false"
 	}
 
-	return v
+	return q
+}
+
+type GetGroupedDailyParams struct {
+	Locale      string
+	MarketType  string
+	Date        time.Time
+	QueryParams *GetGroupedDailyQueryParams
+}
+
+type GetGroupedDailyQueryParams struct {
+	Adjusted bool
+}
+
+func (p GetGroupedDailyParams) Path() map[string]string {
+	return map[string]string{
+		"locale":     p.Locale,
+		"marketType": p.MarketType,
+		"date":       fmt.Sprint(p.Date.Format("2006-01-02")),
+	}
+}
+
+func (p GetGroupedDailyParams) Query() map[string]string {
+	q := map[string]string{}
+	if p.QueryParams == nil {
+		return q
+	}
+
+	if !p.QueryParams.Adjusted {
+		q["adjusted"] = "false"
+	}
+
+	return q
 }
 
 func (ac *Client) Get(ctx context.Context, params GetParams, opts ...client.Option) (*AggsResponse, error) {
@@ -144,4 +177,8 @@ func (ac *Client) GetPreviousClose(ctx context.Context, params GetPreviousCloseP
 	return res, err
 }
 
-// todo: GetGroupedDaily
+func (ac *Client) GetGroupedDaily(ctx context.Context, params GetGroupedDailyParams, opts ...client.Option) (*AggsResponse, error) {
+	res := &AggsResponse{}
+	err := ac.Call(http.MethodGet, GetGroupedDailyPath, params, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
+	return res, err
+}
