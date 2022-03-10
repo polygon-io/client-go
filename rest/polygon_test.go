@@ -113,7 +113,7 @@ func TestAggsDailyOpenClose(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	b, err := res.MarshalJSON()
+	b, err := json.Marshal(res)
 	if err != nil {
 		t.Fatal(err)
 	}
