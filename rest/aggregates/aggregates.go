@@ -13,7 +13,7 @@ const (
 	GetPath               = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
 	GetPreviousClosePath  = "/v2/aggs/ticker/{ticker}/prev"
 	GetGroupedDailyPath   = "/v2/aggs/grouped/locale/{locale}/market/{marketType}/{date}"
-	GetDailyOpenClosePath = "/v1/open-close/{stocksTicker}/{date}"
+	GetDailyOpenClosePath = "/v1/open-close/{ticker}/{date}"
 )
 
 type Client struct {

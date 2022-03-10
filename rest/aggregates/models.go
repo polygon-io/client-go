@@ -144,7 +144,7 @@ func (p GetGroupedDailyParams) Path() map[string]string {
 	return map[string]string{
 		"locale":     p.Locale,
 		"marketType": p.MarketType,
-		"date":       fmt.Sprint(p.Date.Format("2006-01-02")),
+		"date":       p.Date.Format("2006-01-02"),
 	}
 }
 
@@ -163,15 +163,15 @@ func (p GetGroupedDailyParams) Query() map[string]string {
 
 type DailyOpenCloseResponse struct {
 	client.BaseResponse
-	Symbol     string    `json:"symbol"`
-	From       time.Time `json:"from"`
-	Open       float64   `json:"open"`
-	High       float64   `json:"high"`
-	Low        float64   `json:"low"`
-	Close      float64   `json:"close"`
-	Volume     float64   `json:"volume"`
-	AfterHours float64   `json:"afterHours"`
-	PreMarket  float64   `json:"preMarket"`
+	Symbol     string  `json:"symbol"`
+	From       string  `json:"from"`
+	Open       float64 `json:"open"`
+	High       float64 `json:"high"`
+	Low        float64 `json:"low"`
+	Close      float64 `json:"close"`
+	Volume     float64 `json:"volume"`
+	AfterHours float64 `json:"afterHours"`
+	PreMarket  float64 `json:"preMarket"`
 }
 
 func (ar *DailyOpenCloseResponse) UnmarshalJSON(data []byte) error {
@@ -197,8 +197,8 @@ type GetDailyOpenCloseQueryParams struct {
 
 func (p GetDailyOpenCloseParams) Path() map[string]string {
 	return map[string]string{
-		"stocksTicker": p.Ticker,
-		"date":         fmt.Sprint(p.Date.Format("2006-01-02")),
+		"ticker": p.Ticker,
+		"date":   p.Date.Format("2006-01-02"),
 	}
 }
 
