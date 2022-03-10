@@ -161,7 +161,6 @@ func (p GetGroupedDailyParams) Query() map[string]string {
 	return q
 }
 
-// easyjson:json
 type DailyOpenCloseResponse struct {
 	client.BaseResponse
 	Symbol     string    `json:"symbol"`
@@ -173,6 +172,17 @@ type DailyOpenCloseResponse struct {
 	Volume     float64   `json:"volume"`
 	AfterHours float64   `json:"afterHours"`
 	PreMarket  float64   `json:"preMarket"`
+}
+
+func (ar *DailyOpenCloseResponse) UnmarshalJSON(data []byte) error {
+	type dailyOpenCloseResponse DailyOpenCloseResponse
+	var v dailyOpenCloseResponse
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+
+	*ar = DailyOpenCloseResponse(v)
+	return nil
 }
 
 type GetDailyOpenCloseParams struct {
