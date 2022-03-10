@@ -197,8 +197,8 @@ type GetDailyOpenCloseQueryParams struct {
 
 func (p GetDailyOpenCloseParams) Path() map[string]string {
 	return map[string]string{
-		"ticker": p.Ticker,
-		"date":   fmt.Sprint(p.Date.Format("2006-01-02")),
+		"stocksTicker": p.Ticker,
+		"date":         fmt.Sprint(p.Date.Format("2006-01-02")),
 	}
 }
 
