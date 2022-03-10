@@ -22,6 +22,24 @@ type Client struct {
 	client.HTTPBase
 }
 
+func (ac *Client) Get(ctx context.Context, params GetParams, opts ...client.Option) (*AggsResponse, error) {
+	res := &AggsResponse{}
+	err := ac.Call(http.MethodGet, GetPath, params, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
+	return res, err
+}
+
+func (ac *Client) GetPreviousClose(ctx context.Context, params GetPreviousCloseParams, opts ...client.Option) (*AggsResponse, error) {
+	res := &AggsResponse{}
+	err := ac.Call(http.MethodGet, GetPreviousClosePath, params, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
+	return res, err
+}
+
+func (ac *Client) GetGroupedDaily(ctx context.Context, params GetGroupedDailyParams, opts ...client.Option) (*AggsResponse, error) {
+	res := &AggsResponse{}
+	err := ac.Call(http.MethodGet, GetGroupedDailyPath, params, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
+	return res, err
+}
+
 // easyjson:json
 type Aggregate struct {
 	Ticker            string  `json:"T,omitempty"`
@@ -163,22 +181,4 @@ func (p GetGroupedDailyParams) Query() map[string]string {
 	}
 
 	return q
-}
-
-func (ac *Client) Get(ctx context.Context, params GetParams, opts ...client.Option) (*AggsResponse, error) {
-	res := &AggsResponse{}
-	err := ac.Call(http.MethodGet, GetPath, params, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
-	return res, err
-}
-
-func (ac *Client) GetPreviousClose(ctx context.Context, params GetPreviousCloseParams, opts ...client.Option) (*AggsResponse, error) {
-	res := &AggsResponse{}
-	err := ac.Call(http.MethodGet, GetPreviousClosePath, params, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
-	return res, err
-}
-
-func (ac *Client) GetGroupedDaily(ctx context.Context, params GetGroupedDailyParams, opts ...client.Option) (*AggsResponse, error) {
-	res := &AggsResponse{}
-	err := ac.Call(http.MethodGet, GetGroupedDailyPath, params, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
-	return res, err
 }
