@@ -53,22 +53,13 @@ type AggsResponse struct {
 	Aggs         []Aggregate `json:"results,omitempty"`
 }
 
-type GetPathParams struct {
-	Ticker     string
-	Multiplier int
-	Resolution string
-	From       time.Time
-	To         time.Time
-}
-
-func (p GetPathParams) Values() map[string]string {
-	return map[string]string{
-		"ticker":     p.Ticker,
-		"multiplier": fmt.Sprint(p.Multiplier),
-		"resolution": fmt.Sprint(p.Resolution),
-		"from":       fmt.Sprint(p.From.UnixMilli()),
-		"to":         fmt.Sprint(p.To.UnixMilli()),
-	}
+type GetParams struct {
+	Ticker      string
+	Multiplier  int
+	Resolution  string
+	From        time.Time
+	To          time.Time
+	QueryParams *GetQueryParams
 }
 
 type GetQueryParams struct {
@@ -78,61 +69,78 @@ type GetQueryParams struct {
 	Explain  bool
 }
 
-func (p GetQueryParams) Values() map[string]string {
+func (p GetParams) Path() map[string]string {
+	return map[string]string{
+		"ticker":     p.Ticker,
+		"multiplier": fmt.Sprint(p.Multiplier),
+		"resolution": fmt.Sprint(p.Resolution),
+		"from":       fmt.Sprint(p.From.UnixMilli()),
+		"to":         fmt.Sprint(p.To.UnixMilli()),
+	}
+}
+
+func (p GetParams) Query() map[string]string {
 	v := map[string]string{}
-
-	if p.Sort != "" {
-		v["sort"] = p.Sort
+	if p.QueryParams == nil {
+		return v
 	}
 
-	if p.Limit != 0 {
-		v["limit"] = strconv.FormatInt(int64(p.Limit), 10)
+	if p.QueryParams.Sort != "" {
+		v["sort"] = p.QueryParams.Sort
 	}
 
-	if !p.Adjusted {
+	if p.QueryParams.Limit != 0 {
+		v["limit"] = strconv.FormatInt(int64(p.QueryParams.Limit), 10)
+	}
+
+	if !p.QueryParams.Adjusted {
 		v["adjusted"] = "false"
 	}
 
-	if p.Explain {
+	if p.QueryParams.Explain {
 		v["explain"] = "true"
 	}
 
 	return v
 }
 
-type GetPreviousClosePathParams struct {
-	Ticker string
-}
-
-func (p GetPreviousClosePathParams) Values() map[string]string {
-	return map[string]string{
-		"ticker": p.Ticker,
-	}
+type GetPreviousCloseParams struct {
+	Ticker      string
+	QueryParams *GetPreviousCloseQueryParams
 }
 
 type GetPreviousCloseQueryParams struct {
 	Adjusted bool
 }
 
-func (p GetPreviousCloseQueryParams) Values() map[string]string {
-	v := map[string]string{}
+func (p GetPreviousCloseParams) Path() map[string]string {
+	return map[string]string{
+		"ticker": p.Ticker,
+	}
+}
 
-	if !p.Adjusted {
+func (p GetPreviousCloseParams) Query() map[string]string {
+	v := map[string]string{}
+	if p.QueryParams == nil {
+		return v
+	}
+
+	if !p.QueryParams.Adjusted {
 		v["adjusted"] = "false"
 	}
 
 	return v
 }
 
-func (ac *Client) Get(ctx context.Context, pathParams GetPathParams, queryParams *GetQueryParams, opts ...client.Option) (*AggsResponse, error) {
+func (ac *Client) Get(ctx context.Context, params GetParams, opts ...client.Option) (*AggsResponse, error) {
 	res := &AggsResponse{}
-	err := ac.Call(http.MethodGet, GetPath, pathParams, queryParams, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
+	err := ac.Call(http.MethodGet, GetPath, params, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
 	return res, err
 }
 
-func (ac *Client) GetPreviousClose(ctx context.Context, pathParams GetPreviousClosePathParams, queryParams *GetPreviousCloseQueryParams, opts ...client.Option) (*AggsResponse, error) {
+func (ac *Client) GetPreviousClose(ctx context.Context, params GetPreviousCloseParams, opts ...client.Option) (*AggsResponse, error) {
 	res := &AggsResponse{}
-	err := ac.Call(http.MethodGet, GetPreviousClosePath, pathParams, queryParams, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
+	err := ac.Call(http.MethodGet, GetPreviousClosePath, params, res, append([]client.Option{client.WithContext(ctx)}, opts...)...)
 	return res, err
 }
 

@@ -20,7 +20,8 @@ const (
 
 // Params defines an interface that path parameter and query parameter types must implement.
 type Params interface {
-	Values() map[string]string
+	Path() map[string]string
+	Query() map[string]string
 }
 
 // HTTPBase provides functionality to make API requests via HTTP.
@@ -46,8 +47,8 @@ func New(config HTTPBaseConfig) HTTPBase {
 	}
 }
 
-func (b *HTTPBase) Call(method, url string, pathParams Params, queryParams Params, u json.Unmarshaler, opts ...Option) error {
-	req := b.newRequest(pathParams, queryParams, u, opts...)
+func (b *HTTPBase) Call(method, url string, params Params, u json.Unmarshaler, opts ...Option) error {
+	req := b.newRequest(params, u, opts...)
 	res, err := req.Execute(method, url)
 	if err != nil {
 		return err
@@ -58,15 +59,13 @@ func (b *HTTPBase) Call(method, url string, pathParams Params, queryParams Param
 	return nil
 }
 
-func (b *HTTPBase) newRequest(pathParams Params, queryParams Params, u json.Unmarshaler, opts ...Option) *resty.Request {
+func (b *HTTPBase) newRequest(params Params, u json.Unmarshaler, opts ...Option) *resty.Request {
 	options := mergeOptions(opts...)
 
 	req := b.rc.R().SetContext(options.Ctx)
-	if pathParams != nil {
-		req.SetPathParams(pathParams.Values())
-	}
-	if queryParams != nil {
-		req.SetQueryParams(queryParams.Values())
+	if params != nil {
+		req.SetPathParams(params.Path())
+		req.SetQueryParams(params.Query())
 	}
 
 	if options.RequestID != nil {
