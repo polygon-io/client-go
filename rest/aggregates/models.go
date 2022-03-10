@@ -39,14 +39,14 @@ type AggsResponse struct {
 	Aggs         []Aggregate `json:"results,omitempty"`
 }
 
-func (ar *AggsResponse) UnmarshalJSON(data []byte) error {
+func (r *AggsResponse) UnmarshalJSON(data []byte) error {
 	type aggsResponse AggsResponse
 	var v aggsResponse
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
 	}
 
-	*ar = AggsResponse(v)
+	*r = AggsResponse(v)
 	return nil
 }
 
