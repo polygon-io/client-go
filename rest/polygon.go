@@ -8,13 +8,13 @@ import (
 // todo: add comments for godoc
 
 type polygonClient struct {
-	Aggregates *aggs.Client
+	Aggs *aggs.Client
 	// todo: Trades, Quotes, etc
 }
 
 func New(config client.HTTPBaseConfig) *polygonClient {
 	c := client.New(config)
 	return &polygonClient{
-		Aggregates: &aggs.Client{HTTPBase: c},
+		Aggs: &aggs.Client{HTTPBase: c},
 	}
 }

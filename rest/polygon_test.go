@@ -22,7 +22,7 @@ func TestAggs(t *testing.T) {
 		MaxRetries: 3,
 	})
 
-	res, err := c.Aggregates.Get(context.Background(), aggs.GetParams{
+	res, err := c.Aggs.Get(context.Background(), aggs.GetParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
 		Resolution: "day",
@@ -52,7 +52,7 @@ func TestAggsPreviousClose(t *testing.T) {
 		MaxRetries: 3,
 	})
 
-	res, err := c.Aggregates.GetPreviousClose(context.Background(), aggs.GetPreviousCloseParams{
+	res, err := c.Aggs.GetPreviousClose(context.Background(), aggs.GetPreviousCloseParams{
 		Ticker: "AAPL",
 		QueryParams: &aggs.GetPreviousCloseQueryParams{
 			Adjusted: true,
@@ -76,7 +76,7 @@ func TestAggsGroupedDaily(t *testing.T) {
 		MaxRetries: 3,
 	})
 
-	res, err := c.Aggregates.GetGroupedDaily(context.Background(), aggs.GetGroupedDailyParams{
+	res, err := c.Aggs.GetGroupedDaily(context.Background(), aggs.GetGroupedDailyParams{
 		Locale:     "global",
 		MarketType: aggs.Crypto,
 		Date:       time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
@@ -102,7 +102,7 @@ func TestAggsDailyOpenClose(t *testing.T) {
 		MaxRetries: 3,
 	})
 
-	res, err := c.Aggregates.GetDailyOpenClose(context.Background(), aggs.GetDailyOpenCloseParams{
+	res, err := c.Aggs.GetDailyOpenClose(context.Background(), aggs.GetDailyOpenCloseParams{
 		Ticker: "AAPL",
 		Date:   time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
 		QueryParams: &aggs.GetDailyOpenCloseQueryParams{
