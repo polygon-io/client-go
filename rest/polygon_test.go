@@ -30,7 +30,7 @@ func TestAggs(t *testing.T) {
 		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.Local),
 		QueryParams: &aggs.GetQueryParams{
 			Adjusted: true,
-			Sort:     "asc",
+			Sort:     aggs.Desc,
 			Limit:    10,
 		},
 	})
@@ -78,7 +78,7 @@ func TestAggsGroupedDaily(t *testing.T) {
 
 	res, err := c.Aggregates.GetGroupedDaily(context.Background(), aggs.GetGroupedDailyParams{
 		Locale:     "global",
-		MarketType: "crypto",
+		MarketType: aggs.Crypto,
 		Date:       time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
 		QueryParams: &aggs.GetGroupedDailyQueryParams{
 			Adjusted: true,

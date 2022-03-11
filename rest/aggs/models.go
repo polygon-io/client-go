@@ -50,17 +50,36 @@ func (r *AggsResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+type Sort string
+
+const (
+	Asc  Sort = "asc"
+	Desc Sort = "desc"
+)
+
+type Resolution string
+
+const (
+	Minute  Resolution = "minute"
+	Hour    Resolution = "hour"
+	Day     Resolution = "day"
+	Week    Resolution = "week"
+	Month   Resolution = "month"
+	Quarter Resolution = "quarter"
+	Year    Resolution = "year"
+)
+
 type GetParams struct {
 	Ticker      string
 	Multiplier  int
-	Resolution  string
+	Resolution  Resolution
 	From        time.Time
 	To          time.Time
 	QueryParams *GetQueryParams
 }
 
 type GetQueryParams struct {
-	Sort     string
+	Sort     Sort
 	Limit    int32
 	Adjusted bool
 	Explain  bool
@@ -83,7 +102,7 @@ func (p GetParams) Query() map[string]string {
 	}
 
 	if p.QueryParams.Sort != "" {
-		q["sort"] = p.QueryParams.Sort
+		q["sort"] = string(p.QueryParams.Sort)
 	}
 
 	if p.QueryParams.Limit != 0 {
@@ -129,9 +148,17 @@ func (p GetPreviousCloseParams) Query() map[string]string {
 	return q
 }
 
+type MarketType string
+
+const (
+	Stocks MarketType = "stocks"
+	Forex  MarketType = "forex"
+	Crypto MarketType = "crypto"
+)
+
 type GetGroupedDailyParams struct {
 	Locale      string
-	MarketType  string
+	MarketType  MarketType
 	Date        time.Time
 	QueryParams *GetGroupedDailyQueryParams
 }
@@ -143,7 +170,7 @@ type GetGroupedDailyQueryParams struct {
 func (p GetGroupedDailyParams) Path() map[string]string {
 	return map[string]string{
 		"locale":     p.Locale,
-		"marketType": p.MarketType,
+		"marketType": string(p.MarketType),
 		"date":       p.Date.Format("2006-01-02"),
 	}
 }
