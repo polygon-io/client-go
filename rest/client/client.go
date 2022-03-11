@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
 )
 
@@ -190,12 +189,7 @@ func WithHeader(key, value string) Option {
 // WithContext sets the context for an Option.
 func WithContext(ctx context.Context) Option {
 	return func(o *Options) {
-		switch c := ctx.(type) {
-		case *gin.Context:
-			o.Ctx = c.Request.Context()
-		default:
-			o.Ctx = ctx
-		}
+		o.Ctx = ctx
 	}
 }
 
