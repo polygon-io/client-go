@@ -1,4 +1,4 @@
-package aggregates
+package aggs
 
 import (
 	"encoding/json"

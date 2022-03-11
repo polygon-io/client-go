@@ -9,7 +9,7 @@ import (
 	"time"
 
 	polygon "github.com/polygon-io/client-golang/rest"
-	"github.com/polygon-io/client-golang/rest/aggregates"
+	"github.com/polygon-io/client-golang/rest/aggs"
 	"github.com/polygon-io/client-golang/rest/client"
 )
 
@@ -22,13 +22,13 @@ func TestAggs(t *testing.T) {
 		MaxRetries: 3,
 	})
 
-	res, err := c.Aggregates.Get(context.Background(), aggregates.GetParams{
+	res, err := c.Aggregates.Get(context.Background(), aggs.GetParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
 		Resolution: "day",
 		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local),
 		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.Local),
-		QueryParams: &aggregates.GetQueryParams{
+		QueryParams: &aggs.GetQueryParams{
 			Adjusted: true,
 			Sort:     "asc",
 			Limit:    10,
@@ -52,9 +52,9 @@ func TestAggsPreviousClose(t *testing.T) {
 		MaxRetries: 3,
 	})
 
-	res, err := c.Aggregates.GetPreviousClose(context.Background(), aggregates.GetPreviousCloseParams{
+	res, err := c.Aggregates.GetPreviousClose(context.Background(), aggs.GetPreviousCloseParams{
 		Ticker: "AAPL",
-		QueryParams: &aggregates.GetPreviousCloseQueryParams{
+		QueryParams: &aggs.GetPreviousCloseQueryParams{
 			Adjusted: true,
 		},
 	})
@@ -76,11 +76,11 @@ func TestAggsGroupedDaily(t *testing.T) {
 		MaxRetries: 3,
 	})
 
-	res, err := c.Aggregates.GetGroupedDaily(context.Background(), aggregates.GetGroupedDailyParams{
+	res, err := c.Aggregates.GetGroupedDaily(context.Background(), aggs.GetGroupedDailyParams{
 		Locale:     "global",
 		MarketType: "crypto",
 		Date:       time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
-		QueryParams: &aggregates.GetGroupedDailyQueryParams{
+		QueryParams: &aggs.GetGroupedDailyQueryParams{
 			Adjusted: true,
 		},
 	})
@@ -102,10 +102,10 @@ func TestAggsDailyOpenClose(t *testing.T) {
 		MaxRetries: 3,
 	})
 
-	res, err := c.Aggregates.GetDailyOpenClose(context.Background(), aggregates.GetDailyOpenCloseParams{
+	res, err := c.Aggregates.GetDailyOpenClose(context.Background(), aggs.GetDailyOpenCloseParams{
 		Ticker: "AAPL",
 		Date:   time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
-		QueryParams: &aggregates.GetDailyOpenCloseQueryParams{
+		QueryParams: &aggs.GetDailyOpenCloseQueryParams{
 			Adjusted: true,
 		},
 	})
