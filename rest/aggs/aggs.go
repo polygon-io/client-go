@@ -17,7 +17,7 @@ const (
 )
 
 type Client struct {
-	client.HTTPBase
+	client.BaseClient
 }
 
 func (ac *Client) Get(ctx context.Context, params GetParams, opts ...client.Option) (*AggsResponse, error) {

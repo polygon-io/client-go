@@ -12,6 +12,9 @@ import (
 )
 
 const (
+	APIURL            = "https://api.polygon.io"
+	DefaultRetryCount = 3
+
 	HeaderRequestID = "X-Request-ID"
 )
 
@@ -24,30 +27,25 @@ type Params interface {
 	Query() map[string]string
 }
 
-// HTTPBase provides functionality to make API requests via HTTP.
-type HTTPBase struct {
+// BaseClient provides functionality to make API requests via HTTP.
+type BaseClient struct {
 	rc *resty.Client
 }
 
-type HTTPBaseConfig struct {
-	URL        string
-	Key        string
-	MaxRetries int
-}
-
-func New(config HTTPBaseConfig) HTTPBase {
+// todo: define some logical defaults here
+func New(apiKey string) BaseClient {
 	rc := resty.New()
-	rc.SetBaseURL(config.URL)
-	rc.SetAuthToken(config.Key)
-	rc.SetRetryCount(config.MaxRetries)
+	rc.SetBaseURL(APIURL)
+	rc.SetAuthToken(apiKey)
+	rc.SetRetryCount(DefaultRetryCount)
 	rc.SetTimeout(10 * time.Second)
 
-	return HTTPBase{
+	return BaseClient{
 		rc: rc,
 	}
 }
 
-func (b *HTTPBase) Call(method, url string, params Params, response json.Unmarshaler, opts ...Option) error {
+func (b *BaseClient) Call(method, url string, params Params, response json.Unmarshaler, opts ...Option) error {
 	req := b.newRequest(params, response, opts...)
 	res, err := req.Execute(method, url)
 	if err != nil {
@@ -59,7 +57,7 @@ func (b *HTTPBase) Call(method, url string, params Params, response json.Unmarsh
 	return nil
 }
 
-func (b *HTTPBase) newRequest(params Params, response json.Unmarshaler, opts ...Option) *resty.Request {
+func (b *BaseClient) newRequest(params Params, response json.Unmarshaler, opts ...Option) *resty.Request {
 	options := mergeOptions(opts...)
 
 	req := b.rc.R().SetContext(options.Ctx)

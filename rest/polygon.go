@@ -12,9 +12,9 @@ type polygonClient struct {
 	// todo: Trades, Quotes, etc
 }
 
-func New(config client.HTTPBaseConfig) *polygonClient {
-	c := client.New(config)
+func New(apiKey string) *polygonClient {
+	c := client.New(apiKey)
 	return &polygonClient{
-		Aggs: &aggs.Client{HTTPBase: c},
+		Aggs: &aggs.Client{BaseClient: c},
 	}
 }

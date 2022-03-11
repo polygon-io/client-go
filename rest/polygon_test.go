@@ -10,18 +10,12 @@ import (
 
 	polygon "github.com/polygon-io/client-golang/rest"
 	"github.com/polygon-io/client-golang/rest/aggs"
-	"github.com/polygon-io/client-golang/rest/client"
 )
 
 // todo: write some tests, just verifying that the client works for now
 
 func TestAggs(t *testing.T) {
-	c := polygon.New(client.HTTPBaseConfig{
-		URL:        "https://api.polygon.io",
-		Key:        os.Getenv("API_KEY"),
-		MaxRetries: 3,
-	})
-
+	c := polygon.New(os.Getenv("API_KEY"))
 	res, err := c.Aggs.Get(context.Background(), aggs.GetParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
@@ -46,12 +40,7 @@ func TestAggs(t *testing.T) {
 }
 
 func TestAggsPreviousClose(t *testing.T) {
-	c := polygon.New(client.HTTPBaseConfig{
-		URL:        "https://api.polygon.io",
-		Key:        os.Getenv("API_KEY"),
-		MaxRetries: 3,
-	})
-
+	c := polygon.New(os.Getenv("API_KEY"))
 	res, err := c.Aggs.GetPreviousClose(context.Background(), aggs.GetPreviousCloseParams{
 		Ticker: "AAPL",
 		QueryParams: &aggs.GetPreviousCloseQueryParams{
@@ -70,12 +59,7 @@ func TestAggsPreviousClose(t *testing.T) {
 }
 
 func TestAggsGroupedDaily(t *testing.T) {
-	c := polygon.New(client.HTTPBaseConfig{
-		URL:        "https://api.polygon.io",
-		Key:        os.Getenv("API_KEY"),
-		MaxRetries: 3,
-	})
-
+	c := polygon.New(os.Getenv("API_KEY"))
 	res, err := c.Aggs.GetGroupedDaily(context.Background(), aggs.GetGroupedDailyParams{
 		Locale:     "global",
 		MarketType: aggs.Crypto,
@@ -96,12 +80,7 @@ func TestAggsGroupedDaily(t *testing.T) {
 }
 
 func TestAggsDailyOpenClose(t *testing.T) {
-	c := polygon.New(client.HTTPBaseConfig{
-		URL:        "https://api.polygon.io",
-		Key:        os.Getenv("API_KEY"),
-		MaxRetries: 3,
-	})
-
+	c := polygon.New(os.Getenv("API_KEY"))
 	res, err := c.Aggs.GetDailyOpenClose(context.Background(), aggs.GetDailyOpenCloseParams{
 		Ticker: "AAPL",
 		Date:   time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
