@@ -15,6 +15,6 @@ type polygonClient struct {
 func New(apiKey string) *polygonClient {
 	c := client.New(apiKey)
 	return &polygonClient{
-		Aggs: &aggs.Client{BaseClient: c},
+		Aggs: &aggs.Client{Client: c},
 	}
 }

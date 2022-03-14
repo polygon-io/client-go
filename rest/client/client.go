@@ -18,7 +18,6 @@ const (
 )
 
 // todo: add comments for godoc
-// todo: could use internal if we don't want outside packages to use this directly
 
 // Params defines an interface that path parameter and query parameter types must implement.
 type Params interface {
@@ -26,25 +25,24 @@ type Params interface {
 	Query() map[string]string
 }
 
-// BaseClient provides functionality to make API requests via HTTP.
-type BaseClient struct {
-	rc *resty.Client
+// Client provides functionality to make API requests via HTTP.
+type Client struct {
+	HTTP *resty.Client
 }
 
-// todo: define some logical defaults here
-func New(apiKey string) BaseClient {
-	rc := resty.New()
-	rc.SetBaseURL(APIURL)
-	rc.SetAuthToken(apiKey)
-	rc.SetRetryCount(DefaultRetryCount)
-	rc.SetTimeout(10 * time.Second)
+func New(apiKey string) Client {
+	c := resty.New()
+	c.SetBaseURL(APIURL)
+	c.SetAuthToken(apiKey)
+	c.SetRetryCount(DefaultRetryCount)
+	c.SetTimeout(10 * time.Second)
 
-	return BaseClient{
-		rc: rc,
+	return Client{
+		HTTP: c,
 	}
 }
 
-func (b *BaseClient) Call(ctx context.Context, method, url string, params Params, response json.Unmarshaler, opts ...Option) error {
+func (b *Client) Call(ctx context.Context, method, url string, params Params, response interface{}, opts ...Option) error {
 	req := b.newRequest(ctx, params, response, opts...)
 	res, err := req.Execute(method, url)
 	if err != nil {
@@ -56,17 +54,13 @@ func (b *BaseClient) Call(ctx context.Context, method, url string, params Params
 	return nil
 }
 
-func (b *BaseClient) newRequest(ctx context.Context, params Params, response json.Unmarshaler, opts ...Option) *resty.Request {
+func (b *Client) newRequest(ctx context.Context, params Params, response interface{}, opts ...Option) *resty.Request {
 	options := mergeOptions(opts...)
 
-	req := b.rc.R().SetContext(ctx)
+	req := b.HTTP.R().SetContext(ctx)
 	if params != nil {
 		req.SetPathParams(params.Path())
 		req.SetQueryParams(params.Query())
-	}
-
-	if options.RequestID != nil {
-		req.SetHeader(HeaderRequestID, *options.RequestID)
 	}
 
 	if options.APIKey != nil {
@@ -145,9 +139,6 @@ func (e *ErrorResponse) Error() string {
 
 // Options are used to configure client calls.
 type Options struct {
-	// If set, the RequestID will be passed downstream, otherwise the downstream service will create its own RequestID
-	RequestID *string
-
 	// APIKey to pass with the request
 	APIKey *string
 
@@ -157,13 +148,6 @@ type Options struct {
 
 // Option changes the configuration of Options.
 type Option func(o *Options)
-
-// WithRequestID sets the RequestID for an Option.
-func WithRequestID(id string) Option {
-	return func(o *Options) {
-		o.RequestID = &id
-	}
-}
 
 // WithAPIKey sets the APIKey for an Option.
 func WithAPIKey(id string) Option {

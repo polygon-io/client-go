@@ -16,7 +16,7 @@ const (
 
 // Client defines a REST client for the Polygon aggregates API.
 type Client struct {
-	client.BaseClient
+	client.Client
 }
 
 // Get retrieves aggregate bars for a specified ticker over a given date range in custom time window sizes.

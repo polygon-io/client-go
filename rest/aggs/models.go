@@ -1,7 +1,6 @@
 package aggs
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -39,17 +38,6 @@ type AggsResponse struct {
 	ResultsCount int         `json:"resultsCount"`
 	Adjusted     bool        `json:"adjusted"`
 	Aggs         []Aggregate `json:"results,omitempty"`
-}
-
-func (r *AggsResponse) UnmarshalJSON(data []byte) error {
-	type aggsResponse AggsResponse
-	var v aggsResponse
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-
-	*r = AggsResponse(v)
-	return nil
 }
 
 type Sort string
@@ -201,17 +189,6 @@ type DailyOpenCloseResponse struct {
 	Volume     float64 `json:"volume"`
 	AfterHours float64 `json:"afterHours"`
 	PreMarket  float64 `json:"preMarket"`
-}
-
-func (ar *DailyOpenCloseResponse) UnmarshalJSON(data []byte) error {
-	type dailyOpenCloseResponse DailyOpenCloseResponse
-	var v dailyOpenCloseResponse
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-
-	*ar = DailyOpenCloseResponse(v)
-	return nil
 }
 
 type GetDailyOpenCloseParams struct {
