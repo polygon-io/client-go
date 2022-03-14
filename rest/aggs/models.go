@@ -69,10 +69,10 @@ type GetParams struct {
 }
 
 type GetQueryParams struct {
-	Sort     Sort
-	Limit    int32
-	Adjusted bool
-	Explain  bool
+	Sort     *Sort
+	Limit    *int32
+	Adjusted *bool
+	Explain  *bool
 }
 
 func (p GetParams) Path() map[string]string {
@@ -91,20 +91,20 @@ func (p GetParams) Query() map[string]string {
 		return q
 	}
 
-	if p.QueryParams.Sort != "" {
-		q["sort"] = string(p.QueryParams.Sort)
+	if p.QueryParams.Sort != nil {
+		q["sort"] = string(*p.QueryParams.Sort)
 	}
 
-	if p.QueryParams.Limit != 0 {
-		q["limit"] = strconv.FormatInt(int64(p.QueryParams.Limit), 10)
+	if p.QueryParams.Limit != nil {
+		q["limit"] = strconv.FormatInt(int64(*p.QueryParams.Limit), 10)
 	}
 
-	if !p.QueryParams.Adjusted {
-		q["adjusted"] = "false"
+	if p.QueryParams.Adjusted != nil {
+		q["adjusted"] = strconv.FormatBool(*p.QueryParams.Adjusted)
 	}
 
-	if p.QueryParams.Explain {
-		q["explain"] = "true"
+	if p.QueryParams.Explain != nil {
+		q["explain"] = strconv.FormatBool(*p.QueryParams.Explain)
 	}
 
 	return q
@@ -116,7 +116,7 @@ type GetPreviousCloseParams struct {
 }
 
 type GetPreviousCloseQueryParams struct {
-	Adjusted bool
+	Adjusted *bool
 }
 
 func (p GetPreviousCloseParams) Path() map[string]string {
@@ -131,8 +131,8 @@ func (p GetPreviousCloseParams) Query() map[string]string {
 		return q
 	}
 
-	if !p.QueryParams.Adjusted {
-		q["adjusted"] = "false"
+	if p.QueryParams.Adjusted != nil {
+		q["adjusted"] = strconv.FormatBool(*p.QueryParams.Adjusted)
 	}
 
 	return q
@@ -154,7 +154,7 @@ type GetGroupedDailyParams struct {
 }
 
 type GetGroupedDailyQueryParams struct {
-	Adjusted bool
+	Adjusted *bool
 }
 
 func (p GetGroupedDailyParams) Path() map[string]string {
@@ -171,8 +171,8 @@ func (p GetGroupedDailyParams) Query() map[string]string {
 		return q
 	}
 
-	if !p.QueryParams.Adjusted {
-		q["adjusted"] = "false"
+	if p.QueryParams.Adjusted != nil {
+		q["adjusted"] = strconv.FormatBool(*p.QueryParams.Adjusted)
 	}
 
 	return q
@@ -198,7 +198,7 @@ type GetDailyOpenCloseParams struct {
 }
 
 type GetDailyOpenCloseQueryParams struct {
-	Adjusted bool
+	Adjusted *bool
 }
 
 func (p GetDailyOpenCloseParams) Path() map[string]string {
@@ -214,8 +214,8 @@ func (p GetDailyOpenCloseParams) Query() map[string]string {
 		return q
 	}
 
-	if !p.QueryParams.Adjusted {
-		q["adjusted"] = "false"
+	if p.QueryParams.Adjusted != nil {
+		q["adjusted"] = strconv.FormatBool(*p.QueryParams.Adjusted)
 	}
 
 	return q

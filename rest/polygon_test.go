@@ -23,9 +23,9 @@ func TestAggs(t *testing.T) {
 		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local),
 		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.Local),
 		QueryParams: &aggs.GetQueryParams{
-			Adjusted: true,
-			Sort:     aggs.Desc,
-			Limit:    10,
+			Adjusted: polygon.Bool(true),
+			Sort:     polygon.AggsSort(aggs.Desc),
+			Limit:    polygon.Int32(10),
 		},
 	})
 	if err != nil {
@@ -44,7 +44,7 @@ func TestAggsPreviousClose(t *testing.T) {
 	res, err := c.Aggs.GetPreviousClose(context.Background(), aggs.GetPreviousCloseParams{
 		Ticker: "AAPL",
 		QueryParams: &aggs.GetPreviousCloseQueryParams{
-			Adjusted: true,
+			Adjusted: polygon.Bool(true),
 		},
 	})
 	if err != nil {
@@ -65,7 +65,7 @@ func TestAggsGroupedDaily(t *testing.T) {
 		MarketType: aggs.Crypto,
 		Date:       time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
 		QueryParams: &aggs.GetGroupedDailyQueryParams{
-			Adjusted: true,
+			Adjusted: polygon.Bool(true),
 		},
 	})
 	if err != nil {
@@ -85,7 +85,7 @@ func TestAggsDailyOpenClose(t *testing.T) {
 		Ticker: "AAPL",
 		Date:   time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
 		QueryParams: &aggs.GetDailyOpenCloseQueryParams{
-			Adjusted: true,
+			Adjusted: polygon.Bool(true),
 		},
 	})
 	if err != nil {
