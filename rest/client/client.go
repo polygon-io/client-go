@@ -47,7 +47,7 @@ func (b *Client) Call(ctx context.Context, method, url string, params Params, re
 	if err != nil {
 		return err
 	} else if res.IsError() {
-		return newErrorResponse(res)
+		return res.Error().(*BaseResponse)
 	}
 
 	return nil
@@ -76,13 +76,18 @@ func (b *Client) newRequest(ctx context.Context, params Params, response interfa
 // BaseResponse has all possible attributes that any response can use. It's intended to be embedded in a
 // domain specific response struct.
 type BaseResponse struct {
-	Status    string `json:"status"`
-	RequestID string `json:"request_id"`
-	Count     int    `json:"count,omitempty"`
-	Error     string `json:"error,omitempty"`
-	Message   string `json:"message,omitempty"`
+	Status       string `json:"status"`
+	RequestID    string `json:"request_id"`
+	Count        int    `json:"count,omitempty"`
+	Message      string `json:"message,omitempty"`
+	ErrorMessage string `json:"error,omitempty"`
 
 	PaginationHooks
+}
+
+// Error returns the details of an error response.
+func (e *BaseResponse) Error() string {
+	return fmt.Sprintf("bad status with message '%s': request ID '%s': internal status: '%s'", e.ErrorMessage, e.RequestID, e.Status)
 }
 
 // PaginationHooks are links to next and/or previous pages. Embed this struct into your API response if
@@ -90,36 +95,6 @@ type BaseResponse struct {
 type PaginationHooks struct {
 	NextURL     string `json:"next_url,omitempty"`
 	PreviousURL string `json:"previous_url,omitempty"`
-}
-
-func newErrorResponse(res *resty.Response) *ErrorResponse {
-	statusErr := &ErrorResponse{
-		StatusCode: res.StatusCode(),
-		RequestID:  res.Header().Get(HeaderRequestID),
-	}
-
-	errRes := res.Error().(*BaseResponse)
-	statusErr.Status = errRes.Status
-	statusErr.Message = errRes.Error
-
-	if statusErr.RequestID == "" && errRes.RequestID != "" {
-		statusErr.RequestID = errRes.RequestID
-	}
-
-	return statusErr
-}
-
-// ErrorResponse is returned from the client if an undesirable status is returned.
-type ErrorResponse struct {
-	StatusCode int
-	Status     string
-	RequestID  string
-	Message    string
-}
-
-// Error returns the details of an error response.
-func (e *ErrorResponse) Error() string {
-	return fmt.Sprintf("bad status with code: %d; message: %s; request ID: %s; internal status: %s", e.StatusCode, e.Message, e.RequestID, e.Status)
 }
 
 // Options are used to configure client calls.
