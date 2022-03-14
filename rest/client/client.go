@@ -44,8 +44,8 @@ func New(apiKey string) BaseClient {
 	}
 }
 
-func (b *BaseClient) Call(method, url string, params Params, response json.Unmarshaler, opts ...Option) error {
-	req := b.newRequest(params, response, opts...)
+func (b *BaseClient) Call(ctx context.Context, method, url string, params Params, response json.Unmarshaler, opts ...Option) error {
+	req := b.newRequest(ctx, params, response, opts...)
 	res, err := req.Execute(method, url)
 	if err != nil {
 		return err
@@ -56,10 +56,10 @@ func (b *BaseClient) Call(method, url string, params Params, response json.Unmar
 	return nil
 }
 
-func (b *BaseClient) newRequest(params Params, response json.Unmarshaler, opts ...Option) *resty.Request {
+func (b *BaseClient) newRequest(ctx context.Context, params Params, response json.Unmarshaler, opts ...Option) *resty.Request {
 	options := mergeOptions(opts...)
 
-	req := b.rc.R().SetContext(options.Ctx)
+	req := b.rc.R().SetContext(ctx)
 	if params != nil {
 		req.SetPathParams(params.Path())
 		req.SetQueryParams(params.Query())
@@ -153,9 +153,6 @@ type Options struct {
 
 	// Headers to apply to the request
 	Headers http.Header
-
-	// Ctx is a user provided context to allow the caller to control the request better
-	Ctx context.Context
 }
 
 // Option changes the configuration of Options.
@@ -183,13 +180,6 @@ func WithHeader(key, value string) Option {
 		}
 
 		o.Headers.Add(key, value)
-	}
-}
-
-// WithContext sets the context for an Option.
-func WithContext(ctx context.Context) Option {
-	return func(o *Options) {
-		o.Ctx = ctx
 	}
 }
 

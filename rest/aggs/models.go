@@ -9,6 +9,7 @@ import (
 	"github.com/polygon-io/client-golang/rest/client"
 )
 
+// Aggregate is an aggregation of all the activity on a specified ticker between the start and end timestamps.
 type Aggregate struct {
 	Ticker            string  `json:"T,omitempty"`
 	Volume            float64 `json:"v"`
@@ -30,6 +31,7 @@ type Aggregate struct {
 	EndTimestamp      int64   `json:"e,omitempty"`
 }
 
+// AggsResponse is returned by the aggs API. It contains a list of aggregates for the specified ticker.
 type AggsResponse struct {
 	client.BaseResponse
 	Ticker       string      `json:"ticker,omitempty"`
