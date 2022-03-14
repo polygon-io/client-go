@@ -65,7 +65,7 @@ type GetParams struct {
 	Resolution  Resolution
 	From        time.Time
 	To          time.Time
-	QueryParams *GetQueryParams
+	QueryParams GetQueryParams
 }
 
 type GetQueryParams struct {
@@ -87,9 +87,6 @@ func (p GetParams) Path() map[string]string {
 
 func (p GetParams) Query() map[string]string {
 	q := map[string]string{}
-	if p.QueryParams == nil {
-		return q
-	}
 
 	if p.QueryParams.Sort != nil {
 		q["sort"] = string(*p.QueryParams.Sort)
@@ -112,7 +109,7 @@ func (p GetParams) Query() map[string]string {
 
 type GetPreviousCloseParams struct {
 	Ticker      string
-	QueryParams *GetPreviousCloseQueryParams
+	QueryParams GetPreviousCloseQueryParams
 }
 
 type GetPreviousCloseQueryParams struct {
@@ -127,9 +124,6 @@ func (p GetPreviousCloseParams) Path() map[string]string {
 
 func (p GetPreviousCloseParams) Query() map[string]string {
 	q := map[string]string{}
-	if p.QueryParams == nil {
-		return q
-	}
 
 	if p.QueryParams.Adjusted != nil {
 		q["adjusted"] = strconv.FormatBool(*p.QueryParams.Adjusted)
@@ -150,7 +144,7 @@ type GetGroupedDailyParams struct {
 	Locale      string
 	MarketType  MarketType
 	Date        time.Time
-	QueryParams *GetGroupedDailyQueryParams
+	QueryParams GetGroupedDailyQueryParams
 }
 
 type GetGroupedDailyQueryParams struct {
@@ -167,9 +161,6 @@ func (p GetGroupedDailyParams) Path() map[string]string {
 
 func (p GetGroupedDailyParams) Query() map[string]string {
 	q := map[string]string{}
-	if p.QueryParams == nil {
-		return q
-	}
 
 	if p.QueryParams.Adjusted != nil {
 		q["adjusted"] = strconv.FormatBool(*p.QueryParams.Adjusted)
@@ -194,7 +185,7 @@ type DailyOpenCloseResponse struct {
 type GetDailyOpenCloseParams struct {
 	Ticker      string
 	Date        time.Time
-	QueryParams *GetDailyOpenCloseQueryParams
+	QueryParams GetDailyOpenCloseQueryParams
 }
 
 type GetDailyOpenCloseQueryParams struct {
@@ -210,9 +201,6 @@ func (p GetDailyOpenCloseParams) Path() map[string]string {
 
 func (p GetDailyOpenCloseParams) Query() map[string]string {
 	q := map[string]string{}
-	if p.QueryParams == nil {
-		return q
-	}
 
 	if p.QueryParams.Adjusted != nil {
 		q["adjusted"] = strconv.FormatBool(*p.QueryParams.Adjusted)

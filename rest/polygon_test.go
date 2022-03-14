@@ -22,7 +22,7 @@ func TestAggs(t *testing.T) {
 		Resolution: "day",
 		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local),
 		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.Local),
-		QueryParams: &aggs.GetQueryParams{
+		QueryParams: aggs.GetQueryParams{
 			Adjusted: polygon.Bool(true),
 			Sort:     polygon.AggsSort(aggs.Desc),
 			Limit:    polygon.Int32(10),
@@ -43,7 +43,7 @@ func TestAggsPreviousClose(t *testing.T) {
 	c := polygon.New(os.Getenv("API_KEY"))
 	res, err := c.Aggs.GetPreviousClose(context.Background(), aggs.GetPreviousCloseParams{
 		Ticker: "AAPL",
-		QueryParams: &aggs.GetPreviousCloseQueryParams{
+		QueryParams: aggs.GetPreviousCloseQueryParams{
 			Adjusted: polygon.Bool(true),
 		},
 	})
@@ -64,7 +64,7 @@ func TestAggsGroupedDaily(t *testing.T) {
 		Locale:     "global",
 		MarketType: aggs.Crypto,
 		Date:       time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
-		QueryParams: &aggs.GetGroupedDailyQueryParams{
+		QueryParams: aggs.GetGroupedDailyQueryParams{
 			Adjusted: polygon.Bool(true),
 		},
 	})
@@ -84,7 +84,7 @@ func TestAggsDailyOpenClose(t *testing.T) {
 	res, err := c.Aggs.GetDailyOpenClose(context.Background(), aggs.GetDailyOpenCloseParams{
 		Ticker: "AAPL",
 		Date:   time.Date(2021, 7, 21, 0, 0, 0, 0, time.Local),
-		QueryParams: &aggs.GetDailyOpenCloseQueryParams{
+		QueryParams: aggs.GetDailyOpenCloseQueryParams{
 			Adjusted: polygon.Bool(true),
 		},
 	})
