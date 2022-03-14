@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -17,8 +16,6 @@ const (
 	HeaderRequestID = "X-Request-ID"
 )
 
-// todo: add comments for godoc
-
 // Params defines an interface that path parameter and query parameter types must implement.
 type Params interface {
 	Path() map[string]string
@@ -30,6 +27,7 @@ type Client struct {
 	HTTP *resty.Client
 }
 
+// New returns a new client with the specified API key and default settings.
 func New(apiKey string) Client {
 	c := resty.New()
 	c.SetBaseURL(APIURL)
@@ -42,6 +40,7 @@ func New(apiKey string) Client {
 	}
 }
 
+// Call makes an API call based on the request params and options. The response is automatically unmarshaled.
 func (b *Client) Call(ctx context.Context, method, url string, params Params, response interface{}, opts ...Option) error {
 	req := b.newRequest(ctx, params, response, opts...)
 	res, err := req.Execute(method, url)
@@ -74,18 +73,8 @@ func (b *Client) newRequest(ctx context.Context, params Params, response interfa
 	return req
 }
 
-// BaseResponse has all possible attributes that any response can use. It's intended to be embedded in a domain specific
-// response struct.
-// Ex:
-//		type User struct {
-//			Name string `json:"name"`
-//			Age  int    `json:"age"`
-//		}
-//
-//		type UserAPIResponse struct {
-//			apis.BaseResponse
-//			User User `json:"results,omitempty"`
-// 		}
+// BaseResponse has all possible attributes that any response can use. It's intended to be embedded in a
+// domain specific response struct.
 type BaseResponse struct {
 	Status    string `json:"status"`
 	RequestID string `json:"request_id"`
@@ -96,19 +85,11 @@ type BaseResponse struct {
 	PaginationHooks
 }
 
-// PaginationHooks are links to next and/or previous pages.
-// Embed this struct into your API response if your endpoint is going to support pagination.
+// PaginationHooks are links to next and/or previous pages. Embed this struct into your API response if
+// your endpoint is going to support pagination.
 type PaginationHooks struct {
 	NextURL     string `json:"next_url,omitempty"`
 	PreviousURL string `json:"previous_url,omitempty"`
-}
-
-// ErrorResponse is returned from the client if an undesirable status is returned.
-type ErrorResponse struct {
-	StatusCode int
-	Status     string
-	RequestID  string
-	Message    string
 }
 
 func newErrorResponse(res *resty.Response) *ErrorResponse {
@@ -117,12 +98,7 @@ func newErrorResponse(res *resty.Response) *ErrorResponse {
 		RequestID:  res.Header().Get(HeaderRequestID),
 	}
 
-	errRes := &BaseResponse{}
-	err := json.Unmarshal(res.Body(), errRes)
-	if err != nil {
-		return statusErr // always return status
-	}
-
+	errRes := res.Error().(*BaseResponse)
 	statusErr.Status = errRes.Status
 	statusErr.Message = errRes.Error
 
@@ -133,6 +109,15 @@ func newErrorResponse(res *resty.Response) *ErrorResponse {
 	return statusErr
 }
 
+// ErrorResponse is returned from the client if an undesirable status is returned.
+type ErrorResponse struct {
+	StatusCode int
+	Status     string
+	RequestID  string
+	Message    string
+}
+
+// Error returns the details of an error response.
 func (e *ErrorResponse) Error() string {
 	return fmt.Sprintf("bad status with code: %d; message: %s; request ID: %s; internal status: %s", e.StatusCode, e.Message, e.RequestID, e.Status)
 }
