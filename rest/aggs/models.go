@@ -192,7 +192,7 @@ func (p GetGroupedDailyParams) Query() map[string]string {
 type DailyOpenCloseResponse struct {
 	client.BaseResponse
 	Symbol     string  `json:"symbol"`
-	From       string  `json:"from"` // todo: use ptime
+	From       string  `json:"from"`
 	Open       float64 `json:"open"`
 	High       float64 `json:"high"`
 	Low        float64 `json:"low"`
