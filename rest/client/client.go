@@ -87,6 +87,7 @@ type BaseResponse struct {
 	PaginationHooks
 }
 
+// ErrorResponse represents an API response with an error status code.
 type ErrorResponse struct {
 	StatusCode int
 	BaseResponse
