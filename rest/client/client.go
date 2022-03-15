@@ -47,7 +47,9 @@ func (b *Client) Call(ctx context.Context, method, url string, params Params, re
 	if err != nil {
 		return err
 	} else if res.IsError() {
-		return res.Error().(*BaseResponse)
+		errRes := res.Error().(*ErrorResponse)
+		errRes.StatusCode = res.StatusCode()
+		return errRes
 	}
 
 	return nil
@@ -68,7 +70,7 @@ func (b *Client) newRequest(ctx context.Context, params Params, response interfa
 
 	req.SetHeaderMultiValues(options.Headers)
 
-	req.SetResult(response).SetError(&BaseResponse{})
+	req.SetResult(response).SetError(&ErrorResponse{})
 
 	return req
 }
@@ -85,9 +87,14 @@ type BaseResponse struct {
 	PaginationHooks
 }
 
+type ErrorResponse struct {
+	StatusCode int
+	BaseResponse
+}
+
 // Error returns the details of an error response.
-func (e *BaseResponse) Error() string {
-	return fmt.Sprintf("bad status with message '%s': request ID '%s': internal status: '%s'", e.ErrorMessage, e.RequestID, e.Status)
+func (e *ErrorResponse) Error() string {
+	return fmt.Sprintf("bad status with code '%d': message '%s': request ID '%s': internal status: '%s'", e.StatusCode, e.ErrorMessage, e.RequestID, e.Status)
 }
 
 // PaginationHooks are links to next and/or previous pages. Embed this struct into your API response if
