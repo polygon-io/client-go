@@ -1,8 +1,8 @@
 package polygon
 
 import (
-	"github.com/polygon-io/client-golang/rest/aggs"
-	"github.com/polygon-io/client-golang/rest/client"
+	"github.com/polygon-io/client-go/rest/aggs"
+	"github.com/polygon-io/client-go/rest/client"
 )
 
 type polygonClient struct {

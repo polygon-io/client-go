@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/polygon-io/client-golang/rest/client"
+	"github.com/polygon-io/client-go/rest/client"
 )
 
 const (
