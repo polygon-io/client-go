@@ -9,6 +9,7 @@ import (
 )
 
 // Aggregate is an aggregation of all the activity on a specified ticker between the start and end timestamps.
+// For more details see https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to.
 type Aggregate struct {
 	Ticker            string  `json:"T,omitempty"`
 	Volume            float64 `json:"v"`
@@ -29,8 +30,6 @@ type Aggregate struct {
 	StartTimestamp    int64   `json:"s,omitempty"`
 	EndTimestamp      int64   `json:"e,omitempty"`
 }
-
-// For more details see https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to
 
 // AggsResponse is returned by the aggs API. It contains a list of aggregates for the specified ticker.
 type AggsResponse struct {
@@ -187,8 +186,9 @@ func (p GetGroupedDailyParams) Query() map[string]string {
 	return q
 }
 
-// DailyOpenCloseResponse is the response for the DailyOpenClose method
+// DailyOpenCloseResponse is the response for the DailyOpenClose method.
 // Get the open, close and afterhours prices of a stock symbol on a certain date.
+// For more details see https://polygon.io/docs/stocks/get_v1_open-close__stocksticker___date.
 type DailyOpenCloseResponse struct {
 	client.BaseResponse
 	Symbol     string  `json:"symbol"`
@@ -201,8 +201,6 @@ type DailyOpenCloseResponse struct {
 	AfterHours float64 `json:"afterHours"`
 	PreMarket  float64 `json:"preMarket"`
 }
-
-// For more details see https://polygon.io/docs/stocks/get_v1_open-close__stocksticker___date
 
 // GetDailyOpenCloseParams is the set of path and query parameters that can be used when requesting aggs through the GetDailyOpenClose method.
 type GetDailyOpenCloseParams struct {
