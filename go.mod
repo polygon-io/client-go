@@ -1,4 +1,4 @@
-module github.com/polygon-io/client-golang
+module github.com/polygon-io/client-go
 
 go 1.17
 
