@@ -30,6 +30,8 @@ type Aggregate struct {
 	EndTimestamp      int64   `json:"e,omitempty"`
 }
 
+// For more details see https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to
+
 // AggsResponse is returned by the aggs API. It contains a list of aggregates for the specified ticker.
 type AggsResponse struct {
 	client.BaseResponse
@@ -40,6 +42,8 @@ type AggsResponse struct {
 	Aggs         []Aggregate `json:"results,omitempty"`
 }
 
+// Sort the results by timestamp. asc will return results in ascending order (oldest at the top),
+// desc will return results in descending order (newest at the top).
 type Sort string
 
 const (
@@ -47,6 +51,7 @@ const (
 	Desc Sort = "desc"
 )
 
+// Resolution is the size of the time window.
 type Resolution string
 
 const (
@@ -59,6 +64,7 @@ const (
 	Year    Resolution = "year"
 )
 
+// GetParams is the set of path and query parameters that can be used when requesting aggs through the Get method.
 type GetParams struct {
 	Ticker      string
 	Multiplier  int
@@ -68,6 +74,7 @@ type GetParams struct {
 	QueryParams GetQueryParams
 }
 
+// GetQueryParams is the set of query parameters that can be used when requesting aggs through the Get method.
 type GetQueryParams struct {
 	Sort     *Sort
 	Limit    *int32
@@ -75,6 +82,7 @@ type GetQueryParams struct {
 	Explain  *bool
 }
 
+// Path maps the input Get parameters to their respective keys.
 func (p GetParams) Path() map[string]string {
 	return map[string]string{
 		"ticker":     p.Ticker,
@@ -85,6 +93,7 @@ func (p GetParams) Path() map[string]string {
 	}
 }
 
+// Query maps the input Get parameters to their respective keys.
 func (p GetParams) Query() map[string]string {
 	q := map[string]string{}
 
@@ -107,21 +116,25 @@ func (p GetParams) Query() map[string]string {
 	return q
 }
 
+// GetPreviousCloseParams is the set of path and query parameters that can be used when requesting aggs through the GetPreviousClose method.
 type GetPreviousCloseParams struct {
 	Ticker      string
 	QueryParams GetPreviousCloseQueryParams
 }
 
+// GetPreviousCloseQueryParams is the set of query parameters that can be used when requesting aggs through the GetPreviousClose method.
 type GetPreviousCloseQueryParams struct {
 	Adjusted *bool
 }
 
+// Path maps the GetPreviousCloseParams path parameters to their respective keys.
 func (p GetPreviousCloseParams) Path() map[string]string {
 	return map[string]string{
 		"ticker": p.Ticker,
 	}
 }
 
+// Query maps the GetPreviousCloseParams query parameters to their respective keys.
 func (p GetPreviousCloseParams) Query() map[string]string {
 	q := map[string]string{}
 
@@ -132,6 +145,7 @@ func (p GetPreviousCloseParams) Query() map[string]string {
 	return q
 }
 
+// MarketType is the type of market used to query aggs using the GetGroupedDaily method.
 type MarketType string
 
 const (
@@ -140,6 +154,7 @@ const (
 	Crypto MarketType = "crypto"
 )
 
+// GetGroupedDailyParams is the set of path and query parameters that can be used when requesting aggs through the GetGroupedDaily method.
 type GetGroupedDailyParams struct {
 	Locale      string
 	MarketType  MarketType
@@ -147,10 +162,12 @@ type GetGroupedDailyParams struct {
 	QueryParams GetGroupedDailyQueryParams
 }
 
+// GetGroupedDailyQueryParams is the set of query parameters that can be used when requesting aggs through the GetGroupedDaily method.
 type GetGroupedDailyQueryParams struct {
 	Adjusted *bool
 }
 
+// Path maps the GetGroupedDaily path parameters to their respective keys.
 func (p GetGroupedDailyParams) Path() map[string]string {
 	return map[string]string{
 		"locale":     p.Locale,
@@ -159,6 +176,7 @@ func (p GetGroupedDailyParams) Path() map[string]string {
 	}
 }
 
+// Query maps the GetGroupedDaily query parameters to their respective keys.
 func (p GetGroupedDailyParams) Query() map[string]string {
 	q := map[string]string{}
 
@@ -169,6 +187,8 @@ func (p GetGroupedDailyParams) Query() map[string]string {
 	return q
 }
 
+// DailyOpenCloseResponse is the response for the DailyOpenClose method
+// Get the open, close and afterhours prices of a stock symbol on a certain date.
 type DailyOpenCloseResponse struct {
 	client.BaseResponse
 	Symbol     string  `json:"symbol"`
@@ -182,16 +202,21 @@ type DailyOpenCloseResponse struct {
 	PreMarket  float64 `json:"preMarket"`
 }
 
+// For more details see https://polygon.io/docs/stocks/get_v1_open-close__stocksticker___date
+
+// GetDailyOpenCloseParams is the set of path and query parameters that can be used when requesting aggs through the GetDailyOpenClose method.
 type GetDailyOpenCloseParams struct {
 	Ticker      string
 	Date        time.Time
 	QueryParams GetDailyOpenCloseQueryParams
 }
 
+// GetDailyOpenCloseQueryParams is the set of query parameters that can be used when requesting aggs through the GetDailyOpenCloseQuery method.
 type GetDailyOpenCloseQueryParams struct {
 	Adjusted *bool
 }
 
+// Path maps the GetDailyOpenClose path parameters to their respective keys.
 func (p GetDailyOpenCloseParams) Path() map[string]string {
 	return map[string]string{
 		"ticker": p.Ticker,
@@ -199,6 +224,7 @@ func (p GetDailyOpenCloseParams) Path() map[string]string {
 	}
 }
 
+// Query maps the GetDailyOpenClose query parameters to their respective keys.
 func (p GetDailyOpenCloseParams) Query() map[string]string {
 	q := map[string]string{}
 
