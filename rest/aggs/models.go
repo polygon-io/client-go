@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/polygon-io/client-golang/rest/client"
+	"github.com/polygon-io/client-go/rest/client"
 )
 
 // Aggregate is an aggregation of all the activity on a specified ticker between the start and end timestamps.

@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	polygon "github.com/polygon-io/client-golang/rest"
-	"github.com/polygon-io/client-golang/rest/aggs"
+	polygon "github.com/polygon-io/client-go/rest"
+	"github.com/polygon-io/client-go/rest/aggs"
 )
 
 // todo: write some tests, just verifying that the client works for now
