@@ -9,6 +9,7 @@ import (
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/aggs"
+	"github.com/polygon-io/client-go/rest/client"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,7 +19,7 @@ func TestGet(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626926400000/1629604800000?adjusted=true&limit=1&sort=desc",
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626926400000/1629604800000?adjusted=true&explain=false&limit=1&sort=desc",
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, `
 			{
@@ -48,6 +49,35 @@ func TestGet(t *testing.T) {
 			return resp, nil
 		},
 	)
+
+	expectedAggregate := aggs.Aggregate{
+		Volume:       77287356,
+		VWAP:         146.991,
+		Open:         145.935,
+		Close:        146.8,
+		High:         148.195,
+		Low:          145.81,
+		Timestamp:    1626926400000,
+		Transactions: 480209,
+	}
+
+	expectedBaseResponse := client.BaseResponse{
+		Status:       "OK",
+		RequestID:    "cffb2db04ed53d1fdf2547f15c1ca14e",
+		Count:        1,
+		Message:      "",
+		ErrorMessage: "",
+	}
+
+	expectedResponse := aggs.AggsResponse{
+		Ticker:       "AAPL",
+		BaseResponse: expectedBaseResponse,
+		QueryCount:   1,
+		ResultsCount: 1,
+		Adjusted:     true,
+		Aggs:         []aggs.Aggregate{expectedAggregate},
+	}
+
 	res, err := c.Aggs.Get(context.Background(), aggs.GetParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
@@ -58,10 +88,12 @@ func TestGet(t *testing.T) {
 			Adjusted: polygon.Bool(true),
 			Sort:     polygon.AggsSort(aggs.Desc),
 			Limit:    polygon.Int32(1),
+			Explain:  polygon.Bool(false),
 		},
 	})
+
 	assert.Nil(t, err)
-	assert.Equal(t, "AAPL", res.Ticker)
+	assert.Equal(t, &expectedResponse, res)
 }
 
 func TestGetPreviousClose(t *testing.T) {
@@ -81,7 +113,7 @@ func TestGetPreviousClose(t *testing.T) {
 				"results": [
 				  {
 					"T": "AAPL",
-					"v": 9.4493006e+07,
+					"v": 9123149,
 					"vw": 153.473,
 					"o": 150.9,
 					"c": 155.09,
@@ -101,15 +133,45 @@ func TestGetPreviousClose(t *testing.T) {
 			return resp, nil
 		},
 	)
-	adjusted := true
+
+	expectedAggregate := aggs.Aggregate{
+		Ticker:       "AAPL",
+		Volume:       9123149,
+		VWAP:         153.473,
+		Open:         150.9,
+		Close:        155.09,
+		High:         155.57,
+		Low:          150.38,
+		Timestamp:    1647374400000,
+		Transactions: 735965,
+	}
+
+	expectedBaseResponse := client.BaseResponse{
+		Status:       "OK",
+		RequestID:    "7ab4157627a1486ab072fe45f31ed808",
+		Count:        1,
+		Message:      "",
+		ErrorMessage: "",
+	}
+
+	expectedResponse := aggs.AggsResponse{
+		Ticker:       "AAPL",
+		BaseResponse: expectedBaseResponse,
+		QueryCount:   1,
+		ResultsCount: 1,
+		Adjusted:     true,
+		Aggs:         []aggs.Aggregate{expectedAggregate},
+	}
+
 	res, err := c.Aggs.GetPreviousClose(context.Background(), aggs.GetPreviousCloseParams{
 		Ticker: "AAPL",
 		QueryParams: aggs.GetPreviousCloseQueryParams{
-			Adjusted: &adjusted,
+			Adjusted: polygon.Bool(true),
 		},
 	})
+
 	assert.Nil(t, err)
-	assert.Equal(t, "AAPL", res.Ticker)
+	assert.Equal(t, &expectedResponse, res)
 }
 
 func TestGetGroupedDaily(t *testing.T) {
@@ -148,17 +210,46 @@ func TestGetGroupedDaily(t *testing.T) {
 			return resp, nil
 		},
 	)
-	adjusted := true
+
+	expectedAggregate := aggs.Aggregate{
+		Ticker:       "CORN",
+		Volume:       368616,
+		VWAP:         13.407,
+		Open:         13.35,
+		Close:        13.43,
+		High:         13.46,
+		Low:          13.34,
+		Timestamp:    1602705600000,
+		Transactions: 758,
+	}
+
+	expectedBaseResponse := client.BaseResponse{
+		Status:       "OK",
+		RequestID:    "f3c9b3358637c9a4a1308d57c2f164e3",
+		Count:        1,
+		Message:      "",
+		ErrorMessage: "",
+	}
+
+	expectedResponse := aggs.AggsResponse{
+		BaseResponse: expectedBaseResponse,
+		QueryCount:   1,
+		ResultsCount: 1,
+		Adjusted:     true,
+		Aggs:         []aggs.Aggregate{expectedAggregate},
+	}
+
 	res, err := c.Aggs.GetGroupedDaily(context.Background(), aggs.GetGroupedDailyParams{
 		Locale:     "us",
 		MarketType: "stocks",
 		Date:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local),
 		QueryParams: aggs.GetGroupedDailyQueryParams{
-			Adjusted: &adjusted,
+			Adjusted: polygon.Bool(true),
 		},
 	})
+
 	assert.Nil(t, err)
-	assert.Equal(t, 1, res.QueryCount)
+	assert.Equal(t, &expectedResponse, res)
 }
 
 func TestGetDailyOpenClose(t *testing.T) {
@@ -188,14 +279,32 @@ func TestGetDailyOpenClose(t *testing.T) {
 			return resp, nil
 		},
 	)
-	adjusted := true
+
+	expectedBaseResponse := client.BaseResponse{
+		Status: "OK",
+	}
+
+	expectedDailyOpenCloseResponse := aggs.DailyOpenCloseResponse{
+		BaseResponse: expectedBaseResponse,
+		Symbol:       "AAPL",
+		From:         "2020-10-14",
+		Open:         121,
+		High:         123.03,
+		Low:          119.62,
+		Close:        121.19,
+		Volume:       151057198,
+		AfterHours:   120.81,
+		PreMarket:    121.55,
+	}
+
 	res, err := c.Aggs.GetDailyOpenClose(context.Background(), aggs.GetDailyOpenCloseParams{
 		Ticker: "AAPL",
 		Date:   time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local),
 		QueryParams: aggs.GetDailyOpenCloseQueryParams{
-			Adjusted: &adjusted,
+			Adjusted: polygon.Bool(true),
 		},
 	})
+
 	assert.Nil(t, err)
-	assert.Equal(t, "AAPL", res.Symbol)
+	assert.Equal(t, &expectedDailyOpenCloseResponse, res)
 }
