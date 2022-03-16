@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -14,10 +15,25 @@ const (
 	DefaultRetryCount = 3
 )
 
-// Params defines an interface that path parameter and query parameter types must implement.
+// Params defines an interface that parameter types must implement.
 type Params interface {
+	// Path returns a map of URL path parameters.
 	Path() map[string]string
-	Query() map[string]string
+	// Query returns query string parameters as URL values.
+	Query() url.Values
+}
+
+// ListParams defines an interface that list parameter types must implement.
+type ListParams interface {
+	Params
+	// String returns a URL string that includes any path and query parameters that are set.
+	String() string
+}
+
+// ListResponse defines an interface that list API responses must implement.
+type ListResponse interface {
+	// NextPageURL returns a URL for retrieving the next page of list results.
+	NextPageURL() string
 }
 
 // Client provides functionality to make API requests via HTTP.
@@ -59,7 +75,7 @@ func (b *Client) newRequest(ctx context.Context, params Params, response interfa
 	req := b.HTTP.R().SetContext(ctx)
 	if params != nil {
 		req.SetPathParams(params.Path())
-		req.SetQueryParams(params.Query())
+		req.SetQueryParamsFromValues(params.Query())
 	}
 
 	if options.APIKey != nil {
@@ -85,6 +101,17 @@ type BaseResponse struct {
 	PaginationHooks
 }
 
+// PaginationHooks are links to next and/or previous pages. Embed this struct into an API response if
+// the endpoint supports pagination.
+type PaginationHooks struct {
+	NextURL     string `json:"next_url,omitempty"`
+	PreviousURL string `json:"previous_url,omitempty"`
+}
+
+func (p PaginationHooks) NextPageURL() string {
+	return p.NextURL
+}
+
 // ErrorResponse represents an API response with an error status code.
 type ErrorResponse struct {
 	StatusCode int
@@ -94,13 +121,6 @@ type ErrorResponse struct {
 // Error returns the details of an error response.
 func (e *ErrorResponse) Error() string {
 	return fmt.Sprintf("bad status with code '%d': message '%s': request ID '%s': internal status: '%s'", e.StatusCode, e.ErrorMessage, e.RequestID, e.Status)
-}
-
-// PaginationHooks are links to next and/or previous pages. Embed this struct into your API response if
-// your endpoint is going to support pagination.
-type PaginationHooks struct {
-	NextURL     string `json:"next_url,omitempty"`
-	PreviousURL string `json:"previous_url,omitempty"`
 }
 
 // Options are used to configure client calls.
