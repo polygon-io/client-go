@@ -1,4 +1,4 @@
-package polygon_test
+package aggs_test
 
 import (
 	"context"
@@ -60,9 +60,7 @@ func TestGet(t *testing.T) {
 			Limit:    polygon.Int32(1),
 		},
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 	assert.Equal(t, "AAPL", res.Ticker)
 }
 
@@ -110,9 +108,7 @@ func TestGetPreviousClose(t *testing.T) {
 			Adjusted: &adjusted,
 		},
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 	assert.Equal(t, "AAPL", res.Ticker)
 }
 
@@ -161,9 +157,7 @@ func TestGetGroupedDaily(t *testing.T) {
 			Adjusted: &adjusted,
 		},
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 	assert.Equal(t, 1, res.QueryCount)
 }
 
@@ -202,8 +196,6 @@ func TestGetDailyOpenClose(t *testing.T) {
 			Adjusted: &adjusted,
 		},
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 	assert.Equal(t, "AAPL", res.Symbol)
 }
