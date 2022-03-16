@@ -20,5 +20,5 @@ jobs:
     steps:
       - uses: actions/setup-go@v2
       - uses: actions/checkout@v2
-      # - name: go-test
-      #   run: go test -race -v ./...
+      - name: go-test
+        run: go test -race -v ./...
