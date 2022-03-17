@@ -48,7 +48,7 @@ func TestGet(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626926400000/1629604800000?adjusted=true&explain=false&limit=1&sort=desc",
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&explain=false&limit=1&sort=desc",
 		func(req *http.Request) (*http.Response, error) {
 			b, err := json.Marshal(expectedResponse)
 			assert.Nil(t, err)
@@ -62,8 +62,8 @@ func TestGet(t *testing.T) {
 		Ticker:     "AAPL",
 		Multiplier: 1,
 		Resolution: "day",
-		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local),
-		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.Local),
+		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC),
+		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC),
 		QueryParams: aggs.GetQueryParams{
 			Adjusted: polygon.Bool(true),
 			Sort:     polygon.AggsSort(aggs.Desc),
