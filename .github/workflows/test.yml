@@ -19,6 +19,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@v2
       - name: go-test
         run: go test -race -v ./...
