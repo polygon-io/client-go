@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	getPath               = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
+	getAggsPath           = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
 	getPreviousClosePath  = "/v2/aggs/ticker/{ticker}/prev"
 	getGroupedDailyPath   = "/v2/aggs/grouped/locale/{locale}/market/{marketType}/{date}"
 	getDailyOpenClosePath = "/v1/open-close/{ticker}/{date}"
@@ -19,11 +19,11 @@ type Client struct {
 	client.Client
 }
 
-// Get retrieves aggregate bars for a specified ticker over a given date range in custom time window sizes.
+// GetAggs retrieves aggregate bars for a specified ticker over a given date range in custom time window sizes.
 // For example, if timespan = ‘minute’ and multiplier = ‘5’ then 5-minute bars will be returned.
-func (ac *Client) Get(ctx context.Context, params GetParams, opts ...client.Option) (*AggsResponse, error) {
+func (ac *Client) GetAggs(ctx context.Context, params GetAggsParams, opts ...client.Option) (*AggsResponse, error) {
 	res := &AggsResponse{}
-	err := ac.Call(ctx, http.MethodGet, getPath, params, res, opts...)
+	err := ac.Call(ctx, http.MethodGet, getAggsPath, params, res, opts...)
 	return res, err
 }
 

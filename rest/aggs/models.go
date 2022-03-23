@@ -63,26 +63,26 @@ const (
 	Year    Resolution = "year"
 )
 
-// GetParams is the set of path and query parameters that can be used when requesting aggs through the Get method.
-type GetParams struct {
+// GetAggsParams is the set of path and query parameters that can be used when requesting aggs through the Get method.
+type GetAggsParams struct {
 	Ticker      string
 	Multiplier  int
 	Resolution  Resolution
 	From        time.Time
 	To          time.Time
-	QueryParams GetQueryParams
+	QueryParams GetAggsQueryParams
 }
 
-// GetQueryParams is the set of query parameters that can be used when requesting aggs through the Get method.
-type GetQueryParams struct {
+// GetAggsQueryParams is the set of query parameters that can be used when requesting aggs through the Get method.
+type GetAggsQueryParams struct {
 	Sort     *Sort
-	Limit    *int32
+	Limit    *int
 	Adjusted *bool
 	Explain  *bool
 }
 
 // Path maps the input Get parameters to their respective keys.
-func (p GetParams) Path() map[string]string {
+func (p GetAggsParams) Path() map[string]string {
 	return map[string]string{
 		"ticker":     p.Ticker,
 		"multiplier": fmt.Sprint(p.Multiplier),
@@ -93,7 +93,7 @@ func (p GetParams) Path() map[string]string {
 }
 
 // Query maps the input Get parameters to their respective keys.
-func (p GetParams) Query() map[string]string {
+func (p GetAggsParams) Query() map[string]string {
 	q := map[string]string{}
 
 	if p.QueryParams.Sort != nil {
@@ -144,6 +144,14 @@ func (p GetPreviousCloseParams) Query() map[string]string {
 	return q
 }
 
+// Locale is the market location used to query aggs using the GetGroupedDaily method.
+type Locale string
+
+const (
+	US     Locale = "us"
+	Global Locale = "global"
+)
+
 // MarketType is the type of market used to query aggs using the GetGroupedDaily method.
 type MarketType string
 
@@ -155,7 +163,7 @@ const (
 
 // GetGroupedDailyParams is the set of path and query parameters that can be used when requesting aggs through the GetGroupedDaily method.
 type GetGroupedDailyParams struct {
-	Locale      string
+	Locale      Locale
 	MarketType  MarketType
 	Date        time.Time
 	QueryParams GetGroupedDailyQueryParams
@@ -169,7 +177,7 @@ type GetGroupedDailyQueryParams struct {
 // Path maps the GetGroupedDaily path parameters to their respective keys.
 func (p GetGroupedDailyParams) Path() map[string]string {
 	return map[string]string{
-		"locale":     p.Locale,
+		"locale":     string(p.Locale),
 		"marketType": string(p.MarketType),
 		"date":       p.Date.Format("2006-01-02"),
 	}
