@@ -17,18 +17,3 @@ func New(apiKey string) *polygonClient {
 		Aggs: &aggs.Client{Client: c},
 	}
 }
-
-// Bool returns a pointer to a bool value.
-func Bool(v bool) *bool {
-	return &v
-}
-
-// Int returns a pointer to an int value.
-func Int(v int) *int {
-	return &v
-}
-
-// AggsSort returns a pointer to an aggs sort value.
-func AggsSort(v aggs.Sort) *aggs.Sort {
-	return &v
-}
