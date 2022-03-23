@@ -2,10 +2,18 @@ package models
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"time"
 
 	"github.com/polygon-io/client-go/rest/client"
+)
+
+const (
+	GetAggsPath           = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
+	GetPreviousClosePath  = "/v2/aggs/ticker/{ticker}/prev"
+	GetGroupedDailyPath   = "/v2/aggs/grouped/locale/{locale}/market/{marketType}/{date}"
+	GetDailyOpenClosePath = "/v1/open-close/{ticker}/{date}"
 )
 
 // Aggregate is an aggregation of all the activity on a specified ticker between the start and end timestamps.
@@ -71,23 +79,23 @@ func (p GetAggsParams) Path() map[string]string {
 }
 
 // Query maps the input Get parameters to their respective keys.
-func (p GetAggsParams) Query() map[string]string {
-	q := map[string]string{}
+func (p GetAggsParams) Query() url.Values {
+	q := url.Values{}
 
 	if p.QueryParams.Sort != nil {
-		q["sort"] = string(*p.QueryParams.Sort)
+		q.Set("sort", string(*p.QueryParams.Sort))
 	}
 
 	if p.QueryParams.Limit != nil {
-		q["limit"] = strconv.FormatInt(int64(*p.QueryParams.Limit), 10)
+		q.Set("limit", strconv.FormatInt(int64(*p.QueryParams.Limit), 10))
 	}
 
 	if p.QueryParams.Adjusted != nil {
-		q["adjusted"] = strconv.FormatBool(*p.QueryParams.Adjusted)
+		q.Set("adjusted", strconv.FormatBool(*p.QueryParams.Adjusted))
 	}
 
 	if p.QueryParams.Explain != nil {
-		q["explain"] = strconv.FormatBool(*p.QueryParams.Explain)
+		q.Set("explain", strconv.FormatBool(*p.QueryParams.Explain))
 	}
 
 	return q
@@ -112,11 +120,11 @@ func (p GetPreviousCloseParams) Path() map[string]string {
 }
 
 // Query maps the GetPreviousCloseParams query parameters to their respective keys.
-func (p GetPreviousCloseParams) Query() map[string]string {
-	q := map[string]string{}
+func (p GetPreviousCloseParams) Query() url.Values {
+	q := url.Values{}
 
 	if p.QueryParams.Adjusted != nil {
-		q["adjusted"] = strconv.FormatBool(*p.QueryParams.Adjusted)
+		q.Set("adjusted", strconv.FormatBool(*p.QueryParams.Adjusted))
 	}
 
 	return q
@@ -145,11 +153,11 @@ func (p GetGroupedDailyParams) Path() map[string]string {
 }
 
 // Query maps the GetGroupedDaily query parameters to their respective keys.
-func (p GetGroupedDailyParams) Query() map[string]string {
-	q := map[string]string{}
+func (p GetGroupedDailyParams) Query() url.Values {
+	q := url.Values{}
 
 	if p.QueryParams.Adjusted != nil {
-		q["adjusted"] = strconv.FormatBool(*p.QueryParams.Adjusted)
+		q.Set("adjusted", strconv.FormatBool(*p.QueryParams.Adjusted))
 	}
 
 	return q
@@ -192,11 +200,11 @@ func (p GetDailyOpenCloseParams) Path() map[string]string {
 }
 
 // Query maps the GetDailyOpenClose query parameters to their respective keys.
-func (p GetDailyOpenCloseParams) Query() map[string]string {
-	q := map[string]string{}
+func (p GetDailyOpenCloseParams) Query() url.Values {
+	q := url.Values{}
 
 	if p.QueryParams.Adjusted != nil {
-		q["adjusted"] = strconv.FormatBool(*p.QueryParams.Adjusted)
+		q.Set("adjusted", strconv.FormatBool(*p.QueryParams.Adjusted))
 	}
 
 	return q
