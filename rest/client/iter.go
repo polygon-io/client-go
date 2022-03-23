@@ -2,6 +2,8 @@ package client
 
 import "context"
 
+// todo: possibly move this to internal
+
 // Iter defines an iterator type that should be used when implementing list methods. It's intended to
 // be embedded in a domain specific iterator struct.
 type Iter struct {
