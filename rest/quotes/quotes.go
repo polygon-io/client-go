@@ -29,13 +29,13 @@ func (it *QuotesIter) Quote() *models.Quote {
 // ListQuotes retrieves quotes for a specified ticker. This method returns an iterator that should be used to
 // access the results via this pattern:
 //   iter := c.ListQuotes(context.TODO(), params, opts...)
-//	 for iter.Next() {
+//   for iter.Next() {
 //       // Do something with the current value
-//  	 log.Print(iter.Quote())
-//	 }
-//	 if iter.Err() != nil {
-//	 	return err
-//	 }
+//       log.Print(iter.Quote())
+//   }
+//   if iter.Err() != nil {
+//       return err
+//   }
 func (c *Client) ListQuotes(ctx context.Context, params models.ListQuotesParams, options ...client.Option) *QuotesIter {
 	return &QuotesIter{
 		Iter: client.GetIter(ctx, params.String(), func(url string) (client.ListResponse, []interface{}, error) {
