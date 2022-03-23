@@ -42,8 +42,8 @@ type ResourceIter struct {
 }
 
 func (it *ResourceIter) Resource() *Resource {
-	if it.Current() != nil {
-		return it.Current().(*Resource)
+	if it.Item() != nil {
+		return it.Item().(*Resource)
 	}
 	return nil
 }
@@ -204,9 +204,9 @@ func TestListResourceError(t *testing.T) {
 	assert.NotNil(t, iter.Err())
 	assert.Equal(t, expectedErr.Error(), iter.Err().Error())
 
-	// subsequent calls to iter.Next() should be false, current should be nil, page should be an empty response
+	// subsequent calls to iter.Next() should be false, item should be nil, page should be an empty response
 	assert.False(t, iter.Next())
-	assert.Nil(t, iter.Current())
+	assert.Nil(t, iter.Item())
 	assert.Equal(t, &ResourceResponse{}, iter.Page())
 }
 

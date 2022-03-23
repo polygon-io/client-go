@@ -20,8 +20,8 @@ type QuotesIter struct {
 
 // Quote returns the current result that the iterator points to.
 func (it *QuotesIter) Quote() *models.Quote {
-	if it.Current() != nil {
-		return it.Current().(*models.Quote)
+	if it.Item() != nil {
+		return it.Item().(*models.Quote)
 	}
 	return nil
 }

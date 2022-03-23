@@ -6,7 +6,7 @@ type Iter struct {
 	query Query
 
 	page    ListResponse
-	current interface{}
+	item    interface{}
 	results []interface{}
 
 	err error
@@ -33,7 +33,7 @@ func (it *Iter) Next() bool {
 	if it.err != nil || len(it.results) == 0 {
 		return false
 	}
-	it.current = it.results[0]
+	it.item = it.results[0]
 	it.results = it.results[1:]
 	return true
 }
@@ -43,9 +43,9 @@ func (it *Iter) Page() ListResponse {
 	return it.page
 }
 
-// Current returns the result that the iterator is currently pointing to.
-func (it *Iter) Current() interface{} {
-	return it.current
+// Item returns the result that the iterator is currently pointing to.
+func (it *Iter) Item() interface{} {
+	return it.item
 }
 
 // Err returns any errors that occur during iteration.
