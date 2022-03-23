@@ -9,12 +9,12 @@ import (
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/aggs"
 	"github.com/polygon-io/client-go/rest/client"
+	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 
-var expectedResponse = aggs.AggsResponse{
+var expectedResponse = models.AggsResponse{
 	Ticker: "AAPL",
 	BaseResponse: client.BaseResponse{
 		Status:       "OK",
@@ -26,7 +26,7 @@ var expectedResponse = aggs.AggsResponse{
 	QueryCount:   1,
 	ResultsCount: 1,
 	Adjusted:     true,
-	Aggs: []aggs.Aggregate{
+	Aggs: []models.Aggregate{
 		{
 			Volume:       77287356,
 			VWAP:         146.991,
@@ -56,17 +56,17 @@ func TestGetAggs(t *testing.T) {
 		},
 	)
 
-	res, err := c.Aggs.GetAggs(context.Background(), aggs.GetAggsParams{
+	res, err := c.Aggs.GetAggs(context.Background(), models.GetAggsParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
 		Resolution: "day",
 		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC),
 		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC),
-		QueryParams: aggs.GetAggsQueryParams{
-			Adjusted: polygon.Bool(true),
-			Sort:     polygon.AggsSort(aggs.Desc),
-			Limit:    polygon.Int(1),
-			Explain:  polygon.Bool(false),
+		QueryParams: models.GetAggsQueryParams{
+			Adjusted: models.Bool(true),
+			Sort:     models.SortOrder(models.Desc),
+			Limit:    models.Int(1),
+			Explain:  models.Bool(false),
 		},
 	})
 
@@ -90,10 +90,10 @@ func TestGetPreviousClose(t *testing.T) {
 		},
 	)
 
-	res, err := c.Aggs.GetPreviousClose(context.Background(), aggs.GetPreviousCloseParams{
+	res, err := c.Aggs.GetPreviousClose(context.Background(), models.GetPreviousCloseParams{
 		Ticker: "AAPL",
-		QueryParams: aggs.GetPreviousCloseQueryParams{
-			Adjusted: polygon.Bool(true),
+		QueryParams: models.GetPreviousCloseQueryParams{
+			Adjusted: models.Bool(true),
 		},
 	})
 
@@ -117,12 +117,12 @@ func TestGetGroupedDaily(t *testing.T) {
 		},
 	)
 
-	res, err := c.Aggs.GetGroupedDaily(context.Background(), aggs.GetGroupedDailyParams{
-		Locale:     aggs.US,
-		MarketType: aggs.Stocks,
+	res, err := c.Aggs.GetGroupedDaily(context.Background(), models.GetGroupedDailyParams{
+		Locale:     models.US,
+		MarketType: models.Stocks,
 		Date:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local),
-		QueryParams: aggs.GetGroupedDailyQueryParams{
-			Adjusted: polygon.Bool(true),
+		QueryParams: models.GetGroupedDailyQueryParams{
+			Adjusted: models.Bool(true),
 		},
 	})
 
@@ -140,7 +140,7 @@ func TestGetDailyOpenClose(t *testing.T) {
 		Status: "OK",
 	}
 
-	expectedResponse := aggs.DailyOpenCloseResponse{
+	expectedResponse := models.DailyOpenCloseResponse{
 		BaseResponse: expectedBaseResponse,
 		Symbol:       "AAPL",
 		From:         "2020-10-14",
@@ -163,11 +163,11 @@ func TestGetDailyOpenClose(t *testing.T) {
 		},
 	)
 
-	res, err := c.Aggs.GetDailyOpenClose(context.Background(), aggs.GetDailyOpenCloseParams{
+	res, err := c.Aggs.GetDailyOpenClose(context.Background(), models.GetDailyOpenCloseParams{
 		Ticker: "AAPL",
 		Date:   time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local),
-		QueryParams: aggs.GetDailyOpenCloseQueryParams{
-			Adjusted: polygon.Bool(true),
+		QueryParams: models.GetDailyOpenCloseQueryParams{
+			Adjusted: models.Bool(true),
 		},
 	})
 
