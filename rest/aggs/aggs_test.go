@@ -64,7 +64,7 @@ func TestGetAggs(t *testing.T) {
 		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC),
 		QueryParams: models.GetAggsQueryParams{
 			Adjusted: models.Bool(true),
-			Order:    models.SortOrder(models.Desc),
+			Sort:     models.SortOrder(models.Desc),
 			Limit:    models.Int(1),
 			Explain:  models.Bool(false),
 		},

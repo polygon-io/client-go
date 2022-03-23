@@ -53,7 +53,7 @@ type GetAggsParams struct {
 
 // GetAggsQueryParams is the set of query parameters that can be used when requesting aggs through the Get method.
 type GetAggsQueryParams struct {
-	Order    *Order
+	Sort     *Order
 	Limit    *int
 	Adjusted *bool
 	Explain  *bool
@@ -74,8 +74,8 @@ func (p GetAggsParams) Path() map[string]string {
 func (p GetAggsParams) Query() map[string]string {
 	q := map[string]string{}
 
-	if p.QueryParams.Order != nil {
-		q["sort"] = string(*p.QueryParams.Order)
+	if p.QueryParams.Sort != nil {
+		q["sort"] = string(*p.QueryParams.Sort)
 	}
 
 	if p.QueryParams.Limit != nil {
