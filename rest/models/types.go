@@ -39,7 +39,17 @@ const (
 	Desc Order = "desc"
 )
 
-// Ptr returns a pointer to a specified value.
-func Ptr[T any](v T) *T {
+// Bool returns a pointer to a bool value.
+func Bool(v bool) *bool {
+	return &v
+}
+
+// Int returns a pointer to an int value.
+func Int(v int) *int {
+	return &v
+}
+
+// Order returns a pointer to a sort order value.
+func SortOrder(v Order) *Order {
 	return &v
 }
