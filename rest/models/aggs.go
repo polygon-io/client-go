@@ -1,4 +1,4 @@
-package aggs
+package models
 
 import (
 	"fmt"
@@ -41,28 +41,6 @@ type AggsResponse struct {
 	Aggs         []Aggregate `json:"results,omitempty"`
 }
 
-// Sort the results by timestamp. asc will return results in ascending order (oldest at the top),
-// desc will return results in descending order (newest at the top).
-type Sort string
-
-const (
-	Asc  Sort = "asc"
-	Desc Sort = "desc"
-)
-
-// Resolution is the size of the time window.
-type Resolution string
-
-const (
-	Minute  Resolution = "minute"
-	Hour    Resolution = "hour"
-	Day     Resolution = "day"
-	Week    Resolution = "week"
-	Month   Resolution = "month"
-	Quarter Resolution = "quarter"
-	Year    Resolution = "year"
-)
-
 // GetAggsParams is the set of path and query parameters that can be used when requesting aggs through the Get method.
 type GetAggsParams struct {
 	Ticker      string
@@ -75,7 +53,7 @@ type GetAggsParams struct {
 
 // GetAggsQueryParams is the set of query parameters that can be used when requesting aggs through the Get method.
 type GetAggsQueryParams struct {
-	Sort     *Sort
+	Order    *Order
 	Limit    *int
 	Adjusted *bool
 	Explain  *bool
@@ -96,8 +74,8 @@ func (p GetAggsParams) Path() map[string]string {
 func (p GetAggsParams) Query() map[string]string {
 	q := map[string]string{}
 
-	if p.QueryParams.Sort != nil {
-		q["sort"] = string(*p.QueryParams.Sort)
+	if p.QueryParams.Order != nil {
+		q["sort"] = string(*p.QueryParams.Order)
 	}
 
 	if p.QueryParams.Limit != nil {
@@ -143,23 +121,6 @@ func (p GetPreviousCloseParams) Query() map[string]string {
 
 	return q
 }
-
-// Locale is the market location used to query aggs using the GetGroupedDaily method.
-type Locale string
-
-const (
-	US     Locale = "us"
-	Global Locale = "global"
-)
-
-// MarketType is the type of market used to query aggs using the GetGroupedDaily method.
-type MarketType string
-
-const (
-	Stocks MarketType = "stocks"
-	Forex  MarketType = "forex"
-	Crypto MarketType = "crypto"
-)
 
 // GetGroupedDailyParams is the set of path and query parameters that can be used when requesting aggs through the GetGroupedDaily method.
 type GetGroupedDailyParams struct {
