@@ -12,8 +12,6 @@ import (
 const (
 	APIURL            = "https://api.polygon.io"
 	DefaultRetryCount = 3
-
-	HeaderRequestID = "X-Request-ID"
 )
 
 // Params defines an interface that path parameter and query parameter types must implement.
