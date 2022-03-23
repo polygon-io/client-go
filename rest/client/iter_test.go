@@ -38,19 +38,12 @@ func (c *Client) ListResource(ctx context.Context, params ListResourceParams, op
 }
 
 type ResourceIter struct {
-	*client.Iter
+	client.Iter
 }
 
 func (it *ResourceIter) Resource() *Resource {
 	if it.Item() != nil {
 		return it.Item().(*Resource)
-	}
-	return nil
-}
-
-func (it *ResourceIter) ResourceList() *ResourceResponse {
-	if it.Page() != nil {
-		return it.Page().(*ResourceResponse)
 	}
 	return nil
 }
@@ -153,7 +146,6 @@ func TestListResource(t *testing.T) {
 
 	// verify the first page
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, &expectedRes1, iter.Page())
 	assert.Nil(t, iter.Resource())
 	// verify the first and second quotes
 	assert.True(t, iter.Next())
@@ -167,7 +159,6 @@ func TestListResource(t *testing.T) {
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
 	// verify the third quote
-	assert.Equal(t, &expectedRes2, iter.ResourceList())
 	assert.Equal(t, &resource3, iter.Resource())
 
 	// verify the third page (end of list)
@@ -207,7 +198,6 @@ func TestListResourceError(t *testing.T) {
 	// subsequent calls to iter.Next() should be false, item should be nil, page should be an empty response
 	assert.False(t, iter.Next())
 	assert.Nil(t, iter.Item())
-	assert.Equal(t, &ResourceResponse{}, iter.Page())
 }
 
 func ReqHandler(code int, res ResourceResponse) func(req *http.Request) (*http.Response, error) {

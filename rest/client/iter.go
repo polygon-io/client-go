@@ -22,8 +22,8 @@ type Query func(string) (ListResponse, []interface{}, error)
 // GetIter returns a new initialized iterator. This method automatically makes the first query to
 // populate the results. List methods should use this helper method when building domain specific
 // iterators.
-func GetIter(ctx context.Context, url string, query Query) *Iter {
-	it := &Iter{
+func GetIter(ctx context.Context, url string, query Query) Iter {
+	it := Iter{
 		ctx:   ctx,
 		query: query,
 	}
@@ -49,11 +49,6 @@ func (it *Iter) Next() bool {
 	it.item = it.results[0]
 	it.results = it.results[1:]
 	return true
-}
-
-// Page returns the current results page in the form of an API response.
-func (it *Iter) Page() ListResponse {
-	return it.page
 }
 
 // Item returns the result that the iterator is currently pointing to.

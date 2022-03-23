@@ -15,21 +15,13 @@ type Client struct {
 
 // QuotesIter defines a domain specific iterator for the quotes API.
 type QuotesIter struct {
-	*client.Iter
+	client.Iter
 }
 
 // Quote returns the current result that the iterator points to.
 func (it *QuotesIter) Quote() *models.Quote {
 	if it.Item() != nil {
 		return it.Item().(*models.Quote)
-	}
-	return nil
-}
-
-// QuotesList returns the current page of results.
-func (it *QuotesIter) QuotesList() *models.QuotesResponse {
-	if it.Page() != nil {
-		return it.Page().(*models.QuotesResponse)
 	}
 	return nil
 }

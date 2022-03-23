@@ -75,7 +75,6 @@ func TestListQuotes(t *testing.T) {
 
 	// verify the first page
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, &expectedResponse, iter.Page())
 	assert.Nil(t, iter.Quote())
 	// verify the first and second quotes
 	assert.True(t, iter.Next())
@@ -89,7 +88,6 @@ func TestListQuotes(t *testing.T) {
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
 	// verify the third quote
-	assert.Equal(t, &expectedNextResponse, iter.QuotesList())
 	assert.Equal(t, &quote3, iter.Quote())
 
 	// verify the end of the list
