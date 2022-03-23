@@ -14,35 +14,33 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var expectedAggregate = aggs.Aggregate{
-	Volume:       77287356,
-	VWAP:         146.991,
-	Open:         145.935,
-	Close:        146.8,
-	High:         148.195,
-	Low:          145.81,
-	Timestamp:    1626926400000,
-	Transactions: 480209,
-}
-
-var expectedBaseResponse = client.BaseResponse{
-	Status:       "OK",
-	RequestID:    "cffb2db04ed53d1fdf2547f15c1ca14e",
-	Count:        1,
-	Message:      "",
-	ErrorMessage: "",
-}
-
 var expectedResponse = aggs.AggsResponse{
-	Ticker:       "AAPL",
-	BaseResponse: expectedBaseResponse,
+	Ticker: "AAPL",
+	BaseResponse: client.BaseResponse{
+		Status:       "OK",
+		RequestID:    "cffb2db04ed53d1fdf2547f15c1ca14e",
+		Count:        1,
+		Message:      "",
+		ErrorMessage: "",
+	},
 	QueryCount:   1,
 	ResultsCount: 1,
 	Adjusted:     true,
-	Aggs:         []aggs.Aggregate{expectedAggregate},
+	Aggs: []aggs.Aggregate{
+		{
+			Volume:       77287356,
+			VWAP:         146.991,
+			Open:         145.935,
+			Close:        146.8,
+			High:         148.195,
+			Low:          145.81,
+			Timestamp:    1626926400000,
+			Transactions: 480209,
+		},
+	},
 }
 
-func TestGet(t *testing.T) {
+func TestGetAggs(t *testing.T) {
 	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
@@ -58,16 +56,16 @@ func TestGet(t *testing.T) {
 		},
 	)
 
-	res, err := c.Aggs.Get(context.Background(), aggs.GetParams{
+	res, err := c.Aggs.GetAggs(context.Background(), aggs.GetAggsParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
 		Resolution: "day",
 		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC),
 		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC),
-		QueryParams: aggs.GetQueryParams{
+		QueryParams: aggs.GetAggsQueryParams{
 			Adjusted: polygon.Bool(true),
 			Sort:     polygon.AggsSort(aggs.Desc),
-			Limit:    polygon.Int32(1),
+			Limit:    polygon.Int(1),
 			Explain:  polygon.Bool(false),
 		},
 	})
@@ -120,8 +118,8 @@ func TestGetGroupedDaily(t *testing.T) {
 	)
 
 	res, err := c.Aggs.GetGroupedDaily(context.Background(), aggs.GetGroupedDailyParams{
-		Locale:     "us",
-		MarketType: "stocks",
+		Locale:     aggs.US,
+		MarketType: aggs.Stocks,
 		Date:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local),
 		QueryParams: aggs.GetGroupedDailyQueryParams{
 			Adjusted: polygon.Bool(true),

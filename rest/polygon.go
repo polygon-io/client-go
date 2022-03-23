@@ -23,8 +23,8 @@ func Bool(v bool) *bool {
 	return &v
 }
 
-// Int32 returns a pointer to an int32 value.
-func Int32(v int32) *int32 {
+// Int returns a pointer to an int value.
+func Int(v int) *int {
 	return &v
 }
 
