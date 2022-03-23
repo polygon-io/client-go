@@ -30,6 +30,13 @@ const (
 	Year    Resolution = "year"
 )
 
+// Sort is a query param type that specifies how the results should be sorted.
+type Sort string
+
+const (
+	Timestamp Sort = "timestamp"
+)
+
 // Order the results. asc will return results in ascending order (oldest at the top),
 // desc will return results in descending order (newest at the top).
 type Order string
@@ -38,6 +45,8 @@ const (
 	Asc  Order = "asc"
 	Desc Order = "desc"
 )
+
+// todo: replace these with a single generic method once the linter supports it
 
 // Bool returns a pointer to a bool value.
 func Bool(v bool) *bool {
@@ -49,7 +58,17 @@ func Int(v int) *int {
 	return &v
 }
 
-// Order returns a pointer to a sort order value.
-func SortOrder(v Order) *Order {
+// String returns a pointer to a string value.
+func String(v string) *string {
+	return &v
+}
+
+// OrderBy returns a pointer to an order value.
+func OrderBy(v Order) *Order {
+	return &v
+}
+
+// SortOn returns a pointer to a sort value.
+func SortOn(v Sort) *Sort {
 	return &v
 }
