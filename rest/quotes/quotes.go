@@ -46,7 +46,7 @@ func (it *QuotesIter) QuotesList() *models.QuotesResponse {
 //	 }
 func (c *Client) ListQuotes(ctx context.Context, params models.ListQuotesParams, options ...client.Option) *QuotesIter {
 	return &QuotesIter{
-		Iter: client.GetIter(params.String(), func(url string) (client.ListResponse, []interface{}, error) {
+		Iter: client.GetIter(ctx, params.String(), func(url string) (client.ListResponse, []interface{}, error) {
 			res := &models.QuotesResponse{}
 			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
 

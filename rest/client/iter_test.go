@@ -23,7 +23,7 @@ type Client struct {
 
 func (c *Client) ListResource(ctx context.Context, params ListResourceParams, options ...client.Option) *ResourceIter {
 	return &ResourceIter{
-		Iter: client.GetIter(params.String(), func(url string) (client.ListResponse, []interface{}, error) {
+		Iter: client.GetIter(ctx, params.String(), func(url string) (client.ListResponse, []interface{}, error) {
 			res := &ResourceResponse{}
 			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
 
