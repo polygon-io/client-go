@@ -30,7 +30,7 @@ func (it *QuotesIter) Quote() *models.Quote {
 // access the results via this pattern:
 //   iter := c.ListQuotes(context.TODO(), params, opts...)
 //	 for iter.Next() {
-//		 // Do something with the current value
+//       // Do something with the current value
 //  	 log.Print(iter.Quote())
 //	 }
 //	 if iter.Err() != nil {
