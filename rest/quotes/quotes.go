@@ -51,3 +51,10 @@ func (c *Client) ListQuotes(ctx context.Context, params models.ListQuotesParams,
 		}),
 	}
 }
+
+// GetLastQuote retrieves the last quote (NBBO) of a specific symbol on a certain date.
+func (c *Client) GetLastQuote(ctx context.Context, params models.GetLastQuoteParams, options ...client.Option) (*models.LastQuoteResponse, error) {
+	res := &models.LastQuoteResponse{}
+	err := c.Call(ctx, http.MethodGet, models.GetLastQuotePath, params, res, options...)
+	return res, err
+}
