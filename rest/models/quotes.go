@@ -10,7 +10,7 @@ import (
 
 const (
 	ListQuotesPath   = "/v3/quotes/{ticker}"
-	GetLastQuotePath = "/v2/last/nbbo/{stocksTicker}"
+	GetLastQuotePath = "/v2/last/nbbo/{ticker}"
 )
 
 // Quote is an NBBO for a ticker symbol in a given time range.

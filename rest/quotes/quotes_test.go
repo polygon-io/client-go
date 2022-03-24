@@ -111,7 +111,7 @@ func TestGetLastQuote(t *testing.T) {
 		Results: &lastQuote,
 	}
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io//v2/last/nbbo/AAPL",
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/last/nbbo/AAPL",
 		func(req *http.Request) (*http.Response, error) {
 			b, err := json.Marshal(expectedResponse)
 			assert.Nil(t, err)
