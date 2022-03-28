@@ -127,3 +127,41 @@ func TestGetLastQuote(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, &expectedResponse, res)
 }
+
+func TestGetLastQuoteCurrencyPair(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := models.LastForexQuoteResponse{
+		BaseResponse: client.BaseResponse{
+			Status:    "OK",
+			RequestID: "req1",
+		},
+		Last: models.ForexQuote{
+			Ask:       1.23,
+			Bid:       1.24,
+			Exchange:  5,
+			Timestamp: 1626912000000000000,
+		},
+	}
+
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v1/last_quote/currencies/USD/GBP",
+		func(req *http.Request) (*http.Response, error) {
+			b, err := json.Marshal(expectedResponse)
+			assert.Nil(t, err)
+			resp := httpmock.NewStringResponse(200, string(b))
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	res, err := c.Quotes.GetLastForexQuote(context.Background(), models.LastForexQuoteParams{
+		From: "USD",
+		To:   "GBP",
+	})
+
+	assert.Nil(t, err)
+	assert.Equal(t, &expectedResponse, res)
+}
