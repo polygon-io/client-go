@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	ListQuotesPath = "/v3/quotes/{ticker}"
+	ListQuotesPath   = "/v3/quotes/{ticker}"
+	GetLastQuotePath = "/v2/last/nbbo/{ticker}"
 )
 
 // Quote is an NBBO for a ticker symbol in a given time range.
@@ -76,15 +77,19 @@ func (p ListQuotesParams) Query() url.Values {
 	if p.QueryParams.TimestampEQ != nil {
 		q.Set("timestamp", *p.QueryParams.TimestampEQ)
 	}
+
 	if p.QueryParams.TimestampLT != nil {
 		q.Set("timestamp.lt", *p.QueryParams.TimestampLT)
 	}
+
 	if p.QueryParams.TimestampLTE != nil {
 		q.Set("timestamp.lte", *p.QueryParams.TimestampLTE)
 	}
+
 	if p.QueryParams.TimestampGT != nil {
 		q.Set("timestamp.gt", *p.QueryParams.TimestampGT)
 	}
+
 	if p.QueryParams.TimestampGTE != nil {
 		q.Set("timestamp.gte", *p.QueryParams.TimestampGTE)
 	}
@@ -104,6 +109,7 @@ func (p ListQuotesParams) Query() url.Values {
 	if p.QueryParams.AfterPrimary != nil {
 		q.Set("ap", *p.QueryParams.AfterPrimary)
 	}
+
 	if p.QueryParams.AfterSecondary != nil {
 		q.Set("as", *p.QueryParams.AfterSecondary)
 	}
@@ -125,4 +131,47 @@ func (p ListQuotesParams) String() string {
 	}
 
 	return path
+}
+
+// LastQuote is the most recent NBBO for a ticker symbol.
+// For more details see https://polygon.io/docs/stocks/get_v2_last_nbbo__stocksticker.
+type LastQuote struct {
+	Ticker               string  `json:"T,omitempty"`
+	AskExchange          int     `json:"X,omitempty"`
+	AskPrice             float64 `json:"P,omitempty"`
+	AskSize              float64 `json:"S,omitempty"`
+	BidExchange          int     `json:"x,omitempty"`
+	BidPrice             float64 `json:"p,omitempty"`
+	BidSize              float64 `json:"s,omitempty"`
+	Conditions           []int32 `json:"c,omitempty"`
+	Indicators           []int32 `json:"i,omitempty"`
+	ParticipantTimestamp int64   `json:"y,omitempty"`
+	SequenceNumber       int64   `json:"q,omitempty"`
+	SipTimestamp         int64   `json:"t,omitempty"`
+	Tape                 int32   `json:"z,omitempty"`
+	TrfTimestamp         int64   `json:"f,omitempty"`
+}
+
+// LastQuoteResponse contains the most recent quote (NBBO) for a specified ticker.
+type LastQuoteResponse struct {
+	client.BaseResponse
+	Results LastQuote `json:"results,omitempty"`
+}
+
+// GetLastQuoteParams is the set of path and query parameters for retrieving the most recent quote (NBBO) for a specified ticker.
+type GetLastQuoteParams struct {
+	Ticker string
+}
+
+// Path maps the path parameters to their respective keys.
+func (p GetLastQuoteParams) Path() map[string]string {
+	return map[string]string{
+		"ticker": p.Ticker,
+	}
+}
+
+// Query maps the query parameters to their respective keys.
+func (p GetLastQuoteParams) Query() url.Values {
+	q := url.Values{}
+	return q
 }

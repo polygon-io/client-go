@@ -94,3 +94,36 @@ func TestListQuotes(t *testing.T) {
 	assert.False(t, iter.Next())
 	assert.Nil(t, iter.Err())
 }
+
+func TestGetLastQuote(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := models.LastQuoteResponse{
+		BaseResponse: client.BaseResponse{
+			Status:    "OK",
+			RequestID: "req1",
+			Count:     1,
+		},
+		Results: models.LastQuote{AskPrice: 1.23},
+	}
+
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/last/nbbo/AAPL",
+		func(req *http.Request) (*http.Response, error) {
+			b, err := json.Marshal(expectedResponse)
+			assert.Nil(t, err)
+			resp := httpmock.NewStringResponse(200, string(b))
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	res, err := c.Quotes.GetLastQuote(context.Background(), models.GetLastQuoteParams{
+		Ticker: "AAPL",
+	})
+
+	assert.Nil(t, err)
+	assert.Equal(t, &expectedResponse, res)
+}
