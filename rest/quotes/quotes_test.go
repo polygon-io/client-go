@@ -66,10 +66,10 @@ func TestListQuotes(t *testing.T) {
 	iter := c.Quotes.ListQuotes(context.Background(), models.ListQuotesParams{
 		Ticker: "AAPL",
 		QueryParams: models.ListQuotesQueryParams{
-			TimestampLTE: models.String("1626912000000000000"),
-			Order:        models.OrderBy(models.Asc),
-			Limit:        models.Int(2),
-			Sort:         models.SortOn(models.Timestamp),
+			TimestampLTE: models.Ptr("1626912000000000000"),
+			Order:        models.Ptr(models.Asc),
+			Limit:        models.Ptr(2),
+			Sort:         models.Ptr(models.Timestamp),
 		},
 	})
 
