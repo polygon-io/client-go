@@ -1,9 +1,11 @@
 package models
 
 import (
+	"fmt"
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/polygon-io/client-go/rest/client"
 )
@@ -44,11 +46,11 @@ type ListQuotesParams struct {
 
 // ListQuotesQueryParams is the set of query parameters that can be used when requesting quotes via the ListQuotes method.
 type ListQuotesQueryParams struct {
-	TimestampEQ  *string // todo: make these time.Time instead of strings
-	TimestampLT  *string
-	TimestampLTE *string
-	TimestampGT  *string
-	TimestampGTE *string
+	TimestampEQ  *time.Time
+	TimestampLT  *time.Time
+	TimestampLTE *time.Time
+	TimestampGT  *time.Time
+	TimestampGTE *time.Time
 
 	Order *Order
 
@@ -74,19 +76,23 @@ func (p ListQuotesParams) Query() url.Values {
 	q := url.Values{}
 
 	if p.QueryParams.TimestampEQ != nil {
-		q.Set("timestamp", *p.QueryParams.TimestampEQ)
+		q.Set("timestamp", fmt.Sprint(p.QueryParams.TimestampEQ.UnixNano()))
 	}
+
 	if p.QueryParams.TimestampLT != nil {
-		q.Set("timestamp.lt", *p.QueryParams.TimestampLT)
+		q.Set("timestamp.lt", fmt.Sprint(p.QueryParams.TimestampLT.UnixNano()))
 	}
+
 	if p.QueryParams.TimestampLTE != nil {
-		q.Set("timestamp.lte", *p.QueryParams.TimestampLTE)
+		q.Set("timestamp.lte", fmt.Sprint(p.QueryParams.TimestampLTE.UnixNano()))
 	}
+
 	if p.QueryParams.TimestampGT != nil {
-		q.Set("timestamp.gt", *p.QueryParams.TimestampGT)
+		q.Set("timestamp.gt", fmt.Sprint(p.QueryParams.TimestampGT.UnixNano()))
 	}
+
 	if p.QueryParams.TimestampGTE != nil {
-		q.Set("timestamp.gte", *p.QueryParams.TimestampGTE)
+		q.Set("timestamp.gte", fmt.Sprint(p.QueryParams.TimestampGTE.UnixNano()))
 	}
 
 	if p.QueryParams.Order != nil {
@@ -104,6 +110,7 @@ func (p ListQuotesParams) Query() url.Values {
 	if p.QueryParams.AfterPrimary != nil {
 		q.Set("ap", *p.QueryParams.AfterPrimary)
 	}
+
 	if p.QueryParams.AfterSecondary != nil {
 		q.Set("as", *p.QueryParams.AfterSecondary)
 	}
