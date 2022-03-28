@@ -101,14 +101,13 @@ func TestGetLastQuote(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	lastQuote := models.LastQuote{AskPrice: 1.23}
 	expectedResponse := models.LastQuoteResponse{
 		BaseResponse: client.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 			Count:     1,
 		},
-		Results: &lastQuote,
+		Results: models.LastQuote{AskPrice: 1.23},
 	}
 
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/last/nbbo/AAPL",
@@ -125,9 +124,6 @@ func TestGetLastQuote(t *testing.T) {
 		Ticker: "AAPL",
 	})
 
-	// verify no error
 	assert.Nil(t, err)
-
-	// verify we got the right thing
-	assert.Equal(t, lastQuote, *res.Results)
+	assert.Equal(t, &expectedResponse, res)
 }

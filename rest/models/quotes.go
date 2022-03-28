@@ -152,32 +152,26 @@ type LastQuote struct {
 	TrfTimestamp         int64   `json:"f,omitempty"`
 }
 
-// LastQuotesResponse is returned by the list quotes API and contains a list of quotes for the specified ticker.
+// LastQuoteResponse contains the most recent quote (NBBO) for a specified ticker.
 type LastQuoteResponse struct {
 	client.BaseResponse
-	Results *LastQuote `json:"results,omitempty"`
+	Results LastQuote `json:"results,omitempty"`
 }
 
-// ListQuotesParams is the set of path and query parameters that are used when requesting quotes via the ListQuotes method.
+// GetLastQuoteParams is the set of path and query parameters for retrieving the most recent quote (NBBO) for a specified ticker.
 type GetLastQuoteParams struct {
 	Ticker string
 }
 
-// Query maps the ListQuotes query parameters to their respective keys.
-func (p GetLastQuoteParams) Query() url.Values {
-	q := url.Values{}
-	return q
-}
-
-// Path maps the ListQuotes path parameters to their respective keys.
+// Path maps the path parameters to their respective keys.
 func (p GetLastQuoteParams) Path() map[string]string {
 	return map[string]string{
 		"ticker": p.Ticker,
 	}
 }
 
-// String returns a URL string that includes any path and query parameters that are set.
-func (p GetLastQuoteParams) String() string {
-	path := strings.ReplaceAll(GetLastQuotePath, "{ticker}", url.PathEscape(p.Ticker))
-	return path
+// Query maps the query parameters to their respective keys.
+func (p GetLastQuoteParams) Query() url.Values {
+	q := url.Values{}
+	return q
 }
