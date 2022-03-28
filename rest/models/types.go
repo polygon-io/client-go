@@ -46,29 +46,7 @@ const (
 	Desc Order = "desc"
 )
 
-// todo: replace these with a single generic method once the linter supports it
-
-// Bool returns a pointer to a bool value.
-func Bool(v bool) *bool {
-	return &v
-}
-
-// Int returns a pointer to an int value.
-func Int(v int) *int {
-	return &v
-}
-
-// String returns a pointer to a string value.
-func String(v string) *string {
-	return &v
-}
-
-// OrderBy returns a pointer to an order value.
-func OrderBy(v Order) *Order {
-	return &v
-}
-
-// SortOn returns a pointer to a sort value.
-func SortOn(v Sort) *Sort {
+// Ptr returns a pointer to any value.
+func Ptr[T any](v T) *T {
 	return &v
 }
