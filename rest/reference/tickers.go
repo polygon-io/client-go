@@ -50,3 +50,10 @@ func (c *Client) ListTickers(ctx context.Context, params models.ListTickersParam
 		}),
 	}
 }
+
+// GetTickerDetails retrieves details for a specified ticker.
+func (c *Client) GetTickerDetails(ctx context.Context, params models.GetTickerDetailsParams, options ...client.Option) (*models.TickersResponse, error) {
+	res := &models.TickersResponse{}
+	err := c.Call(ctx, http.MethodGet, models.GetTickerDetailsPath, params, res, options...)
+	return res, err
+}

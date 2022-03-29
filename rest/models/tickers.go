@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	ListTickersPath = "/v3/reference/tickers"
+	ListTickersPath      = "/v3/reference/tickers"
+	GetTickerDetailsPath = "/v3/reference/tickers/{ticker}"
 )
 
 // TickerDetails contains detailed information on a specified ticker symbol.
@@ -201,4 +202,33 @@ func (p ListTickersParams) String() string {
 	}
 
 	return path
+}
+
+// GetTickerDetailsParams is the set of path and query parameters that are used to request reference ticker details.
+type GetTickerDetailsParams struct {
+	Ticker      string
+	QueryParams GetTickerDetailsQueryParams
+}
+
+// GetTickerDetailsQueryParams is the set of query parameters for requesting reference ticker details.
+type GetTickerDetailsQueryParams struct {
+	Date *time.Time
+}
+
+// Path maps the path parameters to their respective keys.
+func (p GetTickerDetailsParams) Path() map[string]string {
+	return map[string]string{
+		"ticker": p.Ticker,
+	}
+}
+
+// Query maps the query parameters to their respective keys.
+func (p GetTickerDetailsParams) Query() url.Values {
+	q := url.Values{}
+
+	if p.QueryParams.Date != nil {
+		q.Set("date", p.QueryParams.Date.Format("2006-01-02"))
+	}
+
+	return q
 }

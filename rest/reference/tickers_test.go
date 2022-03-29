@@ -93,3 +93,40 @@ func TestListTickers(t *testing.T) {
 	assert.False(t, iter.Next())
 	assert.Nil(t, iter.Err())
 }
+
+func TestGetTickerDetails(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	ticker1 := models.TickerDetails{Ticker: "A", Name: "Agilent Technologies Inc."}
+	expectedResponse := models.TickersResponse{
+		BaseResponse: client.BaseResponse{
+			Status:    "OK",
+			RequestID: "req1",
+			Count:     1,
+		},
+		Results: []*models.TickerDetails{&ticker1},
+	}
+
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/reference/tickers/A?date=2021-07-22",
+		func(req *http.Request) (*http.Response, error) {
+			b, err := json.Marshal(expectedResponse)
+			assert.Nil(t, err)
+			resp := httpmock.NewStringResponse(200, string(b))
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	res, err := c.Reference.GetTickerDetails(context.Background(), models.GetTickerDetailsParams{
+		Ticker: "A",
+		QueryParams: models.GetTickerDetailsQueryParams{
+			Date: models.Ptr(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
+		},
+	})
+
+	assert.Nil(t, err)
+	assert.Equal(t, &expectedResponse, res)
+}
