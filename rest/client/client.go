@@ -104,8 +104,7 @@ type BaseResponse struct {
 // PaginationHooks are links to next and/or previous pages. Embed this struct into an API response if
 // the endpoint supports pagination.
 type PaginationHooks struct {
-	NextURL     string `json:"next_url,omitempty"`
-	PreviousURL string `json:"previous_url,omitempty"`
+	NextURL string `json:"next_url,omitempty"`
 }
 
 func (p PaginationHooks) NextPageURL() string {
