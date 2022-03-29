@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	ListQuotesPath   = "/v3/quotes/{ticker}"
-	GetLastQuotePath = "/v2/last/nbbo/{ticker}"
+	ListQuotesPath        = "/v3/quotes/{ticker}"
+	GetLastQuotePath      = "/v2/last/nbbo/{ticker}"
+	GetLastForexQuotePath = "/v1/last_quote/currencies/{from}/{to}"
 )
 
 // Quote is an NBBO for a ticker symbol in a given time range.
@@ -172,6 +173,40 @@ func (p GetLastQuoteParams) Path() map[string]string {
 
 // Query maps the query parameters to their respective keys.
 func (p GetLastQuoteParams) Query() url.Values {
+	q := url.Values{}
+	return q
+}
+
+// ForexQuote is a BBO for a forex currency pair.
+type ForexQuote struct {
+	Ask       float64 `json:"ask,omitempty"`
+	Bid       float64 `json:"bid,omitempty"`
+	Exchange  int     `json:"exchange,omitempty"`
+	Timestamp int64   `json:"timestamp,omitempty"`
+}
+
+// LastForexQuoteResponse contains the most recent quote (BBO) for a forex currency pair.
+type LastForexQuoteResponse struct {
+	client.BaseResponse
+	Last ForexQuote `json:"last,omitempty"`
+}
+
+// LastForexQuoteParams is the set of path and query parameters for retrieving the most recent quote (BBO) for a forex currency pair.
+type LastForexQuoteParams struct {
+	From string
+	To   string
+}
+
+// Path maps the path parameters to their respective keys.
+func (p LastForexQuoteParams) Path() map[string]string {
+	return map[string]string{
+		"from": p.From,
+		"to":   p.To,
+	}
+}
+
+// Query maps the query parameters to their respective keys.
+func (p LastForexQuoteParams) Query() url.Values {
 	q := url.Values{}
 	return q
 }

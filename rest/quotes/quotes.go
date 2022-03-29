@@ -52,9 +52,16 @@ func (c *Client) ListQuotes(ctx context.Context, params models.ListQuotesParams,
 	}
 }
 
-// GetLastQuote retrieves the last quote (NBBO) of a specific symbol on a certain date.
+// GetLastQuote retrieves the last quote (NBBO) for a specified ticker.
 func (c *Client) GetLastQuote(ctx context.Context, params models.GetLastQuoteParams, options ...client.Option) (*models.LastQuoteResponse, error) {
 	res := &models.LastQuoteResponse{}
 	err := c.Call(ctx, http.MethodGet, models.GetLastQuotePath, params, res, options...)
+	return res, err
+}
+
+// GetLastForexQuote retrieves the last quote (BBO) for a forex currency pair.
+func (c *Client) GetLastForexQuote(ctx context.Context, params models.LastForexQuoteParams, options ...client.Option) (*models.LastForexQuoteResponse, error) {
+	res := &models.LastForexQuoteResponse{}
+	err := c.Call(ctx, http.MethodGet, models.GetLastForexQuotePath, params, res, options...)
 	return res, err
 }
