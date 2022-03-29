@@ -132,7 +132,7 @@ func (p GetPreviousCloseParams) Query() url.Values {
 
 // GetGroupedDailyParams is the set of path and query parameters that can be used when requesting aggs through the GetGroupedDaily method.
 type GetGroupedDailyParams struct {
-	Locale      Locale
+	Locale      MarketLocale
 	MarketType  MarketType
 	Date        time.Time
 	QueryParams GetGroupedDailyQueryParams

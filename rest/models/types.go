@@ -15,11 +15,11 @@ const (
 )
 
 // Locale is the market location.
-type Locale string
+type MarketLocale string
 
 const (
-	US     Locale = "us"
-	Global Locale = "global"
+	US     MarketLocale = "us"
+	Global MarketLocale = "global"
 )
 
 // Resolution is the size of the time window.
@@ -39,7 +39,22 @@ const (
 type Sort string
 
 const (
-	Timestamp Sort = "timestamp"
+	Ticker             Sort = "ticker"
+	Name               Sort = "name"
+	Market             Sort = "market"
+	Locale             Sort = "locale"
+	PrimaryExchange    Sort = "primary_exchange"
+	Type               Sort = "type"
+	CurrencySymbol     Sort = "currency_symbol"
+	CurrencyName       Sort = "currency_name"
+	BaseCurrencySymbol Sort = "base_currency_symbol"
+	BaseCurrencyName   Sort = "base_currency_name"
+	CIK                Sort = "cik"
+	CompositeFIGI      Sort = "composite_figi"
+	ShareClassFIGI     Sort = "share_class_figi"
+	LastUpdatedUTC     Sort = "last_updated_utc"
+	DelistedUTC        Sort = "delisted_utc"
+	Timestamp          Sort = "timestamp"
 )
 
 // Order the results. asc will return results in ascending order (oldest at the top),
