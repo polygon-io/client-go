@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
@@ -66,7 +67,7 @@ func TestListQuotes(t *testing.T) {
 	iter := c.Quotes.ListQuotes(context.Background(), models.ListQuotesParams{
 		Ticker: "AAPL",
 		QueryParams: models.ListQuotesQueryParams{
-			TimestampLTE: models.Ptr("1626912000000000000"),
+			TimestampLTE: models.Ptr(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
 			Order:        models.Ptr(models.Asc),
 			Limit:        models.Ptr(2),
 			Sort:         models.Ptr(models.Timestamp),
