@@ -11,7 +11,9 @@ import (
 )
 
 const (
-	ListTradesPath = "/v3/trades/{ticker}"
+	ListTradesPath         = "/v3/trades/{ticker}"
+	GetLastTradePath       = "/v2/last/trade/{ticker}"
+	GetLastCryptoTradePath = "/v1/last/crypto/{from}/{to}"
 )
 
 type Trade struct {
@@ -128,4 +130,82 @@ func (p ListTradesParams) String() string {
 	}
 
 	return path
+}
+
+// LastTrade is the most recent trade for a specified ticker.
+// For more details see https://polygon.io/docs/stocks/get_v2_last_trade__stocksticker.
+type LastTrade struct {
+	Ticker               string  `json:"T,omitempty"`
+	TRFTimestamp         int64   `json:"f,omitempty"`
+	SequenceNumber       int64   `json:"q"`
+	Timestamp            int64   `json:"t"`
+	ParticipantTimestamp int64   `json:"y,omitempty"`
+	Conditions           []int32 `json:"c,omitempty"`
+	Correction           uint32  `json:"e,omitempty"`
+	ID                   string  `json:"i"`
+	Price                float64 `json:"p"`
+	TRF                  int32   `json:"r,omitempty"`
+	Size                 uint32  `json:"s"`
+	Exchange             int32   `json:"x"`
+	Tape                 int32   `json:"z,omitempty"`
+}
+
+// LastTradeResponse contains the most recent trade for a specified ticker.
+type LastTradeResponse struct {
+	client.BaseResponse
+	Results LastTrade `json:"results,omitempty"`
+}
+
+// GetLastTradeParams is the set of path and query parameters for retrieving the most recent trade for a specified ticker.
+type GetLastTradeParams struct {
+	Ticker string
+}
+
+// Path maps the path parameters to their respective keys.
+func (p GetLastTradeParams) Path() map[string]string {
+	return map[string]string{
+		"ticker": p.Ticker,
+	}
+}
+
+// Query maps the query parameters to their respective keys.
+func (p GetLastTradeParams) Query() url.Values {
+	q := url.Values{}
+	return q
+}
+
+// CryptoTrade is a trade for a crypto pair.
+// For more details see https://polygon.io/docs/crypto/get_v1_last_crypto__from___to.
+type CryptoTrade struct {
+	Price      float64 `json:"price,omitempty"`
+	Size       float64 `json:"size,omitempty"`
+	Exchange   int     `json:"exchange,omitempty"`
+	Conditions []int   `json:"conditions,omitempty"`
+	Timestamp  int64   `json:"timestamp,omitempty"`
+}
+
+// LastCryptoTradeResponse contains the most recent trade for a crypto pair.
+type LastCryptoTradeResponse struct {
+	client.BaseResponse
+	Last CryptoTrade `json:"last,omitempty"`
+}
+
+// LastCryptoTradeParams is the set of path and query parameters for retrieving the most recent trade for a crypto pair.
+type LastCryptoTradeParams struct {
+	From string
+	To   string
+}
+
+// Path maps the path parameters to their respective keys.
+func (p LastCryptoTradeParams) Path() map[string]string {
+	return map[string]string{
+		"from": p.From,
+		"to":   p.To,
+	}
+}
+
+// Query maps the query parameters to their respective keys.
+func (p LastCryptoTradeParams) Query() url.Values {
+	q := url.Values{}
+	return q
 }
