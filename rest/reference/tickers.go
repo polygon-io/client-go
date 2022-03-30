@@ -57,3 +57,10 @@ func (c *Client) GetTickerDetails(ctx context.Context, params models.GetTickerDe
 	err := c.Call(ctx, http.MethodGet, models.GetTickerDetailsPath, params, res, options...)
 	return res, err
 }
+
+// GetTickerTypes retrieves all the possible ticker types that can be queried.
+func (c *Client) GetTickerTypes(ctx context.Context, params models.GetTickerTypesParams, options ...client.Option) (*models.TickerTypesResponse, error) {
+	res := &models.TickerTypesResponse{}
+	err := c.Call(ctx, http.MethodGet, models.GetTickerTypesPath, params, res, options...)
+	return res, err
+}

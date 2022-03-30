@@ -11,6 +11,7 @@ import (
 const (
 	ListTickersPath      = "/v3/reference/tickers"
 	GetTickerDetailsPath = "/v3/reference/tickers/{ticker}"
+	GetTickerTypesPath   = "/v3/reference/tickers/types"
 )
 
 // TickerDetails contains detailed information on a specified ticker symbol.
@@ -228,6 +229,69 @@ func (p GetTickerDetailsParams) Query() url.Values {
 
 	if p.QueryParams.Date != nil {
 		q.Set("date", p.QueryParams.Date.Format("2006-01-02"))
+	}
+
+	return q
+}
+
+// TickerType represents a type of ticker with a code that the API understands.
+type TickerType struct {
+	AssetClass  string `json:"asset_class"`
+	Code        string `json:"code"`
+	Description string `json:"description"`
+	Locale      string `json:"locale"`
+}
+
+// TickerTypesResponse contains a list of ticker types.
+type TickerTypesResponse struct {
+	client.BaseResponse
+	Results []*TickerType `json:"results,omitempty"`
+}
+
+// GetTickerTypesParams is the set of path and query parameters that are used to request ticker types.
+type GetTickerTypesParams struct {
+	QueryParams GetTickerTypesQueryParams
+}
+
+// GetTickerTypesQueryParams is the set of query parameters for requesting ticker types.
+type GetTickerTypesQueryParams struct {
+	AssetClass *string // todo: this is similar but slightly different than market type (also we offer four options but only one returns results)
+
+	Locale *MarketLocale
+
+	AfterPrimary   *string // todo: these aren't typically documented, what is it for?
+	AfterSecondary *string
+
+	Cursor *string
+}
+
+// Path maps the path parameters to their respective keys.
+func (p GetTickerTypesParams) Path() map[string]string {
+	return map[string]string{}
+}
+
+// Query maps the query parameters to their respective keys.
+func (p GetTickerTypesParams) Query() url.Values {
+	q := url.Values{}
+
+	if p.QueryParams.AssetClass != nil {
+		q.Set("asset_class", *p.QueryParams.AssetClass)
+	}
+
+	if p.QueryParams.Locale != nil {
+		q.Set("locale", string(*p.QueryParams.Locale))
+	}
+
+	if p.QueryParams.AfterPrimary != nil {
+		q.Set("ap", *p.QueryParams.AfterPrimary)
+	}
+
+	if p.QueryParams.AfterSecondary != nil {
+		q.Set("as", *p.QueryParams.AfterSecondary)
+	}
+
+	if p.QueryParams.Cursor != nil {
+		q.Set("cursor", *p.QueryParams.Cursor)
 	}
 
 	return q

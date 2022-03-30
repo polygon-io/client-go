@@ -130,3 +130,46 @@ func TestGetTickerDetails(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, &expectedResponse, res)
 }
+
+func TestGetTickerTypes(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := models.TickerTypesResponse{
+		BaseResponse: client.BaseResponse{
+			Status:    "OK",
+			RequestID: "req1",
+			Count:     1,
+		},
+		Results: []*models.TickerType{
+			{
+				AssetClass:  "stocks",
+				Code:        "CS",
+				Description: "Common Stock",
+				Locale:      "us",
+			},
+		},
+	}
+
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/reference/tickers/types?asset_class=stocks&locale=us",
+		func(req *http.Request) (*http.Response, error) {
+			b, err := json.Marshal(expectedResponse)
+			assert.Nil(t, err)
+			resp := httpmock.NewStringResponse(200, string(b))
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	res, err := c.Reference.GetTickerTypes(context.Background(), models.GetTickerTypesParams{
+		QueryParams: models.GetTickerTypesQueryParams{
+			AssetClass: models.Ptr("stocks"),
+			Locale:     models.Ptr(models.US),
+		},
+	})
+
+	assert.Nil(t, err)
+	assert.Equal(t, &expectedResponse, res)
+}
