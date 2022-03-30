@@ -1,10 +1,6 @@
 package models
 
 import (
-	"net/url"
-	"strconv"
-	"time"
-
 	"github.com/polygon-io/client-go/rest/client"
 )
 
@@ -77,32 +73,27 @@ type TickersResponse struct {
 
 // ListTickersParams is the set of path and query parameters that are used to request reference tickers.
 type ListTickersParams struct {
-	QueryParams ListTickersQueryParams
-}
-
-// ListTickersQueryParams is the set of query parameters for requesting reference tickers.
-type ListTickersQueryParams struct {
-	TickerEQ  *string
-	TickerLT  *string
-	TickerLTE *string
-	TickerGT  *string
-	TickerGTE *string
+	TickerEQ  *string `form:"ticker"`
+	TickerLT  *string `form:"ticker.lt"`
+	TickerLTE *string `form:"ticker.lte"`
+	TickerGT  *string `form:"ticker.gt"`
+	TickerGTE *string `form:"ticker.gte"`
 
 	// todo: which ones should be enums?
-	Type     *string
-	Market   *MarketType // todo: this endpoint apparently expects fx instead of forex
-	Exchange *string
-	CUSIP    *string
-	CIK      *string
-	Date     *time.Time
-	Active   *bool
+	Type     *string     `form:"type"`
+	Market   *MarketType `form:"market"` // todo: this endpoint apparently expects fx instead of forex
+	Exchange *string     `form:"exchange"`
+	CUSIP    *string     `form:"cusip"`
+	CIK      *string     `form:"cik"`
+	Date     *string     `form:"date"` // todo: this is "2006-01-02" format, need to figure out the best way to encode this without interfering with the default
+	Active   *bool       `form:"active"`
 
-	Sort  *Sort
-	Order *Order
-	Limit *int
+	Sort  *Sort  `form:"sort"`
+	Order *Order `form:"order"`
+	Limit *int   `form:"limit"`
 
-	PageMarker *string
-	Search     *string
+	PageMarker *string `form:"page_marker"`
+	Search     *string `form:"search"`
 }
 
 // Path maps the path parameters to their respective keys.
@@ -110,104 +101,11 @@ func (p ListTickersParams) Path() map[string]string {
 	return map[string]string{}
 }
 
-// Query maps the query parameters to their respective keys.
-func (p ListTickersParams) Query() url.Values {
-	q := url.Values{}
-
-	if p.QueryParams.TickerEQ != nil {
-		q.Set("ticker", *p.QueryParams.TickerEQ)
-	}
-
-	if p.QueryParams.TickerLT != nil {
-		q.Set("ticker.lt", *p.QueryParams.TickerLT)
-	}
-
-	if p.QueryParams.TickerLTE != nil {
-		q.Set("ticker.lte", *p.QueryParams.TickerLTE)
-	}
-
-	if p.QueryParams.TickerGT != nil {
-		q.Set("ticker.gt", *p.QueryParams.TickerGT)
-	}
-
-	if p.QueryParams.TickerGTE != nil {
-		q.Set("ticker.gte", *p.QueryParams.TickerGTE)
-	}
-
-	if p.QueryParams.Type != nil {
-		q.Set("type", *p.QueryParams.Type)
-	}
-
-	if p.QueryParams.Market != nil {
-		q.Set("market", string(*p.QueryParams.Market))
-	}
-
-	if p.QueryParams.Exchange != nil {
-		q.Set("exchange", *p.QueryParams.Exchange)
-	}
-
-	if p.QueryParams.CUSIP != nil {
-		q.Set("cusip", *p.QueryParams.CUSIP)
-	}
-
-	if p.QueryParams.CIK != nil {
-		q.Set("cik", *p.QueryParams.CIK)
-	}
-
-	if p.QueryParams.Date != nil {
-		q.Set("date", p.QueryParams.Date.Format("2006-01-02"))
-	}
-
-	if p.QueryParams.Active != nil {
-		q.Set("active", strconv.FormatBool(*p.QueryParams.Active))
-	} else {
-		q.Set("active", "true")
-	}
-
-	if p.QueryParams.Sort != nil {
-		q.Set("sort", string(*p.QueryParams.Sort))
-	}
-
-	if p.QueryParams.Order != nil {
-		q.Set("order", string(*p.QueryParams.Order))
-	}
-
-	if p.QueryParams.Limit != nil {
-		q.Set("limit", strconv.FormatInt(int64(*p.QueryParams.Limit), 10))
-	}
-
-	if p.QueryParams.PageMarker != nil {
-		q.Set("page_marker", *p.QueryParams.PageMarker)
-	}
-
-	if p.QueryParams.Search != nil {
-		q.Set("search", *p.QueryParams.Search)
-	}
-
-	return q
-}
-
-// String returns a URL string that includes any path and query parameters that are set.
-func (p ListTickersParams) String() string {
-	path := ListTickersPath
-
-	q := p.Query().Encode()
-	if q != "" {
-		path += "?" + q
-	}
-
-	return path
-}
-
 // GetTickerDetailsParams is the set of path and query parameters that are used to request reference ticker details.
 type GetTickerDetailsParams struct {
-	Ticker      string
-	QueryParams GetTickerDetailsQueryParams
-}
+	Ticker string `validate:"required"`
 
-// GetTickerDetailsQueryParams is the set of query parameters for requesting reference ticker details.
-type GetTickerDetailsQueryParams struct {
-	Date *time.Time
+	Date *string `form:"date"` // todo: this is "2006-01-02" format
 }
 
 // Path maps the path parameters to their respective keys.
@@ -215,17 +113,6 @@ func (p GetTickerDetailsParams) Path() map[string]string {
 	return map[string]string{
 		"ticker": p.Ticker,
 	}
-}
-
-// Query maps the query parameters to their respective keys.
-func (p GetTickerDetailsParams) Query() url.Values {
-	q := url.Values{}
-
-	if p.QueryParams.Date != nil {
-		q.Set("date", p.QueryParams.Date.Format("2006-01-02"))
-	}
-
-	return q
 }
 
 // TickerType represents a type of ticker with a code that the API understands.
@@ -244,31 +131,11 @@ type TickerTypesResponse struct {
 
 // GetTickerTypesParams is the set of path and query parameters that are used to request ticker types.
 type GetTickerTypesParams struct {
-	QueryParams GetTickerTypesQueryParams
-}
-
-// GetTickerTypesQueryParams is the set of query parameters for requesting ticker types.
-type GetTickerTypesQueryParams struct {
-	AssetClass *string // todo: this is similar but slightly different than market type (also we offer four options but only one returns results)
-	Locale     *MarketLocale
+	AssetClass *string       `form:"asset_class"` // todo: this is similar but slightly different than market type (also we offer four options but only one returns results)
+	Locale     *MarketLocale `form:"locale"`
 }
 
 // Path maps the path parameters to their respective keys.
 func (p GetTickerTypesParams) Path() map[string]string {
 	return map[string]string{}
-}
-
-// Query maps the query parameters to their respective keys.
-func (p GetTickerTypesParams) Query() url.Values {
-	q := url.Values{}
-
-	if p.QueryParams.AssetClass != nil {
-		q.Set("asset_class", *p.QueryParams.AssetClass)
-	}
-
-	if p.QueryParams.Locale != nil {
-		q.Set("locale", string(*p.QueryParams.Locale))
-	}
-
-	return q
 }

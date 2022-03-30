@@ -2,8 +2,6 @@ package models
 
 import (
 	"fmt"
-	"net/url"
-	"strconv"
 	"time"
 
 	"github.com/polygon-io/client-go/rest/client"
@@ -49,25 +47,21 @@ type AggsResponse struct {
 	Aggs         []Aggregate `json:"results,omitempty"`
 }
 
-// GetAggsParams is the set of path and query parameters that can be used when requesting aggs through the Get method.
+// GetAggsParams is the set of path and query parameters for requesting aggs.
 type GetAggsParams struct {
-	Ticker      string
-	Multiplier  int
-	Resolution  Resolution
-	From        time.Time
-	To          time.Time
-	QueryParams GetAggsQueryParams
+	Ticker     string     `validate:"required"`
+	Multiplier int        `validate:"required"`
+	Resolution Resolution `validate:"required"`
+	From       time.Time  `validate:"required"`
+	To         time.Time  `validate:"required"`
+
+	Sort     *Order `form:"sort"`
+	Limit    *int   `form:"limit"`
+	Adjusted *bool  `form:"adjusted"`
+	Explain  *bool  `form:"explain"`
 }
 
-// GetAggsQueryParams is the set of query parameters that can be used when requesting aggs through the Get method.
-type GetAggsQueryParams struct {
-	Sort     *Order
-	Limit    *int
-	Adjusted *bool
-	Explain  *bool
-}
-
-// Path maps the input Get parameters to their respective keys.
+// Path returns a map of URL path parameters.
 func (p GetAggsParams) Path() map[string]string {
 	return map[string]string{
 		"ticker":     p.Ticker,
@@ -78,89 +72,36 @@ func (p GetAggsParams) Path() map[string]string {
 	}
 }
 
-// Query maps the input Get parameters to their respective keys.
-func (p GetAggsParams) Query() url.Values {
-	q := url.Values{}
-
-	if p.QueryParams.Sort != nil {
-		q.Set("sort", string(*p.QueryParams.Sort))
-	}
-
-	if p.QueryParams.Limit != nil {
-		q.Set("limit", strconv.FormatInt(int64(*p.QueryParams.Limit), 10))
-	}
-
-	if p.QueryParams.Adjusted != nil {
-		q.Set("adjusted", strconv.FormatBool(*p.QueryParams.Adjusted))
-	}
-
-	if p.QueryParams.Explain != nil {
-		q.Set("explain", strconv.FormatBool(*p.QueryParams.Explain))
-	}
-
-	return q
-}
-
-// GetPreviousCloseParams is the set of path and query parameters that can be used when requesting aggs through the GetPreviousClose method.
+// GetPreviousCloseParams is the set of path and query parameters for requesting previous close aggs.
 type GetPreviousCloseParams struct {
-	Ticker      string
-	QueryParams GetPreviousCloseQueryParams
+	Ticker string `validate:"required"`
+
+	Adjusted *bool `form:"adjusted"`
 }
 
-// GetPreviousCloseQueryParams is the set of query parameters that can be used when requesting aggs through the GetPreviousClose method.
-type GetPreviousCloseQueryParams struct {
-	Adjusted *bool
-}
-
-// Path maps the GetPreviousCloseParams path parameters to their respective keys.
+// Path returns a map of URL path parameters.
 func (p GetPreviousCloseParams) Path() map[string]string {
 	return map[string]string{
 		"ticker": p.Ticker,
 	}
 }
 
-// Query maps the GetPreviousCloseParams query parameters to their respective keys.
-func (p GetPreviousCloseParams) Query() url.Values {
-	q := url.Values{}
-
-	if p.QueryParams.Adjusted != nil {
-		q.Set("adjusted", strconv.FormatBool(*p.QueryParams.Adjusted))
-	}
-
-	return q
-}
-
 // GetGroupedDailyParams is the set of path and query parameters that can be used when requesting aggs through the GetGroupedDaily method.
 type GetGroupedDailyParams struct {
-	Locale      MarketLocale
-	MarketType  MarketType
-	Date        time.Time
-	QueryParams GetGroupedDailyQueryParams
+	Locale     MarketLocale `validate:"required"`
+	MarketType MarketType   `validate:"required"`
+	Date       time.Time    `validate:"required"`
+
+	Adjusted *bool `form:"adjusted"`
 }
 
-// GetGroupedDailyQueryParams is the set of query parameters that can be used when requesting aggs through the GetGroupedDaily method.
-type GetGroupedDailyQueryParams struct {
-	Adjusted *bool
-}
-
-// Path maps the GetGroupedDaily path parameters to their respective keys.
+// Path returns a map of URL path parameters.
 func (p GetGroupedDailyParams) Path() map[string]string {
 	return map[string]string{
 		"locale":     string(p.Locale),
 		"marketType": string(p.MarketType),
 		"date":       p.Date.Format("2006-01-02"),
 	}
-}
-
-// Query maps the GetGroupedDaily query parameters to their respective keys.
-func (p GetGroupedDailyParams) Query() url.Values {
-	q := url.Values{}
-
-	if p.QueryParams.Adjusted != nil {
-		q.Set("adjusted", strconv.FormatBool(*p.QueryParams.Adjusted))
-	}
-
-	return q
 }
 
 // DailyOpenCloseResponse is the response for the DailyOpenClose method.
@@ -181,31 +122,16 @@ type DailyOpenCloseResponse struct {
 
 // GetDailyOpenCloseParams is the set of path and query parameters that can be used when requesting aggs through the GetDailyOpenClose method.
 type GetDailyOpenCloseParams struct {
-	Ticker      string
-	Date        time.Time
-	QueryParams GetDailyOpenCloseQueryParams
+	Ticker string    `validate:"required"`
+	Date   time.Time `validate:"required"`
+
+	Adjusted *bool `form:"adjusted"`
 }
 
-// GetDailyOpenCloseQueryParams is the set of query parameters that can be used when requesting aggs through the GetDailyOpenCloseQuery method.
-type GetDailyOpenCloseQueryParams struct {
-	Adjusted *bool
-}
-
-// Path maps the GetDailyOpenClose path parameters to their respective keys.
+// PathParams returns a map of URL path parameters.
 func (p GetDailyOpenCloseParams) Path() map[string]string {
 	return map[string]string{
 		"ticker": p.Ticker,
 		"date":   p.Date.Format("2006-01-02"),
 	}
-}
-
-// Query maps the GetDailyOpenClose query parameters to their respective keys.
-func (p GetDailyOpenCloseParams) Query() url.Values {
-	q := url.Values{}
-
-	if p.QueryParams.Adjusted != nil {
-		q.Set("adjusted", strconv.FormatBool(*p.QueryParams.Adjusted))
-	}
-
-	return q
 }

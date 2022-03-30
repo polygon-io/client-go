@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strconv"
 	"testing"
-	"time"
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
@@ -63,22 +62,21 @@ func TestListTickers(t *testing.T) {
 		},
 	)
 
-	iter := c.Reference.ListTickers(context.Background(), models.ListTickersParams{
-		QueryParams: models.ListTickersQueryParams{
-			Type:     models.Ptr("CS"),
-			Market:   models.Ptr(models.Stocks),
-			Exchange: models.Ptr(strconv.FormatInt(4, 10)),
-			CUSIP:    models.Ptr(strconv.FormatInt(10, 10)),
-			CIK:      models.Ptr(strconv.FormatInt(5, 10)),
-			Date:     models.Ptr(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
-			Active:   models.Ptr(true),
-			Sort:     models.Ptr(models.Ticker),
-			Order:    models.Ptr(models.Asc),
-			Limit:    models.Ptr(2),
-		},
+	iter, err := c.Reference.ListTickers(context.Background(), models.ListTickersParams{
+		Type:     models.Ptr("CS"),
+		Market:   models.Ptr(models.Stocks),
+		Exchange: models.Ptr(strconv.FormatInt(4, 10)),
+		CUSIP:    models.Ptr(strconv.FormatInt(10, 10)),
+		CIK:      models.Ptr(strconv.FormatInt(5, 10)),
+		Date:     models.Ptr("2021-07-22"),
+		Active:   models.Ptr(true),
+		Sort:     models.Ptr(models.Ticker),
+		Order:    models.Ptr(models.Asc),
+		Limit:    models.Ptr(2),
 	})
 
 	// verify the first page
+	assert.Nil(t, err)
 	assert.Nil(t, iter.Err())
 	assert.Nil(t, iter.Ticker())
 	// verify the first and second trades
@@ -122,9 +120,7 @@ func TestGetTickerDetails(t *testing.T) {
 
 	res, err := c.Reference.GetTickerDetails(context.Background(), models.GetTickerDetailsParams{
 		Ticker: "A",
-		QueryParams: models.GetTickerDetailsQueryParams{
-			Date: models.Ptr(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
-		},
+		Date:   models.Ptr("2021-07-22"),
 	})
 
 	assert.Nil(t, err)
@@ -164,10 +160,8 @@ func TestGetTickerTypes(t *testing.T) {
 	)
 
 	res, err := c.Reference.GetTickerTypes(context.Background(), models.GetTickerTypesParams{
-		QueryParams: models.GetTickerTypesQueryParams{
-			AssetClass: models.Ptr("stocks"),
-			Locale:     models.Ptr(models.US),
-		},
+		AssetClass: models.Ptr("stocks"),
+		Locale:     models.Ptr(models.US),
 	})
 
 	assert.Nil(t, err)

@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
+	"github.com/go-playground/form/v4"
+	"github.com/go-playground/validator/v10"
 	"github.com/go-resty/resty/v2"
 )
 
@@ -19,15 +22,6 @@ const (
 type Params interface {
 	// Path returns a map of URL path parameters.
 	Path() map[string]string
-	// Query returns query string parameters as URL values.
-	Query() url.Values
-}
-
-// ListParams defines an interface that list parameter types must implement.
-type ListParams interface {
-	Params
-	// String returns a URL string that includes any path and query parameters that are set.
-	String() string
 }
 
 // ListResponse defines an interface that list API responses must implement.
@@ -38,7 +32,9 @@ type ListResponse interface {
 
 // Client provides functionality to make API requests via HTTP.
 type Client struct {
-	HTTP *resty.Client
+	HTTP     *resty.Client
+	validate *validator.Validate
+	encoder  *form.Encoder
 }
 
 // New returns a new client with the specified API key and default settings.
@@ -49,17 +45,59 @@ func New(apiKey string) Client {
 	c.SetRetryCount(DefaultRetryCount)
 	c.SetTimeout(10 * time.Second)
 
+	v := validator.New()
+
+	e := form.NewEncoder()
+	e.SetMode(form.ModeExplicit)
+	e.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+		return []string{fmt.Sprint(x.(time.Time).UnixNano())}, nil
+	}, time.Time{})
+
 	return Client{
-		HTTP: c,
+		HTTP:     c,
+		validate: v,
+		encoder:  e,
 	}
 }
 
+// NewIter returns a new initialized iterator. This method automatically makes the first query to populate
+// the results. List methods should use this helper method when building domain specific iterators.
+func (c *Client) NewIter(ctx context.Context, uri string, params Params, query Query) (*Iter, error) {
+	it := &Iter{
+		ctx:   ctx,
+		query: query,
+	}
+
+	if err := c.validate.Struct(params); err != nil {
+		return nil, fmt.Errorf("invalid request params: %w", err)
+	}
+
+	path := params.Path()
+	for k, v := range path {
+		uri = strings.ReplaceAll(uri, fmt.Sprintf("{%s}", k), url.PathEscape(v))
+	}
+
+	q, err := c.encoder.Encode(&params)
+	if err != nil {
+		return nil, fmt.Errorf("error encoding request params: %w", err)
+	} else if q.Encode() != "" {
+		uri += "?" + q.Encode()
+	}
+
+	it.page, it.results, it.err = it.query(uri)
+	return it, nil
+}
+
 // Call makes an API call based on the request params and options. The response is automatically unmarshaled.
-func (b *Client) Call(ctx context.Context, method, url string, params Params, response interface{}, opts ...Option) error {
-	req := b.newRequest(ctx, params, response, opts...)
+func (c *Client) Call(ctx context.Context, method, url string, params Params, response interface{}, opts ...Option) error {
+	req, err := c.newRequest(ctx, params, response, opts...)
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+
 	res, err := req.Execute(method, url)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to execute request: %w", err)
 	} else if res.IsError() {
 		errRes := res.Error().(*ErrorResponse)
 		errRes.StatusCode = res.StatusCode()
@@ -69,13 +107,22 @@ func (b *Client) Call(ctx context.Context, method, url string, params Params, re
 	return nil
 }
 
-func (b *Client) newRequest(ctx context.Context, params Params, response interface{}, opts ...Option) *resty.Request {
+func (c *Client) newRequest(ctx context.Context, params Params, response interface{}, opts ...Option) (*resty.Request, error) {
 	options := mergeOptions(opts...)
 
-	req := b.HTTP.R().SetContext(ctx)
+	req := c.HTTP.R().SetContext(ctx)
 	if params != nil {
+		if err := c.validate.Struct(params); err != nil {
+			return nil, fmt.Errorf("invalid request params: %w", err)
+		}
+
 		req.SetPathParams(params.Path())
-		req.SetQueryParamsFromValues(params.Query())
+
+		query, err := c.encoder.Encode(&params)
+		if err != nil {
+			return nil, fmt.Errorf("error encoding request params: %w", err)
+		}
+		req.SetQueryParamsFromValues(query)
 	}
 
 	if options.APIKey != nil {
@@ -86,7 +133,7 @@ func (b *Client) newRequest(ctx context.Context, params Params, response interfa
 
 	req.SetResult(response).SetError(&ErrorResponse{})
 
-	return req
+	return req, nil
 }
 
 // BaseResponse has all possible attributes that any response can use. It's intended to be embedded in a

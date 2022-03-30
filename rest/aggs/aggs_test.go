@@ -62,12 +62,10 @@ func TestGetAggs(t *testing.T) {
 		Resolution: "day",
 		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC),
 		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC),
-		QueryParams: models.GetAggsQueryParams{
-			Adjusted: models.Ptr(true),
-			Sort:     models.Ptr(models.Desc),
-			Limit:    models.Ptr(1),
-			Explain:  models.Ptr(false),
-		},
+		Adjusted:   models.Ptr(true),
+		Sort:       models.Ptr(models.Desc),
+		Limit:      models.Ptr(1),
+		Explain:    models.Ptr(false),
 	})
 
 	assert.Nil(t, err)
@@ -91,10 +89,8 @@ func TestGetPreviousClose(t *testing.T) {
 	)
 
 	res, err := c.Aggs.GetPreviousClose(context.Background(), models.GetPreviousCloseParams{
-		Ticker: "AAPL",
-		QueryParams: models.GetPreviousCloseQueryParams{
-			Adjusted: models.Ptr(true),
-		},
+		Ticker:   "AAPL",
+		Adjusted: models.Ptr(true),
 	})
 
 	assert.Nil(t, err)
@@ -121,9 +117,7 @@ func TestGetGroupedDaily(t *testing.T) {
 		Locale:     models.US,
 		MarketType: models.Stocks,
 		Date:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local),
-		QueryParams: models.GetGroupedDailyQueryParams{
-			Adjusted: models.Ptr(true),
-		},
+		Adjusted:   models.Ptr(true),
 	})
 
 	assert.Nil(t, err)
@@ -164,11 +158,9 @@ func TestGetDailyOpenClose(t *testing.T) {
 	)
 
 	res, err := c.Aggs.GetDailyOpenClose(context.Background(), models.GetDailyOpenCloseParams{
-		Ticker: "AAPL",
-		Date:   time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local),
-		QueryParams: models.GetDailyOpenCloseQueryParams{
-			Adjusted: models.Ptr(true),
-		},
+		Ticker:   "AAPL",
+		Date:     time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local),
+		Adjusted: models.Ptr(true),
 	})
 
 	assert.Nil(t, err)

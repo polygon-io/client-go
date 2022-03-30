@@ -1,10 +1,6 @@
 package models
 
 import (
-	"fmt"
-	"net/url"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/polygon-io/client-go/rest/client"
@@ -42,98 +38,23 @@ type QuotesResponse struct {
 
 // ListQuotesParams is the set of path and query parameters that are used when requesting quotes via the ListQuotes method.
 type ListQuotesParams struct {
-	Ticker      string
-	QueryParams ListQuotesQueryParams
+	Ticker string `validate:"required"`
+
+	TimestampEQ  *time.Time `form:"timestamp" validate:"-"`
+	TimestampLT  *time.Time `form:"timestamp.lt" validate:"-"`
+	TimestampLTE *time.Time `form:"timestamp.lte" validate:"-"`
+	TimestampGT  *time.Time `form:"timestamp.gt" validate:"-"`
+	TimestampGTE *time.Time `form:"timestamp.gte" validate:"-"`
+	Order        *Order     `form:"order" validate:"-"`
+	Limit        *int       `form:"limit" validate:"-"`
+	Sort         *Sort      `form:"sort" validate:"-"`
 }
 
-// ListQuotesQueryParams is the set of query parameters that can be used when requesting quotes via the ListQuotes method.
-type ListQuotesQueryParams struct {
-	TimestampEQ  *time.Time
-	TimestampLT  *time.Time
-	TimestampLTE *time.Time
-	TimestampGT  *time.Time
-	TimestampGTE *time.Time
-
-	Order *Order
-
-	Limit *int
-
-	Sort *Sort
-
-	AfterPrimary   *string
-	AfterSecondary *string
-
-	Cursor *string
-}
-
-// Path maps the ListQuotes path parameters to their respective keys.
+// Path returns a map of URL path parameters.
 func (p ListQuotesParams) Path() map[string]string {
 	return map[string]string{
 		"ticker": p.Ticker,
 	}
-}
-
-// Query maps the ListQuotes query parameters to their respective keys.
-func (p ListQuotesParams) Query() url.Values {
-	q := url.Values{}
-
-	if p.QueryParams.TimestampEQ != nil {
-		q.Set("timestamp", fmt.Sprint(p.QueryParams.TimestampEQ.UnixNano()))
-	}
-
-	if p.QueryParams.TimestampLT != nil {
-		q.Set("timestamp.lt", fmt.Sprint(p.QueryParams.TimestampLT.UnixNano()))
-	}
-
-	if p.QueryParams.TimestampLTE != nil {
-		q.Set("timestamp.lte", fmt.Sprint(p.QueryParams.TimestampLTE.UnixNano()))
-	}
-
-	if p.QueryParams.TimestampGT != nil {
-		q.Set("timestamp.gt", fmt.Sprint(p.QueryParams.TimestampGT.UnixNano()))
-	}
-
-	if p.QueryParams.TimestampGTE != nil {
-		q.Set("timestamp.gte", fmt.Sprint(p.QueryParams.TimestampGTE.UnixNano()))
-	}
-
-	if p.QueryParams.Order != nil {
-		q.Set("order", string(*p.QueryParams.Order))
-	}
-
-	if p.QueryParams.Limit != nil {
-		q.Set("limit", strconv.FormatInt(int64(*p.QueryParams.Limit), 10))
-	}
-
-	if p.QueryParams.Sort != nil {
-		q.Set("sort", string(*p.QueryParams.Sort))
-	}
-
-	if p.QueryParams.AfterPrimary != nil {
-		q.Set("ap", *p.QueryParams.AfterPrimary)
-	}
-
-	if p.QueryParams.AfterSecondary != nil {
-		q.Set("as", *p.QueryParams.AfterSecondary)
-	}
-
-	if p.QueryParams.Cursor != nil {
-		q.Set("cursor", *p.QueryParams.Cursor)
-	}
-
-	return q
-}
-
-// String returns a URL string that includes any path and query parameters that are set.
-func (p ListQuotesParams) String() string {
-	path := strings.ReplaceAll(ListQuotesPath, "{ticker}", url.PathEscape(p.Ticker))
-
-	q := p.Query().Encode()
-	if q != "" {
-		path += "?" + q
-	}
-
-	return path
 }
 
 // LastQuote is the most recent NBBO for a ticker symbol.
@@ -163,20 +84,14 @@ type LastQuoteResponse struct {
 
 // GetLastQuoteParams is the set of path and query parameters for retrieving the most recent quote (NBBO) for a specified ticker.
 type GetLastQuoteParams struct {
-	Ticker string
+	Ticker string `validate:"required"`
 }
 
-// Path maps the path parameters to their respective keys.
+// Path returns a map of URL path parameters.
 func (p GetLastQuoteParams) Path() map[string]string {
 	return map[string]string{
 		"ticker": p.Ticker,
 	}
-}
-
-// Query maps the query parameters to their respective keys.
-func (p GetLastQuoteParams) Query() url.Values {
-	q := url.Values{}
-	return q
 }
 
 // ForexQuote is a BBO for a forex currency pair.
@@ -196,20 +111,14 @@ type LastForexQuoteResponse struct {
 
 // LastForexQuoteParams is the set of path and query parameters for retrieving the most recent quote (BBO) for a forex currency pair.
 type LastForexQuoteParams struct {
-	From string
-	To   string
+	From string `validate:"required"`
+	To   string `validate:"required"`
 }
 
-// Path maps the path parameters to their respective keys.
+// Path returns a map of URL path parameters.
 func (p LastForexQuoteParams) Path() map[string]string {
 	return map[string]string{
 		"from": p.From,
 		"to":   p.To,
 	}
-}
-
-// Query maps the query parameters to their respective keys.
-func (p LastForexQuoteParams) Query() url.Values {
-	q := url.Values{}
-	return q
 }
