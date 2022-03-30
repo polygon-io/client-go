@@ -87,3 +87,75 @@ func TestListTrades(t *testing.T) {
 	assert.False(t, iter.Next())
 	assert.Nil(t, iter.Err())
 }
+
+func TestGetLastTrade(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Trades.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := models.LastTradeResponse{
+		BaseResponse: client.BaseResponse{
+			Status:    "OK",
+			RequestID: "req1",
+			Count:     1,
+		},
+		Results: models.LastTrade{Price: 1.23},
+	}
+
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/last/trade/AAPL",
+		func(req *http.Request) (*http.Response, error) {
+			b, err := json.Marshal(expectedResponse)
+			assert.Nil(t, err)
+			resp := httpmock.NewStringResponse(200, string(b))
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	res, err := c.Trades.GetLastTrade(context.Background(), models.GetLastTradeParams{
+		Ticker: "AAPL",
+	})
+
+	assert.Nil(t, err)
+	assert.Equal(t, &expectedResponse, res)
+}
+
+func TestGetLastCryptoTrade(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := models.LastCryptoTradeResponse{
+		BaseResponse: client.BaseResponse{
+			Status:    "OK",
+			RequestID: "req1",
+		},
+		Last: models.CryptoTrade{
+			Price:      26049.42,
+			Size:       0.0449,
+			Exchange:   4,
+			Conditions: []int{1},
+			Timestamp:  1605560463099,
+		},
+	}
+
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v1/last/crypto/BTC/USD",
+		func(req *http.Request) (*http.Response, error) {
+			b, err := json.Marshal(expectedResponse)
+			assert.Nil(t, err)
+			resp := httpmock.NewStringResponse(200, string(b))
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	res, err := c.Trades.GetLastCryptoTrade(context.Background(), models.LastCryptoTradeParams{
+		From: "BTC",
+		To:   "USD",
+	})
+
+	assert.Nil(t, err)
+	assert.Equal(t, &expectedResponse, res)
+}

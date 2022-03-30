@@ -180,6 +180,7 @@ func (p GetLastQuoteParams) Query() url.Values {
 }
 
 // ForexQuote is a BBO for a forex currency pair.
+// For more details see https://polygon.io/docs/forex/get_v1_last_quote_currencies__from___to.
 type ForexQuote struct {
 	Ask       float64 `json:"ask,omitempty"`
 	Bid       float64 `json:"bid,omitempty"`

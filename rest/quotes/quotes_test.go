@@ -129,7 +129,7 @@ func TestGetLastQuote(t *testing.T) {
 	assert.Equal(t, &expectedResponse, res)
 }
 
-func TestGetLastQuoteCurrencyPair(t *testing.T) {
+func TestGetLastForexQuote(t *testing.T) {
 	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
