@@ -103,8 +103,6 @@ type ListTickersQueryParams struct {
 
 	PageMarker *string
 	Search     *string
-
-	Cursor *string
 }
 
 // Path maps the path parameters to their respective keys.
@@ -186,10 +184,6 @@ func (p ListTickersParams) Query() url.Values {
 		q.Set("search", *p.QueryParams.Search)
 	}
 
-	if p.QueryParams.Cursor != nil {
-		q.Set("cursor", *p.QueryParams.Cursor)
-	}
-
 	return q
 }
 
@@ -256,13 +250,7 @@ type GetTickerTypesParams struct {
 // GetTickerTypesQueryParams is the set of query parameters for requesting ticker types.
 type GetTickerTypesQueryParams struct {
 	AssetClass *string // todo: this is similar but slightly different than market type (also we offer four options but only one returns results)
-
-	Locale *MarketLocale
-
-	AfterPrimary   *string // todo: these aren't typically documented, what is it for?
-	AfterSecondary *string
-
-	Cursor *string
+	Locale     *MarketLocale
 }
 
 // Path maps the path parameters to their respective keys.
@@ -280,18 +268,6 @@ func (p GetTickerTypesParams) Query() url.Values {
 
 	if p.QueryParams.Locale != nil {
 		q.Set("locale", string(*p.QueryParams.Locale))
-	}
-
-	if p.QueryParams.AfterPrimary != nil {
-		q.Set("ap", *p.QueryParams.AfterPrimary)
-	}
-
-	if p.QueryParams.AfterSecondary != nil {
-		q.Set("as", *p.QueryParams.AfterSecondary)
-	}
-
-	if p.QueryParams.Cursor != nil {
-		q.Set("cursor", *p.QueryParams.Cursor)
 	}
 
 	return q
