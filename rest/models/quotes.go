@@ -40,14 +40,14 @@ type QuotesResponse struct {
 type ListQuotesParams struct {
 	Ticker string `validate:"required"`
 
-	TimestampEQ  *time.Time `form:"timestamp" validate:"-"`
-	TimestampLT  *time.Time `form:"timestamp.lt" validate:"-"`
-	TimestampLTE *time.Time `form:"timestamp.lte" validate:"-"`
-	TimestampGT  *time.Time `form:"timestamp.gt" validate:"-"`
-	TimestampGTE *time.Time `form:"timestamp.gte" validate:"-"`
-	Order        *Order     `form:"order" validate:"-"`
-	Limit        *int       `form:"limit" validate:"-"`
-	Sort         *Sort      `form:"sort" validate:"-"`
+	TimestampEQ  *time.Time `form:"timestamp"`
+	TimestampLT  *time.Time `form:"timestamp.lt"`
+	TimestampLTE *time.Time `form:"timestamp.lte"`
+	TimestampGT  *time.Time `form:"timestamp.gt"`
+	TimestampGTE *time.Time `form:"timestamp.gte"`
+	Order        *Order     `form:"order"`
+	Limit        *int       `form:"limit"`
+	Sort         *Sort      `form:"sort"`
 }
 
 // Path returns a map of URL path parameters.
