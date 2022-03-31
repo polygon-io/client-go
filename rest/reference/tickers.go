@@ -19,11 +19,11 @@ type TickersIter struct {
 }
 
 // Ticker returns the current result that the iterator points to.
-func (it *TickersIter) Ticker() *models.TickerDetails {
+func (it *TickersIter) Ticker() models.TickerDetails {
 	if it.Item() != nil {
-		return it.Item().(*models.TickerDetails)
+		return it.Item().(models.TickerDetails)
 	}
-	return nil
+	return models.TickerDetails{}
 }
 
 // ListTickers retrieves reference tickers. This method returns an iterator that should be used to
@@ -34,30 +34,30 @@ func (it *TickersIter) Ticker() *models.TickerDetails {
 //   }
 //
 //   for iter.Next() {
-//       // Do something with the current value
+//       // do something with the current value
 //       log.Print(iter.Ticker())
 //   }
 //   if iter.Err() != nil {
 //       return err
 //   }
 func (c *Client) ListTickers(ctx context.Context, params models.ListTickersParams, options ...client.Option) (*TickersIter, error) {
-	iter, err := c.NewIter(ctx, models.ListTickersPath, params, func(url string) (client.ListResponse, []interface{}, error) {
-		res := &models.TickersResponse{}
-		err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
-
-		results := make([]interface{}, len(res.Results))
-		for i, v := range res.Results {
-			results[i] = v
-		}
-
-		return res, results, err
-	})
+	url, err := c.EncodeParams(models.ListTickersPath, params)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
 
 	return &TickersIter{
-		Iter: *iter,
+		Iter: client.NewIter(ctx, url, func(url string) (client.ListResponse, []interface{}, error) {
+			res := &models.TickersResponse{}
+			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
+
+			results := make([]interface{}, len(res.Results))
+			for i, v := range res.Results {
+				results[i] = v
+			}
+
+			return res, results, err
+		}),
 	}, nil
 }
 

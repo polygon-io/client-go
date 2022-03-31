@@ -33,7 +33,7 @@ type Quote struct {
 // QuotesResponse is returned by the list quotes API and contains a list of quotes for the specified ticker.
 type QuotesResponse struct {
 	client.BaseResponse
-	Results []*Quote `json:"results,omitempty"`
+	Results []Quote `json:"results,omitempty"`
 }
 
 // ListQuotesParams is the set of path and query parameters that are used when requesting quotes via the ListQuotes method.

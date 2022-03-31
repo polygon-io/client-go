@@ -61,34 +61,6 @@ func New(apiKey string) Client {
 	}
 }
 
-// NewIter returns a new initialized iterator. This method automatically makes the first query to populate
-// the results. List methods should use this helper method when building domain specific iterators.
-func (c *Client) NewIter(ctx context.Context, uri string, params Params, query Query) (*Iter, error) {
-	it := &Iter{
-		ctx:   ctx,
-		query: query,
-	}
-
-	if err := c.validate.Struct(params); err != nil {
-		return nil, fmt.Errorf("invalid request params: %w", err)
-	}
-
-	path := params.Path()
-	for k, v := range path {
-		uri = strings.ReplaceAll(uri, fmt.Sprintf("{%s}", k), url.PathEscape(v))
-	}
-
-	q, err := c.encoder.Encode(&params)
-	if err != nil {
-		return nil, fmt.Errorf("error encoding request params: %w", err)
-	} else if q.Encode() != "" {
-		uri += "?" + q.Encode()
-	}
-
-	it.page, it.results, it.err = it.query(uri)
-	return it, nil
-}
-
 // Call makes an API call based on the request params and options. The response is automatically unmarshaled.
 func (c *Client) Call(ctx context.Context, method, url string, params Params, response interface{}, opts ...Option) error {
 	req, err := c.newRequest(ctx, params, response, opts...)
@@ -106,6 +78,26 @@ func (c *Client) Call(ctx context.Context, method, url string, params Params, re
 	}
 
 	return nil
+}
+
+func (c *Client) EncodeParams(uri string, params Params) (string, error) {
+	if err := c.validate.Struct(params); err != nil {
+		return "", fmt.Errorf("invalid request params: %w", err)
+	}
+
+	path := params.Path()
+	for k, v := range path {
+		uri = strings.ReplaceAll(uri, fmt.Sprintf("{%s}", k), url.PathEscape(v))
+	}
+
+	q, err := c.encoder.Encode(&params)
+	if err != nil {
+		return "", fmt.Errorf("error encoding request params: %w", err)
+	} else if q.Encode() != "" {
+		uri += "?" + q.Encode()
+	}
+
+	return uri, nil
 }
 
 func (c *Client) newRequest(ctx context.Context, params Params, response interface{}, opts ...Option) (*resty.Request, error) {
