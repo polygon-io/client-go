@@ -8,36 +8,40 @@ import (
 	"github.com/polygon-io/client-go/rest/models"
 )
 
-// Client defines a REST client for the Polygon aggregates API.
+// Client defines a REST client for the Polygon aggs API.
 type Client struct {
 	client.Client
 }
 
 // GetAggs retrieves aggregate bars for a specified ticker over a given date range in custom time window sizes.
 // For example, if timespan = ‘minute’ and multiplier = ‘5’ then 5-minute bars will be returned.
-func (ac *Client) GetAggs(ctx context.Context, params models.GetAggsParams, opts ...client.Option) (*models.AggsResponse, error) {
-	res := &models.AggsResponse{}
+// For more details see https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to.
+func (ac *Client) GetAggs(ctx context.Context, params models.GetAggsParams, opts ...models.RequestOption) (*models.GetAggsResponse, error) {
+	res := &models.GetAggsResponse{}
 	err := ac.Call(ctx, http.MethodGet, models.GetAggsPath, params, res, opts...)
 	return res, err
 }
 
-// GetPreviousClose retrieves the previous day's open, high, low, and close (OHLC) for the specified ticker.
-func (ac *Client) GetPreviousClose(ctx context.Context, params models.GetPreviousCloseParams, opts ...client.Option) (*models.AggsResponse, error) {
-	res := &models.AggsResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetPreviousClosePath, params, res, opts...)
-	return res, err
-}
-
-// GetGroupedDaily retrieves the daily open, high, low, and close (OHLC) for the specified market type.
-func (ac *Client) GetGroupedDaily(ctx context.Context, params models.GetGroupedDailyParams, opts ...client.Option) (*models.AggsResponse, error) {
-	res := &models.AggsResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetGroupedDailyPath, params, res, opts...)
+// GetGroupedDailyAggs retrieves the daily open, high, low, and close (OHLC) for the specified market type.
+// For more details see https://polygon.io/docs/stocks/get_v2_aggs_grouped_locale_us_market_stocks__date.
+func (ac *Client) GetGroupedDailyAggs(ctx context.Context, params models.GetGroupedDailyAggsParams, opts ...models.RequestOption) (*models.GetGroupedDailyAggsResponse, error) {
+	res := &models.GetGroupedDailyAggsResponse{}
+	err := ac.Call(ctx, http.MethodGet, models.GetGroupedDailyAggsPath, params, res, opts...)
 	return res, err
 }
 
 // GetDailyOpenClose retrieves the open, close and afterhours prices of a specific symbol on a certain date.
-func (ac *Client) GetDailyOpenClose(ctx context.Context, params models.GetDailyOpenCloseParams, opts ...client.Option) (*models.DailyOpenCloseResponse, error) {
-	res := &models.DailyOpenCloseResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetDailyOpenClosePath, params, res, opts...)
+// For more details see https://polygon.io/docs/stocks/get_v1_open-close__stocksticker___date.
+func (ac *Client) GetDailyOpenCloseAgg(ctx context.Context, params models.GetDailyOpenCloseAggParams, opts ...models.RequestOption) (*models.GetDailyOpenCloseAggResponse, error) {
+	res := &models.GetDailyOpenCloseAggResponse{}
+	err := ac.Call(ctx, http.MethodGet, models.GetDailyOpenCloseAggPath, params, res, opts...)
+	return res, err
+}
+
+// GetPreviousClose retrieves the previous day's open, high, low, and close (OHLC) for the specified ticker.
+// For more details see https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__prev.
+func (ac *Client) GetPreviousCloseAgg(ctx context.Context, params models.GetPreviousCloseAggParams, opts ...models.RequestOption) (*models.GetPreviousCloseAggResponse, error) {
+	res := &models.GetPreviousCloseAggResponse{}
+	err := ac.Call(ctx, http.MethodGet, models.GetPreviousCloseAggPath, params, res, opts...)
 	return res, err
 }

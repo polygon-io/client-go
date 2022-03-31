@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"github.com/polygon-io/client-go/rest/client"
 )
 
 const (
@@ -12,8 +10,50 @@ const (
 	GetLastForexQuotePath = "/v1/last_quote/currencies/{from}/{to}"
 )
 
+// ListQuotesParams is the set of parameters for the ListQuotes method.
+type ListQuotesParams struct {
+	Ticker string `validate:"required" path:"ticker"`
+
+	TimestampEQ  *time.Time `query:"timestamp"`
+	TimestampLT  *time.Time `query:"timestamp.lt"`
+	TimestampLTE *time.Time `query:"timestamp.lte"`
+	TimestampGT  *time.Time `query:"timestamp.gt"`
+	TimestampGTE *time.Time `query:"timestamp.gte"`
+	Order        *Order     `query:"order"`
+	Limit        *int       `query:"limit"`
+	Sort         *Sort      `query:"sort"`
+}
+
+// ListQuotesResponse is the response returned by the ListQuotes method.
+type ListQuotesResponse struct {
+	BaseResponse
+	Results []Quote `json:"results,omitempty"`
+}
+
+// GetLastQuoteParams is the set of parameters for the GetLastQuote method.
+type GetLastQuoteParams struct {
+	Ticker string `validate:"required" path:"ticker"`
+}
+
+// GetLastQuoteResponse is the response returned by the GetLastQuote method.
+type GetLastQuoteResponse struct {
+	BaseResponse
+	Results LastQuote `json:"results,omitempty"`
+}
+
+// GetLastForexQuoteParams is the set of parameters for the GetLastForexQuote method.
+type GetLastForexQuoteParams struct {
+	From string `validate:"required" path:"from"`
+	To   string `validate:"required" path:"to"`
+}
+
+// GetLastForexQuoteResponse is the response returned by the GetLastForexQuote method.
+type GetLastForexQuoteResponse struct {
+	BaseResponse
+	Last ForexQuote `json:"last,omitempty"`
+}
+
 // Quote is an NBBO for a ticker symbol in a given time range.
-// For more details see https://polygon.io/docs/stocks/get_v3_quotes__stockticker.
 type Quote struct {
 	AskExchange          int     `json:"ask_exchange,omitempty"`
 	AskPrice             float64 `json:"ask_price,omitempty"`
@@ -30,28 +70,7 @@ type Quote struct {
 	TrfTimestamp         int64   `json:"trf_timestamp,omitempty"`
 }
 
-// QuotesResponse is returned by the list quotes API and contains a list of quotes for the specified ticker.
-type QuotesResponse struct {
-	client.BaseResponse
-	Results []Quote `json:"results,omitempty"`
-}
-
-// ListQuotesParams is the set of parameters for the ListQuotes method.
-type ListQuotesParams struct {
-	Ticker string `validate:"required" path:"ticker"`
-
-	TimestampEQ  *time.Time `query:"timestamp"`
-	TimestampLT  *time.Time `query:"timestamp.lt"`
-	TimestampLTE *time.Time `query:"timestamp.lte"`
-	TimestampGT  *time.Time `query:"timestamp.gt"`
-	TimestampGTE *time.Time `query:"timestamp.gte"`
-	Order        *Order     `query:"order"`
-	Limit        *int       `query:"limit"`
-	Sort         *Sort      `query:"sort"`
-}
-
 // LastQuote is the most recent NBBO for a ticker symbol.
-// For more details see https://polygon.io/docs/stocks/get_v2_last_nbbo__stocksticker.
 type LastQuote struct {
 	Ticker               string  `json:"T,omitempty"`
 	AskExchange          int     `json:"X,omitempty"`
@@ -69,34 +88,10 @@ type LastQuote struct {
 	TrfTimestamp         int64   `json:"f,omitempty"`
 }
 
-// LastQuoteResponse contains the most recent quote (NBBO) for a specified ticker.
-type LastQuoteResponse struct {
-	client.BaseResponse
-	Results LastQuote `json:"results,omitempty"`
-}
-
-// GetLastQuoteParams is the set of parameters for the GetLastQuote method.
-type GetLastQuoteParams struct {
-	Ticker string `validate:"required" path:"ticker"`
-}
-
 // ForexQuote is a BBO for a forex currency pair.
-// For more details see https://polygon.io/docs/forex/get_v1_last_quote_currencies__from___to.
 type ForexQuote struct {
 	Ask       float64 `json:"ask,omitempty"`
 	Bid       float64 `json:"bid,omitempty"`
 	Exchange  int     `json:"exchange,omitempty"`
 	Timestamp int64   `json:"timestamp,omitempty"`
-}
-
-// LastForexQuoteResponse contains the most recent quote (BBO) for a forex currency pair.
-type LastForexQuoteResponse struct {
-	client.BaseResponse
-	Last ForexQuote `json:"last,omitempty"`
-}
-
-// GetLastForexQuoteParams is the set of parameters for the GetLastForexQuote method.
-type GetLastForexQuoteParams struct {
-	From string `validate:"required" path:"from"`
-	To   string `validate:"required" path:"to"`
 }

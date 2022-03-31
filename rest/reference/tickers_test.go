@@ -9,7 +9,6 @@ import (
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/client"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
@@ -20,18 +19,18 @@ func TestListTickers(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	ticker1 := models.TickerDetails{Ticker: "A", Name: "Agilent Technologies Inc."}
-	ticker2 := models.TickerDetails{Ticker: "AA", Name: "Alcoa Corporation"}
-	expectedResponse := models.TickersResponse{
-		BaseResponse: client.BaseResponse{
+	ticker1 := models.Ticker{Ticker: "A", Name: "Agilent Technologies Inc."}
+	ticker2 := models.Ticker{Ticker: "AA", Name: "Alcoa Corporation"}
+	expectedResponse := models.ListTickersResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 			Count:     2,
-			PaginationHooks: client.PaginationHooks{
+			PaginationHooks: models.PaginationHooks{
 				NextURL: "https://api.polygon.io/v3/reference/tickers?cursor=YXA9OT",
 			},
 		},
-		Results: []models.TickerDetails{ticker1, ticker2},
+		Results: []models.Ticker{ticker1, ticker2},
 	}
 
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/reference/tickers?active=true&cik=5&cusip=10&date=2021-07-22&exchange=4&limit=2&market=stocks&order=asc&sort=ticker&type=CS",
@@ -44,8 +43,8 @@ func TestListTickers(t *testing.T) {
 		},
 	)
 
-	expectedNextResponse := models.TickersResponse{
-		BaseResponse: client.BaseResponse{
+	expectedNextResponse := models.ListTickersResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req2",
 			Count:     0,
@@ -70,7 +69,7 @@ func TestListTickers(t *testing.T) {
 		CIK:      models.Ptr(strconv.FormatInt(5, 10)),
 		Date:     models.Ptr("2021-07-22"),
 		Active:   models.Ptr(true),
-		Sort:     models.Ptr(models.Ticker),
+		Sort:     models.Ptr(models.TickerSymbol),
 		Order:    models.Ptr(models.Asc),
 		Limit:    models.Ptr(2),
 	})
@@ -98,14 +97,14 @@ func TestGetTickerDetails(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	ticker1 := models.TickerDetails{Ticker: "A", Name: "Agilent Technologies Inc."}
-	expectedResponse := models.TickersResponse{
-		BaseResponse: client.BaseResponse{
+	ticker1 := models.Ticker{Ticker: "A", Name: "Agilent Technologies Inc."}
+	expectedResponse := models.GetTickerDetailsResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 			Count:     1,
 		},
-		Results: []models.TickerDetails{ticker1},
+		Results: []models.Ticker{ticker1},
 	}
 
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/reference/tickers/A?date=2021-07-22",
@@ -133,13 +132,13 @@ func TestGetTickerTypes(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.TickerTypesResponse{
-		BaseResponse: client.BaseResponse{
+	expectedResponse := models.GetTickerTypesResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 			Count:     1,
 		},
-		Results: []*models.TickerType{
+		Results: []models.TickerType{
 			{
 				AssetClass:  "stocks",
 				Code:        "CS",
