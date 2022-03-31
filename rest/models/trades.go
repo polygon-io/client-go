@@ -29,7 +29,7 @@ type Trade struct {
 
 type TradesResponse struct {
 	client.BaseResponse
-	Results []*Trade `json:"results,omitempty"`
+	Results []Trade `json:"results,omitempty"`
 }
 
 // ListTradesParams is the set of path and query parameters that are used when requesting trades via the ListTrades method.

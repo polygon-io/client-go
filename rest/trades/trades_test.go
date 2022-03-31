@@ -31,7 +31,7 @@ func TestListTrades(t *testing.T) {
 				NextURL: "https://api.polygon.io/v3/trades/AAPL?cursor=YXA9OT",
 			},
 		},
-		Results: []*models.Trade{&trade1, &trade2},
+		Results: []models.Trade{trade1, trade2},
 	}
 
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/trades/AAPL?limit=2&order=asc&sort=timestamp&timestamp.gte=1626912000000000000",
@@ -73,14 +73,14 @@ func TestListTrades(t *testing.T) {
 	// verify the first page
 	assert.Nil(t, err)
 	assert.Nil(t, iter.Err())
-	assert.Nil(t, iter.Trade())
+	assert.NotNil(t, iter.Trade())
 	// verify the first and second trades
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, &trade1, iter.Trade())
+	assert.Equal(t, trade1, iter.Trade())
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, &trade2, iter.Trade())
+	assert.Equal(t, trade2, iter.Trade())
 
 	// verify the end of the list
 	assert.False(t, iter.Next())

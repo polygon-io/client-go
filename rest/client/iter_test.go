@@ -20,41 +20,20 @@ type Client struct {
 	client.Client
 }
 
-func (c *Client) ListResource(ctx context.Context, params ListResourceParams, options ...client.Option) (*ResourceIter, error) {
-	iter, err := c.NewIter(ctx, listResourcePath, params, func(url string) (client.ListResponse, []interface{}, error) {
-		res := &ResourceResponse{}
-		err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
-
-		results := make([]interface{}, len(res.Results))
-		for i, v := range res.Results {
-			results[i] = v
-		}
-
-		return res, results, err
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to create iterator: %w", err)
-	}
-
-	return &ResourceIter{
-		Iter: *iter,
-	}, nil
-}
-
 type ResourceIter struct {
 	client.Iter
 }
 
-func (it *ResourceIter) Resource() *Resource {
+func (it *ResourceIter) Resource() Resource {
 	if it.Item() != nil {
-		return it.Item().(*Resource)
+		return it.Item().(Resource)
 	}
-	return nil
+	return Resource{}
 }
 
 type ResourceResponse struct {
 	client.BaseResponse
-	Results []*Resource `json:"results,omitempty"`
+	Results []Resource `json:"results,omitempty"`
 }
 
 type Resource struct {
@@ -73,6 +52,27 @@ func (p ListResourceParams) Path() map[string]string {
 	}
 }
 
+func (c *Client) ListResource(ctx context.Context, params ListResourceParams, options ...client.Option) (*ResourceIter, error) {
+	url, err := c.EncodeParams(listResourcePath, params)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create iterator: %w", err)
+	}
+
+	return &ResourceIter{
+		Iter: client.NewIter(ctx, url, func(url string) (client.ListResponse, []interface{}, error) {
+			res := &ResourceResponse{}
+			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
+
+			results := make([]interface{}, len(res.Results))
+			for i, v := range res.Results {
+				results[i] = v
+			}
+
+			return res, results, err
+		}),
+	}, nil
+}
+
 func TestListResource(t *testing.T) {
 	c := Client{Client: client.New("API_KEY")}
 
@@ -80,7 +80,6 @@ func TestListResource(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	resource1 := Resource{Field: "field1"}
-	resource2 := Resource{Field: "field2"}
 	expectedRes1 := ResourceResponse{
 		BaseResponse: client.BaseResponse{
 			Status:    "OK",
@@ -90,10 +89,11 @@ func TestListResource(t *testing.T) {
 				NextURL: "https://api.polygon.io/resource/param1?cursor=NEXT",
 			},
 		},
-		Results: []*Resource{&resource1, &resource2},
+		Results: []Resource{resource1},
 	}
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/param1", ReqHandler(200, expectedRes1))
 
+	resource2 := Resource{Field: "field2"}
 	resource3 := Resource{Field: "field3"}
 	expectedRes2 := ResourceResponse{
 		BaseResponse: client.BaseResponse{
@@ -104,7 +104,7 @@ func TestListResource(t *testing.T) {
 				NextURL: "https://api.polygon.io/resource/param1?cursor=NEXTER",
 			},
 		},
-		Results: []*Resource{&resource3},
+		Results: []Resource{resource2, resource3},
 	}
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/param1?cursor=NEXT", ReqHandler(200, expectedRes2))
 
@@ -127,20 +127,19 @@ func TestListResource(t *testing.T) {
 	// verify the first page
 	assert.Nil(t, err)
 	assert.Nil(t, iter.Err())
-	assert.Nil(t, iter.Resource())
+	assert.NotNil(t, iter.Resource())
 	// verify the first and second quotes
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, &resource1, iter.Resource())
-	assert.True(t, iter.Next())
-	assert.Nil(t, iter.Err())
-	assert.Equal(t, &resource2, iter.Resource())
+	assert.Equal(t, resource1, iter.Resource())
 
 	// verify the second page
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	// verify the third quote
-	assert.Equal(t, &resource3, iter.Resource())
+	assert.Equal(t, resource2, iter.Resource())
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	assert.Equal(t, resource3, iter.Resource())
 
 	// verify the third page (end of list)
 	assert.False(t, iter.Next()) // this should be false since the third page has no results

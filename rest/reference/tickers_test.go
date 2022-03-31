@@ -31,7 +31,7 @@ func TestListTickers(t *testing.T) {
 				NextURL: "https://api.polygon.io/v3/reference/tickers?cursor=YXA9OT",
 			},
 		},
-		Results: []*models.TickerDetails{&ticker1, &ticker2},
+		Results: []models.TickerDetails{ticker1, ticker2},
 	}
 
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/reference/tickers?active=true&cik=5&cusip=10&date=2021-07-22&exchange=4&limit=2&market=stocks&order=asc&sort=ticker&type=CS",
@@ -78,14 +78,14 @@ func TestListTickers(t *testing.T) {
 	// verify the first page
 	assert.Nil(t, err)
 	assert.Nil(t, iter.Err())
-	assert.Nil(t, iter.Ticker())
+	assert.NotNil(t, iter.Ticker())
 	// verify the first and second trades
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, &ticker1, iter.Ticker())
+	assert.Equal(t, ticker1, iter.Ticker())
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, &ticker2, iter.Ticker())
+	assert.Equal(t, ticker2, iter.Ticker())
 
 	// verify the end of the list
 	assert.False(t, iter.Next())
@@ -105,7 +105,7 @@ func TestGetTickerDetails(t *testing.T) {
 			RequestID: "req1",
 			Count:     1,
 		},
-		Results: []*models.TickerDetails{&ticker1},
+		Results: []models.TickerDetails{ticker1},
 	}
 
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/reference/tickers/A?date=2021-07-22",

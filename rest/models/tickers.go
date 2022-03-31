@@ -68,7 +68,7 @@ type Branding struct {
 // TickersResponse contains a list of reference tickers.
 type TickersResponse struct {
 	client.BaseResponse
-	Results []*TickerDetails `json:"results,omitempty"`
+	Results []TickerDetails `json:"results,omitempty"`
 }
 
 // ListTickersParams is the set of path and query parameters that are used to request reference tickers.
