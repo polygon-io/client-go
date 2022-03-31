@@ -55,10 +55,10 @@ type GetAggsParams struct {
 	From       time.Time  `validate:"required"`
 	To         time.Time  `validate:"required"`
 
-	Sort     *Order `form:"sort"`
-	Limit    *int   `form:"limit"`
-	Adjusted *bool  `form:"adjusted"`
-	Explain  *bool  `form:"explain"`
+	Sort     *Order `query:"sort"`
+	Limit    *int   `query:"limit"`
+	Adjusted *bool  `query:"adjusted"`
+	Explain  *bool  `query:"explain"`
 }
 
 // Path returns a map of URL path parameters.
@@ -76,7 +76,7 @@ func (p GetAggsParams) Path() map[string]string {
 type GetPreviousCloseParams struct {
 	Ticker string `validate:"required"`
 
-	Adjusted *bool `form:"adjusted"`
+	Adjusted *bool `query:"adjusted"`
 }
 
 // Path returns a map of URL path parameters.
@@ -92,7 +92,7 @@ type GetGroupedDailyParams struct {
 	MarketType MarketType   `validate:"required"`
 	Date       time.Time    `validate:"required"`
 
-	Adjusted *bool `form:"adjusted"`
+	Adjusted *bool `query:"adjusted"`
 }
 
 // Path returns a map of URL path parameters.
@@ -125,7 +125,7 @@ type GetDailyOpenCloseParams struct {
 	Ticker string    `validate:"required"`
 	Date   time.Time `validate:"required"`
 
-	Adjusted *bool `form:"adjusted"`
+	Adjusted *bool `query:"adjusted"`
 }
 
 // PathParams returns a map of URL path parameters.

@@ -73,27 +73,27 @@ type TickersResponse struct {
 
 // ListTickersParams is the set of path and query parameters that are used to request reference tickers.
 type ListTickersParams struct {
-	TickerEQ  *string `form:"ticker"`
-	TickerLT  *string `form:"ticker.lt"`
-	TickerLTE *string `form:"ticker.lte"`
-	TickerGT  *string `form:"ticker.gt"`
-	TickerGTE *string `form:"ticker.gte"`
+	TickerEQ  *string `query:"ticker"`
+	TickerLT  *string `query:"ticker.lt"`
+	TickerLTE *string `query:"ticker.lte"`
+	TickerGT  *string `query:"ticker.gt"`
+	TickerGTE *string `query:"ticker.gte"`
 
 	// todo: which ones should be enums?
-	Type     *string     `form:"type"`
-	Market   *MarketType `form:"market"` // todo: this endpoint apparently expects fx instead of forex
-	Exchange *string     `form:"exchange"`
-	CUSIP    *string     `form:"cusip"`
-	CIK      *string     `form:"cik"`
-	Date     *string     `form:"date"` // todo: this is "2006-01-02" format, need to figure out the best way to encode this without interfering with the default
-	Active   *bool       `form:"active"`
+	Type     *string     `query:"type"`
+	Market   *MarketType `query:"market"` // todo: this endpoint apparently expects fx instead of forex
+	Exchange *string     `query:"exchange"`
+	CUSIP    *string     `query:"cusip"`
+	CIK      *string     `query:"cik"`
+	Date     *string     `query:"date"` // todo: this is "2006-01-02" format, need to figure out the best way to encode this without interfering with the default
+	Active   *bool       `query:"active"`
 
-	Sort  *Sort  `form:"sort"`
-	Order *Order `form:"order"`
-	Limit *int   `form:"limit"`
+	Sort  *Sort  `query:"sort"`
+	Order *Order `query:"order"`
+	Limit *int   `query:"limit"`
 
-	PageMarker *string `form:"page_marker"`
-	Search     *string `form:"search"`
+	PageMarker *string `query:"page_marker"`
+	Search     *string `query:"search"`
 }
 
 // Path maps the path parameters to their respective keys.
@@ -105,7 +105,7 @@ func (p ListTickersParams) Path() map[string]string {
 type GetTickerDetailsParams struct {
 	Ticker string `validate:"required"`
 
-	Date *string `form:"date"` // todo: this is "2006-01-02" format
+	Date *string `query:"date"` // todo: this is "2006-01-02" format
 }
 
 // Path maps the path parameters to their respective keys.
@@ -131,8 +131,8 @@ type TickerTypesResponse struct {
 
 // GetTickerTypesParams is the set of path and query parameters that are used to request ticker types.
 type GetTickerTypesParams struct {
-	AssetClass *string       `form:"asset_class"` // todo: this is similar but slightly different than market type (also we offer four options but only one returns results)
-	Locale     *MarketLocale `form:"locale"`
+	AssetClass *string       `query:"asset_class"` // todo: this is similar but slightly different than market type (also we offer four options but only one returns results)
+	Locale     *MarketLocale `query:"locale"`
 }
 
 // Path maps the path parameters to their respective keys.

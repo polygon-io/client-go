@@ -36,14 +36,14 @@ type TradesResponse struct {
 type ListTradesParams struct {
 	Ticker string `validate:"required"`
 
-	TimestampEQ  *time.Time `form:"timestamp"`
-	TimestampLT  *time.Time `form:"timestamp.lt"`
-	TimestampLTE *time.Time `form:"timestamp.lte"`
-	TimestampGT  *time.Time `form:"timestamp.gt"`
-	TimestampGTE *time.Time `form:"timestamp.gte"`
-	Limit        *int       `form:"limit"`
-	Sort         *Sort      `form:"sort"`
-	Order        *Order     `form:"order"`
+	TimestampEQ  *time.Time `query:"timestamp"`
+	TimestampLT  *time.Time `query:"timestamp.lt"`
+	TimestampLTE *time.Time `query:"timestamp.lte"`
+	TimestampGT  *time.Time `query:"timestamp.gt"`
+	TimestampGTE *time.Time `query:"timestamp.gte"`
+	Limit        *int       `query:"limit"`
+	Sort         *Sort      `query:"sort"`
+	Order        *Order     `query:"order"`
 }
 
 // Path returns a map of URL path parameters.

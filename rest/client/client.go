@@ -49,6 +49,7 @@ func New(apiKey string) Client {
 
 	e := form.NewEncoder()
 	e.SetMode(form.ModeExplicit)
+	e.SetTagName("query")
 	e.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
 		return []string{fmt.Sprint(x.(time.Time).UnixNano())}, nil
 	}, time.Time{})
