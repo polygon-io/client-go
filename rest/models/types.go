@@ -65,3 +65,11 @@ const (
 	Asc  Order = "asc"
 	Desc Order = "desc"
 )
+
+// Direction is the direction of the snapshot results to return
+type Direction string
+
+const (
+	Gainers Direction = "gainers"
+	Losers  Direction = "losers"
+)
