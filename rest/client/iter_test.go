@@ -3,9 +3,8 @@ package client_test
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -21,20 +20,25 @@ type Client struct {
 	client.Client
 }
 
-func (c *Client) ListResource(ctx context.Context, params ListResourceParams, options ...client.Option) *ResourceIter {
-	return &ResourceIter{
-		Iter: client.GetIter(ctx, params.String(), func(url string) (client.ListResponse, []interface{}, error) {
-			res := &ResourceResponse{}
-			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
+func (c *Client) ListResource(ctx context.Context, params ListResourceParams, options ...client.Option) (*ResourceIter, error) {
+	iter, err := c.NewIter(ctx, listResourcePath, params, func(url string) (client.ListResponse, []interface{}, error) {
+		res := &ResourceResponse{}
+		err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
 
-			results := make([]interface{}, len(res.Results))
-			for i, v := range res.Results {
-				results[i] = v
-			}
+		results := make([]interface{}, len(res.Results))
+		for i, v := range res.Results {
+			results[i] = v
+		}
 
-			return res, results, err
-		}),
+		return res, results, err
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
+
+	return &ResourceIter{
+		Iter: *iter,
+	}, nil
 }
 
 type ResourceIter struct {
@@ -58,39 +62,15 @@ type Resource struct {
 }
 
 type ListResourceParams struct {
-	Param       string
-	QueryParams ListResourceQueryParams
-}
+	Param string `validate:"required"`
 
-type ListResourceQueryParams struct {
-	Param *string
+	Timestamp *string `query:"timestamp"`
 }
 
 func (p ListResourceParams) Path() map[string]string {
 	return map[string]string{
 		"param": p.Param,
 	}
-}
-
-func (p ListResourceParams) Query() url.Values {
-	q := url.Values{}
-
-	if p.QueryParams.Param != nil {
-		q.Set("timestamp", *p.QueryParams.Param)
-	}
-
-	return q
-}
-
-func (p ListResourceParams) String() string {
-	path := strings.ReplaceAll(listResourcePath, "{param}", url.PathEscape(p.Param))
-
-	q := p.Query().Encode()
-	if q != "" {
-		path += "?" + q
-	}
-
-	return path
 }
 
 func TestListResource(t *testing.T) {
@@ -140,11 +120,12 @@ func TestListResource(t *testing.T) {
 	}
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/param1?cursor=NEXTER", ReqHandler(200, expectedRes3))
 
-	iter := c.ListResource(context.Background(), ListResourceParams{
+	iter, err := c.ListResource(context.Background(), ListResourceParams{
 		Param: "param1",
 	})
 
 	// verify the first page
+	assert.Nil(t, err)
 	assert.Nil(t, iter.Err())
 	assert.Nil(t, iter.Resource())
 	// verify the first and second quotes
@@ -186,11 +167,12 @@ func TestListResourceError(t *testing.T) {
 	}
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/param1", ReqHandler(404, expectedRes))
 
-	iter := c.ListResource(context.Background(), ListResourceParams{
+	iter, err := c.ListResource(context.Background(), ListResourceParams{
 		Param: "param1",
 	})
 
 	// iter.Next() should return false and the error should not be nil
+	assert.Nil(t, err)
 	assert.False(t, iter.Next())
 	assert.NotNil(t, iter.Err())
 	assert.Equal(t, expectedErr.Error(), iter.Err().Error())
