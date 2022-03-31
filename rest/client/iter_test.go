@@ -64,7 +64,7 @@ type Resource struct {
 type ListResourceParams struct {
 	Param string `validate:"required"`
 
-	Timestamp *string `form:"timestamp"`
+	Timestamp *string `query:"timestamp"`
 }
 
 func (p ListResourceParams) Path() map[string]string {
