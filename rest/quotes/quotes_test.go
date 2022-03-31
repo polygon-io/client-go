@@ -31,7 +31,7 @@ func TestListQuotes(t *testing.T) {
 				NextURL: "https://api.polygon.io/v3/quotes/AAPL?cursor=YXA9OT",
 			},
 		},
-		Results: []*models.Quote{&quote1, &quote2},
+		Results: []models.Quote{quote1, quote2},
 	}
 
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp.lte=1626912000000000000",
@@ -51,7 +51,7 @@ func TestListQuotes(t *testing.T) {
 			RequestID: "req2",
 			Count:     1,
 		},
-		Results: []*models.Quote{&quote3},
+		Results: []models.Quote{quote3},
 	}
 
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/quotes/AAPL?cursor=YXA9OT",
@@ -75,20 +75,20 @@ func TestListQuotes(t *testing.T) {
 	// verify the first page
 	assert.Nil(t, err)
 	assert.Nil(t, iter.Err())
-	assert.Nil(t, iter.Quote())
+	assert.NotNil(t, iter.Quote())
 	// verify the first and second quotes
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, &quote1, iter.Quote())
+	assert.Equal(t, quote1, iter.Quote())
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, &quote2, iter.Quote())
+	assert.Equal(t, quote2, iter.Quote())
 
 	// verify the second page
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
 	// verify the third quote
-	assert.Equal(t, &quote3, iter.Quote())
+	assert.Equal(t, quote3, iter.Quote())
 
 	// verify the end of the list
 	assert.False(t, iter.Next())

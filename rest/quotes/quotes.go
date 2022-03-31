@@ -9,10 +9,6 @@ import (
 	"github.com/polygon-io/client-go/rest/models"
 )
 
-// todo: delete Query methods
-// todo: delete String method
-// todo: add newDefaultEncoder to client so that Call and GetIter can use it
-
 // Client defines a REST client for the Polygon quotes API.
 type Client struct {
 	client.Client
@@ -24,11 +20,11 @@ type QuotesIter struct {
 }
 
 // Quote returns the current result that the iterator points to.
-func (it *QuotesIter) Quote() *models.Quote {
+func (it *QuotesIter) Quote() models.Quote {
 	if it.Item() != nil {
-		return it.Item().(*models.Quote)
+		return it.Item().(models.Quote)
 	}
-	return nil
+	return models.Quote{}
 }
 
 // ListQuotes retrieves quotes for a specified ticker. This method returns an iterator that should be used to
@@ -39,30 +35,30 @@ func (it *QuotesIter) Quote() *models.Quote {
 //   }
 //
 //   for iter.Next() {
-//       // Do something with the current value
+//       // do something with the current value
 //       log.Print(iter.Quote())
 //   }
 //   if iter.Err() != nil {
 //       return err
 //   }
 func (c *Client) ListQuotes(ctx context.Context, params models.ListQuotesParams, options ...client.Option) (*QuotesIter, error) {
-	iter, err := c.NewIter(ctx, models.ListQuotesPath, params, func(url string) (client.ListResponse, []interface{}, error) {
-		res := &models.QuotesResponse{}
-		err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
-
-		results := make([]interface{}, len(res.Results))
-		for i, v := range res.Results {
-			results[i] = v
-		}
-
-		return res, results, err
-	})
+	url, err := c.EncodeParams(models.ListQuotesPath, params)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
 
 	return &QuotesIter{
-		Iter: *iter,
+		Iter: client.NewIter(ctx, url, func(url string) (client.ListResponse, []interface{}, error) {
+			res := &models.QuotesResponse{}
+			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
+
+			results := make([]interface{}, len(res.Results))
+			for i, v := range res.Results {
+				results[i] = v
+			}
+
+			return res, results, err
+		}),
 	}, nil
 }
 

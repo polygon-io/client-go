@@ -20,11 +20,11 @@ type TradesIter struct {
 }
 
 // Trade returns the current result that the iterator points to.
-func (it *TradesIter) Trade() *models.Trade {
+func (it *TradesIter) Trade() models.Trade {
 	if it.Item() != nil {
-		return it.Item().(*models.Trade)
+		return it.Item().(models.Trade)
 	}
-	return nil
+	return models.Trade{}
 }
 
 // ListTrades retrieves trades for a specified ticker. This method returns an iterator that should be used to
@@ -35,30 +35,30 @@ func (it *TradesIter) Trade() *models.Trade {
 //   }
 //
 //   for iter.Next() {
-//       // Do something with the current value
+//       // do something with the current value
 //       log.Print(iter.Trade())
 //   }
 //   if iter.Err() != nil {
 //       return err
 //   }
 func (c *Client) ListTrades(ctx context.Context, params models.ListTradesParams, options ...client.Option) (*TradesIter, error) {
-	iter, err := c.NewIter(ctx, models.ListTradesPath, params, func(url string) (client.ListResponse, []interface{}, error) {
-		res := &models.TradesResponse{}
-		err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
-
-		results := make([]interface{}, len(res.Results))
-		for i, v := range res.Results {
-			results[i] = v
-		}
-
-		return res, results, err
-	})
+	url, err := c.EncodeParams(models.ListTradesPath, params)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
 
 	return &TradesIter{
-		Iter: *iter,
+		Iter: client.NewIter(ctx, url, func(url string) (client.ListResponse, []interface{}, error) {
+			res := &models.TradesResponse{}
+			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
+
+			results := make([]interface{}, len(res.Results))
+			for i, v := range res.Results {
+				results[i] = v
+			}
+
+			return res, results, err
+		}),
 	}, nil
 }
 
