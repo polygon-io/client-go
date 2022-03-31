@@ -2,6 +2,7 @@ package trades
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/client"
@@ -28,7 +29,11 @@ func (it *TradesIter) Trade() *models.Trade {
 
 // ListTrades retrieves trades for a specified ticker. This method returns an iterator that should be used to
 // access the results via this pattern:
-//   iter := c.ListTrades(context.TODO(), params, opts...)
+//   iter, err := c.ListTrades(context.TODO(), params, opts...)
+//   if err != nil {
+//       return err
+//   }
+//
 //   for iter.Next() {
 //       // Do something with the current value
 //       log.Print(iter.Trade())
@@ -36,20 +41,25 @@ func (it *TradesIter) Trade() *models.Trade {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListTrades(ctx context.Context, params models.ListTradesParams, options ...client.Option) *TradesIter {
-	return &TradesIter{
-		Iter: client.GetIter(ctx, params.String(), func(url string) (client.ListResponse, []interface{}, error) {
-			res := &models.TradesResponse{}
-			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
+func (c *Client) ListTrades(ctx context.Context, params models.ListTradesParams, options ...client.Option) (*TradesIter, error) {
+	iter, err := c.NewIter(ctx, models.ListTradesPath, params, func(url string) (client.ListResponse, []interface{}, error) {
+		res := &models.TradesResponse{}
+		err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
 
-			results := make([]interface{}, len(res.Results))
-			for i, v := range res.Results {
-				results[i] = v
-			}
+		results := make([]interface{}, len(res.Results))
+		for i, v := range res.Results {
+			results[i] = v
+		}
 
-			return res, results, err
-		}),
+		return res, results, err
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
+
+	return &TradesIter{
+		Iter: *iter,
+	}, nil
 }
 
 // GetLastTrade retrieves the last trade for a specified ticker.

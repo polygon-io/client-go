@@ -62,17 +62,16 @@ func TestListTrades(t *testing.T) {
 		},
 	)
 
-	iter := c.Trades.ListTrades(context.Background(), models.ListTradesParams{
-		Ticker: "AAPL",
-		QueryParams: models.ListTradesQueryParams{
-			TimestampGTE: models.Ptr(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
-			Order:        models.Ptr(models.Asc),
-			Limit:        models.Ptr(2),
-			Sort:         models.Ptr(models.Timestamp),
-		},
+	iter, err := c.Trades.ListTrades(context.Background(), models.ListTradesParams{
+		Ticker:       "AAPL",
+		TimestampGTE: models.Ptr(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
+		Order:        models.Ptr(models.Asc),
+		Limit:        models.Ptr(2),
+		Sort:         models.Ptr(models.Timestamp),
 	})
 
 	// verify the first page
+	assert.Nil(t, err)
 	assert.Nil(t, iter.Err())
 	assert.Nil(t, iter.Trade())
 	// verify the first and second trades

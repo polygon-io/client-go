@@ -2,7 +2,7 @@ package client
 
 import "context"
 
-// todo: possibly move this to internal
+// todo: use generics here
 
 // Iter defines an iterator type that should be used when implementing list methods. It's intended to
 // be embedded in a domain specific iterator struct.
@@ -20,18 +20,6 @@ type Iter struct {
 // Query defines a closure that domain specific iterators must implement. The implementation should
 // include a call to the API and should return the API response with a separate slice of the results.
 type Query func(string) (ListResponse, []interface{}, error)
-
-// GetIter returns a new initialized iterator. This method automatically makes the first query to
-// populate the results. List methods should use this helper method when building domain specific
-// iterators.
-func GetIter(ctx context.Context, url string, query Query) Iter {
-	it := Iter{
-		ctx:   ctx,
-		query: query,
-	}
-	it.page, it.results, it.err = it.query(url)
-	return it
-}
 
 // Next moves the iterator to the next result.
 func (it *Iter) Next() bool {
