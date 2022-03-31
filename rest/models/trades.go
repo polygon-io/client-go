@@ -32,9 +32,9 @@ type TradesResponse struct {
 	Results []Trade `json:"results,omitempty"`
 }
 
-// ListTradesParams is the set of path and query parameters that are used when requesting trades via the ListTrades method.
+// ListTradesParams is the set parameters for the ListTrades method.
 type ListTradesParams struct {
-	Ticker string `validate:"required"`
+	Ticker string `validate:"required" path:"ticker"`
 
 	TimestampEQ  *time.Time `query:"timestamp"`
 	TimestampLT  *time.Time `query:"timestamp.lt"`
@@ -44,13 +44,6 @@ type ListTradesParams struct {
 	Limit        *int       `query:"limit"`
 	Sort         *Sort      `query:"sort"`
 	Order        *Order     `query:"order"`
-}
-
-// Path returns a map of URL path parameters.
-func (p ListTradesParams) Path() map[string]string {
-	return map[string]string{
-		"ticker": p.Ticker,
-	}
 }
 
 // LastTrade is the most recent trade for a specified ticker.
@@ -77,16 +70,9 @@ type LastTradeResponse struct {
 	Results LastTrade `json:"results,omitempty"`
 }
 
-// GetLastTradeParams is the set of path and query parameters for retrieving the most recent trade for a specified ticker.
+// GetLastTradeParams is the set parameters for GetLastTrade method.
 type GetLastTradeParams struct {
-	Ticker string
-}
-
-// Path returns a map of URL path parameters.
-func (p GetLastTradeParams) Path() map[string]string {
-	return map[string]string{
-		"ticker": p.Ticker,
-	}
+	Ticker string `validate:"required" path:"ticker"`
 }
 
 // CryptoTrade is a trade for a crypto pair.
@@ -105,16 +91,8 @@ type LastCryptoTradeResponse struct {
 	Last CryptoTrade `json:"last,omitempty"`
 }
 
-// LastCryptoTradeParams is the set of path and query parameters for retrieving the most recent trade for a crypto pair.
-type LastCryptoTradeParams struct {
-	From string
-	To   string
-}
-
-// Path returns a map of URL path parameters.
-func (p LastCryptoTradeParams) Path() map[string]string {
-	return map[string]string{
-		"from": p.From,
-		"to":   p.To,
-	}
+// GetLastCryptoTradeParams is the set parameters for the GetLastCryptoTrade method.
+type GetLastCryptoTradeParams struct {
+	From string `validate:"required" path:"from"`
+	To   string `validate:"required" path:"to"`
 }

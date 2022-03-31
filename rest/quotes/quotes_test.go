@@ -157,7 +157,7 @@ func TestGetLastForexQuote(t *testing.T) {
 		},
 	)
 
-	res, err := c.Quotes.GetLastForexQuote(context.Background(), models.LastForexQuoteParams{
+	res, err := c.Quotes.GetLastForexQuote(context.Background(), models.GetLastForexQuoteParams{
 		From: "USD",
 		To:   "GBP",
 	})

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/polygon-io/client-go/rest/client"
@@ -49,11 +48,11 @@ type AggsResponse struct {
 
 // GetAggsParams is the set of path and query parameters for requesting aggs.
 type GetAggsParams struct {
-	Ticker     string     `validate:"required"`
-	Multiplier int        `validate:"required"`
-	Resolution Resolution `validate:"required"`
-	From       time.Time  `validate:"required"`
-	To         time.Time  `validate:"required"`
+	Ticker     string     `validate:"required" path:"ticker"`
+	Multiplier int        `validate:"required" path:"multiplier"`
+	Resolution Resolution `validate:"required" path:"resolution"`
+	From       time.Time  `validate:"required" path:"from"` // p.From.UnixMilli()
+	To         time.Time  `validate:"required" path:"to"`   // p.From.UnixMilli()
 
 	Sort     *Order `query:"sort"`
 	Limit    *int   `query:"limit"`
@@ -61,47 +60,20 @@ type GetAggsParams struct {
 	Explain  *bool  `query:"explain"`
 }
 
-// Path returns a map of URL path parameters.
-func (p GetAggsParams) Path() map[string]string {
-	return map[string]string{
-		"ticker":     p.Ticker,
-		"multiplier": fmt.Sprint(p.Multiplier),
-		"resolution": fmt.Sprint(p.Resolution),
-		"from":       fmt.Sprint(p.From.UnixMilli()),
-		"to":         fmt.Sprint(p.To.UnixMilli()),
-	}
-}
-
 // GetPreviousCloseParams is the set of path and query parameters for requesting previous close aggs.
 type GetPreviousCloseParams struct {
-	Ticker string `validate:"required"`
+	Ticker string `validate:"required" path:"ticker"`
 
 	Adjusted *bool `query:"adjusted"`
-}
-
-// Path returns a map of URL path parameters.
-func (p GetPreviousCloseParams) Path() map[string]string {
-	return map[string]string{
-		"ticker": p.Ticker,
-	}
 }
 
 // GetGroupedDailyParams is the set of path and query parameters that can be used when requesting aggs through the GetGroupedDaily method.
 type GetGroupedDailyParams struct {
-	Locale     MarketLocale `validate:"required"`
-	MarketType MarketType   `validate:"required"`
-	Date       time.Time    `validate:"required"`
+	Locale     MarketLocale `validate:"required" path:"locale"`
+	MarketType MarketType   `validate:"required" path:"marketType"`
+	Date       time.Time    `validate:"required" path:"date"` // p.Date.Format("2006-01-02")
 
 	Adjusted *bool `query:"adjusted"`
-}
-
-// Path returns a map of URL path parameters.
-func (p GetGroupedDailyParams) Path() map[string]string {
-	return map[string]string{
-		"locale":     string(p.Locale),
-		"marketType": string(p.MarketType),
-		"date":       p.Date.Format("2006-01-02"),
-	}
 }
 
 // DailyOpenCloseResponse is the response for the DailyOpenClose method.
@@ -122,16 +94,8 @@ type DailyOpenCloseResponse struct {
 
 // GetDailyOpenCloseParams is the set of path and query parameters that can be used when requesting aggs through the GetDailyOpenClose method.
 type GetDailyOpenCloseParams struct {
-	Ticker string    `validate:"required"`
-	Date   time.Time `validate:"required"`
+	Ticker string    `validate:"required" path:"ticker"`
+	Date   time.Time `validate:"required" path:"date"` // p.Date.Format("2006-01-02")
 
 	Adjusted *bool `query:"adjusted"`
-}
-
-// PathParams returns a map of URL path parameters.
-func (p GetDailyOpenCloseParams) Path() map[string]string {
-	return map[string]string{
-		"ticker": p.Ticker,
-		"date":   p.Date.Format("2006-01-02"),
-	}
 }

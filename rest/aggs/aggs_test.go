@@ -46,7 +46,7 @@ func TestGetAggs(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&explain=false&limit=1&sort=desc",
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc",
 		func(req *http.Request) (*http.Response, error) {
 			b, err := json.Marshal(expectedResponse)
 			assert.Nil(t, err)
