@@ -70,7 +70,7 @@ func (c *Client) GetLastTrade(ctx context.Context, params models.GetLastTradePar
 }
 
 // GetLastCryptoTrade retrieves the last trade for a crypto pair.
-func (c *Client) GetLastCryptoTrade(ctx context.Context, params models.LastCryptoTradeParams, options ...client.Option) (*models.LastCryptoTradeResponse, error) {
+func (c *Client) GetLastCryptoTrade(ctx context.Context, params models.GetLastCryptoTradeParams, options ...client.Option) (*models.LastCryptoTradeResponse, error) {
 	res := &models.LastCryptoTradeResponse{}
 	err := c.Call(ctx, http.MethodGet, models.GetLastCryptoTradePath, params, res, options...)
 	return res, err

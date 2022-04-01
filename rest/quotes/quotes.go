@@ -70,7 +70,7 @@ func (c *Client) GetLastQuote(ctx context.Context, params models.GetLastQuotePar
 }
 
 // GetLastForexQuote retrieves the last quote (BBO) for a forex currency pair.
-func (c *Client) GetLastForexQuote(ctx context.Context, params models.LastForexQuoteParams, options ...client.Option) (*models.LastForexQuoteResponse, error) {
+func (c *Client) GetLastForexQuote(ctx context.Context, params models.GetLastForexQuoteParams, options ...client.Option) (*models.LastForexQuoteResponse, error) {
 	res := &models.LastForexQuoteResponse{}
 	err := c.Call(ctx, http.MethodGet, models.GetLastForexQuotePath, params, res, options...)
 	return res, err

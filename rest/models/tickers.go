@@ -71,7 +71,7 @@ type TickersResponse struct {
 	Results []TickerDetails `json:"results,omitempty"`
 }
 
-// ListTickersParams is the set of path and query parameters that are used to request reference tickers.
+// ListTickersParams is the set parameters for the ListTickers method.
 type ListTickersParams struct {
 	TickerEQ  *string `query:"ticker"`
 	TickerLT  *string `query:"ticker.lt"`
@@ -96,23 +96,11 @@ type ListTickersParams struct {
 	Search     *string `query:"search"`
 }
 
-// Path maps the path parameters to their respective keys.
-func (p ListTickersParams) Path() map[string]string {
-	return map[string]string{}
-}
-
-// GetTickerDetailsParams is the set of path and query parameters that are used to request reference ticker details.
+// GetTickerDetailsParams is the set parameters for the GetTickerDetails method.
 type GetTickerDetailsParams struct {
-	Ticker string `validate:"required"`
+	Ticker string `validate:"required" path:"ticker"`
 
 	Date *string `query:"date"` // todo: this is "2006-01-02" format
-}
-
-// Path maps the path parameters to their respective keys.
-func (p GetTickerDetailsParams) Path() map[string]string {
-	return map[string]string{
-		"ticker": p.Ticker,
-	}
 }
 
 // TickerType represents a type of ticker with a code that the API understands.
@@ -129,13 +117,8 @@ type TickerTypesResponse struct {
 	Results []*TickerType `json:"results,omitempty"`
 }
 
-// GetTickerTypesParams is the set of path and query parameters that are used to request ticker types.
+// GetTickerTypesParams is the set parameters for the GetTickerTypes method.
 type GetTickerTypesParams struct {
 	AssetClass *string       `query:"asset_class"` // todo: this is similar but slightly different than market type (also we offer four options but only one returns results)
 	Locale     *MarketLocale `query:"locale"`
-}
-
-// Path maps the path parameters to their respective keys.
-func (p GetTickerTypesParams) Path() map[string]string {
-	return map[string]string{}
 }

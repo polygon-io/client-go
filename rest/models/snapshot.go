@@ -69,18 +69,9 @@ type GetSnapshotTickerResponse struct {
 
 // GetSnapshotTickerParams is the set of path and query parameters that can be used when requesting a snapshot for a ticker through the GetSnapshotTicker method.
 type GetSnapshotTickerParams struct {
-	Locale     MarketLocale
-	MarketType MarketType
-	Ticker     string
-}
-
-// Path maps the input GetSnapshotTickerParams path parameters to their respective keys.
-func (p GetSnapshotTickerParams) Path() map[string]string {
-	return map[string]string{
-		"locale":     string(p.Locale),
-		"marketType": string(p.MarketType),
-		"ticker":     p.Ticker,
-	}
+	Locale     MarketLocale `validate:"required" path:"locale"`
+	MarketType MarketType   `validate:"required" path:"marketType"`
+	Ticker     string       `validate:"required" path:"ticker"`
 }
 
 // ListSnapshotAllTickersResponse is returned by the Snapshot - All Tickers API. It contains a snapshot for all the tickers of a specified market type.
@@ -91,16 +82,8 @@ type ListSnapshotAllTickersResponse struct {
 
 // ListSnapshotAllTickersParams is the set of path and query parameters that can be used when requesting the snapshots for tickers through the ListSnapshotAllTickers method.
 type ListSnapshotAllTickersParams struct {
-	Locale     MarketLocale
-	MarketType MarketType
-}
-
-// Path maps the input ListSnapshotAllTickersParams path parameters to their respective keys.
-func (p ListSnapshotAllTickersParams) Path() map[string]string {
-	return map[string]string{
-		"locale":     string(p.Locale),
-		"marketType": string(p.MarketType),
-	}
+	Locale     MarketLocale `validate:"required" path:"locale"`
+	MarketType MarketType   `validate:"required" path:"marketType"`
 }
 
 // ListSnapshotGainersLosersResponse is returned by the Snapshot - Gainers/Losers API. It contains a snapshot of the top gainers or losers of a specified market type.
@@ -111,18 +94,9 @@ type ListSnapshotGainersLosersResponse struct {
 
 // ListSnapshotGainersLosersParams is the set of path and query parameters that can be used when requesting a snapshot for a ticker through the ListSnapshotGainersLosers method.
 type ListSnapshotGainersLosersParams struct {
-	Locale     MarketLocale
-	MarketType MarketType
-	Direction  Direction
-}
-
-// Path maps the input ListSnapshotAllTickersParams path parameters to their respective keys.
-func (p ListSnapshotGainersLosersParams) Path() map[string]string {
-	return map[string]string{
-		"locale":     string(p.Locale),
-		"marketType": string(p.MarketType),
-		"direction":  string(p.Direction),
-	}
+	Locale     MarketLocale `validate:"required" path:"locale"`
+	MarketType MarketType   `validate:"required" path:"marketType"`
+	Direction  Direction    `validate:"required" path:"direction"`
 }
 
 type OptionContractSnapshot struct {
@@ -191,16 +165,8 @@ type GetSnapshotOptionContractResponse struct {
 
 // GetSnapshotOptionContractParams is the set of path and query parameters that can be used when requesting a snapshot for a ticker through the GetSnapshotOptionContract method.
 type GetSnapshotOptionContractParams struct {
-	UnderlyingAsset string
-	OptionContract  string
-}
-
-// Path maps the input GetSnapshotOptionContractParams path parameters to their respective keys.
-func (p GetSnapshotOptionContractParams) Path() map[string]string {
-	return map[string]string{
-		"underlyingAsset": p.UnderlyingAsset,
-		"optionContract":  p.OptionContract,
-	}
+	UnderlyingAsset string `validate:"required" path:"underlyingAsset"`
+	OptionContract  string `validate:"required" path:"optionContract"`
 }
 
 type SnapshotTickerFullBook struct {
@@ -229,12 +195,5 @@ type ListSnapshotTickerFullBookResponse struct {
 
 // ListSnapshotTickerFullBookParams is the set of path and query parameters that can be used when requesting the full book of a single ticker through the ListSnapshotTickerFullBook method.
 type ListSnapshotTickerFullBookParams struct {
-	Ticker string
-}
-
-// Path maps the input ListSnapshotTickerFullBookParams path parameters to their respective keys.
-func (p ListSnapshotTickerFullBookParams) Path() map[string]string {
-	return map[string]string{
-		"ticker": p.Ticker,
-	}
+	Ticker string `validate:"required" path:"ticker"`
 }
