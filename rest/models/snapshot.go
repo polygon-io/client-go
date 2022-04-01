@@ -13,7 +13,7 @@ type GetAllTickersSnapshotParams struct {
 	Locale     MarketLocale `validate:"required" path:"locale"`
 	MarketType MarketType   `validate:"required" path:"marketType"`
 
-	Tickers *string `query:"tickers"`
+	Tickers *[]string `query:"tickers"`
 }
 
 // GetAllTickersSnapshotResponse is the response returned by the GetAllTickersSnapshot method.
