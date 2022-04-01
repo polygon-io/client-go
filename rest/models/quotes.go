@@ -36,9 +36,9 @@ type QuotesResponse struct {
 	Results []Quote `json:"results,omitempty"`
 }
 
-// ListQuotesParams is the set of path and query parameters that are used when requesting quotes via the ListQuotes method.
+// ListQuotesParams is the set of parameters for the ListQuotes method.
 type ListQuotesParams struct {
-	Ticker string `validate:"required"`
+	Ticker string `validate:"required" path:"ticker"`
 
 	TimestampEQ  *time.Time `query:"timestamp"`
 	TimestampLT  *time.Time `query:"timestamp.lt"`
@@ -48,13 +48,6 @@ type ListQuotesParams struct {
 	Order        *Order     `query:"order"`
 	Limit        *int       `query:"limit"`
 	Sort         *Sort      `query:"sort"`
-}
-
-// Path returns a map of URL path parameters.
-func (p ListQuotesParams) Path() map[string]string {
-	return map[string]string{
-		"ticker": p.Ticker,
-	}
 }
 
 // LastQuote is the most recent NBBO for a ticker symbol.
@@ -82,16 +75,9 @@ type LastQuoteResponse struct {
 	Results LastQuote `json:"results,omitempty"`
 }
 
-// GetLastQuoteParams is the set of path and query parameters for retrieving the most recent quote (NBBO) for a specified ticker.
+// GetLastQuoteParams is the set of parameters for the GetLastQuote method.
 type GetLastQuoteParams struct {
-	Ticker string `validate:"required"`
-}
-
-// Path returns a map of URL path parameters.
-func (p GetLastQuoteParams) Path() map[string]string {
-	return map[string]string{
-		"ticker": p.Ticker,
-	}
+	Ticker string `validate:"required" path:"ticker"`
 }
 
 // ForexQuote is a BBO for a forex currency pair.
@@ -109,16 +95,8 @@ type LastForexQuoteResponse struct {
 	Last ForexQuote `json:"last,omitempty"`
 }
 
-// LastForexQuoteParams is the set of path and query parameters for retrieving the most recent quote (BBO) for a forex currency pair.
-type LastForexQuoteParams struct {
-	From string `validate:"required"`
-	To   string `validate:"required"`
-}
-
-// Path returns a map of URL path parameters.
-func (p LastForexQuoteParams) Path() map[string]string {
-	return map[string]string{
-		"from": p.From,
-		"to":   p.To,
-	}
+// GetLastForexQuoteParams is the set of parameters for the GetLastForexQuote method.
+type GetLastForexQuoteParams struct {
+	From string `validate:"required" path:"from"`
+	To   string `validate:"required" path:"to"`
 }

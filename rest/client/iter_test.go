@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	listResourcePath = "/resource/{param}"
+	listResourcePath = "/resource/{ticker}"
 )
 
 type Client struct {
@@ -37,19 +37,13 @@ type ResourceResponse struct {
 }
 
 type Resource struct {
-	Field string `json:"field"`
+	Price string `json:"price"`
 }
 
 type ListResourceParams struct {
-	Param string `validate:"required"`
+	Ticker string `validate:"required" path:"ticker"`
 
 	Timestamp *string `query:"timestamp"`
-}
-
-func (p ListResourceParams) Path() map[string]string {
-	return map[string]string{
-		"param": p.Param,
-	}
 }
 
 func (c *Client) ListResource(ctx context.Context, params ListResourceParams, options ...client.Option) (*ResourceIter, error) {
@@ -79,34 +73,34 @@ func TestListResource(t *testing.T) {
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	resource1 := Resource{Field: "field1"}
+	resource1 := Resource{Price: "price1"}
 	expectedRes1 := ResourceResponse{
 		BaseResponse: client.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
-			Count:     2,
+			Count:     1,
 			PaginationHooks: client.PaginationHooks{
-				NextURL: "https://api.polygon.io/resource/param1?cursor=NEXT",
+				NextURL: "https://api.polygon.io/resource/ticker1?cursor=NEXT",
 			},
 		},
 		Results: []Resource{resource1},
 	}
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/param1", ReqHandler(200, expectedRes1))
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/ticker1", ReqHandler(200, expectedRes1))
 
-	resource2 := Resource{Field: "field2"}
-	resource3 := Resource{Field: "field3"}
+	resource2 := Resource{Price: "price2"}
+	resource3 := Resource{Price: "price3"}
 	expectedRes2 := ResourceResponse{
 		BaseResponse: client.BaseResponse{
 			Status:    "OK",
 			RequestID: "req2",
-			Count:     1,
+			Count:     2,
 			PaginationHooks: client.PaginationHooks{
-				NextURL: "https://api.polygon.io/resource/param1?cursor=NEXTER",
+				NextURL: "https://api.polygon.io/resource/ticker1?cursor=NEXTER",
 			},
 		},
 		Results: []Resource{resource2, resource3},
 	}
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/param1?cursor=NEXT", ReqHandler(200, expectedRes2))
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/ticker1?cursor=NEXT", ReqHandler(200, expectedRes2))
 
 	expectedRes3 := ResourceResponse{
 		BaseResponse: client.BaseResponse{
@@ -114,14 +108,14 @@ func TestListResource(t *testing.T) {
 			RequestID: "req3",
 			Count:     0,
 			PaginationHooks: client.PaginationHooks{
-				NextURL: "https://api.polygon.io/resource/param1?cursor=NEXTER",
+				NextURL: "https://api.polygon.io/resource/ticker1?cursor=NEXTER",
 			},
 		},
 	}
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/param1?cursor=NEXTER", ReqHandler(200, expectedRes3))
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/ticker1?cursor=NEXTER", ReqHandler(200, expectedRes3))
 
 	iter, err := c.ListResource(context.Background(), ListResourceParams{
-		Param: "param1",
+		Ticker: "ticker1",
 	})
 
 	// verify the first page
@@ -164,10 +158,10 @@ func TestListResourceError(t *testing.T) {
 		StatusCode:   404,
 		BaseResponse: baseRes,
 	}
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/param1", ReqHandler(404, expectedRes))
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/ticker1", ReqHandler(404, expectedRes))
 
 	iter, err := c.ListResource(context.Background(), ListResourceParams{
-		Param: "param1",
+		Ticker: "ticker1",
 	})
 
 	// iter.Next() should return false and the error should not be nil

@@ -150,7 +150,7 @@ func TestGetLastCryptoTrade(t *testing.T) {
 		},
 	)
 
-	res, err := c.Trades.GetLastCryptoTrade(context.Background(), models.LastCryptoTradeParams{
+	res, err := c.Trades.GetLastCryptoTrade(context.Background(), models.GetLastCryptoTradeParams{
 		From: "BTC",
 		To:   "USD",
 	})
