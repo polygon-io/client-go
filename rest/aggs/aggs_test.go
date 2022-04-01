@@ -9,42 +9,24 @@ import (
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/client"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
-
-var expectedResponse = models.AggsResponse{
-	Ticker: "AAPL",
-	BaseResponse: client.BaseResponse{
-		Status:       "OK",
-		RequestID:    "cffb2db04ed53d1fdf2547f15c1ca14e",
-		Count:        1,
-		Message:      "",
-		ErrorMessage: "",
-	},
-	QueryCount:   1,
-	ResultsCount: 1,
-	Adjusted:     true,
-	Aggs: []models.Aggregate{
-		{
-			Volume:       77287356,
-			VWAP:         146.991,
-			Open:         145.935,
-			Close:        146.8,
-			High:         148.195,
-			Low:          145.81,
-			Timestamp:    1626926400000,
-			Transactions: 480209,
-		},
-	},
-}
 
 func TestGetAggs(t *testing.T) {
 	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := models.GetAggsResponse{
+		BaseResponse: models.BaseResponse{
+			Status:    "OK",
+			RequestID: "req1",
+			Count:     1,
+		},
+		Results: []models.Agg{{Volume: 77287356}},
+	}
 
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc",
 		func(req *http.Request) (*http.Response, error) {
@@ -72,36 +54,20 @@ func TestGetAggs(t *testing.T) {
 	assert.Equal(t, &expectedResponse, res)
 }
 
-func TestGetPreviousClose(t *testing.T) {
+func TestGetGroupedDailyAggs(t *testing.T) {
 	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/ticker/AAPL/prev",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
+	expectedResponse := models.GetGroupedDailyAggsResponse{
+		BaseResponse: models.BaseResponse{
+			Status:    "OK",
+			RequestID: "req1",
+			Count:     1,
 		},
-	)
-
-	res, err := c.Aggs.GetPreviousClose(context.Background(), models.GetPreviousCloseParams{
-		Ticker:   "AAPL",
-		Adjusted: models.Ptr(true),
-	})
-
-	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
-}
-
-func TestGetGroupedDaily(t *testing.T) {
-	c := polygon.New("API_KEY")
-
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
-	defer httpmock.DeactivateAndReset()
+		Results: []models.Agg{{Volume: 77287356}},
+	}
 
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/2021-07-22",
 		func(req *http.Request) (*http.Response, error) {
@@ -113,7 +79,7 @@ func TestGetGroupedDaily(t *testing.T) {
 		},
 	)
 
-	res, err := c.Aggs.GetGroupedDaily(context.Background(), models.GetGroupedDailyParams{
+	res, err := c.Aggs.GetGroupedDailyAggs(context.Background(), models.GetGroupedDailyAggsParams{
 		Locale:     models.US,
 		MarketType: models.Stocks,
 		Date:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local),
@@ -124,27 +90,59 @@ func TestGetGroupedDaily(t *testing.T) {
 	assert.Equal(t, &expectedResponse, res)
 }
 
-func TestGetDailyOpenClose(t *testing.T) {
+func TestGetPreviousCloseAgg(t *testing.T) {
 	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedBaseResponse := client.BaseResponse{
-		Status: "OK",
+	expectedResponse := models.GetPreviousCloseAggResponse{
+		BaseResponse: models.BaseResponse{
+			Status:    "OK",
+			RequestID: "req1",
+			Count:     1,
+		},
+		Results: []models.Agg{{Volume: 77287356}},
 	}
 
-	expectedResponse := models.DailyOpenCloseResponse{
-		BaseResponse: expectedBaseResponse,
-		Symbol:       "AAPL",
-		From:         "2020-10-14",
-		Open:         121,
-		High:         123.03,
-		Low:          119.62,
-		Close:        121.19,
-		Volume:       151057198,
-		AfterHours:   120.81,
-		PreMarket:    121.55,
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/ticker/AAPL/prev",
+		func(req *http.Request) (*http.Response, error) {
+			b, err := json.Marshal(expectedResponse)
+			assert.Nil(t, err)
+			resp := httpmock.NewStringResponse(200, string(b))
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+
+	res, err := c.Aggs.GetPreviousCloseAgg(context.Background(), models.GetPreviousCloseAggParams{
+		Ticker:   "AAPL",
+		Adjusted: models.Ptr(true),
+	})
+
+	assert.Nil(t, err)
+	assert.Equal(t, &expectedResponse, res)
+}
+
+func TestGetDailyOpenCloseAgg(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := models.GetDailyOpenCloseAggResponse{
+		BaseResponse: models.BaseResponse{
+			Status: "OK",
+		},
+		Symbol:     "AAPL",
+		From:       "2020-10-14",
+		Open:       121,
+		High:       123.03,
+		Low:        119.62,
+		Close:      121.19,
+		Volume:     151057198,
+		AfterHours: 120.81,
+		PreMarket:  121.55,
 	}
 
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/v1/open-close/AAPL/2020-10-14?adjusted=true",
@@ -157,7 +155,7 @@ func TestGetDailyOpenClose(t *testing.T) {
 		},
 	)
 
-	res, err := c.Aggs.GetDailyOpenClose(context.Background(), models.GetDailyOpenCloseParams{
+	res, err := c.Aggs.GetDailyOpenCloseAgg(context.Background(), models.GetDailyOpenCloseAggParams{
 		Ticker:   "AAPL",
 		Date:     time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local),
 		Adjusted: models.Ptr(true),

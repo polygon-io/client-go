@@ -39,7 +39,7 @@ const (
 type Sort string
 
 const (
-	Ticker             Sort = "ticker"
+	TickerSymbol       Sort = "ticker"
 	Name               Sort = "name"
 	Market             Sort = "market"
 	Locale             Sort = "locale"

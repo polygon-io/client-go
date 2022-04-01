@@ -1,6 +1,14 @@
 package client
 
-import "context"
+import (
+	"context"
+
+	"github.com/polygon-io/client-go/rest/models"
+)
+
+// Query defines a closure that domain specific iterators must implement. The implementation should
+// include a call to the API and should return the API response with a separate slice of the results.
+type Query func(string) (models.ListResponse, []interface{}, error)
 
 // Iter defines an iterator type that should be used when implementing list methods. It's intended to
 // be embedded in a domain specific iterator struct.
@@ -8,7 +16,7 @@ type Iter struct {
 	ctx   context.Context
 	query Query
 
-	page    ListResponse
+	page    models.ListResponse
 	item    interface{}
 	results []interface{}
 
@@ -25,10 +33,6 @@ func NewIter(ctx context.Context, url string, query Query) Iter {
 	it.page, it.results, it.err = it.query(url)
 	return it
 }
-
-// Query defines a closure that domain specific iterators must implement. The implementation should
-// include a call to the API and should return the API response with a separate slice of the results.
-type Query func(string) (ListResponse, []interface{}, error)
 
 // Next moves the iterator to the next result.
 func (it *Iter) Next() bool {

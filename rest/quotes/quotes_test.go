@@ -9,7 +9,6 @@ import (
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/client"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
@@ -22,12 +21,12 @@ func TestListQuotes(t *testing.T) {
 
 	quote1 := models.Quote{AskPrice: 1.23}
 	quote2 := models.Quote{AskPrice: 1.5}
-	expectedResponse := models.QuotesResponse{
-		BaseResponse: client.BaseResponse{
+	expectedResponse := models.ListQuotesResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 			Count:     2,
-			PaginationHooks: client.PaginationHooks{
+			PaginationHooks: models.PaginationHooks{
 				NextURL: "https://api.polygon.io/v3/quotes/AAPL?cursor=YXA9OT",
 			},
 		},
@@ -45,8 +44,8 @@ func TestListQuotes(t *testing.T) {
 	)
 
 	quote3 := models.Quote{AskPrice: 1.40}
-	expectedNextResponse := models.QuotesResponse{
-		BaseResponse: client.BaseResponse{
+	expectedNextResponse := models.ListQuotesResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req2",
 			Count:     1,
@@ -101,8 +100,8 @@ func TestGetLastQuote(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.LastQuoteResponse{
-		BaseResponse: client.BaseResponse{
+	expectedResponse := models.GetLastQuoteResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 			Count:     1,
@@ -134,8 +133,8 @@ func TestGetLastForexQuote(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.LastForexQuoteResponse{
-		BaseResponse: client.BaseResponse{
+	expectedResponse := models.GetLastForexQuoteResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 		},

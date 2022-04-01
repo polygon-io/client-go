@@ -8,8 +8,10 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
-	"github.com/polygon-io/client-go/rest/client"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/polygon-io/client-go/rest/client"
+	"github.com/polygon-io/client-go/rest/models"
 )
 
 const (
@@ -20,19 +22,19 @@ type Client struct {
 	client.Client
 }
 
-type ResourceIter struct {
+type ListResourceIter struct {
 	client.Iter
 }
 
-func (it *ResourceIter) Resource() Resource {
+func (it *ListResourceIter) Resource() Resource {
 	if it.Item() != nil {
 		return it.Item().(Resource)
 	}
 	return Resource{}
 }
 
-type ResourceResponse struct {
-	client.BaseResponse
+type ListResourceResponse struct {
+	models.BaseResponse
 	Results []Resource `json:"results,omitempty"`
 }
 
@@ -46,15 +48,15 @@ type ListResourceParams struct {
 	Timestamp *string `query:"timestamp"`
 }
 
-func (c *Client) ListResource(ctx context.Context, params ListResourceParams, options ...client.Option) (*ResourceIter, error) {
+func (c *Client) ListResource(ctx context.Context, params ListResourceParams, options ...models.RequestOption) (*ListResourceIter, error) {
 	url, err := c.EncodeParams(listResourcePath, params)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
 
-	return &ResourceIter{
-		Iter: client.NewIter(ctx, url, func(url string) (client.ListResponse, []interface{}, error) {
-			res := &ResourceResponse{}
+	return &ListResourceIter{
+		Iter: client.NewIter(ctx, url, func(url string) (models.ListResponse, []interface{}, error) {
+			res := &ListResourceResponse{}
 			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
 
 			results := make([]interface{}, len(res.Results))
@@ -74,12 +76,12 @@ func TestListResource(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	resource1 := Resource{Price: "price1"}
-	expectedRes1 := ResourceResponse{
-		BaseResponse: client.BaseResponse{
+	expectedRes1 := ListResourceResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 			Count:     1,
-			PaginationHooks: client.PaginationHooks{
+			PaginationHooks: models.PaginationHooks{
 				NextURL: "https://api.polygon.io/resource/ticker1?cursor=NEXT",
 			},
 		},
@@ -89,12 +91,12 @@ func TestListResource(t *testing.T) {
 
 	resource2 := Resource{Price: "price2"}
 	resource3 := Resource{Price: "price3"}
-	expectedRes2 := ResourceResponse{
-		BaseResponse: client.BaseResponse{
+	expectedRes2 := ListResourceResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req2",
 			Count:     2,
-			PaginationHooks: client.PaginationHooks{
+			PaginationHooks: models.PaginationHooks{
 				NextURL: "https://api.polygon.io/resource/ticker1?cursor=NEXTER",
 			},
 		},
@@ -102,12 +104,12 @@ func TestListResource(t *testing.T) {
 	}
 	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/ticker1?cursor=NEXT", ReqHandler(200, expectedRes2))
 
-	expectedRes3 := ResourceResponse{
-		BaseResponse: client.BaseResponse{
+	expectedRes3 := ListResourceResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req3",
 			Count:     0,
-			PaginationHooks: client.PaginationHooks{
+			PaginationHooks: models.PaginationHooks{
 				NextURL: "https://api.polygon.io/resource/ticker1?cursor=NEXTER",
 			},
 		},
@@ -146,15 +148,15 @@ func TestListResourceError(t *testing.T) {
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	baseRes := client.BaseResponse{
+	baseRes := models.BaseResponse{
 		Status:       "NOT FOUND",
 		RequestID:    "req1",
 		ErrorMessage: "resource not found",
 	}
-	expectedRes := ResourceResponse{
+	expectedRes := ListResourceResponse{
 		BaseResponse: baseRes,
 	}
-	expectedErr := client.ErrorResponse{
+	expectedErr := models.ErrorResponse{
 		StatusCode:   404,
 		BaseResponse: baseRes,
 	}
@@ -175,7 +177,7 @@ func TestListResourceError(t *testing.T) {
 	assert.Nil(t, iter.Item())
 }
 
-func ReqHandler(code int, res ResourceResponse) func(req *http.Request) (*http.Response, error) {
+func ReqHandler(code int, res ListResourceResponse) func(req *http.Request) (*http.Response, error) {
 	return func(req *http.Request) (*http.Response, error) {
 		b, err := json.Marshal(res)
 		if err != nil {

@@ -2,32 +2,33 @@ package reference
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/client"
 	"github.com/polygon-io/client-go/rest/models"
 )
 
+// Client defines a REST client for the Polygon reference API.
 type Client struct {
 	client.Client
 }
 
-// TickersIter defines a domain specific iterator for the reference tickers API.
-type TickersIter struct {
+// ListTickersIter is an iterator for the ListTickers method.
+type ListTickersIter struct {
 	client.Iter
 }
 
 // Ticker returns the current result that the iterator points to.
-func (it *TickersIter) Ticker() models.TickerDetails {
+func (it *ListTickersIter) Ticker() models.Ticker {
 	if it.Item() != nil {
-		return it.Item().(models.TickerDetails)
+		return it.Item().(models.Ticker)
 	}
-	return models.TickerDetails{}
+	return models.Ticker{}
 }
 
-// ListTickers retrieves reference tickers. This method returns an iterator that should be used to
-// access the results via this pattern:
+// ListTickers retrieves reference tickers.
+// For more details see https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker.
+// This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListTickers(context.TODO(), params, opts...)
 //   if err != nil {
 //       return err
@@ -40,15 +41,15 @@ func (it *TickersIter) Ticker() models.TickerDetails {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListTickers(ctx context.Context, params models.ListTickersParams, options ...client.Option) (*TickersIter, error) {
+func (c *Client) ListTickers(ctx context.Context, params models.ListTickersParams, options ...models.RequestOption) (*ListTickersIter, error) {
 	url, err := c.EncodeParams(models.ListTickersPath, params)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create iterator: %w", err)
+		return nil, err
 	}
 
-	return &TickersIter{
-		Iter: client.NewIter(ctx, url, func(url string) (client.ListResponse, []interface{}, error) {
-			res := &models.TickersResponse{}
+	return &ListTickersIter{
+		Iter: client.NewIter(ctx, url, func(url string) (models.ListResponse, []interface{}, error) {
+			res := &models.ListTickersResponse{}
 			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
 
 			results := make([]interface{}, len(res.Results))
@@ -62,15 +63,17 @@ func (c *Client) ListTickers(ctx context.Context, params models.ListTickersParam
 }
 
 // GetTickerDetails retrieves details for a specified ticker.
-func (c *Client) GetTickerDetails(ctx context.Context, params models.GetTickerDetailsParams, options ...client.Option) (*models.TickersResponse, error) {
-	res := &models.TickersResponse{}
+// For more details see https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker.
+func (c *Client) GetTickerDetails(ctx context.Context, params models.GetTickerDetailsParams, options ...models.RequestOption) (*models.GetTickerDetailsResponse, error) {
+	res := &models.GetTickerDetailsResponse{}
 	err := c.Call(ctx, http.MethodGet, models.GetTickerDetailsPath, params, res, options...)
 	return res, err
 }
 
 // GetTickerTypes retrieves all the possible ticker types that can be queried.
-func (c *Client) GetTickerTypes(ctx context.Context, params models.GetTickerTypesParams, options ...client.Option) (*models.TickerTypesResponse, error) {
-	res := &models.TickerTypesResponse{}
+// For more details see https://polygon.io/docs/stocks/get_v3_reference_tickers_types.
+func (c *Client) GetTickerTypes(ctx context.Context, params models.GetTickerTypesParams, options ...models.RequestOption) (*models.GetTickerTypesResponse, error) {
+	res := &models.GetTickerTypesResponse{}
 	err := c.Call(ctx, http.MethodGet, models.GetTickerTypesPath, params, res, options...)
 	return res, err
 }

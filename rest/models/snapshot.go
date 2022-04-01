@@ -1,16 +1,73 @@
 package models
 
-import (
-	"github.com/polygon-io/client-go/rest/client"
+const (
+	GetAllTickersSnapshotPath     = "/v2/snapshot/locale/{locale}/markets/{marketType}/tickers"
+	GetTickerSnapshotPath         = "/v2/snapshot/locale/{locale}/markets/{marketType}/tickers/{ticker}"
+	GetGainersLosersSnapshotPath  = "/v2/snapshot/locale/{locale}/markets/{marketType}/{direction}"
+	GetOptionContractSnapshotPath = "/v3/snapshot/options/{underlyingAsset}/{optionContract}"
+	GetCryptoFullBookSnapshotPath = "/v2/snapshot/locale/global/markets/crypto/tickers/{ticker}/book"
 )
 
-const (
-	ListSnapshotAllTickersPath     = "/v2/snapshot/locale/{locale}/markets/{marketType}/tickers"
-	GetSnapshotTickerPath          = "/v2/snapshot/locale/{locale}/markets/{marketType}/tickers/{ticker}"
-	ListSnapshotGainersLosersPath  = "/v2/snapshot/locale/{locale}/markets/{marketType}/{direction}"
-	GetSnapshotOptionContractPath  = "/v3/snapshot/options/{underlyingAsset}/{optionContract}"
-	ListSnapshotTickerFullBookPath = "/v2/snapshot/locale/global/markets/crypto/tickers/{ticker}/book"
-)
+// GetAllTickersSnapshotParams is the set of parameters for the GetAllTickersSnapshot method.
+type GetAllTickersSnapshotParams struct {
+	Locale     MarketLocale `validate:"required" path:"locale"`
+	MarketType MarketType   `validate:"required" path:"marketType"`
+}
+
+// GetAllTickersSnapshotResponse is the response returned by the GetAllTickersSnapshot method.
+type GetAllTickersSnapshotResponse struct {
+	BaseResponse
+	Snapshots []TickerSnapshot `json:"ticker,omitempty"`
+}
+
+// GetTickerSnapshotParams is the set of parameters for the GetTickerSnapshot method.
+type GetTickerSnapshotParams struct {
+	Locale     MarketLocale `validate:"required" path:"locale"`
+	MarketType MarketType   `validate:"required" path:"marketType"`
+	Ticker     string       `validate:"required" path:"ticker"`
+}
+
+// GetTickerSnapshotResponse is the response returned by the GetTickerSnapshot method.
+type GetTickerSnapshotResponse struct {
+	BaseResponse
+	Snapshot TickerSnapshot `json:"ticker,omitempty"`
+}
+
+// GetGainersLosersSnapshotParams is the set of parameters for the GetGainersLosersSnapshot method.
+type GetGainersLosersSnapshotParams struct {
+	Locale     MarketLocale `validate:"required" path:"locale"`
+	MarketType MarketType   `validate:"required" path:"marketType"`
+	Direction  Direction    `validate:"required" path:"direction"`
+}
+
+// GetGainersLosersSnapshotResponse is the response returned by the GetGainersLosersSnapshot method.
+type GetGainersLosersSnapshotResponse struct {
+	BaseResponse
+	Snapshots []TickerSnapshot `json:"ticker,omitempty"`
+}
+
+// GetOptionContractSnapshotParams is the set of parameters for the GetOptionContractSnapshot method.
+type GetOptionContractSnapshotParams struct {
+	UnderlyingAsset string `validate:"required" path:"underlyingAsset"`
+	OptionContract  string `validate:"required" path:"optionContract"`
+}
+
+// GetOptionContractSnapshotResponse is the response returned by the GetOptionContractSnapshot method.
+type GetOptionContractSnapshotResponse struct {
+	BaseResponse
+	Results OptionContractSnapshot `json:"results,omitempty"`
+}
+
+// GetCryptoFullBookSnapshotParams is the set of parameters for the GetCryptoFullBookSnapshot method.
+type GetCryptoFullBookSnapshotParams struct {
+	Ticker string `validate:"required" path:"ticker"`
+}
+
+// GetCryptoFullBookSnapshotResponse is the response returned by the GetCryptoFullBookSnapshot method.
+type GetCryptoFullBookSnapshotResponse struct {
+	BaseResponse
+	Data SnapshotTickerFullBook `json:"data,omitempty"`
+}
 
 // TickerSnapshot is a collection of data for a ticker including the current minute, day, and previous day's aggregate, as well as the last trade and quote.
 type TickerSnapshot struct {
@@ -59,44 +116,6 @@ type MinuteSnapshot struct {
 	Open                  float64 `json:"o"`
 	Volume                float64 `json:"v"`
 	VolumeWeightedAverage float64 `json:"vw"`
-}
-
-// GetSnapshotTickerResponse is returned by the Snapshot - Ticker API. It contains a snapshot for the specified ticker.
-type GetSnapshotTickerResponse struct {
-	client.BaseResponse
-	Snapshot TickerSnapshot `json:"ticker,omitempty"`
-}
-
-// GetSnapshotTickerParams is the set of path and query parameters that can be used when requesting a snapshot for a ticker through the GetSnapshotTicker method.
-type GetSnapshotTickerParams struct {
-	Locale     MarketLocale `validate:"required" path:"locale"`
-	MarketType MarketType   `validate:"required" path:"marketType"`
-	Ticker     string       `validate:"required" path:"ticker"`
-}
-
-// ListSnapshotAllTickersResponse is returned by the Snapshot - All Tickers API. It contains a snapshot for all the tickers of a specified market type.
-type ListSnapshotAllTickersResponse struct {
-	client.BaseResponse
-	Snapshots []TickerSnapshot `json:"ticker,omitempty"`
-}
-
-// ListSnapshotAllTickersParams is the set of path and query parameters that can be used when requesting the snapshots for tickers through the ListSnapshotAllTickers method.
-type ListSnapshotAllTickersParams struct {
-	Locale     MarketLocale `validate:"required" path:"locale"`
-	MarketType MarketType   `validate:"required" path:"marketType"`
-}
-
-// ListSnapshotGainersLosersResponse is returned by the Snapshot - Gainers/Losers API. It contains a snapshot of the top gainers or losers of a specified market type.
-type ListSnapshotGainersLosersResponse struct {
-	client.BaseResponse
-	Snapshots []TickerSnapshot `json:"ticker,omitempty"`
-}
-
-// ListSnapshotGainersLosersParams is the set of path and query parameters that can be used when requesting a snapshot for a ticker through the ListSnapshotGainersLosers method.
-type ListSnapshotGainersLosersParams struct {
-	Locale     MarketLocale `validate:"required" path:"locale"`
-	MarketType MarketType   `validate:"required" path:"marketType"`
-	Direction  Direction    `validate:"required" path:"direction"`
 }
 
 type OptionContractSnapshot struct {
@@ -157,18 +176,6 @@ type UnderlyingAsset struct {
 	Timeframe         string  `json:"timeframe"`
 }
 
-// GetSnapshotOptionContractResponse is returned by the Snapshot - Option Contract. It contains a snapshot of an option contract for a stock equity.
-type GetSnapshotOptionContractResponse struct {
-	client.BaseResponse
-	Results OptionContractSnapshot `json:"results,omitempty"`
-}
-
-// GetSnapshotOptionContractParams is the set of path and query parameters that can be used when requesting a snapshot for a ticker through the GetSnapshotOptionContract method.
-type GetSnapshotOptionContractParams struct {
-	UnderlyingAsset string `validate:"required" path:"underlyingAsset"`
-	OptionContract  string `validate:"required" path:"optionContract"`
-}
-
 type SnapshotTickerFullBook struct {
 	AskCount float64 `json:"askCount"`
 	Asks     []Ask   `json:"asks"`
@@ -186,14 +193,3 @@ type OrderBookQuote struct {
 
 type Ask OrderBookQuote
 type Bid OrderBookQuote
-
-// ListSnapshotTickerFullBookResponse is returned by the Snapshot - Ticker Full Book (L2). It contains the current level 2 book of a single ticker. This is the combined book from all of the exchanges.
-type ListSnapshotTickerFullBookResponse struct {
-	client.BaseResponse
-	Data SnapshotTickerFullBook `json:"data,omitempty"`
-}
-
-// ListSnapshotTickerFullBookParams is the set of path and query parameters that can be used when requesting the full book of a single ticker through the ListSnapshotTickerFullBook method.
-type ListSnapshotTickerFullBookParams struct {
-	Ticker string `validate:"required" path:"ticker"`
-}

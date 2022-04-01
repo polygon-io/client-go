@@ -13,37 +13,42 @@ type Client struct {
 	client.Client
 }
 
-// ListSnapshotAllTickers lists the current minute, day, and previous day’s aggregate, as well as the last trade and quote for all symbols of a specified market type.
-func (ac *Client) ListSnapshotAllTickers(ctx context.Context, params models.ListSnapshotAllTickersParams, opts ...client.Option) (*models.ListSnapshotAllTickersResponse, error) {
-	res := &models.ListSnapshotAllTickersResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.ListSnapshotAllTickersPath, params, res, opts...)
+// GetAllTickersSnapshot gets the current minute, day, and previous day’s aggregate, as well as the last trade and quote for all symbols of a specified market type.
+// For more details see https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks_tickers.
+func (ac *Client) GetAllTickersSnapshot(ctx context.Context, params models.GetAllTickersSnapshotParams, opts ...models.RequestOption) (*models.GetAllTickersSnapshotResponse, error) {
+	res := &models.GetAllTickersSnapshotResponse{}
+	err := ac.Call(ctx, http.MethodGet, models.GetAllTickersSnapshotPath, params, res, opts...)
 	return res, err
 }
 
-// GetSnapshotTicker gets the current minute, day, and previous day’s aggregate, as well as the last trade and quote for a single traded symbol of a specified market type.
-func (ac *Client) GetSnapshotTicker(ctx context.Context, params models.GetSnapshotTickerParams, opts ...client.Option) (*models.GetSnapshotTickerResponse, error) {
-	res := &models.GetSnapshotTickerResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetSnapshotTickerPath, params, res, opts...)
+// GetTickerSnapshot gets the current minute, day, and previous day’s aggregate, as well as the last trade and quote for a single traded symbol of a specified market type.
+// For more details see https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks_tickers__stocksticker.
+func (ac *Client) GetTickerSnapshot(ctx context.Context, params models.GetTickerSnapshotParams, opts ...models.RequestOption) (*models.GetTickerSnapshotResponse, error) {
+	res := &models.GetTickerSnapshotResponse{}
+	err := ac.Call(ctx, http.MethodGet, models.GetTickerSnapshotPath, params, res, opts...)
 	return res, err
 }
 
-// ListSnapshotGainersLosers lists the current top 20 gainers or losers of the day in a specific market type.
-func (ac *Client) ListSnapshotGainersLosers(ctx context.Context, params models.ListSnapshotGainersLosersParams, opts ...client.Option) (*models.ListSnapshotGainersLosersResponse, error) {
-	res := &models.ListSnapshotGainersLosersResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.ListSnapshotGainersLosersPath, params, res, opts...)
+// GetGainersLosersSnapshot gets the current top 20 gainers or losers of the day in a specific market type.
+// For more details see https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks__direction.
+func (ac *Client) GetGainersLosersSnapshot(ctx context.Context, params models.GetGainersLosersSnapshotParams, opts ...models.RequestOption) (*models.GetGainersLosersSnapshotResponse, error) {
+	res := &models.GetGainersLosersSnapshotResponse{}
+	err := ac.Call(ctx, http.MethodGet, models.GetGainersLosersSnapshotPath, params, res, opts...)
 	return res, err
 }
 
-// GetSnapshotOptionContract gets the snapshot of an option contract for a stock equity.
-func (ac *Client) GetSnapshotOptionContract(ctx context.Context, params models.GetSnapshotOptionContractParams, opts ...client.Option) (*models.GetSnapshotOptionContractResponse, error) {
-	res := &models.GetSnapshotOptionContractResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetSnapshotOptionContractPath, params, res, opts...)
+// GetOptionContractSnapshot gets the snapshot of an option contract for a stock equity.
+// For more details see https://polygon.io/docs/options/get_v3_snapshot_options__underlyingasset___optioncontract.
+func (ac *Client) GetOptionContractSnapshot(ctx context.Context, params models.GetOptionContractSnapshotParams, opts ...models.RequestOption) (*models.GetOptionContractSnapshotResponse, error) {
+	res := &models.GetOptionContractSnapshotResponse{}
+	err := ac.Call(ctx, http.MethodGet, models.GetOptionContractSnapshotPath, params, res, opts...)
 	return res, err
 }
 
-// ListSnapshotTickerFullBook Get the current level 2 book of a single cryptocurrency ticker. This is the combined book from all of the exchanges.
-func (ac *Client) ListSnapshotTickerFullBook(ctx context.Context, params models.ListSnapshotTickerFullBookParams, opts ...client.Option) (*models.ListSnapshotTickerFullBookResponse, error) {
-	res := &models.ListSnapshotTickerFullBookResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.ListSnapshotTickerFullBookPath, params, res, opts...)
+// GetCryptoFullBookSnapshot gets the current level 2 book of a single cryptocurrency ticker. This is the combined book from all of the exchanges.
+// For more details see https://polygon.io/docs/crypto/get_v2_snapshot_locale_global_markets_crypto_tickers__ticker__book.
+func (ac *Client) GetCryptoFullBookSnapshot(ctx context.Context, params models.GetCryptoFullBookSnapshotParams, opts ...models.RequestOption) (*models.GetCryptoFullBookSnapshotResponse, error) {
+	res := &models.GetCryptoFullBookSnapshotResponse{}
+	err := ac.Call(ctx, http.MethodGet, models.GetCryptoFullBookSnapshotPath, params, res, opts...)
 	return res, err
 }
