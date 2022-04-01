@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 const (
 	ListTickersPath      = "/v3/reference/tickers"
 	GetTickerDetailsPath = "/v3/reference/tickers/{ticker}"
@@ -47,7 +49,7 @@ type GetTickerDetailsParams struct {
 // GetTickerDetailsResponse is the response returned by the GetTickerDetails method.
 type GetTickerDetailsResponse struct {
 	BaseResponse
-	Results []Ticker `json:"results,omitempty"`
+	Results Ticker `json:"results,omitempty"`
 }
 
 // GetTickerTypesParams is the set of parameters for the GetTickerTypes method.
@@ -64,37 +66,37 @@ type GetTickerTypesResponse struct {
 
 // Ticker contains detailed information on a specified ticker symbol.
 type Ticker struct {
-	Ticker                      string         `json:"ticker"`
-	Name                        string         `json:"name"`
-	Market                      string         `json:"market"`
-	Locale                      string         `json:"locale"`
-	PrimaryExchange             string         `json:"primary_exchange,omitempty"`
-	Type                        string         `json:"type,omitempty"`
-	Active                      bool           `json:"active"`
-	CurrencySymbol              string         `json:"currency_symbol,omitempty"`
-	CurrencyName                string         `json:"currency_name,omitempty"`
-	BaseCurrencySymbol          string         `json:"base_currency_symbol,omitempty"`
-	BaseCurrencyName            string         `json:"base_currency_name,omitempty"`
-	CUSIP                       string         `json:"cusip,omitempty"`
-	CIK                         string         `json:"cik,omitempty"`
-	CompositeFIGI               string         `json:"composite_figi,omitempty"`
-	ShareClassFIGI              string         `json:"share_class_figi,omitempty"`
-	LastUpdatedUTC              int64          `json:"last_updated_utc,omitempty"`
-	DelistedUTC                 int64          `json:"delisted_utc,omitempty"`
-	MarketCap                   float64        `json:"market_cap,omitempty"`
-	PhoneNumber                 string         `json:"phone_number,omitempty"`
-	Address                     CompanyAddress `json:"address,omitempty"`
-	Description                 string         `json:"description,omitempty"`
-	SICCode                     string         `json:"sic_code,omitempty"`
-	SICDescription              string         `json:"sic_description,omitempty"`
-	TickerRoot                  string         `json:"ticker_root,omitempty"`
-	TickerSuffix                string         `json:"ticker_suffix,omitempty"`
-	HomepageURL                 string         `json:"homepage_url,omitempty"`
-	TotalEmployees              int32          `json:"total_employees,omitempty"`
-	ListDate                    string         `json:"list_date,omitempty"`
-	Branding                    Branding       `json:"branding,omitempty"`
-	ShareClassSharesOutstanding int64          `json:"share_class_shares_outstanding,omitempty"`
-	WeightedSharesOutstanding   int64          `json:"weighted_shares_outstanding,omitempty"`
+	Ticker                      string          `json:"ticker,omitempty"`
+	Name                        string          `json:"name,omitempty"`
+	Market                      string          `json:"market,omitempty"`
+	Locale                      string          `json:"locale,omitempty"`
+	PrimaryExchange             string          `json:"primary_exchange,omitempty"`
+	Type                        string          `json:"type,omitempty"`
+	Active                      bool            `json:"active,omitempty"`
+	CurrencySymbol              string          `json:"currency_symbol,omitempty"`
+	CurrencyName                string          `json:"currency_name,omitempty"`
+	BaseCurrencySymbol          string          `json:"base_currency_symbol,omitempty"`
+	BaseCurrencyName            string          `json:"base_currency_name,omitempty"`
+	CUSIP                       string          `json:"cusip,omitempty"`
+	CIK                         string          `json:"cik,omitempty"`
+	CompositeFIGI               string          `json:"composite_figi,omitempty"`
+	ShareClassFIGI              string          `json:"share_class_figi,omitempty"`
+	LastUpdatedUTC              time.Time       `json:"last_updated_utc,omitempty"`
+	DelistedUTC                 int64           `json:"delisted_utc,omitempty"`
+	MarketCap                   float64         `json:"market_cap,omitempty"`
+	PhoneNumber                 string          `json:"phone_number,omitempty"`
+	Address                     *CompanyAddress `json:"address,omitempty"`
+	Description                 string          `json:"description,omitempty"`
+	SICCode                     string          `json:"sic_code,omitempty"`
+	SICDescription              string          `json:"sic_description,omitempty"`
+	TickerRoot                  string          `json:"ticker_root,omitempty"`
+	TickerSuffix                string          `json:"ticker_suffix,omitempty"`
+	HomepageURL                 string          `json:"homepage_url,omitempty"`
+	TotalEmployees              int32           `json:"total_employees,omitempty"`
+	ListDate                    string          `json:"list_date,omitempty"`
+	Branding                    *Branding       `json:"branding,omitempty"`
+	ShareClassSharesOutstanding int64           `json:"share_class_shares_outstanding,omitempty"`
+	WeightedSharesOutstanding   int64           `json:"weighted_shares_outstanding,omitempty"`
 }
 
 // CompanyAddress contains information on the physical address of a company.
@@ -118,8 +120,8 @@ type Branding struct {
 
 // TickerType represents a type of ticker with a code that the API understands.
 type TickerType struct {
-	AssetClass  string `json:"asset_class"`
-	Code        string `json:"code"`
-	Description string `json:"description"`
-	Locale      string `json:"locale"`
+	AssetClass  string `json:"asset_class,omitempty"`
+	Code        string `json:"code,omitempty"`
+	Description string `json:"description,omitempty"`
+	Locale      string `json:"locale,omitempty"`
 }

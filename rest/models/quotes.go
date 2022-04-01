@@ -50,7 +50,8 @@ type GetLastForexQuoteParams struct {
 // GetLastForexQuoteResponse is the response returned by the GetLastForexQuote method.
 type GetLastForexQuoteResponse struct {
 	BaseResponse
-	Last ForexQuote `json:"last,omitempty"`
+	Symbol string     `json:"symbol,omitempty"`
+	Last   ForexQuote `json:"last,omitempty"`
 }
 
 // Quote is an NBBO for a ticker symbol in a given time range.
