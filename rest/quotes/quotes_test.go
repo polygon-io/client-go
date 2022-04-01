@@ -19,50 +19,50 @@ func TestListQuotes(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	quote1 := models.Quote{AskPrice: 1.23}
-	quote2 := models.Quote{AskPrice: 1.5}
-	expectedResponse := models.ListQuotesResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req1",
-			Count:     2,
-			PaginationHooks: models.PaginationHooks{
-				NextURL: "https://api.polygon.io/v3/quotes/AAPL?cursor=YXA9OT",
-			},
-		},
-		Results: []models.Quote{quote1, quote2},
-	}
+	quote1 := `{
+	"ask_exchange": 10,
+	"ask_price": 103.3,
+	"ask_size": 60,
+	"bid_exchange": 11,
+	"bid_price": 102.7,
+	"bid_size": 60,
+	"conditions": [
+		1
+	],
+	"participant_timestamp": 1517562000065321200,
+	"sequence_number": 2060,
+	"sip_timestamp": 1517562000065700400,
+	"tape": 3
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp.lte=1626912000000000000",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
+	quote2 := `{
+	"ask_exchange": 10,
+	"ask_price": 180,
+	"ask_size": 2,
+	"bid_exchange": 11,
+	"bid_price": 170,
+	"bid_size": 2,
+	"conditions": [
+		1
+	],
+	"participant_timestamp": 1517562000065408300,
+	"sequence_number": 2061,
+	"sip_timestamp": 1517562000065791500,
+	"tape": 3
+}`
 
-	quote3 := models.Quote{AskPrice: 1.40}
-	expectedNextResponse := models.ListQuotesResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req2",
-			Count:     1,
-		},
-		Results: []models.Quote{quote3},
-	}
+	expectedResponse := `{
+	"status": "OK",
+	"request_id": "a47d1beb8c11b6ae897ab76cdbbf35a3",
+	"next_url": "https://api.polygon.io/v3/quotes/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy",
+	"results": [
+		` + quote1 + `,
+		` + quote2 + `
+	]
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/quotes/AAPL?cursor=YXA9OT",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedNextResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp.lte=1626912000000000000", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/quotes/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
 	iter, err := c.Quotes.ListQuotes(context.Background(), models.ListQuotesParams{
 		Ticker:       "AAPL",
 		TimestampLTE: models.Ptr(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
@@ -71,25 +71,26 @@ func TestListQuotes(t *testing.T) {
 		Sort:         models.Ptr(models.Timestamp),
 	})
 
-	// verify the first page
+	// iter creation
 	assert.Nil(t, err)
 	assert.Nil(t, iter.Err())
 	assert.NotNil(t, iter.Quote())
-	// verify the first and second quotes
-	assert.True(t, iter.Next())
-	assert.Nil(t, iter.Err())
-	assert.Equal(t, quote1, iter.Quote())
-	assert.True(t, iter.Next())
-	assert.Nil(t, iter.Err())
-	assert.Equal(t, quote2, iter.Quote())
 
-	// verify the second page
+	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	// verify the third quote
-	assert.Equal(t, quote3, iter.Quote())
+	b, err := json.MarshalIndent(iter.Quote(), "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, quote1, string(b))
 
-	// verify the end of the list
+	// second item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	b, err = json.MarshalIndent(iter.Quote(), "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, quote2, string(b))
+
+	// end of list
 	assert.False(t, iter.Next())
 	assert.Nil(t, iter.Err())
 }
@@ -100,31 +101,33 @@ func TestGetLastQuote(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.GetLastQuoteResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req1",
-			Count:     1,
-		},
-		Results: models.LastQuote{AskPrice: 1.23},
+	expectedResponse := `{
+	"status": "OK",
+	"request_id": "b84e24636301f19f88e0dfbf9a45ed5c",
+	"results": {
+		"T": "AAPL",
+		"X": 19,
+		"P": 127.98,
+		"S": 7,
+		"x": 11,
+		"p": 127.96,
+		"s": 1,
+		"y": 1617827221349366000,
+		"q": 83480742,
+		"t": 1617827221349730300,
+		"z": 3
 	}
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/last/nbbo/AAPL",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v2/last/nbbo/AAPL", expectedResponse)
 	res, err := c.Quotes.GetLastQuote(context.Background(), models.GetLastQuoteParams{
 		Ticker: "AAPL",
 	})
 
 	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
 }
 
 func TestGetLastForexQuote(t *testing.T) {
@@ -133,34 +136,36 @@ func TestGetLastForexQuote(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.GetLastForexQuoteResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req1",
-		},
-		Last: models.ForexQuote{
-			Ask:       1.23,
-			Bid:       1.24,
-			Exchange:  5,
-			Timestamp: 1626912000000000000,
-		},
+	expectedResponse := `{
+	"status": "success",
+	"request_id": "a73a29dbcab4613eeaf48583d3baacf0",
+	"symbol": "AUD/USD",
+	"last": {
+		"ask": 0.73124,
+		"bid": 0.73122,
+		"exchange": 48,
+		"timestamp": 1605557756000
 	}
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v1/last_quote/currencies/USD/GBP",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v1/last_quote/currencies/USD/GBP", expectedResponse)
 	res, err := c.Quotes.GetLastForexQuote(context.Background(), models.GetLastForexQuoteParams{
 		From: "USD",
 		To:   "GBP",
 	})
 
 	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
+}
+
+func registerResponder(url string, body string) {
+	httpmock.RegisterResponder("GET", url,
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, body)
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
 }

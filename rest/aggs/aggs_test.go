@@ -50,14 +50,7 @@ func TestGetAggs(t *testing.T) {
 	]
 }`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc",
-		func(req *http.Request) (*http.Response, error) {
-			resp := httpmock.NewStringResponse(200, expectedResponse)
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc", expectedResponse)
 	res, err := c.Aggs.GetAggs(context.Background(), models.GetAggsParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
@@ -124,14 +117,7 @@ func TestGetGroupedDailyAggs(t *testing.T) {
 	]
 }`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/2021-07-22",
-		func(req *http.Request) (*http.Response, error) {
-			resp := httpmock.NewStringResponse(200, expectedResponse)
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/2021-07-22", expectedResponse)
 	res, err := c.Aggs.GetGroupedDailyAggs(context.Background(), models.GetGroupedDailyAggsParams{
 		Locale:     models.US,
 		MarketType: models.Stocks,
@@ -164,14 +150,7 @@ func TestGetDailyOpenCloseAgg(t *testing.T) {
 	"preMarket": 324.5
 }`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v1/open-close/AAPL/2020-10-14?adjusted=true",
-		func(req *http.Request) (*http.Response, error) {
-			resp := httpmock.NewStringResponse(200, expectedResponse)
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v1/open-close/AAPL/2020-10-14?adjusted=true", expectedResponse)
 	res, err := c.Aggs.GetDailyOpenCloseAgg(context.Background(), models.GetDailyOpenCloseAggParams{
 		Ticker:   "AAPL",
 		Date:     time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local),
@@ -211,14 +190,7 @@ func TestGetPreviousCloseAgg(t *testing.T) {
 	]
 }`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/aggs/ticker/AAPL/prev",
-		func(req *http.Request) (*http.Response, error) {
-			resp := httpmock.NewStringResponse(200, expectedResponse)
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/prev", expectedResponse)
 	res, err := c.Aggs.GetPreviousCloseAgg(context.Background(), models.GetPreviousCloseAggParams{
 		Ticker:   "AAPL",
 		Adjusted: models.Ptr(true),
@@ -228,4 +200,14 @@ func TestGetPreviousCloseAgg(t *testing.T) {
 	b, err := json.MarshalIndent(res, "", "\t")
 	assert.Nil(t, err)
 	assert.Equal(t, expectedResponse, string(b))
+}
+
+func registerResponder(url string, body string) {
+	httpmock.RegisterResponder("GET", url,
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, body)
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
 }

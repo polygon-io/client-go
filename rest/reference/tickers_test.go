@@ -19,48 +19,33 @@ func TestListTickers(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	ticker1 := models.Ticker{Ticker: "A", Name: "Agilent Technologies Inc."}
-	ticker2 := models.Ticker{Ticker: "AA", Name: "Alcoa Corporation"}
-	expectedResponse := models.ListTickersResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req1",
-			Count:     2,
-			PaginationHooks: models.PaginationHooks{
-				NextURL: "https://api.polygon.io/v3/reference/tickers?cursor=YXA9OT",
-			},
-		},
-		Results: []models.Ticker{ticker1, ticker2},
-	}
+	ticker1 := `{
+	"ticker": "A",
+	"name": "Agilent Technologies Inc.",
+	"market": "stocks",
+	"locale": "us",
+	"primary_exchange": "XNYS",
+	"type": "CS",
+	"active": true,
+	"currency_name": "usd",
+	"cik": "0001090872",
+	"composite_figi": "BBG000BWQYZ5",
+	"share_class_figi": "BBG001SCTQY4",
+	"last_updated_utc": "2021-04-25T00:00:00Z"
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/reference/tickers?active=true&cik=5&cusip=10&date=2021-07-22&exchange=4&limit=2&market=stocks&order=asc&sort=ticker&type=CS",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
+	expectedResponse := `{
+	"status": "OK",
+	"count": 1,
+	"next_url": "https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy",
+	"request_id": "e70013d92930de90e089dc8fa098888e",
+	"results": [
+		` + ticker1 + `
+	]
+}`
 
-	expectedNextResponse := models.ListTickersResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req2",
-			Count:     0,
-		},
-	}
-
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/reference/tickers?cursor=YXA9OT",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedNextResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v3/reference/tickers?active=true&cik=5&cusip=10&date=2021-07-22&exchange=4&limit=2&market=stocks&order=asc&sort=ticker&type=CS", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
 	iter, err := c.Reference.ListTickers(context.Background(), models.ListTickersParams{
 		Type:     models.Ptr("CS"),
 		Market:   models.Ptr(models.Stocks),
@@ -74,19 +59,19 @@ func TestListTickers(t *testing.T) {
 		Limit:    models.Ptr(2),
 	})
 
-	// verify the first page
+	// iter creation
 	assert.Nil(t, err)
 	assert.Nil(t, iter.Err())
 	assert.NotNil(t, iter.Ticker())
-	// verify the first and second trades
-	assert.True(t, iter.Next())
-	assert.Nil(t, iter.Err())
-	assert.Equal(t, ticker1, iter.Ticker())
-	assert.True(t, iter.Next())
-	assert.Nil(t, iter.Err())
-	assert.Equal(t, ticker2, iter.Ticker())
 
-	// verify the end of the list
+	// first item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	b, err := json.MarshalIndent(iter.Ticker(), "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, ticker1, string(b))
+
+	// end of list
 	assert.False(t, iter.Next())
 	assert.Nil(t, iter.Err())
 }
@@ -97,33 +82,54 @@ func TestGetTickerDetails(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	ticker1 := models.Ticker{Ticker: "A", Name: "Agilent Technologies Inc."}
-	expectedResponse := models.GetTickerDetailsResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req1",
-			Count:     1,
+	expectedResponse := `{
+	"status": "OK",
+	"request_id": "31d59dda-80e5-4721-8496-d0d32a654afe",
+	"results": {
+		"ticker": "AAPL",
+		"name": "Apple Inc.",
+		"market": "stocks",
+		"locale": "us",
+		"primary_exchange": "XNAS",
+		"type": "CS",
+		"active": true,
+		"currency_name": "usd",
+		"cik": "0000320193",
+		"composite_figi": "BBG000B9XRY4",
+		"share_class_figi": "BBG001S5N8V8",
+		"last_updated_utc": "2021-04-25T00:00:00Z",
+		"market_cap": 2771126040150,
+		"phone_number": "(408) 996-1010",
+		"address": {
+			"address1": "One Apple Park Way",
+			"city": "Cupertino",
+			"state": "CA"
 		},
-		Results: []models.Ticker{ticker1},
+		"description": "Apple designs a wide variety of consumer electronic devices, including smartphones (iPhone), tablets (iPad), PCs (Mac), smartwatches (Apple Watch), AirPods, and TV boxes (Apple TV), among others. The iPhone makes up the majority of Apple's total revenue. In addition, Apple offers its customers a variety of services such as Apple Music, iCloud, Apple Care, Apple TV+, Apple Arcade, Apple Card, and Apple Pay, among others. Apple's products run internally developed software and semiconductors, and the firm is well known for its integration of hardware, software and services. Apple's products are distributed online as well as through company-owned stores and third-party retailers. The company generates roughly 40% of its revenue from the Americas, with the remainder earned internationally.",
+		"sic_code": "3571",
+		"sic_description": "ELECTRONIC COMPUTERS",
+		"homepage_url": "https://www.apple.com",
+		"total_employees": 154000,
+		"list_date": "1980-12-12",
+		"branding": {
+			"logo_url": "https://api.polygon.io/v1/reference/company-branding/d3d3LmFwcGxlLmNvbQ/images/2022-01-10_logo.svg",
+			"icon_url": "https://api.polygon.io/v1/reference/company-branding/d3d3LmFwcGxlLmNvbQ/images/2022-01-10_icon.png"
+		},
+		"share_class_shares_outstanding": 16406400000,
+		"weighted_shares_outstanding": 16334371000
 	}
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/reference/tickers/A?date=2021-07-22",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v3/reference/tickers/A?date=2021-07-22", expectedResponse)
 	res, err := c.Reference.GetTickerDetails(context.Background(), models.GetTickerDetailsParams{
 		Ticker: "A",
 		Date:   models.Ptr("2021-07-22"),
 	})
 
 	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
 }
 
 func TestGetTickerTypes(t *testing.T) {
@@ -132,37 +138,38 @@ func TestGetTickerTypes(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.GetTickerTypesResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req1",
-			Count:     1,
-		},
-		Results: []models.TickerType{
-			{
-				AssetClass:  "stocks",
-				Code:        "CS",
-				Description: "Common Stock",
-				Locale:      "us",
-			},
-		},
-	}
+	expectedResponse := `{
+	"status": "OK",
+	"request_id": "31d59dda-80e5-4721-8496-d0d32a654afe",
+	"count": 1,
+	"results": [
+		{
+			"asset_class": "stocks",
+			"code": "CS",
+			"description": "Common Stock",
+			"locale": "us"
+		}
+	]
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/reference/tickers/types?asset_class=stocks&locale=us",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v3/reference/tickers/types?asset_class=stocks&locale=us", expectedResponse)
 	res, err := c.Reference.GetTickerTypes(context.Background(), models.GetTickerTypesParams{
 		AssetClass: models.Ptr("stocks"),
 		Locale:     models.Ptr(models.US),
 	})
 
 	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
+}
+
+func registerResponder(url string, body string) {
+	httpmock.RegisterResponder("GET", url,
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, body)
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
 }
