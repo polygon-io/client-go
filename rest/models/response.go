@@ -11,8 +11,8 @@ type ListResponse interface {
 // BaseResponse has all possible attributes that any response can use. It's intended to be embedded in a
 // domain specific response struct.
 type BaseResponse struct {
-	Status       string `json:"status"`
-	RequestID    string `json:"request_id"`
+	Status       string `json:"status,omitempty"`
+	RequestID    string `json:"request_id,omitempty"`
 	Count        int    `json:"count,omitempty"`
 	Message      string `json:"message,omitempty"`
 	ErrorMessage string `json:"error,omitempty"`
