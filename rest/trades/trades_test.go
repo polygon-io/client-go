@@ -9,7 +9,6 @@ import (
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/client"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
@@ -22,12 +21,12 @@ func TestListTrades(t *testing.T) {
 
 	trade1 := models.Trade{Price: 1.23}
 	trade2 := models.Trade{Price: 1.5}
-	expectedResponse := models.TradesResponse{
-		BaseResponse: client.BaseResponse{
+	expectedResponse := models.ListTradesResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 			Count:     2,
-			PaginationHooks: client.PaginationHooks{
+			PaginationHooks: models.PaginationHooks{
 				NextURL: "https://api.polygon.io/v3/trades/AAPL?cursor=YXA9OT",
 			},
 		},
@@ -44,8 +43,8 @@ func TestListTrades(t *testing.T) {
 		},
 	)
 
-	expectedNextResponse := models.TradesResponse{
-		BaseResponse: client.BaseResponse{
+	expectedNextResponse := models.ListTradesResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req2",
 			Count:     0,
@@ -93,8 +92,8 @@ func TestGetLastTrade(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Trades.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.LastTradeResponse{
-		BaseResponse: client.BaseResponse{
+	expectedResponse := models.GetLastTradeResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 			Count:     1,
@@ -126,8 +125,8 @@ func TestGetLastCryptoTrade(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.LastCryptoTradeResponse{
-		BaseResponse: client.BaseResponse{
+	expectedResponse := models.GetLastCryptoTradeResponse{
+		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 		},

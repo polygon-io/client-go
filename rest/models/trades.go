@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"github.com/polygon-io/client-go/rest/client"
 )
 
 const (
@@ -12,6 +10,50 @@ const (
 	GetLastCryptoTradePath = "/v1/last/crypto/{from}/{to}"
 )
 
+// ListTradesParams is the set of parameters for the ListTrades method.
+type ListTradesParams struct {
+	Ticker string `validate:"required" path:"ticker"`
+
+	TimestampEQ  *time.Time `query:"timestamp"`
+	TimestampLT  *time.Time `query:"timestamp.lt"`
+	TimestampLTE *time.Time `query:"timestamp.lte"`
+	TimestampGT  *time.Time `query:"timestamp.gt"`
+	TimestampGTE *time.Time `query:"timestamp.gte"`
+	Limit        *int       `query:"limit"`
+	Sort         *Sort      `query:"sort"`
+	Order        *Order     `query:"order"`
+}
+
+// ListTradesResponse is the response returned by the ListTrades method.
+type ListTradesResponse struct {
+	BaseResponse
+	Results []Trade `json:"results,omitempty"`
+}
+
+// GetLastTradeParams is the set of parameters for GetLastTrade method.
+type GetLastTradeParams struct {
+	Ticker string `validate:"required" path:"ticker"`
+}
+
+// GetLastTradeResponse is the response returned by the GetLastTradeResponse method.
+type GetLastTradeResponse struct {
+	BaseResponse
+	Results LastTrade `json:"results,omitempty"`
+}
+
+// GetLastCryptoTradeParams is the set of parameters for the GetLastCryptoTrade method.
+type GetLastCryptoTradeParams struct {
+	From string `validate:"required" path:"from"`
+	To   string `validate:"required" path:"to"`
+}
+
+// GetLastCryptoTradeResponse is the response returned by the GetLastCryptoTrade method.
+type GetLastCryptoTradeResponse struct {
+	BaseResponse
+	Last CryptoTrade `json:"last,omitempty"`
+}
+
+// Trade contains trade data for a specified ticker symbol.
 type Trade struct {
 	Conditions           []int32 `json:"conditions,omitempty"`
 	Correction           int     `json:"correction,omitempty"`
@@ -27,27 +69,7 @@ type Trade struct {
 	TrfTimestamp         int64   `json:"trf_timestamp,omitempty"`
 }
 
-type TradesResponse struct {
-	client.BaseResponse
-	Results []Trade `json:"results,omitempty"`
-}
-
-// ListTradesParams is the set parameters for the ListTrades method.
-type ListTradesParams struct {
-	Ticker string `validate:"required" path:"ticker"`
-
-	TimestampEQ  *time.Time `query:"timestamp"`
-	TimestampLT  *time.Time `query:"timestamp.lt"`
-	TimestampLTE *time.Time `query:"timestamp.lte"`
-	TimestampGT  *time.Time `query:"timestamp.gt"`
-	TimestampGTE *time.Time `query:"timestamp.gte"`
-	Limit        *int       `query:"limit"`
-	Sort         *Sort      `query:"sort"`
-	Order        *Order     `query:"order"`
-}
-
 // LastTrade is the most recent trade for a specified ticker.
-// For more details see https://polygon.io/docs/stocks/get_v2_last_trade__stocksticker.
 type LastTrade struct {
 	Ticker               string  `json:"T,omitempty"`
 	TRFTimestamp         int64   `json:"f,omitempty"`
@@ -64,35 +86,11 @@ type LastTrade struct {
 	Tape                 int32   `json:"z,omitempty"`
 }
 
-// LastTradeResponse contains the most recent trade for a specified ticker.
-type LastTradeResponse struct {
-	client.BaseResponse
-	Results LastTrade `json:"results,omitempty"`
-}
-
-// GetLastTradeParams is the set parameters for GetLastTrade method.
-type GetLastTradeParams struct {
-	Ticker string `validate:"required" path:"ticker"`
-}
-
 // CryptoTrade is a trade for a crypto pair.
-// For more details see https://polygon.io/docs/crypto/get_v1_last_crypto__from___to.
 type CryptoTrade struct {
 	Price      float64 `json:"price,omitempty"`
 	Size       float64 `json:"size,omitempty"`
 	Exchange   int     `json:"exchange,omitempty"`
 	Conditions []int   `json:"conditions,omitempty"`
 	Timestamp  int64   `json:"timestamp,omitempty"`
-}
-
-// LastCryptoTradeResponse contains the most recent trade for a crypto pair.
-type LastCryptoTradeResponse struct {
-	client.BaseResponse
-	Last CryptoTrade `json:"last,omitempty"`
-}
-
-// GetLastCryptoTradeParams is the set parameters for the GetLastCryptoTrade method.
-type GetLastCryptoTradeParams struct {
-	From string `validate:"required" path:"from"`
-	To   string `validate:"required" path:"to"`
 }
