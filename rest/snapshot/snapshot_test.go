@@ -76,7 +76,7 @@ func TestListSnapshotAllTickers(t *testing.T) {
 		Snapshots: []models.TickerSnapshot{snapshotAAPL, snapshotAAPL},
 	}
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers",
+	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=AAPL%2CMSFT",
 		func(req *http.Request) (*http.Response, error) {
 			b, err := json.Marshal(expectedResponse)
 			assert.Nil(t, err)
@@ -86,9 +86,12 @@ func TestListSnapshotAllTickers(t *testing.T) {
 		},
 	)
 
+	tickers := "AAPL,MSFT"
+
 	res, err := c.Snapshot.GetAllTickersSnapshot(context.Background(), models.GetAllTickersSnapshotParams{
 		Locale:     "us",
 		MarketType: "stocks",
+		Tickers:    &tickers,
 	})
 
 	assert.Nil(t, err)
