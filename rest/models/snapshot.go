@@ -73,122 +73,122 @@ type GetCryptoFullBookSnapshotResponse struct {
 
 // TickerSnapshot is a collection of data for a ticker including the current minute, day, and previous day's aggregate, as well as the last trade and quote.
 type TickerSnapshot struct {
-	Day              DaySnapshot       `json:"day"`
-	LastQuote        LastQuoteSnapshot `json:"lastQuote"`
-	LastTrade        LastTradeSnapshot `json:"lastTrade"`
-	Minute           MinuteSnapshot    `json:"min"`
-	PrevDay          DaySnapshot       `json:"prevDay"`
-	Ticker           string            `json:"ticker"`
-	TodaysChange     float64           `json:"todaysChange"`
-	TodaysChangePerc float64           `json:"todaysChangePerc"`
-	Updated          int64             `json:"updated"`
+	Day              DaySnapshot       `json:"day,omitempty"`
+	LastQuote        LastQuoteSnapshot `json:"lastQuote,omitempty"`
+	LastTrade        LastTradeSnapshot `json:"lastTrade,omitempty"`
+	Minute           MinuteSnapshot    `json:"min,omitempty"`
+	PrevDay          DaySnapshot       `json:"prevDay,omitempty"`
+	Ticker           string            `json:"ticker,omitempty"`
+	TodaysChange     float64           `json:"todaysChange,omitempty"`
+	TodaysChangePerc float64           `json:"todaysChangePerc,omitempty"`
+	Updated          int64             `json:"updated,omitempty"`
 }
 
 type DaySnapshot struct {
-	Close                 float64 `json:"c"`
-	High                  float64 `json:"h"`
-	Low                   float64 `json:"l"`
-	Open                  float64 `json:"o"`
-	Volume                float64 `json:"v"`
-	VolumeWeightedAverage float64 `json:"vw"`
+	Close                 float64 `json:"c,omitempty"`
+	High                  float64 `json:"h,omitempty"`
+	Low                   float64 `json:"l,omitempty"`
+	Open                  float64 `json:"o,omitempty"`
+	Volume                float64 `json:"v,omitempty"`
+	VolumeWeightedAverage float64 `json:"vw,omitempty"`
 }
 
 type LastQuoteSnapshot struct {
-	AskPrice  float64 `json:"P"`
-	BidPrice  float64 `json:"p"`
-	AskSize   float64 `json:"S"`
-	BidSize   float64 `json:"s"`
-	Timestamp int64   `json:"t"`
+	AskPrice  float64 `json:"P,omitempty"`
+	BidPrice  float64 `json:"p,omitempty"`
+	AskSize   float64 `json:"S,omitempty"`
+	BidSize   float64 `json:"s,omitempty"`
+	Timestamp int64   `json:"t,omitempty"`
 }
 
 type LastTradeSnapshot struct {
 	Conditions []int   `json:"c,omitempty"`
-	TradeID    string  `json:"i"`
-	Price      float64 `json:"p"`
-	Size       int     `json:"s"`
-	Timestamp  int64   `json:"t"`
-	ExchangeID int     `json:"x"`
+	TradeID    string  `json:"i,omitempty"`
+	Price      float64 `json:"p,omitempty"`
+	Size       int     `json:"s,omitempty"`
+	Timestamp  int64   `json:"t,omitempty"`
+	ExchangeID int     `json:"x,omitempty"`
 }
 
 type MinuteSnapshot struct {
-	AccumulatedVolume     int     `json:"av"`
-	Close                 float64 `json:"c"`
-	High                  float64 `json:"h"`
-	Low                   float64 `json:"l"`
-	Open                  float64 `json:"o"`
-	Volume                float64 `json:"v"`
-	VolumeWeightedAverage float64 `json:"vw"`
+	AccumulatedVolume     int     `json:"av,omitempty"`
+	Close                 float64 `json:"c,omitempty"`
+	High                  float64 `json:"h,omitempty"`
+	Low                   float64 `json:"l,omitempty"`
+	Open                  float64 `json:"o,omitempty"`
+	Volume                float64 `json:"v,omitempty"`
+	VolumeWeightedAverage float64 `json:"vw,omitempty"`
 }
 
 type OptionContractSnapshot struct {
-	BreakEvenPrice    float64                         `json:"break_even_price"`
-	Day               DayOptionContractSnapshot       `json:"day"`
-	Details           OptionDetails                   `json:"details"`
-	Greeks            Greeks                          `json:"greeks"`
-	ImpliedVolatility float64                         `json:"implied_volatility"`
-	LastQuote         LastQuoteOptionContractSnapshot `json:"last_quote"`
-	OpenInterest      float64                         `json:"open_interest"`
-	UnderlyingAsset   UnderlyingAsset                 `json:"underlying_asset"`
+	BreakEvenPrice    float64                         `json:"break_even_price,omitempty"`
+	Day               DayOptionContractSnapshot       `json:"day,omitempty"`
+	Details           OptionDetails                   `json:"details,omitempty"`
+	Greeks            Greeks                          `json:"greeks,omitempty"`
+	ImpliedVolatility float64                         `json:"implied_volatility,omitempty"`
+	LastQuote         LastQuoteOptionContractSnapshot `json:"last_quote,omitempty"`
+	OpenInterest      float64                         `json:"open_interest,omitempty"`
+	UnderlyingAsset   UnderlyingAsset                 `json:"underlying_asset,omitempty"`
 }
 
 type DayOptionContractSnapshot struct {
-	Change        float64 `json:"change"`
-	ChangePercent float64 `json:"change_percent"`
-	Close         float64 `json:"close"`
-	High          float64 `json:"high"`
-	LastUpdated   int64   `json:"last_updated"`
-	Low           float64 `json:"low"`
-	Open          float64 `json:"open"`
-	PreviousClose float64 `json:"previous_close"`
-	Volume        float64 `json:"volume"`
-	VWAP          float64 `json:"vwap"`
+	Change        float64 `json:"change,omitempty"`
+	ChangePercent float64 `json:"change_percent,omitempty"`
+	Close         float64 `json:"close,omitempty"`
+	High          float64 `json:"high,omitempty"`
+	LastUpdated   int64   `json:"last_updated,omitempty"`
+	Low           float64 `json:"low,omitempty"`
+	Open          float64 `json:"open,omitempty"`
+	PreviousClose float64 `json:"previous_close,omitempty"`
+	Volume        float64 `json:"volume,omitempty"`
+	VWAP          float64 `json:"vwap,omitempty"`
 }
 
 type OptionDetails struct {
-	ContractType      string  `json:"contract_type"`
-	ExerciseStyle     string  `json:"exercise_style"`
-	ExpirationDate    string  `json:"expiration_date"`
-	SharesPerContract float64 `json:"shares_per_contract"`
-	StrikePrice       float64 `json:"strike_price"`
-	Ticker            string  `json:"ticker"`
+	ContractType      string  `json:"contract_type,omitempty"`
+	ExerciseStyle     string  `json:"exercise_style,omitempty"`
+	ExpirationDate    string  `json:"expiration_date,omitempty"`
+	SharesPerContract float64 `json:"shares_per_contract,omitempty"`
+	StrikePrice       float64 `json:"strike_price,omitempty"`
+	Ticker            string  `json:"ticker,omitempty"`
 }
 
 type Greeks struct {
-	Delta float64 `json:"delta"`
-	Gamma float64 `json:"gamma"`
-	Theta float64 `json:"theta"`
-	Vega  float64 `json:"vega"`
+	Delta float64 `json:"delta,omitempty"`
+	Gamma float64 `json:"gamma,omitempty"`
+	Theta float64 `json:"theta,omitempty"`
+	Vega  float64 `json:"vega,omitempty"`
 }
 
 type LastQuoteOptionContractSnapshot struct {
-	Ask         float64 `json:"ask"`
-	AskSize     float64 `json:"ask_size"`
-	Bid         float64 `json:"bid"`
-	BidSize     float64 `json:"bid_size"`
-	LastUpdated int64   `json:"last_updated"`
-	Midpoint    float64 `json:"midpoint"`
-	Timeframe   string  `json:"timeframe"`
+	Ask         float64 `json:"ask,omitempty"`
+	AskSize     float64 `json:"ask_size,omitempty"`
+	Bid         float64 `json:"bid,omitempty"`
+	BidSize     float64 `json:"bid_size,omitempty"`
+	LastUpdated int64   `json:"last_updated,omitempty"`
+	Midpoint    float64 `json:"midpoint,omitempty"`
+	Timeframe   string  `json:"timeframe,omitempty"`
 }
 
 type UnderlyingAsset struct {
-	ChangeToBreakEven float64 `json:"change_to_break_even"`
-	LastUpdated       int64   `json:"last_updated"`
-	Price             float64 `json:"price"`
-	Ticker            string  `json:"ticker"`
-	Timeframe         string  `json:"timeframe"`
+	ChangeToBreakEven float64 `json:"change_to_break_even,omitempty"`
+	LastUpdated       int64   `json:"last_updated,omitempty"`
+	Price             float64 `json:"price,omitempty"`
+	Ticker            string  `json:"ticker,omitempty"`
+	Timeframe         string  `json:"timeframe,omitempty"`
 }
 
 type SnapshotTickerFullBook struct {
-	AskCount float64          `json:"askCount"`
-	Asks     []OrderBookQuote `json:"asks"`
-	BidCount float64          `json:"bidCount"`
-	Bids     []OrderBookQuote `json:"bids"`
-	Spread   float64          `json:"spread"`
-	Ticker   string           `json:"ticker"`
-	Updated  int64            `json:"updated"`
+	AskCount float64          `json:"askCount,omitempty"`
+	Asks     []OrderBookQuote `json:"asks,omitempty"`
+	BidCount float64          `json:"bidCount,omitempty"`
+	Bids     []OrderBookQuote `json:"bids,omitempty"`
+	Spread   float64          `json:"spread,omitempty"`
+	Ticker   string           `json:"ticker,omitempty"`
+	Updated  int64            `json:"updated,omitempty"`
 }
 
 type OrderBookQuote struct {
-	Price            float64            `json:"p"`
-	ExchangeToShares map[string]float64 `json:"x"`
+	Price            float64            `json:"p,omitempty"`
+	ExchangeToShares map[string]float64 `json:"x,omitempty"`
 }
