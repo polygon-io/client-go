@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 	"testing"
 	"time"
 
@@ -19,48 +20,48 @@ func TestListTrades(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Trades.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	trade1 := models.Trade{Price: 1.23}
-	trade2 := models.Trade{Price: 1.5}
-	expectedResponse := models.ListTradesResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req1",
-			Count:     2,
-			PaginationHooks: models.PaginationHooks{
-				NextURL: "https://api.polygon.io/v3/trades/AAPL?cursor=YXA9OT",
-			},
-		},
-		Results: []models.Trade{trade1, trade2},
-	}
+	trade1 := `{
+	"conditions": [
+		12,
+		41
+	],
+	"exchange": 11,
+	"id": "1",
+	"participant_timestamp": 1517562000015577000,
+	"price": 171.55,
+	"sequence_number": 1063,
+	"sip_timestamp": 1517562000016036600,
+	"size": 100,
+	"tape": 3
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/trades/AAPL?limit=2&order=asc&sort=timestamp&timestamp.gte=1626912000000000000",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
+	trade2 := `{
+	"conditions": [
+		12,
+		41
+	],
+	"exchange": 11,
+	"id": "2",
+	"participant_timestamp": 1517562000015577600,
+	"price": 171.55,
+	"sequence_number": 1064,
+	"sip_timestamp": 1517562000016038100,
+	"size": 100,
+	"tape": 3
+}`
 
-	expectedNextResponse := models.ListTradesResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req2",
-			Count:     0,
-		},
-	}
+	expectedResponse := `{
+	"status": "OK",
+	"request_id": "a47d1beb8c11b6ae897ab76cdbbf35a3",
+	"next_url": "https://api.polygon.io/v3/trades/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy",
+	"results": [
+` + indent(true, trade1, "\t\t") + `,
+` + indent(true, trade2, "\t\t") + `
+	]
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/trades/AAPL?cursor=YXA9OT",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedNextResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v3/trades/AAPL?limit=2&order=asc&sort=timestamp&timestamp.gte=1626912000000000000", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/trades/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
 	iter, err := c.Trades.ListTrades(context.Background(), models.ListTradesParams{
 		Ticker:       "AAPL",
 		TimestampGTE: models.Ptr(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
@@ -69,19 +70,26 @@ func TestListTrades(t *testing.T) {
 		Sort:         models.Ptr(models.Timestamp),
 	})
 
-	// verify the first page
+	// iter creation
 	assert.Nil(t, err)
 	assert.Nil(t, iter.Err())
 	assert.NotNil(t, iter.Trade())
-	// verify the first and second trades
-	assert.True(t, iter.Next())
-	assert.Nil(t, iter.Err())
-	assert.Equal(t, trade1, iter.Trade())
-	assert.True(t, iter.Next())
-	assert.Nil(t, iter.Err())
-	assert.Equal(t, trade2, iter.Trade())
 
-	// verify the end of the list
+	// first item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	b, err := json.MarshalIndent(iter.Trade(), "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, trade1, string(b))
+
+	// second item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	b, err = json.MarshalIndent(iter.Trade(), "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, trade2, string(b))
+
+	// end of list
 	assert.False(t, iter.Next())
 	assert.Nil(t, iter.Err())
 }
@@ -92,31 +100,36 @@ func TestGetLastTrade(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Trades.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.GetLastTradeResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req1",
-			Count:     1,
-		},
-		Results: models.LastTrade{Price: 1.23},
+	expectedResponse := `{
+	"status": "OK",
+	"request_id": "f05562305bd26ced64b98ed68b3c5d96",
+	"results": {
+		"T": "AAPL",
+		"f": 1617901342969796400,
+		"q": 3135876,
+		"t": 1617901342969834000,
+		"y": 1617901342968000000,
+		"c": [
+			37
+		],
+		"i": "118749",
+		"p": 129.8473,
+		"r": 202,
+		"s": 25,
+		"x": 4,
+		"z": 3
 	}
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/last/trade/AAPL",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v2/last/trade/AAPL", expectedResponse)
 	res, err := c.Trades.GetLastTrade(context.Background(), models.GetLastTradeParams{
 		Ticker: "AAPL",
 	})
 
 	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
 }
 
 func TestGetLastCryptoTrade(t *testing.T) {
@@ -125,35 +138,50 @@ func TestGetLastCryptoTrade(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.GetLastCryptoTradeResponse{
-		BaseResponse: models.BaseResponse{
-			Status:    "OK",
-			RequestID: "req1",
-		},
-		Last: models.CryptoTrade{
-			Price:      26049.42,
-			Size:       0.0449,
-			Exchange:   4,
-			Conditions: []int{1},
-			Timestamp:  1605560463099,
-		},
+	expectedResponse := `{
+	"status": "success",
+	"request_id": "d2d779df015fe2b7fbb8e58366610ef7",
+	"symbol": "BTC-USD",
+	"last": {
+		"price": 16835.42,
+		"size": 0.006909,
+		"exchange": 4,
+		"conditions": [
+			1
+		],
+		"timestamp": 1605560885027
 	}
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v1/last/crypto/BTC/USD",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v1/last/crypto/BTC/USD", expectedResponse)
 	res, err := c.Trades.GetLastCryptoTrade(context.Background(), models.GetLastCryptoTradeParams{
 		From: "BTC",
 		To:   "USD",
 	})
 
 	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
+}
+
+func registerResponder(url string, body string) {
+	httpmock.RegisterResponder("GET", url,
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, body)
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+}
+
+func indent(first bool, data string, indent string) string {
+	lines := strings.Split(string(data), "\n")
+	for i := range lines {
+		if i == 0 && !first {
+			continue
+		}
+		lines[i] = indent + lines[i]
+	}
+	return strings.Join(lines, "\n")
 }
