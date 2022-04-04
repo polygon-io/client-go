@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -40,7 +41,7 @@ func TestListTickers(t *testing.T) {
 	"next_url": "https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy",
 	"request_id": "e70013d92930de90e089dc8fa098888e",
 	"results": [
-		` + ticker1 + `
+` + indent(true, ticker1, "\t\t") + `
 	]
 }`
 
@@ -172,4 +173,15 @@ func registerResponder(url string, body string) {
 			return resp, nil
 		},
 	)
+}
+
+func indent(first bool, data string, indent string) string {
+	lines := strings.Split(string(data), "\n")
+	for i := range lines {
+		if i == 0 && !first {
+			continue
+		}
+		lines[i] = indent + lines[i]
+	}
+	return strings.Join(lines, "\n")
 }

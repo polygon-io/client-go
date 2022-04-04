@@ -19,7 +19,7 @@ type GetAllTickersSnapshotParams struct {
 // GetAllTickersSnapshotResponse is the response returned by the GetAllTickersSnapshot method.
 type GetAllTickersSnapshotResponse struct {
 	BaseResponse
-	Snapshots []TickerSnapshot `json:"ticker,omitempty"`
+	Tickers []TickerSnapshot `json:"tickers,omitempty"`
 }
 
 // GetTickerSnapshotParams is the set of parameters for the GetTickerSnapshot method.
@@ -45,7 +45,7 @@ type GetGainersLosersSnapshotParams struct {
 // GetGainersLosersSnapshotResponse is the response returned by the GetGainersLosersSnapshot method.
 type GetGainersLosersSnapshotResponse struct {
 	BaseResponse
-	Snapshots []TickerSnapshot `json:"ticker,omitempty"`
+	Tickers []TickerSnapshot `json:"tickers,omitempty"`
 }
 
 // GetOptionContractSnapshotParams is the set of parameters for the GetOptionContractSnapshot method.
@@ -179,19 +179,16 @@ type UnderlyingAsset struct {
 }
 
 type SnapshotTickerFullBook struct {
-	AskCount float64 `json:"askCount"`
-	Asks     []Ask   `json:"asks"`
-	BidCount float64 `json:"bidCount"`
-	Bids     []Bid   `json:"bids"`
-	Spread   float64 `json:"spread"`
-	Ticker   string  `json:"ticker"`
-	Updated  int64   `json:"updated"`
+	AskCount float64          `json:"askCount"`
+	Asks     []OrderBookQuote `json:"asks"`
+	BidCount float64          `json:"bidCount"`
+	Bids     []OrderBookQuote `json:"bids"`
+	Spread   float64          `json:"spread"`
+	Ticker   string           `json:"ticker"`
+	Updated  int64            `json:"updated"`
 }
 
 type OrderBookQuote struct {
-	Price            float64        `json:"p"`
-	ExchangeToShares map[string]int `json:"x"`
+	Price            float64            `json:"p"`
+	ExchangeToShares map[string]float64 `json:"x"`
 }
-
-type Ask OrderBookQuote
-type Bid OrderBookQuote
