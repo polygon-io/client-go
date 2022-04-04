@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -12,52 +13,101 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var snapshotAAPL = models.TickerSnapshot{
-	Day: models.DaySnapshot{
-		Close:                 120.4229,
-		High:                  120.53,
-		Low:                   118.81,
-		Open:                  119.62,
-		Volume:                28727868,
-		VolumeWeightedAverage: 119.725,
+var snapshot1 = `{
+	"day": {
+		"c": 20.506,
+		"h": 20.64,
+		"l": 20.506,
+		"o": 20.64,
+		"v": 37216,
+		"vw": 20.616
 	},
-	LastQuote: models.LastQuoteSnapshot{
-		AskPrice:  120.47,
-		BidPrice:  120.46,
-		AskSize:   4,
-		BidSize:   8,
-		Timestamp: 1605195918507251700,
+	"lastQuote": {
+		"P": 20.6,
+		"p": 20.5,
+		"S": 22,
+		"s": 13,
+		"t": 1605192959994246100
 	},
-	LastTrade: models.LastTradeSnapshot{
-		Conditions: []int{114, 41},
-		TradeID:    "158698",
-		Price:      120.47,
-		Size:       236,
-		Timestamp:  1605195918306274000,
-		ExchangeID: 10,
+	"lastTrade": {
+		"c": [
+			14,
+			41
+		],
+		"i": "71675577320245",
+		"p": 20.506,
+		"s": 2416,
+		"t": 1605192894630916600,
+		"x": 4
 	},
-	Minute: models.MinuteSnapshot{
-		AccumulatedVolume:     28724441,
-		Close:                 120.4201,
-		High:                  120.468,
-		Low:                   120.37,
-		Open:                  120.435,
-		Volume:                270796,
-		VolumeWeightedAverage: 120.4129,
+	"min": {
+		"av": 37216,
+		"c": 20.506,
+		"h": 20.506,
+		"l": 20.506,
+		"o": 20.506,
+		"v": 5000,
+		"vw": 20.5105
 	},
-	PrevDay: models.DaySnapshot{
-		Close:                 119.4229,
-		High:                  119.53,
-		Low:                   118.81,
-		Open:                  119.62,
-		Volume:                28727868,
-		VolumeWeightedAverage: 119.725,
+	"prevDay": {
+		"c": 20.63,
+		"h": 21,
+		"l": 20.5,
+		"o": 20.79,
+		"v": 292738,
+		"vw": 20.6939
 	},
-	Ticker:           "AAPL",
-	TodaysChange:     0.98,
-	TodaysChangePerc: 0.82,
-	Updated:          1605195918306274000,
-}
+	"ticker": "BCAT",
+	"todaysChange": -0.124,
+	"todaysChangePerc": -0.601,
+	"updated": 1605192894630916600
+}`
+
+var snapshot2 = `{
+	"day": {
+		"c": 313.225,
+		"h": 314.35,
+		"l": 309.71,
+		"o": 310.09,
+		"v": 6322693,
+		"vw": 312.6791
+	},
+	"lastQuote": {
+		"P": 313.13,
+		"p": 313.11,
+		"S": 4,
+		"s": 2,
+		"t": 1649083047683654000
+	},
+	"lastTrade": {
+		"i": "23432",
+		"p": 313.1296,
+		"s": 100,
+		"t": 1649083047682204000,
+		"x": 4
+	},
+	"min": {
+		"av": 6321712,
+		"c": 313.1826,
+		"h": 313.19,
+		"l": 312.66,
+		"o": 312.78,
+		"v": 54315,
+		"vw": 312.9441
+	},
+	"prevDay": {
+		"c": 309.42,
+		"h": 310.13,
+		"l": 305.54,
+		"o": 309.37,
+		"v": 27101029,
+		"vw": 308.0485
+	},
+	"ticker": "MSFT",
+	"todaysChange": 3.71,
+	"todaysChangePerc": 1.199,
+	"updated": 1649083047682204000
+}`
 
 func TestListSnapshotAllTickers(t *testing.T) {
 	c := polygon.New("API_KEY")
@@ -65,37 +115,26 @@ func TestListSnapshotAllTickers(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.GetAllTickersSnapshotResponse{
-		BaseResponse: models.BaseResponse{
-			Status:       "OK",
-			RequestID:    "cffb2db04ed53d1fdf2547f15c1ca14e",
-			Count:        1,
-			Message:      "",
-			ErrorMessage: "",
-		},
-		Snapshots: []models.TickerSnapshot{snapshotAAPL, snapshotAAPL},
-	}
+	expectedResponse := `{
+	"status": "OK",
+	"count": 2,
+	"tickers": [
+` + indent(true, snapshot1, "\t\t") + `,
+` + indent(true, snapshot2, "\t\t") + `
+	]
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=AAPL%2CMSFT",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
-	tickers := "AAPL,MSFT"
-
+	registerResponder("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=AAPL%2CMSFT", expectedResponse)
 	res, err := c.Snapshot.GetAllTickersSnapshot(context.Background(), models.GetAllTickersSnapshotParams{
 		Locale:     "us",
 		MarketType: "stocks",
-		Tickers:    &tickers,
+		Tickers:    models.Ptr("AAPL,MSFT"),
 	})
 
 	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
 }
 
 func TestGetTickerSnapshot(t *testing.T) {
@@ -104,27 +143,13 @@ func TestGetTickerSnapshot(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.GetTickerSnapshotResponse{
-		BaseResponse: models.BaseResponse{
-			Status:       "OK",
-			RequestID:    "cffb2db04ed53d1fdf2547f15c1ca14e",
-			Count:        1,
-			Message:      "",
-			ErrorMessage: "",
-		},
-		Snapshot: snapshotAAPL,
-	}
+	expectedResponse := `{
+	"status": "OK",
+	"count": 2,
+	"ticker": ` + indent(false, snapshot1, "\t") + `
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers/AAPL",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers/AAPL", expectedResponse)
 	res, err := c.Snapshot.GetTickerSnapshot(context.Background(), models.GetTickerSnapshotParams{
 		Ticker:     "AAPL",
 		Locale:     "us",
@@ -132,7 +157,9 @@ func TestGetTickerSnapshot(t *testing.T) {
 	})
 
 	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
 }
 
 func TestGetGainersLosersSnapshot(t *testing.T) {
@@ -141,27 +168,16 @@ func TestGetGainersLosersSnapshot(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.GetGainersLosersSnapshotResponse{
-		BaseResponse: models.BaseResponse{
-			Status:       "OK",
-			RequestID:    "cffb2db04ed53d1fdf2547f15c1ca14e",
-			Count:        1,
-			Message:      "",
-			ErrorMessage: "",
-		},
-		Snapshots: []models.TickerSnapshot{snapshotAAPL, snapshotAAPL},
-	}
+	expectedResponse := `{
+	"status": "OK",
+	"count": 2,
+	"tickers": [
+` + indent(true, snapshot1, "\t\t") + `,
+` + indent(true, snapshot2, "\t\t") + `
+	]
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/gainers",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/gainers", expectedResponse)
 	res, err := c.Snapshot.GetGainersLosersSnapshot(context.Background(), models.GetGainersLosersSnapshotParams{
 		Locale:     "us",
 		MarketType: "stocks",
@@ -169,7 +185,9 @@ func TestGetGainersLosersSnapshot(t *testing.T) {
 	})
 
 	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
 }
 
 func TestGetOptionContractSnapshot(t *testing.T) {
@@ -178,80 +196,68 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.GetOptionContractSnapshotResponse{
-		BaseResponse: models.BaseResponse{
-			Status:       "OK",
-			RequestID:    "1bea8bbfb1ae1fe0d4c613c2b759d5be",
-			Count:        1,
-			Message:      "",
-			ErrorMessage: "",
+	expectedResponse := `{
+	"status": "OK",
+	"request_id": "d9ff18dac69f55c218f69e4753706acd",
+	"results": {
+		"break_even_price": 171.075,
+		"day": {
+			"change": -1.05,
+			"change_percent": -4.67,
+			"close": 21.4,
+			"high": 22.49,
+			"last_updated": 1636520400000000000,
+			"low": 21.35,
+			"open": 22.49,
+			"previous_close": 22.45,
+			"volume": 37,
+			"vwap": 21.6741
 		},
-		Results: models.OptionContractSnapshot{
-			BreakEvenPrice: 171.075,
-			Day: models.DayOptionContractSnapshot{
-				Change:        -1.05,
-				ChangePercent: -4.67,
-				Close:         21.4,
-				High:          22.49,
-				LastUpdated:   1636520400000000000,
-				Low:           21.35,
-				Open:          22.49,
-				PreviousClose: 22.45,
-				Volume:        37,
-				VWAP:          21.6741,
-			},
-			Details: models.OptionDetails{
-				ContractType:      "call",
-				ExerciseStyle:     "american",
-				ExpirationDate:    "2023-06-16",
-				SharesPerContract: 100,
-				StrikePrice:       150,
-				Ticker:            "O:AAPL230616C00150000",
-			},
-			Greeks: models.Greeks{
-				Delta: 0.5520187372272933,
-				Gamma: 0.00706756515659829,
-				Theta: -0.018532772783847958,
-				Vega:  0.7274811132998142,
-			},
-			ImpliedVolatility: 0.3048997097864957,
-			LastQuote: models.LastQuoteOptionContractSnapshot{
-				Ask:         21.25,
-				AskSize:     110,
-				Bid:         20.9,
-				BidSize:     172,
-				LastUpdated: 1636573458756383500,
-				Midpoint:    21.075,
-				Timeframe:   "REAL-TIME",
-			},
-			OpenInterest: 8921,
-			UnderlyingAsset: models.UnderlyingAsset{
-				ChangeToBreakEven: 23.123999999999995,
-				LastUpdated:       1636573459862384600,
-				Price:             147.951,
-				Ticker:            "AAPL",
-				Timeframe:         "REAL-TIME",
-			},
+		"details": {
+			"contract_type": "call",
+			"exercise_style": "american",
+			"expiration_date": "2023-06-16",
+			"shares_per_contract": 100,
+			"strike_price": 150,
+			"ticker": "O:AAPL230616C00150000"
 		},
+		"greeks": {
+			"delta": 0.5520187372272933,
+			"gamma": 0.00706756515659829,
+			"theta": -0.018532772783847958,
+			"vega": 0.7274811132998142
+		},
+		"implied_volatility": 0.3048997097864957,
+		"last_quote": {
+			"ask": 21.25,
+			"ask_size": 110,
+			"bid": 20.9,
+			"bid_size": 172,
+			"last_updated": 1636573458756383500,
+			"midpoint": 21.075,
+			"timeframe": "REAL-TIME"
+		},
+		"open_interest": 8921,
+		"underlying_asset": {
+			"change_to_break_even": 23.123999999999995,
+			"last_updated": 1636573459862384600,
+			"price": 147.951,
+			"ticker": "AAPL",
+			"timeframe": "REAL-TIME"
+		}
 	}
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v3/snapshot/options/AAPL/O:AAPL230616C00150000",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v3/snapshot/options/AAPL/O:AAPL230616C00150000", expectedResponse)
 	res, err := c.Snapshot.GetOptionContractSnapshot(context.Background(), models.GetOptionContractSnapshotParams{
 		UnderlyingAsset: "AAPL",
 		OptionContract:  "O:AAPL230616C00150000",
 	})
 
 	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
 }
 
 func TestGetCryptoFullBookSnapshot(t *testing.T) {
@@ -260,65 +266,74 @@ func TestGetCryptoFullBookSnapshot(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := models.GetCryptoFullBookSnapshotResponse{
-		BaseResponse: models.BaseResponse{
-			Status:       "OK",
-			RequestID:    "1bea8bbfb1ae1fe0d4c613c2b759d5be",
-			Count:        1,
-			Message:      "",
-			ErrorMessage: "",
-		},
-		Data: models.SnapshotTickerFullBook{
-			AskCount: 593.1412981600005,
-			Asks: []models.Ask{
-				{
-					Price: 11454,
-					ExchangeToShares: map[string]int{
-						"2": 1,
-					},
-				},
-				{
-					Price: 11455,
-					ExchangeToShares: map[string]int{
-						"2": 1,
-					},
-				},
+	expectedResponse := `{
+	"status": "OK",
+	"data": {
+		"askCount": 593.1412981600005,
+		"asks": [
+			{
+				"p": 11454,
+				"x": {
+					"2": 1
+				}
 			},
-			BidCount: 694.951789670001,
-			Bids: []models.Bid{
-				{
-					Price: 11453,
-					ExchangeToShares: map[string]int{
-						"2": 1,
-					},
-				},
-				{
-					Price: 11453,
-					ExchangeToShares: map[string]int{
-						"6": 1,
-					},
-				},
+			{
+				"p": 11455,
+				"x": {
+					"2": 1
+				}
+			}
+		],
+		"bidCount": 694.951789670001,
+		"bids": [
+			{
+				"p": 16303.17,
+				"x": {
+					"1": 2
+				}
 			},
-			Spread:  1.00,
-			Ticker:  "X:BTCUSD",
-			Updated: 1605295074162,
-		},
+			{
+				"p": 16302.94,
+				"x": {
+					"1": 0.02859424,
+					"6": 0.023455
+				}
+			}
+		],
+		"spread": -4849.17,
+		"ticker": "X:BTCUSD",
+		"updated": 1605295074162
 	}
+}`
 
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/v2/snapshot/locale/global/markets/crypto/tickers/X:BTCUSD/book",
-		func(req *http.Request) (*http.Response, error) {
-			b, err := json.Marshal(expectedResponse)
-			assert.Nil(t, err)
-			resp := httpmock.NewStringResponse(200, string(b))
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-
+	registerResponder("https://api.polygon.io/v2/snapshot/locale/global/markets/crypto/tickers/X:BTCUSD/book", expectedResponse)
 	res, err := c.Snapshot.GetCryptoFullBookSnapshot(context.Background(), models.GetCryptoFullBookSnapshotParams{
 		Ticker: "X:BTCUSD",
 	})
 
 	assert.Nil(t, err)
-	assert.Equal(t, &expectedResponse, res)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
+}
+
+func registerResponder(url string, body string) {
+	httpmock.RegisterResponder("GET", url,
+		func(req *http.Request) (*http.Response, error) {
+			resp := httpmock.NewStringResponse(200, body)
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
+}
+
+func indent(first bool, data string, indent string) string {
+	lines := strings.Split(string(data), "\n")
+	for i := range lines {
+		if i == 0 && !first {
+			continue
+		}
+		lines[i] = indent + lines[i]
+	}
+	return strings.Join(lines, "\n")
 }

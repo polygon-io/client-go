@@ -50,7 +50,8 @@ type GetLastCryptoTradeParams struct {
 // GetLastCryptoTradeResponse is the response returned by the GetLastCryptoTrade method.
 type GetLastCryptoTradeResponse struct {
 	BaseResponse
-	Last CryptoTrade `json:"last,omitempty"`
+	Symbol string      `json:"symbol,omitempty"`
+	Last   CryptoTrade `json:"last,omitempty"`
 }
 
 // Trade contains trade data for a specified ticker symbol.
@@ -73,16 +74,16 @@ type Trade struct {
 type LastTrade struct {
 	Ticker               string  `json:"T,omitempty"`
 	TRFTimestamp         int64   `json:"f,omitempty"`
-	SequenceNumber       int64   `json:"q"`
-	Timestamp            int64   `json:"t"`
+	SequenceNumber       int64   `json:"q,omitempty"`
+	Timestamp            int64   `json:"t,omitempty"`
 	ParticipantTimestamp int64   `json:"y,omitempty"`
 	Conditions           []int32 `json:"c,omitempty"`
 	Correction           uint32  `json:"e,omitempty"`
-	ID                   string  `json:"i"`
-	Price                float64 `json:"p"`
+	ID                   string  `json:"i,omitempty"`
+	Price                float64 `json:"p,omitempty"`
 	TRF                  int32   `json:"r,omitempty"`
-	Size                 uint32  `json:"s"`
-	Exchange             int32   `json:"x"`
+	Size                 uint32  `json:"s,omitempty"`
+	Exchange             int32   `json:"x,omitempty"`
 	Tape                 int32   `json:"z,omitempty"`
 }
 
