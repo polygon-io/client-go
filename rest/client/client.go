@@ -66,9 +66,6 @@ func New(apiKey string) Client {
 	pe := form.NewEncoder()
 	pe.SetMode(form.ModeExplicit)
 	pe.SetTagName("path")
-	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(x.(time.Time).Format("2006-01-02"))}, nil
-	}, time.Time{})
 
 	qe := form.NewEncoder()
 	qe.SetMode(form.ModeExplicit)

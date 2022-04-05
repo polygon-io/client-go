@@ -32,8 +32,8 @@ type GetAggsParams struct {
 	Ticker     string     `validate:"required" path:"ticker"`
 	Multiplier int        `validate:"required" path:"multiplier"`
 	Resolution Resolution `validate:"required" path:"resolution"`
-	From       time.Time  `validate:"required" path:"from" time:"milli"`
-	To         time.Time  `validate:"required" path:"to" time:"milli"`
+	From       time.Time  `validate:"required" path:"from" milli:"from"`
+	To         time.Time  `validate:"required" path:"to" milli:"to"`
 
 	Sort     *Order `query:"sort"`
 	Limit    *int   `query:"limit"`
