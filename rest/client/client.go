@@ -25,6 +25,9 @@ type Client struct {
 	validate     *validator.Validate
 	pathEncoder  *form.Encoder
 	queryEncoder *form.Encoder
+	milliEncoder *form.Encoder
+	nanoEncoder  *form.Encoder
+	dateEncoder  *form.Encoder
 }
 
 // New returns a new client with the specified API key and default settings.
@@ -38,6 +41,27 @@ func New(apiKey string) Client {
 	v := validator.New()
 
 	// todo: implement some time types and create specific encoders for them
+
+	me := form.NewEncoder()
+	me.SetMode(form.ModeExplicit)
+	me.SetTagName("milli")
+	me.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+		return []string{fmt.Sprint(x.(time.Time).UnixMilli())}, nil
+	}, time.Time{})
+
+	ne := form.NewEncoder()
+	ne.SetMode(form.ModeExplicit)
+	ne.SetTagName("nano")
+	ne.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+		return []string{fmt.Sprint(x.(time.Time).UnixNano())}, nil
+	}, time.Time{})
+
+	de := form.NewEncoder()
+	de.SetMode(form.ModeExplicit)
+	de.SetTagName("date")
+	de.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+		return []string{fmt.Sprint(x.(time.Time).Format("2006-01-02"))}, nil
+	}, time.Time{})
 
 	pe := form.NewEncoder()
 	pe.SetMode(form.ModeExplicit)
@@ -58,6 +82,9 @@ func New(apiKey string) Client {
 		validate:     v,
 		pathEncoder:  pe,
 		queryEncoder: qe,
+		milliEncoder: me,
+		nanoEncoder:  ne,
+		dateEncoder:  de,
 	}
 }
 
@@ -113,6 +140,14 @@ func (c *Client) newRequest(ctx context.Context, params interface{}, response in
 		if err != nil {
 			return nil, err
 		}
+
+		path, err = c.buildTimeParams(path, params)
+		if err != nil {
+			return nil, err
+		}
+
+		fmt.Println(path)
+
 		req.SetPathParams(path)
 
 		query, err := c.encodeQuery(params)
@@ -133,11 +168,81 @@ func (c *Client) newRequest(ctx context.Context, params interface{}, response in
 	return req, nil
 }
 
+func (c *Client) buildTimeParams(path map[string]string, params interface{}) (map[string]string, error) {
+	milliParams, err := c.encodeMilli(params)
+	if err != nil {
+		return path, err
+	}
+
+	for k, v := range milliParams {
+		path[k] = v
+	}
+
+	nanoParams, err := c.encodeNano(params)
+	if err != nil {
+		return path, err
+	}
+
+	for k, v := range nanoParams {
+		path[k] = v
+	}
+
+	dateParams, err := c.encodeDate(params)
+	if err != nil {
+		return path, err
+	}
+
+	for k, v := range dateParams {
+		path[k] = v
+	}
+
+	return path, nil
+}
+
 func (c *Client) validateParams(params interface{}) error {
 	if err := c.validate.Struct(params); err != nil {
 		return fmt.Errorf("invalid request params: %w", err)
 	}
 	return nil
+}
+
+func (c *Client) encodeMilli(params interface{}) (map[string]string, error) {
+	val, err := c.milliEncoder.Encode(&params)
+	if err != nil {
+		return nil, fmt.Errorf("error encoding milli time params: %w", err)
+	}
+
+	timeParams := map[string]string{}
+	for k, v := range val {
+		timeParams[k] = v[0] // only accept the first one for a given key
+	}
+	return timeParams, nil
+}
+
+func (c *Client) encodeNano(params interface{}) (map[string]string, error) {
+	val, err := c.nanoEncoder.Encode(&params)
+	if err != nil {
+		return nil, fmt.Errorf("error encoding nano time params: %w", err)
+	}
+
+	timeParams := map[string]string{}
+	for k, v := range val {
+		timeParams[k] = v[0] // only accept the first one for a given key
+	}
+	return timeParams, nil
+}
+
+func (c *Client) encodeDate(params interface{}) (map[string]string, error) {
+	val, err := c.dateEncoder.Encode(&params)
+	if err != nil {
+		return nil, fmt.Errorf("error encoding date time params: %w", err)
+	}
+
+	timeParams := map[string]string{}
+	for k, v := range val {
+		timeParams[k] = v[0] // only accept the first one for a given key
+	}
+	return timeParams, nil
 }
 
 func (c *Client) encodePath(params interface{}) (map[string]string, error) {

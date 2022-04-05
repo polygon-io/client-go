@@ -1,6 +1,7 @@
 package models
 
 import (
+	"strconv"
 	"time"
 )
 
@@ -11,13 +12,28 @@ const (
 	GetPreviousCloseAggPath  = "/v2/aggs/ticker/{ticker}/prev"
 )
 
+type TimeMillis time.Time
+
+func (t TimeMillis) ToTime() time.Time {
+	return time.Time(t)
+}
+
+func (t *TimeMillis) UnmarshalJSON(data []byte) error {
+	millis, err := strconv.ParseInt(string(data), 10, 64)
+	if err != nil {
+		return err
+	}
+	*t = TimeMillis(time.Unix(0, millis*int64(time.Millisecond)))
+	return nil
+}
+
 // GetAggsParams is the set of parameters for the GetAggs method.
 type GetAggsParams struct {
 	Ticker     string     `validate:"required" path:"ticker"`
 	Multiplier int        `validate:"required" path:"multiplier"`
 	Resolution Resolution `validate:"required" path:"resolution"`
-	From       time.Time  `validate:"required" path:"from"`
-	To         time.Time  `validate:"required" path:"to"`
+	From       time.Time  `validate:"required" path:"from" time:"milli"`
+	To         time.Time  `validate:"required" path:"to" time:"milli"`
 
 	Sort     *Order `query:"sort"`
 	Limit    *int   `query:"limit"`
@@ -95,22 +111,22 @@ type GetPreviousCloseAggResponse struct {
 
 // Agg is an aggregation of all the activity on a specified ticker between the start and end timestamps.
 type Agg struct {
-	Ticker            string  `json:"T,omitempty"`
-	Volume            float64 `json:"v"`
-	VWAP              float64 `json:"vw,omitempty"`
-	AggregateVWAP     float64 `json:"a,omitempty"`
-	Open              float64 `json:"o"`
-	Close             float64 `json:"c"`
-	High              float64 `json:"h"`
-	Low               float64 `json:"l"`
-	Timestamp         int64   `json:"t"`
-	Transactions      int64   `json:"n,omitempty"`
-	Market            string  `json:"m,omitempty"`
-	Exchange          int32   `json:"x,omitempty"`
-	Locale            string  `json:"g,omitempty"`
-	OfficialOpenPrice float64 `json:"op,omitempty"`
-	AverageSize       float64 `json:"z,omitempty"`
-	AccumulatedVolume float64 `json:"av,omitempty"`
-	StartTimestamp    int64   `json:"s,omitempty"`
-	EndTimestamp      int64   `json:"e,omitempty"`
+	Ticker            string     `json:"T,omitempty"`
+	Volume            float64    `json:"v"`
+	VWAP              float64    `json:"vw,omitempty"`
+	AggregateVWAP     float64    `json:"a,omitempty"`
+	Open              float64    `json:"o"`
+	Close             float64    `json:"c"`
+	High              float64    `json:"h"`
+	Low               float64    `json:"l"`
+	Timestamp         TimeMillis `json:"t"`
+	Transactions      int64      `json:"n,omitempty"`
+	Market            string     `json:"m,omitempty"`
+	Exchange          int32      `json:"x,omitempty"`
+	Locale            string     `json:"g,omitempty"`
+	OfficialOpenPrice float64    `json:"op,omitempty"`
+	AverageSize       float64    `json:"z,omitempty"`
+	AccumulatedVolume float64    `json:"av,omitempty"`
+	StartTimestamp    int64      `json:"s,omitempty"`
+	EndTimestamp      int64      `json:"e,omitempty"`
 }
