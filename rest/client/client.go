@@ -19,7 +19,7 @@ const (
 	DefaultRetryCount = 3
 )
 
-// Client provides functionality to make API requests via HTTP.
+// Client defines an HTTP client for the Polygon REST API.
 type Client struct {
 	HTTP         *resty.Client
 	validate     *validator.Validate
