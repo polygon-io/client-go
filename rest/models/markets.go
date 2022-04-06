@@ -5,16 +5,8 @@ const (
 	GetMarketStatusPath   = "/v1/marketstatus/now"
 )
 
-// todo: this endpoint is unlikely to ever have params so should we delete this type?
-// GetMarketHolidaysParams is the set of parameters for the GetMarketHolidays method.
-type GetMarketHolidaysParams struct{}
-
 // GetMarketHolidaysResponse is the response returned by the GetMarketHolidays method.
 type GetMarketHolidaysResponse []MarketHoliday
-
-// todo: this endpoint is unlikely to ever have params so should we delete this type?
-// GetMarketStatusParams is the set of parameters for the GetMarketStatus method.
-type GetMarketStatusParams struct{}
 
 // GetMarketStatusResponse is the response returned by the GetMarketStatus method.
 type GetMarketStatusResponse MarketStatus
