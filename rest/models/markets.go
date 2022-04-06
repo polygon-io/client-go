@@ -16,7 +16,7 @@ type GetMarketHolidaysResponse []MarketHoliday
 // GetMarketStatusParams is the set of parameters for the GetMarketStatus method.
 type GetMarketStatusParams struct{}
 
-// GetMarketStatusResponse is the response returned by the GetMarketStats method.
+// GetMarketStatusResponse is the response returned by the GetMarketStatus method.
 type GetMarketStatusResponse MarketStatus
 
 // MarketHoliday represents a market holiday for a specific exchange.
