@@ -9,7 +9,14 @@ const (
 type GetMarketHolidaysResponse []MarketHoliday
 
 // GetMarketStatusResponse is the response returned by the GetMarketStatus method.
-type GetMarketStatusResponse MarketStatus
+type GetMarketStatusResponse struct {
+	AfterHours bool              `json:"afterHours"`
+	Currencies map[string]string `json:"currencies,omitempty"`
+	EarlyHours bool              `json:"earlyHours"`
+	Exchanges  map[string]string `json:"exchanges,omitempty"`
+	Market     string            `json:"market,omitempty"`
+	ServerTime string            `json:"serverTime,omitempty"` // todo: "2006-01-02T00:00:00.000Z" format
+}
 
 // MarketHoliday represents a market holiday for a specific exchange.
 type MarketHoliday struct {
@@ -19,14 +26,4 @@ type MarketHoliday struct {
 	Status   string `json:"status,omitempty"`
 	Open     string `json:"open,omitempty"`  // todo: "2006-01-02T00:00:00.000Z" format
 	Close    string `json:"close,omitempty"` // todo: "2006-01-02T00:00:00.000Z" format
-}
-
-// MarketStatus represents the current trading status of the exchanges and overall financial markets.
-type MarketStatus struct {
-	AfterHours bool              `json:"afterHours"`
-	Currencies map[string]string `json:"currencies,omitempty"`
-	EarlyHours bool              `json:"earlyHours"`
-	Exchanges  map[string]string `json:"exchanges,omitempty"`
-	Market     string            `json:"market,omitempty"`
-	ServerTime string            `json:"serverTime,omitempty"` // todo: "2006-01-02T00:00:00.000Z" format
 }
