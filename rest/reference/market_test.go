@@ -62,3 +62,34 @@ func TestGetMarketHolidays(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, expectedResponse, string(b))
 }
+
+func TestGetMarketStatus(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := `{
+		"afterHours": true,
+		"currencies": {
+		 "crypto": "open",
+		 "fx": "open"
+		},
+		"earlyHours": false,
+		"exchanges": {
+		 "nasdaq": "extended-hours",
+		 "nyse": "extended-hours",
+		 "otc": "closed"
+		},
+		"market": "extended-hours",
+		"serverTime": "2020-11-10T22:37:37.000Z"
+	   }`
+
+	registerResponder("https://api.polygon.io/v1/marketstatus/new", expectedResponse)
+	res, err := c.Reference.GetMarketStatus(context.Background(), models.GetMarketStatusParams{})
+
+	assert.Nil(t, err)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedResponse, string(b))
+}
