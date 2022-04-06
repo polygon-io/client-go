@@ -7,7 +7,6 @@ import (
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -55,7 +54,7 @@ func TestGetMarketHolidays(t *testing.T) {
 ]`
 
 	registerResponder("https://api.polygon.io/v1/marketstatus/upcoming", expectedResponse)
-	res, err := c.Reference.GetMarketHolidays(context.Background(), models.GetMarketHolidaysParams{})
+	res, err := c.Reference.GetMarketHolidays(context.Background())
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
@@ -86,7 +85,7 @@ func TestGetMarketStatus(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v1/marketstatus/now", expectedResponse)
-	res, err := c.Reference.GetMarketStatus(context.Background(), models.GetMarketStatusParams{})
+	res, err := c.Reference.GetMarketStatus(context.Background())
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
 	assert.Nil(t, err)
