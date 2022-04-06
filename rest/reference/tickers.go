@@ -8,11 +8,6 @@ import (
 	"github.com/polygon-io/client-go/rest/models"
 )
 
-// Client defines a REST client for the Polygon reference API.
-type Client struct {
-	client.Client
-}
-
 // ListTickersIter is an iterator for the ListTickers method.
 type ListTickersIter struct {
 	client.Iter
