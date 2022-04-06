@@ -70,24 +70,23 @@ func TestGetMarketStatus(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
-		"afterHours": true,
-		"currencies": {
-		 "crypto": "open",
-		 "fx": "open"
-		},
-		"earlyHours": false,
-		"exchanges": {
-		 "nasdaq": "extended-hours",
-		 "nyse": "extended-hours",
-		 "otc": "closed"
-		},
-		"market": "extended-hours",
-		"serverTime": "2020-11-10T22:37:37.000Z"
-	   }`
+	"afterHours": true,
+	"currencies": {
+		"crypto": "open",
+		"fx": "open"
+	},
+	"earlyHours": false,
+	"exchanges": {
+		"nasdaq": "extended-hours",
+		"nyse": "extended-hours",
+		"otc": "closed"
+	},
+	"market": "extended-hours",
+	"serverTime": "2020-11-10T22:37:37.000Z"
+}`
 
-	registerResponder("https://api.polygon.io/v1/marketstatus/new", expectedResponse)
+	registerResponder("https://api.polygon.io/v1/marketstatus/now", expectedResponse)
 	res, err := c.Reference.GetMarketStatus(context.Background(), models.GetMarketStatusParams{})
-
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
 	assert.Nil(t, err)
