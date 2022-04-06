@@ -31,9 +31,9 @@ type MarketHoliday struct {
 
 // MarketStatus represents the current trading status of the exchanges and overall financial markets.
 type MarketStatus struct {
-	AfterHours bool              `json:"afterHours,omitempty"`
+	AfterHours bool              `json:"afterHours"`
 	Currencies map[string]string `json:"currencies,omitempty"`
-	EarlyHours bool              `json:"earlyHours,omitempty"`
+	EarlyHours bool              `json:"earlyHours"`
 	Exchanges  map[string]string `json:"exchanges,omitempty"`
 	Market     string            `json:"market,omitempty"`
 	ServerTime string            `json:"serverTime,omitempty"` // todo: "2006-01-02T00:00:00.000Z" format
