@@ -31,7 +31,7 @@ type GetAggsResponse struct {
 	Ticker       string `json:"ticker,omitempty"`
 	QueryCount   int    `json:"queryCount,omitempty"`
 	ResultsCount int    `json:"resultsCount,omitempty"`
-	Adjusted     bool   `json:"adjusted,omitempty"`
+	Adjusted     bool   `json:"adjusted"`
 	Results      []Agg  `json:"results,omitempty"`
 }
 
@@ -50,7 +50,7 @@ type GetGroupedDailyAggsResponse struct {
 	Ticker       string `json:"ticker,omitempty"`
 	QueryCount   int    `json:"queryCount,omitempty"`
 	ResultsCount int    `json:"resultsCount,omitempty"`
-	Adjusted     bool   `json:"adjusted,omitempty"`
+	Adjusted     bool   `json:"adjusted"`
 	Results      []Agg  `json:"results,omitempty"`
 }
 
@@ -89,7 +89,7 @@ type GetPreviousCloseAggResponse struct {
 	Ticker       string `json:"ticker,omitempty"`
 	QueryCount   int    `json:"queryCount,omitempty"`
 	ResultsCount int    `json:"resultsCount,omitempty"`
-	Adjusted     bool   `json:"adjusted,omitempty"`
+	Adjusted     bool   `json:"adjusted"`
 	Results      []Agg  `json:"results,omitempty"`
 }
 

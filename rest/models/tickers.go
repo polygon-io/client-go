@@ -72,7 +72,7 @@ type Ticker struct {
 	Locale                      string          `json:"locale,omitempty"`
 	PrimaryExchange             string          `json:"primary_exchange,omitempty"`
 	Type                        string          `json:"type,omitempty"`
-	Active                      bool            `json:"active,omitempty"`
+	Active                      bool            `json:"active"`
 	CurrencySymbol              string          `json:"currency_symbol,omitempty"`
 	CurrencyName                string          `json:"currency_name,omitempty"`
 	BaseCurrencySymbol          string          `json:"base_currency_symbol,omitempty"`
