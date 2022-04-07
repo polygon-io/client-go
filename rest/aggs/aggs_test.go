@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const expectedAggsResponseURL = "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc"
 const expectedAggsResponse = `{
 	"status": "OK",
 	"request_id": "6a7e466379af0a71039d60cc78e72282",
@@ -49,7 +50,7 @@ func TestGetAggs(t *testing.T) {
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
-	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc", expectedAggsResponse)
+	registerResponder(expectedAggsResponseURL, expectedAggsResponse)
 
 	res, err := c.Aggs.GetAggs(context.Background(), models.GetAggsParams{
 		Ticker:     "AAPL",
@@ -74,7 +75,7 @@ func TestGetAggsBuilder(t *testing.T) {
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
-	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&customparam=customvalue&explain=false&limit=1&sort=desc", expectedAggsResponse)
+	registerResponder(expectedAggsResponseURL, expectedAggsResponse)
 
 	res := &models.GetAggsResponse{}
 	req, err := c.NewRequest(context.Background(), models.GetAggsParams{
@@ -86,12 +87,11 @@ func TestGetAggsBuilder(t *testing.T) {
 		Adjusted:   models.Ptr(true),
 		Sort:       models.Ptr(models.Desc),
 		Limit:      models.Ptr(1),
-		Explain:    models.Ptr(false),
 	}, res)
-	// Allows using uncodumented params
-	req.SetQueryParam("customparam", "customvalue")
-	// ...or setting arbitrary headers
-	req.SetHeader("customheader", "customvalue")
+	// Allows setting optional or undocumented query params later.
+	req.SetQueryParam("explain", "false")
+	// Also allows setting arbitrary headers
+	req.SetHeader("API_KEY", "API_KEY2")
 	assert.Nil(t, err)
 
 	_, err = req.Execute(http.MethodGet, models.GetAggsPath)
