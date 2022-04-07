@@ -59,6 +59,7 @@ type ListDividendsResponse struct {
 type Dividend struct {
 	CashAmount      float64 `json:"cash_amount,omitempty"`
 	DeclarationDate string  `json:"declaration_date,omitempty"`
+	DividendType    string  `json:"dividend_type,omitempty"`
 	ExDividendDate  string  `json:"ex_dividend_date,omitempty"`
 	Frequency       int64   `json:"frequency,omitempty"`
 	PayDate         string  `json:"pay_date,omitempty"`
