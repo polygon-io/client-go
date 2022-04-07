@@ -17,25 +17,23 @@ func TestListExchanges(t *testing.T) {
 	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	exchange1 := `{
-	"acronym": "AMEX",
-	"asset_class": "stocks",
-	"id": 1,
-	"locale": "us",
-	"mic": "XASE",
-	"name": "NYSE American, LLC",
-	"operating_mic": "XNYS",
-	"participant_id": "A",
-	"type": "exchange",
-	"url": "https://www.nyse.com/markets/nyse-american"
-}`
-
 	expectedResponse := `{
 	"status": "OK",
 	"request_id": "c784b78622b5a68c932af78a68b5907c",
 	"count": 1,
 	"results": [
-` + indent(true, exchange1, "\t\t") + `
+		{
+			"acronym": "AMEX",
+			"asset_class": "stocks",
+			"id": 1,
+			"locale": "us",
+			"mic": "XASE",
+			"name": "NYSE American, LLC",
+			"operating_mic": "XNYS",
+			"participant_id": "A",
+			"type": "exchange",
+			"url": "https://www.nyse.com/markets/nyse-american"
+		}
 	]
 }`
 
