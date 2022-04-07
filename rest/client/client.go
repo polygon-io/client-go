@@ -62,13 +62,13 @@ func New(apiKey string) Client {
 }
 
 // Call makes an API call based on the request params and options. The response is automatically unmarshaled.
-func (c *Client) Call(ctx context.Context, method, url string, params interface{}, response interface{}, opts ...models.RequestOption) error {
-	req, err := c.newRequest(ctx, params, response, opts...)
+func (c *Client) Call(ctx context.Context, method, uri string, params, response interface{}) error {
+	req, err := c.newRequest(ctx, params, response)
 	if err != nil {
 		return fmt.Errorf("failed to create request: %w", err)
 	}
 
-	res, err := req.Execute(method, url)
+	res, err := req.Execute(method, uri)
 	if err != nil {
 		return fmt.Errorf("failed to execute request: %w", err)
 	} else if res.IsError() {
@@ -100,9 +100,7 @@ func (c *Client) EncodeParams(uri string, params interface{}) (string, error) {
 	return uri, nil
 }
 
-func (c *Client) newRequest(ctx context.Context, params interface{}, response interface{}, opts ...models.RequestOption) (*resty.Request, error) {
-	options := mergeOptions(opts...)
-
+func (c *Client) newRequest(ctx context.Context, params, response interface{}) (*resty.Request, error) {
 	req := c.HTTP.R().SetContext(ctx)
 	if params != nil {
 		if err := c.validateParams(params); err != nil {
@@ -121,12 +119,6 @@ func (c *Client) newRequest(ctx context.Context, params interface{}, response in
 		}
 		req.SetQueryParamsFromValues(query)
 	}
-
-	if options.APIKey != nil {
-		req.SetAuthToken(*options.APIKey)
-	}
-
-	req.SetHeaderMultiValues(options.Headers)
 
 	req.SetResult(response).SetError(&models.ErrorResponse{})
 
@@ -180,13 +172,4 @@ func (c *Client) encodeQueryString(params interface{}) (string, error) {
 		return "", nil
 	}
 	return query.Encode(), nil
-}
-
-func mergeOptions(opts ...models.RequestOption) *models.RequestOptions {
-	options := &models.RequestOptions{}
-	for _, o := range opts {
-		o(options)
-	}
-
-	return options
 }

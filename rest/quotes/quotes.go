@@ -29,7 +29,7 @@ func (it *ListQuotesIter) Quote() models.Quote {
 // ListQuotes retrieves quotes for a specified ticker.
 // For more details see https://polygon.io/docs/stocks/get_v3_quotes__stockticker.
 // This method returns an iterator that should be used to access the results via this pattern:
-//   iter, err := c.ListQuotes(context.TODO(), params, opts...)
+//   iter, err := c.ListQuotes(context.TODO(), params)
 //   if err != nil {
 //       return err
 //   }
@@ -41,7 +41,7 @@ func (it *ListQuotesIter) Quote() models.Quote {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListQuotes(ctx context.Context, params models.ListQuotesParams, options ...models.RequestOption) (*ListQuotesIter, error) {
+func (c *Client) ListQuotes(ctx context.Context, params models.ListQuotesParams) (*ListQuotesIter, error) {
 	url, err := c.EncodeParams(models.ListQuotesPath, params)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (c *Client) ListQuotes(ctx context.Context, params models.ListQuotesParams,
 	return &ListQuotesIter{
 		Iter: client.NewIter(ctx, url, func(url string) (models.ListResponse, []interface{}, error) {
 			res := &models.ListQuotesResponse{}
-			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
+			err := c.Call(ctx, http.MethodGet, url, nil, res)
 
 			results := make([]interface{}, len(res.Results))
 			for i, v := range res.Results {
@@ -64,16 +64,16 @@ func (c *Client) ListQuotes(ctx context.Context, params models.ListQuotesParams,
 
 // GetLastQuote retrieves the last quote (NBBO) for a specified ticker.
 // For more details see https://polygon.io/docs/stocks/get_v2_last_nbbo__stocksticker.
-func (c *Client) GetLastQuote(ctx context.Context, params models.GetLastQuoteParams, options ...models.RequestOption) (*models.GetLastQuoteResponse, error) {
+func (c *Client) GetLastQuote(ctx context.Context, params models.GetLastQuoteParams) (*models.GetLastQuoteResponse, error) {
 	res := &models.GetLastQuoteResponse{}
-	err := c.Call(ctx, http.MethodGet, models.GetLastQuotePath, params, res, options...)
+	err := c.Call(ctx, http.MethodGet, models.GetLastQuotePath, params, res)
 	return res, err
 }
 
 // GetLastForexQuote retrieves the last quote (BBO) for a forex currency pair.
 // For more details see https://polygon.io/docs/forex/get_v1_last_quote_currencies__from___to.
-func (c *Client) GetLastForexQuote(ctx context.Context, params models.GetLastForexQuoteParams, options ...models.RequestOption) (*models.GetLastForexQuoteResponse, error) {
+func (c *Client) GetLastForexQuote(ctx context.Context, params models.GetLastForexQuoteParams) (*models.GetLastForexQuoteResponse, error) {
 	res := &models.GetLastForexQuoteResponse{}
-	err := c.Call(ctx, http.MethodGet, models.GetLastForexQuotePath, params, res, options...)
+	err := c.Call(ctx, http.MethodGet, models.GetLastForexQuotePath, params, res)
 	return res, err
 }

@@ -41,7 +41,7 @@ func (it *ListTradesIter) Trade() models.Trade {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListTrades(ctx context.Context, params models.ListTradesParams, options ...models.RequestOption) (*ListTradesIter, error) {
+func (c *Client) ListTrades(ctx context.Context, params models.ListTradesParams) (*ListTradesIter, error) {
 	url, err := c.EncodeParams(models.ListTradesPath, params)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (c *Client) ListTrades(ctx context.Context, params models.ListTradesParams,
 	return &ListTradesIter{
 		Iter: client.NewIter(ctx, url, func(url string) (models.ListResponse, []interface{}, error) {
 			res := &models.ListTradesResponse{}
-			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
+			err := c.Call(ctx, http.MethodGet, url, nil, res)
 
 			results := make([]interface{}, len(res.Results))
 			for i, v := range res.Results {
@@ -64,16 +64,16 @@ func (c *Client) ListTrades(ctx context.Context, params models.ListTradesParams,
 
 // GetLastTrade retrieves the last trade for a specified ticker.
 // For more details see https://polygon.io/docs/stocks/get_v2_last_trade__stocksticker.
-func (c *Client) GetLastTrade(ctx context.Context, params models.GetLastTradeParams, options ...models.RequestOption) (*models.GetLastTradeResponse, error) {
+func (c *Client) GetLastTrade(ctx context.Context, params models.GetLastTradeParams) (*models.GetLastTradeResponse, error) {
 	res := &models.GetLastTradeResponse{}
-	err := c.Call(ctx, http.MethodGet, models.GetLastTradePath, params, res, options...)
+	err := c.Call(ctx, http.MethodGet, models.GetLastTradePath, params, res)
 	return res, err
 }
 
 // GetLastCryptoTrade retrieves the last trade for a crypto pair.
 // For more details see https://polygon.io/docs/crypto/get_v1_last_crypto__from___to.
-func (c *Client) GetLastCryptoTrade(ctx context.Context, params models.GetLastCryptoTradeParams, options ...models.RequestOption) (*models.GetLastCryptoTradeResponse, error) {
+func (c *Client) GetLastCryptoTrade(ctx context.Context, params models.GetLastCryptoTradeParams) (*models.GetLastCryptoTradeResponse, error) {
 	res := &models.GetLastCryptoTradeResponse{}
-	err := c.Call(ctx, http.MethodGet, models.GetLastCryptoTradePath, params, res, options...)
+	err := c.Call(ctx, http.MethodGet, models.GetLastCryptoTradePath, params, res)
 	return res, err
 }

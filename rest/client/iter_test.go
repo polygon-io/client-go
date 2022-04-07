@@ -57,7 +57,7 @@ func (c *Client) ListResource(ctx context.Context, params ListResourceParams, op
 	return &ListResourceIter{
 		Iter: client.NewIter(ctx, url, func(url string) (models.ListResponse, []interface{}, error) {
 			res := &ListResourceResponse{}
-			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
+			err := c.Call(ctx, http.MethodGet, url, nil, res)
 
 			results := make([]interface{}, len(res.Results))
 			for i, v := range res.Results {
