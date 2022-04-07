@@ -87,7 +87,8 @@ func TestGetAggsBuilder(t *testing.T) {
 	}, res)
 	assert.Nil(t, err)
 
-	req.Execute(http.MethodGet, "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22")
+	_, err = req.Execute(http.MethodGet, "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22")
+	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
 	assert.Nil(t, err)
 	assert.Equal(t, expectedAggsResponse, string(b))

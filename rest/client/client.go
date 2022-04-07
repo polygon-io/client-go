@@ -101,32 +101,34 @@ func (c *Client) EncodeParams(uri string, params interface{}) (string, error) {
 	return uri, nil
 }
 
+//nolint:nestif // 2 levels is okay <3
 func (c *Client) NewRequest(ctx context.Context, params, response interface{}) (*resty.Request, error) {
 	req := c.HTTP.R().SetContext(ctx)
-	if params != nil {
-		v := reflect.ValueOf(params)
-		if v.Kind() == reflect.Struct {
-			if err := c.validateParams(params); err != nil {
-				return nil, err
-			}
-
-			path, err := c.encodePath(params)
-			if err != nil {
-				return nil, err
-			}
-			req.SetPathParams(path)
-
-			query, err := c.encodeQuery(params)
-			if err != nil {
-				return nil, err
-			}
-			req.SetQueryParamsFromValues(query)
-		} else {
-			req.SetQueryParams(params.(map[string]string))
-		}
+	req.SetResult(response).SetError(&models.ErrorResponse{})
+	if params == nil {
+		return req, nil
 	}
 
-	req.SetResult(response).SetError(&models.ErrorResponse{})
+	v := reflect.ValueOf(params)
+	if v.Kind() == reflect.Struct {
+		if err := c.validateParams(params); err != nil {
+			return nil, err
+		}
+
+		path, err := c.encodePath(params)
+		if err != nil {
+			return nil, err
+		}
+		req.SetPathParams(path)
+
+		query, err := c.encodeQuery(params)
+		if err != nil {
+			return nil, err
+		}
+		req.SetQueryParamsFromValues(query)
+	} else {
+		req.SetQueryParams(params.(map[string]string))
+	}
 
 	return req, nil
 }
