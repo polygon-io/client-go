@@ -9,13 +9,13 @@ import (
 	"time"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
+	polygon "github.com/polygon-io/client-go"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListTrades(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Trades.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -94,7 +94,7 @@ func TestListTrades(t *testing.T) {
 }
 
 func TestGetLastTrade(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Trades.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -132,7 +132,7 @@ func TestGetLastTrade(t *testing.T) {
 }
 
 func TestGetLastCryptoTrade(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
