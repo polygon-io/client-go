@@ -21,6 +21,8 @@ type Exchange struct {
 	ID            int64  `json:"id,omitempty"`
 	Locale        string `json:"locale,omitempty"`
 	MIC           string `json:"mic,omitempty"`
+	Name          string `json:"name,omitempty"`
+	OperatingMIC  string `json:"operating_mic,omitempty"`
 	ParticipantID string `json:"participant_id,omitempty"`
 	Type          string `json:"type,omitempty"`
 	URL           string `json:"url,omitempty"`
