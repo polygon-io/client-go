@@ -70,9 +70,6 @@ func New(apiKey string) Client {
 	qe := form.NewEncoder()
 	qe.SetMode(form.ModeExplicit)
 	qe.SetTagName("query")
-	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(x.(time.Time).UnixNano())}, nil
-	}, time.Time{})
 
 	return Client{
 		HTTP:         c,

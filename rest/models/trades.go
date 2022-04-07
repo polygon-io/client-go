@@ -14,11 +14,11 @@ const (
 type ListTradesParams struct {
 	Ticker string `validate:"required" path:"ticker"`
 
-	TimestampEQ  *time.Time `query:"timestamp"`
-	TimestampLT  *time.Time `query:"timestamp.lt"`
-	TimestampLTE *time.Time `query:"timestamp.lte"`
-	TimestampGT  *time.Time `query:"timestamp.gt"`
-	TimestampGTE *time.Time `query:"timestamp.gte"`
+	TimestampEQ  *time.Time `query:"timestamp" nano:"timestamp"`
+	TimestampLT  *time.Time `query:"timestamp.lt" nano:"timestamp.lt"`
+	TimestampLTE *time.Time `query:"timestamp.lte" nano:"timestamp.lte"`
+	TimestampGT  *time.Time `query:"timestamp.gt" nano:"timestamp.gt"`
+	TimestampGTE *time.Time `query:"timestamp.gte" nano:"timestamp.gte"`
 	Limit        *int       `query:"limit"`
 	Sort         *Sort      `query:"sort"`
 	Order        *Order     `query:"order"`

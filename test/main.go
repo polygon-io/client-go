@@ -32,4 +32,12 @@ func main() {
 		fmt.Println(aggs.Results[i].Timestamp.ToTime(), reflect.TypeOf(aggs.Results[i].Timestamp))
 
 	}
+
+	last, _ := p.Trades.GetLastTrade(context.Background(),
+		models.GetLastTradeParams{
+			Ticker: "AAPL",
+		},
+	)
+
+	fmt.Println(last.Results.Timestamp)
 }
