@@ -42,5 +42,4 @@ func main() {
 		}
 		chanMessages <- msg
 	}
-
 }
