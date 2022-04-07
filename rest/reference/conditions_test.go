@@ -23,6 +23,7 @@ func TestListConditions(t *testing.T) {
 		"trade"
 	],
 	"id": 1,
+	"legacy": false,
 	"name": "Acquisition",
 	"sip_mapping": {
 		"UTP": "A"
