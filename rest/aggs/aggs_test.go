@@ -13,13 +13,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetAggs(t *testing.T) {
-	c := polygon.New("API_KEY")
-
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
-	defer httpmock.DeactivateAndReset()
-
-	expectedResponse := `{
+const (
+	expectedAggsResponseURL = "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc"
+	expectedAggsResponse    = `{
 	"status": "OK",
 	"request_id": "6a7e466379af0a71039d60cc78e72282",
 	"ticker": "AAPL",
@@ -49,8 +45,15 @@ func TestGetAggs(t *testing.T) {
 		}
 	]
 }`
+)
 
-	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc", expectedResponse)
+func TestGetAggs(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+	registerResponder(expectedAggsResponseURL, expectedAggsResponse)
+
 	res, err := c.Aggs.GetAggs(context.Background(), models.GetAggsParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
@@ -66,7 +69,31 @@ func TestGetAggs(t *testing.T) {
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
 	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, expectedAggsResponse, string(b))
+}
+
+func TestGetAggsWithQueryParam(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+	registerResponder(expectedAggsResponseURL, expectedAggsResponse)
+
+	res, err := c.Aggs.GetAggs(context.Background(), models.GetAggsParams{
+		Ticker:     "AAPL",
+		Multiplier: 1,
+		Resolution: "day",
+		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC),
+		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC),
+		Adjusted:   models.Ptr(true),
+		Sort:       models.Ptr(models.Desc),
+		Limit:      models.Ptr(1),
+	}, models.WithQueryParam("explain", "false"))
+
+	assert.Nil(t, err)
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedAggsResponse, string(b))
 }
 
 func TestGetGroupedDailyAggs(t *testing.T) {
