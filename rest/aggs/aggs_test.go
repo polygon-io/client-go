@@ -13,13 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetAggs(t *testing.T) {
-	c := polygon.New("API_KEY")
-
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
-	defer httpmock.DeactivateAndReset()
-
-	expectedResponse := `{
+const expectedAggsResponse = `{
 	"status": "OK",
 	"request_id": "6a7e466379af0a71039d60cc78e72282",
 	"ticker": "AAPL",
@@ -50,7 +44,16 @@ func TestGetAggs(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc", expectedResponse)
+func registerGetAggs() {
+	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc", expectedAggsResponse)
+}
+
+func TestGetAggs(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+	registerGetAggs()
 	res, err := c.Aggs.GetAggs(context.Background(), models.GetAggsParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
@@ -66,7 +69,28 @@ func TestGetAggs(t *testing.T) {
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
 	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, expectedAggsResponse, string(b))
+}
+
+func TestGetAggsBuilder(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+	registerGetAggs()
+	res := &models.GetAggsResponse{}
+	req, err := c.Client.NewRequest(context.Background(), map[string]string{
+		"adjusted": "true",
+		"explain":  "false",
+		"limit":    "1",
+		"sort":     "desc",
+	}, res)
+	assert.Nil(t, err)
+
+	req.Execute(http.MethodGet, "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22")
+	b, err := json.MarshalIndent(res, "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, expectedAggsResponse, string(b))
 }
 
 func TestGetGroupedDailyAggs(t *testing.T) {

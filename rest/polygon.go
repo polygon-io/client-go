@@ -15,6 +15,7 @@ type polygonClient struct {
 	Reference *reference.Client
 	Trades    *trades.Client
 	Snapshot  *snapshot.Client
+	Client    *client.Client
 }
 
 // New creates a new client for the Polygon REST API.
@@ -22,9 +23,10 @@ func New(apiKey string) *polygonClient {
 	c := client.New(apiKey)
 	return &polygonClient{
 		Aggs:      &aggs.Client{Client: c},
+		Client:    &c,
 		Quotes:    &quotes.Client{Client: c},
 		Reference: &reference.Client{Client: c},
-		Trades:    &trades.Client{Client: c},
 		Snapshot:  &snapshot.Client{Client: c},
+		Trades:    &trades.Client{Client: c},
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"reflect"
 	"strings"
 	"time"
 
@@ -63,7 +64,7 @@ func New(apiKey string) Client {
 
 // Call makes an API call based on the request params and options. The response is automatically unmarshaled.
 func (c *Client) Call(ctx context.Context, method, uri string, params, response interface{}) error {
-	req, err := c.newRequest(ctx, params, response)
+	req, err := c.NewRequest(ctx, params, response)
 	if err != nil {
 		return fmt.Errorf("failed to create request: %w", err)
 	}
@@ -100,24 +101,29 @@ func (c *Client) EncodeParams(uri string, params interface{}) (string, error) {
 	return uri, nil
 }
 
-func (c *Client) newRequest(ctx context.Context, params, response interface{}) (*resty.Request, error) {
+func (c *Client) NewRequest(ctx context.Context, params, response interface{}) (*resty.Request, error) {
 	req := c.HTTP.R().SetContext(ctx)
 	if params != nil {
-		if err := c.validateParams(params); err != nil {
-			return nil, err
-		}
+		v := reflect.ValueOf(params)
+		if v.Kind() == reflect.Struct {
+			if err := c.validateParams(params); err != nil {
+				return nil, err
+			}
 
-		path, err := c.encodePath(params)
-		if err != nil {
-			return nil, err
-		}
-		req.SetPathParams(path)
+			path, err := c.encodePath(params)
+			if err != nil {
+				return nil, err
+			}
+			req.SetPathParams(path)
 
-		query, err := c.encodeQuery(params)
-		if err != nil {
-			return nil, err
+			query, err := c.encodeQuery(params)
+			if err != nil {
+				return nil, err
+			}
+			req.SetQueryParamsFromValues(query)
+		} else {
+			req.SetQueryParams(params.(map[string]string))
 		}
-		req.SetQueryParamsFromValues(query)
 	}
 
 	req.SetResult(response).SetError(&models.ErrorResponse{})
