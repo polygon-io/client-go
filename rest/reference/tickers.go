@@ -36,7 +36,7 @@ func (it *ListTickersIter) Ticker() models.Ticker {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListTickers(ctx context.Context, params models.ListTickersParams, options ...models.RequestOption) (*ListTickersIter, error) {
+func (c *Client) ListTickers(ctx context.Context, params models.ListTickersParams) (*ListTickersIter, error) {
 	url, err := c.EncodeParams(models.ListTickersPath, params)
 	if err != nil {
 		return nil, err

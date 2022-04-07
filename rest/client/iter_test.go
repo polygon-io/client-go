@@ -48,7 +48,7 @@ type ListResourceParams struct {
 	Timestamp *string `query:"timestamp"`
 }
 
-func (c *Client) ListResource(ctx context.Context, params ListResourceParams, options ...models.RequestOption) (*ListResourceIter, error) {
+func (c *Client) ListResource(ctx context.Context, params ListResourceParams) (*ListResourceIter, error) {
 	url, err := c.EncodeParams(listResourcePath, params)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create iterator: %w", err)

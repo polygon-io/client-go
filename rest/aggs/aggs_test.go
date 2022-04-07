@@ -44,16 +44,13 @@ const expectedAggsResponse = `{
 	]
 }`
 
-func registerGetAggs() {
-	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc", expectedAggsResponse)
-}
-
 func TestGetAggs(t *testing.T) {
 	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
-	registerGetAggs()
+	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc", expectedAggsResponse)
+
 	res, err := c.Aggs.GetAggs(context.Background(), models.GetAggsParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
@@ -77,17 +74,27 @@ func TestGetAggsBuilder(t *testing.T) {
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
-	registerGetAggs()
+	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&customparam=customvalue&explain=false&limit=1&sort=desc", expectedAggsResponse)
+
 	res := &models.GetAggsResponse{}
-	req, err := c.Client.NewRequest(context.Background(), map[string]string{
-		"adjusted": "true",
-		"explain":  "false",
-		"limit":    "1",
-		"sort":     "desc",
+	req, err := c.NewRequest(context.Background(), models.GetAggsParams{
+		Ticker:     "AAPL",
+		Multiplier: 1,
+		Resolution: "day",
+		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC),
+		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC),
+		Adjusted:   models.Ptr(true),
+		Sort:       models.Ptr(models.Desc),
+		Limit:      models.Ptr(1),
+		Explain:    models.Ptr(false),
 	}, res)
+	// Allows using uncodumented params
+	req.SetQueryParam("customparam", "customvalue")
+	// ...or setting arbitrary headers
+	req.SetHeader("customheader", "customvalue")
 	assert.Nil(t, err)
 
-	_, err = req.Execute(http.MethodGet, "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22")
+	_, err = req.Execute(http.MethodGet, models.GetAggsPath)
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
 	assert.Nil(t, err)
