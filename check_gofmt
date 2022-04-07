@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-# go fmt prints out files that dont conform, so a word count of 0 means success, anything else fails
-failed_files=$(go fmt ./...)
-echo "failed files: ${failed_files}"
-exit "$(echo -n "${failed_files}" | wc -l )"
