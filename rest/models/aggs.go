@@ -35,7 +35,7 @@ type GetAggsResponse struct {
 type GetGroupedDailyAggsParams struct {
 	Locale     MarketLocale `validate:"required" path:"locale"`
 	MarketType MarketType   `validate:"required" path:"marketType"`
-	Date       Date         `validate:"required" path:"date"`
+	Date       *Date        `validate:"required" path:"date"`
 
 	Adjusted *bool `query:"adjusted"`
 }
@@ -53,7 +53,7 @@ type GetGroupedDailyAggsResponse struct {
 // GetDailyOpenCloseAggParams is the set of parameters for the GetDailyOpenCloseAgg method.
 type GetDailyOpenCloseAggParams struct {
 	Ticker string `validate:"required" path:"ticker"`
-	Date   Date   `validate:"required" path:"date"`
+	Date   *Date  `validate:"required" path:"date"`
 
 	Adjusted *bool `query:"adjusted"`
 }

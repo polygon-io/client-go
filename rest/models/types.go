@@ -97,6 +97,10 @@ func (d *Date) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (d *Date) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(*d).Format("2006-01-02"))
+}
+
 type Millis time.Time
 
 func (m *Millis) UnmarshalJSON(data []byte) error {
@@ -124,4 +128,8 @@ func (n *Nanos) UnmarshalJSON(data []byte) error {
 	timeNano := time.Unix(d/1_000_000_000, d%1_000_000_000)
 	*n = Nanos(timeNano)
 	return nil
+}
+
+func (n *Nanos) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(*n).UnixNano())
 }
