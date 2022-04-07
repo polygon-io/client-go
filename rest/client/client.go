@@ -41,9 +41,6 @@ func New(apiKey string) Client {
 	pe.SetMode(form.ModeExplicit)
 	pe.SetTagName("path")
 	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(x.(time.Time).Format("2006-01-02"))}, nil
-	}, time.Time{}) // todo: delete this
-	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
 		return []string{fmt.Sprint(time.Time(x.(models.Date)).Format("2006-01-02"))}, nil
 	}, models.Date{})
 	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
@@ -53,9 +50,6 @@ func New(apiKey string) Client {
 	qe := form.NewEncoder()
 	qe.SetMode(form.ModeExplicit)
 	qe.SetTagName("query")
-	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(x.(time.Time).UnixNano())}, nil
-	}, time.Time{}) // todo: delete this
 	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
 		return []string{fmt.Sprint(time.Time(x.(models.Date)).Format("2006-01-02"))}, nil
 	}, models.Date{})

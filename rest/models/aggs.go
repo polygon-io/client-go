@@ -1,9 +1,5 @@
 package models
 
-import (
-	"time"
-)
-
 const (
 	GetAggsPath              = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
 	GetGroupedDailyAggsPath  = "/v2/aggs/grouped/locale/{locale}/market/{marketType}/{date}"
@@ -16,8 +12,8 @@ type GetAggsParams struct {
 	Ticker     string     `validate:"required" path:"ticker"`
 	Multiplier int        `validate:"required" path:"multiplier"`
 	Resolution Resolution `validate:"required" path:"resolution"`
-	From       time.Time  `validate:"required" path:"from"`
-	To         time.Time  `validate:"required" path:"to"`
+	From       *Millis    `validate:"required" path:"from"`
+	To         *Millis    `validate:"required" path:"to"`
 
 	Sort     *Order `query:"sort"`
 	Limit    *int   `query:"limit"`
@@ -39,7 +35,7 @@ type GetAggsResponse struct {
 type GetGroupedDailyAggsParams struct {
 	Locale     MarketLocale `validate:"required" path:"locale"`
 	MarketType MarketType   `validate:"required" path:"marketType"`
-	Date       time.Time    `validate:"required" path:"date"`
+	Date       Date         `validate:"required" path:"date"`
 
 	Adjusted *bool `query:"adjusted"`
 }
@@ -56,8 +52,8 @@ type GetGroupedDailyAggsResponse struct {
 
 // GetDailyOpenCloseAggParams is the set of parameters for the GetDailyOpenCloseAgg method.
 type GetDailyOpenCloseAggParams struct {
-	Ticker string    `validate:"required" path:"ticker"`
-	Date   time.Time `validate:"required" path:"date"`
+	Ticker string `validate:"required" path:"ticker"`
+	Date   Date   `validate:"required" path:"date"`
 
 	Adjusted *bool `query:"adjusted"`
 }
@@ -103,7 +99,7 @@ type Agg struct {
 	Close             float64 `json:"c,omitempty"`
 	High              float64 `json:"h,omitempty"`
 	Low               float64 `json:"l,omitempty"`
-	Timestamp         int64   `json:"t,omitempty"`
+	Timestamp         *Millis `json:"t,omitempty"`
 	Transactions      int64   `json:"n,omitempty"`
 	Market            string  `json:"m,omitempty"`
 	Exchange          int32   `json:"x,omitempty"`
@@ -111,6 +107,6 @@ type Agg struct {
 	OfficialOpenPrice float64 `json:"op,omitempty"`
 	AverageSize       float64 `json:"z,omitempty"`
 	AccumulatedVolume float64 `json:"av,omitempty"`
-	StartTimestamp    int64   `json:"s,omitempty"`
-	EndTimestamp      int64   `json:"e,omitempty"`
+	StartTimestamp    *Millis `json:"s,omitempty"`
+	EndTimestamp      *Millis `json:"e,omitempty"`
 }

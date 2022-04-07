@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"strconv"
 	"time"
 )
@@ -105,6 +106,10 @@ func (m *Millis) UnmarshalJSON(data []byte) error {
 	}
 	*m = Millis(time.UnixMilli(d))
 	return nil
+}
+
+func (m *Millis) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(*m).UnixMilli())
 }
 
 type Nanos time.Time
