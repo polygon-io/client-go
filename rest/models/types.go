@@ -110,6 +110,13 @@ func (m *Millis) UnmarshalJSON(data []byte) error {
 type Nanos time.Time
 
 func (n *Nanos) UnmarshalJSON(data []byte) error {
-	// todo
+	d, err := strconv.ParseInt(string(data), 10, 64)
+	if err != nil {
+		return err
+	}
+
+	// Go Time package does not include a method to convert UnixNano to a time.
+	timeNano := time.Unix(d/1_000_000_000, d%1_000_000_000)
+	*n = Nanos(timeNano)
 	return nil
 }
