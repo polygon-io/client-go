@@ -6,12 +6,12 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
+	polygon "github.com/polygon-io/client-go"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetMarketHolidays(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -63,7 +63,7 @@ func TestGetMarketHolidays(t *testing.T) {
 }
 
 func TestGetMarketStatus(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
