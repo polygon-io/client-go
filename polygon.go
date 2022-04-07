@@ -1,3 +1,4 @@
+// Package polygon REST and WebSocket clients for the Polygon API.
 package polygon
 
 import (
@@ -9,7 +10,8 @@ import (
 	"github.com/polygon-io/client-go/rest/trades"
 )
 
-type polygonClient struct {
+type restClient struct {
+	client.Client
 	Aggs      *aggs.Client
 	Quotes    *quotes.Client
 	Reference *reference.Client
@@ -17,10 +19,11 @@ type polygonClient struct {
 	Snapshot  *snapshot.Client
 }
 
-// New creates a new client for the Polygon REST API.
-func New(apiKey string) *polygonClient {
+// NewClient creates a client for the Polygon REST API.
+func NewClient(apiKey string) *restClient {
 	c := client.New(apiKey)
-	return &polygonClient{
+	return &restClient{
+		Client:    c,
 		Aggs:      &aggs.Client{Client: c},
 		Quotes:    &quotes.Client{Client: c},
 		Reference: &reference.Client{Client: c},
