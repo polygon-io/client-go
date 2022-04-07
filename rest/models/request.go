@@ -1,8 +1,9 @@
 package models
 
-import "net/http"
-
-// todo: possibly at a request type that params can inherit
+import (
+	"net/http"
+	"net/url"
+)
 
 // RequestOptions are used to configure client calls.
 type RequestOptions struct {
@@ -11,6 +12,9 @@ type RequestOptions struct {
 
 	// Headers to apply to the request
 	Headers http.Header
+
+	// Query params to apply to the request
+	QueryParams url.Values
 }
 
 // RequestOption changes the configuration of RequestOptions.
@@ -31,5 +35,16 @@ func WithHeader(key, value string) RequestOption {
 		}
 
 		o.Headers.Add(key, value)
+	}
+}
+
+// WithHeader sets a Header for an Option.
+func WithQueryParam(key, value string) RequestOption {
+	return func(o *RequestOptions) {
+		if o.QueryParams == nil {
+			o.QueryParams = make(url.Values)
+		}
+
+		o.QueryParams.Add(key, value)
 	}
 }

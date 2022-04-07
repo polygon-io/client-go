@@ -126,6 +126,8 @@ func (c *Client) newRequest(ctx context.Context, params, response interface{}, o
 		req.SetAuthToken(*options.APIKey)
 	}
 
+	req.SetQueryParamsFromValues(options.QueryParams)
+
 	req.SetHeaderMultiValues(options.Headers)
 
 	req.SetResult(response).SetError(&models.ErrorResponse{})
