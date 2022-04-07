@@ -4,7 +4,7 @@ const ListSplitsPath = "/v3/reference/splits"
 
 // ListSplitsParams is the set of parameters for the ListSplits method.
 type ListSplitsParams struct {
-	TickerEQ  *string `query:"ticker"`
+	Ticker    *string `query:"ticker"`
 	TickerLT  *string `query:"ticker.lt"`
 	TickerLTE *string `query:"ticker.lte"`
 	TickerGT  *string `query:"ticker.gt"`
