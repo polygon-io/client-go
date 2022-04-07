@@ -1,5 +1,10 @@
 package models
 
+import (
+	"strconv"
+	"time"
+)
+
 // Ptr returns a pointer to any value.
 func Ptr[T any](v T) *T {
 	return &v
@@ -73,3 +78,38 @@ const (
 	Gainers Direction = "gainers"
 	Losers  Direction = "losers"
 )
+
+// todo: godoc
+
+type Date time.Time
+
+func (d *Date) UnmarshalJSON(data []byte) error {
+	unquoteData, err := strconv.Unquote(string(data))
+	if err != nil {
+		return err
+	}
+	t, err := time.Parse("2006-01-02", unquoteData)
+	if err != nil {
+		return err
+	}
+	*d = Date(t)
+	return nil
+}
+
+type Millis time.Time
+
+func (m *Millis) UnmarshalJSON(data []byte) error {
+	d, err := strconv.ParseInt(string(data), 10, 64)
+	if err != nil {
+		return err
+	}
+	*m = Millis(time.UnixMilli(d))
+	return nil
+}
+
+type Nanos time.Time
+
+func (n *Nanos) UnmarshalJSON(data []byte) error {
+	// todo
+	return nil
+}
