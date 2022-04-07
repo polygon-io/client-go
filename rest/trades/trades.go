@@ -41,7 +41,7 @@ func (it *ListTradesIter) Trade() models.Trade {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListTrades(ctx context.Context, params models.ListTradesParams, options ...models.RequestOption) (*ListTradesIter, error) {
+func (c *Client) ListTrades(ctx context.Context, params *models.ListTradesParams, options ...models.RequestOption) (*ListTradesIter, error) {
 	uri, err := c.EncodeParams(models.ListTradesPath, params)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (c *Client) ListTrades(ctx context.Context, params models.ListTradesParams,
 
 // GetLastTrade retrieves the last trade for a specified ticker.
 // For more details see https://polygon.io/docs/stocks/get_v2_last_trade__stocksticker.
-func (c *Client) GetLastTrade(ctx context.Context, params models.GetLastTradeParams, options ...models.RequestOption) (*models.GetLastTradeResponse, error) {
+func (c *Client) GetLastTrade(ctx context.Context, params *models.GetLastTradeParams, options ...models.RequestOption) (*models.GetLastTradeResponse, error) {
 	res := &models.GetLastTradeResponse{}
 	err := c.Call(ctx, http.MethodGet, models.GetLastTradePath, params, res, options...)
 	return res, err
@@ -72,7 +72,7 @@ func (c *Client) GetLastTrade(ctx context.Context, params models.GetLastTradePar
 
 // GetLastCryptoTrade retrieves the last trade for a crypto pair.
 // For more details see https://polygon.io/docs/crypto/get_v1_last_crypto__from___to.
-func (c *Client) GetLastCryptoTrade(ctx context.Context, params models.GetLastCryptoTradeParams, options ...models.RequestOption) (*models.GetLastCryptoTradeResponse, error) {
+func (c *Client) GetLastCryptoTrade(ctx context.Context, params *models.GetLastCryptoTradeParams, options ...models.RequestOption) (*models.GetLastCryptoTradeResponse, error) {
 	res := &models.GetLastCryptoTradeResponse{}
 	err := c.Call(ctx, http.MethodGet, models.GetLastCryptoTradePath, params, res, options...)
 	return res, err

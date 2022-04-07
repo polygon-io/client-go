@@ -62,15 +62,11 @@ func TestListQuotes(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp.lte=1626912000000000000", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp=1626912000000000000", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/quotes/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
-	iter, err := c.Quotes.ListQuotes(context.Background(), models.ListQuotesParams{
-		Ticker:       "AAPL",
-		TimestampLTE: models.Ptr(models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))),
-		Order:        models.Ptr(models.Asc),
-		Limit:        models.Ptr(2),
-		Sort:         models.Ptr(models.Timestamp),
-	})
+	iter, err := c.Quotes.ListQuotes(context.Background(), models.ListQuotesParams{Ticker: "AAPL"}.
+		WithTimestamp(models.EQ, models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
+		WithSort(models.Timestamp).WithOrder(models.Asc).WithLimit(2))
 
 	// iter creation
 	assert.Nil(t, err)
@@ -121,7 +117,7 @@ func TestGetLastQuote(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/last/nbbo/AAPL", expectedResponse)
-	res, err := c.Quotes.GetLastQuote(context.Background(), models.GetLastQuoteParams{
+	res, err := c.Quotes.GetLastQuote(context.Background(), &models.GetLastQuoteParams{
 		Ticker: "AAPL",
 	})
 
@@ -150,7 +146,7 @@ func TestGetLastForexQuote(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v1/last_quote/currencies/USD/GBP", expectedResponse)
-	res, err := c.Quotes.GetLastForexQuote(context.Background(), models.GetLastForexQuoteParams{
+	res, err := c.Quotes.GetLastForexQuote(context.Background(), &models.GetLastForexQuoteParams{
 		From: "USD",
 		To:   "GBP",
 	})
