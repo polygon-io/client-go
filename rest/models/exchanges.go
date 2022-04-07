@@ -1,15 +1,15 @@
 package models
 
-const ListExchangesPath = "/v3/reference/exchanges"
+const GetExchangesPath = "/v3/reference/exchanges"
 
-// ListExchangesParams is the set of parameters for the ListExchanges method.
-type ListExchangesParams struct {
+// GetExchangesParams is the set of parameters for the GetExchanges method.
+type GetExchangesParams struct {
 	AssetClass *string `query:"asset_class,omitempty"` // todo: enum value
 	Locale     *string `query:"locale,omitempty"`      // todo: enum value
 }
 
-// ListExchangesResponse is the response returned by the ListExchanges method.
-type ListExchangesResponse struct {
+// GetExchangesResponse is the response returned by the GetExchanges method.
+type GetExchangesResponse struct {
 	BaseResponse
 	Results []Exchange `json:"results,omitempty"`
 }

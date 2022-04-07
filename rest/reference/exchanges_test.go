@@ -40,24 +40,13 @@ func TestListExchanges(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v3/reference/exchanges?asset_class=stocks&locale=us", expectedResponse)
-	iter, err := c.Reference.ListExchanges(context.Background(), models.ListExchangesParams{
+	res, err := c.Reference.GetExchanges(context.Background(), models.GetExchangesParams{
 		AssetClass: models.Ptr("stocks"),
 		Locale:     models.Ptr("us"),
 	})
 
-	// iter creation
 	assert.Nil(t, err)
-	assert.Nil(t, iter.Err())
-	assert.NotNil(t, iter.Exchange())
-
-	// first item
-	assert.True(t, iter.Next())
-	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Exchange(), "", "\t")
+	b, err := json.MarshalIndent(res, "", "\t")
 	assert.Nil(t, err)
-	assert.Equal(t, exchange1, string(b))
-
-	// end of list
-	assert.False(t, iter.Next())
-	assert.Nil(t, iter.Err())
+	assert.Equal(t, expectedResponse, string(b))
 }
