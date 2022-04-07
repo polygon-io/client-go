@@ -165,7 +165,7 @@ func TestGetLastCryptoTrade(t *testing.T) {
 	assert.Equal(t, expectedResponse, string(b))
 }
 
-func registerResponder(url string, body string) {
+func registerResponder(url, body string) {
 	httpmock.RegisterResponder("GET", url,
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, body)
@@ -175,8 +175,8 @@ func registerResponder(url string, body string) {
 	)
 }
 
-func indent(first bool, data string, indent string) string {
-	lines := strings.Split(string(data), "\n")
+func indent(first bool, data, indent string) string {
+	lines := strings.Split(data, "\n")
 	for i := range lines {
 		if i == 0 && !first {
 			continue

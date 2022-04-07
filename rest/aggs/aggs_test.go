@@ -202,7 +202,7 @@ func TestGetPreviousCloseAgg(t *testing.T) {
 	assert.Equal(t, expectedResponse, string(b))
 }
 
-func registerResponder(url string, body string) {
+func registerResponder(url, body string) {
 	httpmock.RegisterResponder("GET", url,
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, body)
