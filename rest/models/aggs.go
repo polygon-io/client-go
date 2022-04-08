@@ -12,8 +12,8 @@ type GetAggsParams struct {
 	Ticker     string     `validate:"required" path:"ticker"`
 	Multiplier int        `validate:"required" path:"multiplier"`
 	Resolution Resolution `validate:"required" path:"resolution"`
-	From       *Millis    `validate:"required" path:"from"`
-	To         *Millis    `validate:"required" path:"to"`
+	From       Millis     `validate:"required" path:"from"`
+	To         Millis     `validate:"required" path:"to"`
 
 	Sort     *Order `query:"sort"`
 	Limit    *int   `query:"limit"`
@@ -35,7 +35,7 @@ type GetAggsResponse struct {
 type GetGroupedDailyAggsParams struct {
 	Locale     MarketLocale `validate:"required" path:"locale"`
 	MarketType MarketType   `validate:"required" path:"marketType"`
-	Date       *Date        `validate:"required" path:"date"`
+	Date       Date         `validate:"required" path:"date"`
 
 	Adjusted *bool `query:"adjusted"`
 }

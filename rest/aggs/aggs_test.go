@@ -56,8 +56,8 @@ func TestGetAggs(t *testing.T) {
 		Ticker:     "AAPL",
 		Multiplier: 1,
 		Resolution: "day",
-		From:       models.Ptr(models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))),
-		To:         models.Ptr(models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC))),
+		From:       models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
+		To:         models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC)),
 		Adjusted:   models.Ptr(true),
 		Sort:       models.Ptr(models.Desc),
 		Limit:      models.Ptr(1),
@@ -122,7 +122,7 @@ func TestGetGroupedDailyAggs(t *testing.T) {
 	res, err := c.Aggs.GetGroupedDailyAggs(context.Background(), models.GetGroupedDailyAggsParams{
 		Locale:     models.US,
 		MarketType: models.Stocks,
-		Date:       models.Ptr(models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local))),
+		Date:       models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local)),
 		Adjusted:   models.Ptr(true),
 	})
 
