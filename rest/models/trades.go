@@ -1,9 +1,5 @@
 package models
 
-import (
-	"time"
-)
-
 const (
 	ListTradesPath         = "/v3/trades/{ticker}"
 	GetLastTradePath       = "/v2/last/trade/{ticker}"
@@ -14,14 +10,14 @@ const (
 type ListTradesParams struct {
 	Ticker string `validate:"required" path:"ticker"`
 
-	TimestampEQ  *time.Time `query:"timestamp"`
-	TimestampLT  *time.Time `query:"timestamp.lt"`
-	TimestampLTE *time.Time `query:"timestamp.lte"`
-	TimestampGT  *time.Time `query:"timestamp.gt"`
-	TimestampGTE *time.Time `query:"timestamp.gte"`
-	Limit        *int       `query:"limit"`
-	Sort         *Sort      `query:"sort"`
-	Order        *Order     `query:"order"`
+	TimestampEQ  *Nanos `query:"timestamp"`
+	TimestampLT  *Nanos `query:"timestamp.lt"`
+	TimestampLTE *Nanos `query:"timestamp.lte"`
+	TimestampGT  *Nanos `query:"timestamp.gt"`
+	TimestampGTE *Nanos `query:"timestamp.gte"`
+	Limit        *int   `query:"limit"`
+	Sort         *Sort  `query:"sort"`
+	Order        *Order `query:"order"`
 }
 
 // ListTradesResponse is the response returned by the ListTrades method.
@@ -60,23 +56,23 @@ type Trade struct {
 	Correction           int     `json:"correction,omitempty"`
 	Exchange             int     `json:"exchange,omitempty"`
 	ID                   string  `json:"id,omitempty"`
-	ParticipantTimestamp int64   `json:"participant_timestamp,omitempty"`
+	ParticipantTimestamp *Nanos  `json:"participant_timestamp,omitempty"`
 	Price                float64 `json:"price,omitempty"`
 	SequenceNumber       int64   `json:"sequence_number,omitempty"`
-	SipTimestamp         int64   `json:"sip_timestamp,omitempty"`
+	SipTimestamp         *Nanos  `json:"sip_timestamp,omitempty"`
 	Size                 float64 `json:"size,omitempty"`
 	Tape                 int32   `json:"tape,omitempty"`
 	TrfID                int     `json:"trf_id,omitempty"`
-	TrfTimestamp         int64   `json:"trf_timestamp,omitempty"`
+	TrfTimestamp         *Nanos  `json:"trf_timestamp,omitempty"`
 }
 
 // LastTrade is the most recent trade for a specified ticker.
 type LastTrade struct {
 	Ticker               string  `json:"T,omitempty"`
-	TRFTimestamp         int64   `json:"f,omitempty"`
+	TRFTimestamp         *Nanos  `json:"f,omitempty"`
 	SequenceNumber       int64   `json:"q,omitempty"`
-	Timestamp            int64   `json:"t,omitempty"`
-	ParticipantTimestamp int64   `json:"y,omitempty"`
+	Timestamp            *Nanos  `json:"t,omitempty"`
+	ParticipantTimestamp *Nanos  `json:"y,omitempty"`
 	Conditions           []int32 `json:"c,omitempty"`
 	Correction           uint32  `json:"e,omitempty"`
 	ID                   string  `json:"i,omitempty"`
@@ -93,5 +89,5 @@ type CryptoTrade struct {
 	Size       float64 `json:"size,omitempty"`
 	Exchange   int     `json:"exchange,omitempty"`
 	Conditions []int   `json:"conditions,omitempty"`
-	Timestamp  int64   `json:"timestamp,omitempty"`
+	Timestamp  *Nanos  `json:"timestamp,omitempty"`
 }
