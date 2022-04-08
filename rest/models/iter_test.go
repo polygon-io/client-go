@@ -47,7 +47,7 @@ type ListResourceParams struct {
 	Timestamp *string `query:"timestamp"`
 }
 
-func (c *Client) ListResource(ctx context.Context, params ListResourceParams, options ...models.RequestOption) *ListResourceIter {
+func (c *Client) ListResource(ctx context.Context, params *ListResourceParams, options ...models.RequestOption) *ListResourceIter {
 	uri, err := c.EncodeParams(listResourcePath, params)
 	if err != nil {
 		return &ListResourceIter{Iter: models.NewIterErr(ctx, err)}
@@ -112,7 +112,7 @@ func TestListResource(t *testing.T) {
 		},
 	})
 
-	iter := c.ListResource(context.Background(), ListResourceParams{
+	iter := c.ListResource(context.Background(), &ListResourceParams{
 		Ticker: "ticker1",
 	})
 
@@ -156,7 +156,7 @@ func TestListResourceError(t *testing.T) {
 		BaseResponse: baseRes,
 	})
 
-	iter := c.ListResource(context.Background(), ListResourceParams{
+	iter := c.ListResource(context.Background(), &ListResourceParams{
 		Ticker: "ticker1",
 	})
 
@@ -165,6 +165,24 @@ func TestListResourceError(t *testing.T) {
 	assert.False(t, iter.Next())
 	assert.NotNil(t, iter.Err())
 	assert.Equal(t, expectedErr.Error(), iter.Err().Error())
+
+	// subsequent calls to iter.Next() should be false, item should be not nil, page should be an empty response
+	assert.False(t, iter.Next())
+	assert.NotNil(t, iter.Resource())
+}
+
+func TestListResourceEncodeError(t *testing.T) {
+	c := Client{Client: client.New("API_KEY")}
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	iter := c.ListResource(context.Background(), nil)
+
+	// iter.Next() should return false and the error should not be nil
+	assert.NotNil(t, iter.Err())
+	assert.False(t, iter.Next())
+	assert.NotNil(t, iter.Err())
 
 	// subsequent calls to iter.Next() should be false, item should be not nil, page should be an empty response
 	assert.False(t, iter.Next())
