@@ -16,13 +16,12 @@ type ListTickersParams struct {
 	TickerGT  *string `query:"ticker.gt"`
 	TickerGTE *string `query:"ticker.gte"`
 
-	// todo: which ones should be enums?
 	Type     *string     `query:"type"`
-	Market   *MarketType `query:"market"` // todo: this endpoint apparently expects fx instead of forex
+	Market   *AssetClass `query:"market"`
 	Exchange *int        `query:"exchange"`
 	CUSIP    *int        `query:"cusip"`
 	CIK      *int        `query:"cik"`
-	Date     *string     `query:"date"` // todo: this is "2006-01-02" format, need to figure out the best way to encode this without interfering with the default
+	Date     *Date       `query:"date"`
 	Active   *bool       `query:"active"`
 
 	Sort  *Sort  `query:"sort"`
@@ -53,7 +52,7 @@ func (p ListTickersParams) WithType(q string) *ListTickersParams {
 	return &p
 }
 
-func (p ListTickersParams) WithMarket(q MarketType) *ListTickersParams {
+func (p ListTickersParams) WithMarket(q AssetClass) *ListTickersParams {
 	p.Market = &q
 	return &p
 }
@@ -73,7 +72,7 @@ func (p ListTickersParams) WithCIK(q int) *ListTickersParams {
 	return &p
 }
 
-func (p ListTickersParams) WithDate(q string) *ListTickersParams {
+func (p ListTickersParams) WithDate(q Date) *ListTickersParams {
 	p.Date = &q
 	return &p
 }
