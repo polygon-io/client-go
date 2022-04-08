@@ -133,7 +133,7 @@ type GetTickerDetailsResponse struct {
 
 // GetTickerTypesParams is the set of parameters for the GetTickerTypes method.
 type GetTickerTypesParams struct {
-	AssetClass *AssetClass   `query:"asset_class"` // todo: this is similar but slightly different than market type (also we offer four options but only one returns results)
+	AssetClass *AssetClass   `query:"asset_class"`
 	Locale     *MarketLocale `query:"locale"`
 }
 
