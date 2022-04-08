@@ -22,7 +22,21 @@ func (it *ListConditionsIter) Condition() models.Condition {
 }
 
 // ListConditions retrieves reference conditions.
-func (c *Client) ListConditions(ctx context.Context, params models.ListConditionsParams, options ...models.RequestOption) (*ListConditionsIter, error) {
+// For more details see https://polygon.io/docs/stocks/get_v3_reference_conditions.
+// This method returns an iterator that should be used to access the results via this pattern:
+//   iter, err := c.ListConditions(context.TODO(), params, opts...)
+//   if err != nil {
+//       return err
+//   }
+//
+//   for iter.Next() {
+//       // do something with the current value
+//       log.Print(iter.Condition())
+//   }
+//   if iter.Err() != nil {
+//       return err
+//   }
+func (c *Client) ListConditions(ctx context.Context, params *models.ListConditionsParams, options ...models.RequestOption) (*ListConditionsIter, error) {
 	uri, err := c.EncodeParams(models.ListConditionsPath, params)
 	if err != nil {
 		return nil, err
