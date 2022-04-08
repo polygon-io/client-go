@@ -2,7 +2,6 @@ package reference
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/models"
@@ -25,10 +24,6 @@ func (it *ListDividendsIter) Dividend() models.Dividend {
 // For more details see https://polygon.io/docs/stocks/get_v3_reference_dividends.
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListDividends(context.TODO(), params, opts...)
-//   if err != nil {
-//       return err
-//   }
-//
 //   for iter.Next() {
 //       // do something with the current value
 //       log.Print(iter.Dividend())
@@ -36,10 +31,10 @@ func (it *ListDividendsIter) Dividend() models.Dividend {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListDividends(ctx context.Context, params *models.ListDividendsParams, options ...models.RequestOption) (*ListDividendsIter, error) {
+func (c *Client) ListDividends(ctx context.Context, params *models.ListDividendsParams, options ...models.RequestOption) *ListDividendsIter {
 	uri, err := c.EncodeParams(models.ListDividendsPath, params)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create iterator: %w", err)
+		return &ListDividendsIter{Iter: models.NewIterErr(ctx, err)}
 	}
 
 	return &ListDividendsIter{
@@ -54,5 +49,5 @@ func (c *Client) ListDividends(ctx context.Context, params *models.ListDividends
 
 			return res, results, err
 		}),
-	}, nil
+	}
 }

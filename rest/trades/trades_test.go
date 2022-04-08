@@ -62,12 +62,11 @@ func TestListTrades(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v3/trades/AAPL?limit=2&order=asc&sort=timestamp&timestamp.gte=1626912000000000000", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/trades/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy&sort=timestamp", "{}")
-	iter, err := c.Trades.ListTrades(context.Background(), models.ListTradesParams{Ticker: "AAPL"}.
+	iter := c.Trades.ListTrades(context.Background(), models.ListTradesParams{Ticker: "AAPL"}.
 		WithTimestamp(models.GTE, models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
 		WithOrder(models.Asc).WithLimit(2), models.QueryParam("sort", string(models.Timestamp)))
 
 	// iter creation
-	assert.Nil(t, err)
 	assert.Nil(t, iter.Err())
 	assert.NotNil(t, iter.Trade())
 

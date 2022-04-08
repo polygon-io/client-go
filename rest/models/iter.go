@@ -32,8 +32,20 @@ func NewIter(ctx context.Context, uri string, query Query) Iter {
 	return it
 }
 
+// NewIterErr returns an iterator with an error describing why it failed to create.
+func NewIterErr(ctx context.Context, err error) Iter {
+	return Iter{
+		ctx: ctx,
+		err: err,
+	}
+}
+
 // Next moves the iterator to the next result.
 func (it *Iter) Next() bool {
+	if it.err != nil {
+		return false
+	}
+
 	if len(it.results) == 0 && it.page.NextPageURL() != "" {
 		it.page, it.results, it.err = it.query(it.page.NextPageURL())
 	}
