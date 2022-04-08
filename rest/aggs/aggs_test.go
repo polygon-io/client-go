@@ -180,7 +180,7 @@ func TestGetDailyOpenCloseAgg(t *testing.T) {
 	registerResponder("https://api.polygon.io/v1/open-close/AAPL/2020-10-14?adjusted=true", expectedResponse)
 	res, err := c.Aggs.GetDailyOpenCloseAgg(context.Background(), models.GetDailyOpenCloseAggParams{
 		Ticker:   "AAPL",
-		Date:     models.Ptr(models.Date(time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local))),
+		Date:     models.Date(time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local)),
 		Adjusted: models.Ptr(true),
 	})
 
