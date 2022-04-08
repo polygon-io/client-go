@@ -8,9 +8,11 @@ The official Go client library for the [Polygon](https://polygon.io/) REST and W
 
 `go get github.com/polygon-io/client-go`
 
+See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API. 
+
 This client is still in pre-release. It only supports the REST API but Websocket support is coming soon. The public interface is relatively stable at this point but is still liable to change slightly until we release v1.
 
-## Documentation
+## REST API Client
 
 To get started, you'll need to import two main packages.
 
@@ -26,8 +28,6 @@ Next, create a new client with your [API key](https://polygon.io/dashboard/signu
 ```golang
 c := polygon.NewClient("YOUR_API_KEY")
 ```
-
-See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API. 
 
 ### Using the client
 
