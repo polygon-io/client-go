@@ -2,15 +2,15 @@ package reference
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
-	"github.com/polygon-io/client-go/rest/client"
 	"github.com/polygon-io/client-go/rest/models"
 )
 
 // ListSplitsIter is an iterator for the ListSplits method.
 type ListSplitsIter struct {
-	client.Iter
+	models.Iter
 }
 
 // Split returns the current result that the iterator points to.
@@ -39,11 +39,11 @@ func (it *ListSplitsIter) Split() models.Split {
 func (c *Client) ListSplits(ctx context.Context, params *models.ListSplitsParams, options ...models.RequestOption) (*ListSplitsIter, error) {
 	uri, err := c.EncodeParams(models.ListSplitsPath, params)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
 
 	return &ListSplitsIter{
-		Iter: client.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
+		Iter: models.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
 			res := &models.ListSplitsResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 

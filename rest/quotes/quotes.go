@@ -2,6 +2,7 @@ package quotes
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/client"
@@ -15,7 +16,7 @@ type Client struct {
 
 // ListQuotesIter is an iterator for the ListQuotes method.
 type ListQuotesIter struct {
-	client.Iter
+	models.Iter
 }
 
 // Quote returns the current result that the iterator points to.
@@ -44,11 +45,11 @@ func (it *ListQuotesIter) Quote() models.Quote {
 func (c *Client) ListQuotes(ctx context.Context, params *models.ListQuotesParams, options ...models.RequestOption) (*ListQuotesIter, error) {
 	uri, err := c.EncodeParams(models.ListQuotesPath, params)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
 
 	return &ListQuotesIter{
-		Iter: client.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
+		Iter: models.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
 			res := &models.ListQuotesResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
