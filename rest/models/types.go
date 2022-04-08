@@ -123,10 +123,10 @@ const (
 type DividendType string
 
 const (
-	DividendTypeCD DividendType = "CD"
-	DividendTypeLT DividendType = "LT"
-	DividendTypeSC DividendType = "SC"
-	DividendTypeST DividendType = "ST"
+	DividendCD DividendType = "CD"
+	DividendLT DividendType = "LT"
+	DividendSC DividendType = "SC"
+	DividendST DividendType = "ST"
 )
 
 // Comparator is the type of comparison to make for a specific query parameter.
