@@ -2,7 +2,6 @@ package reference
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/models"
@@ -25,10 +24,6 @@ func (it *ListTickersIter) Ticker() models.Ticker {
 // For more details see https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker.
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListTickers(context.TODO(), params, opts...)
-//   if err != nil {
-//       return err
-//   }
-//
 //   for iter.Next() {
 //       // do something with the current value
 //       log.Print(iter.Ticker())
@@ -36,10 +31,10 @@ func (it *ListTickersIter) Ticker() models.Ticker {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListTickers(ctx context.Context, params *models.ListTickersParams, options ...models.RequestOption) (*ListTickersIter, error) {
+func (c *Client) ListTickers(ctx context.Context, params *models.ListTickersParams, options ...models.RequestOption) *ListTickersIter {
 	uri, err := c.EncodeParams(models.ListTickersPath, params)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create iterator: %w", err)
+		return &ListTickersIter{Iter: models.NewIterErr(ctx, err)}
 	}
 
 	return &ListTickersIter{
@@ -54,7 +49,7 @@ func (c *Client) ListTickers(ctx context.Context, params *models.ListTickersPara
 
 			return res, results, err
 		}),
-	}, nil
+	}
 }
 
 // GetTickerDetails retrieves details for a specified ticker.

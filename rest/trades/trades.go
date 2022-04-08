@@ -2,7 +2,6 @@ package trades
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/client"
@@ -31,10 +30,6 @@ func (it *ListTradesIter) Trade() models.Trade {
 // For more details see https://polygon.io/docs/stocks/get_v3_trades__stockticker.
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListTrades(context.TODO(), params, opts...)
-//   if err != nil {
-//       return err
-//   }
-//
 //   for iter.Next() {
 //       // do something with the current value
 //       log.Print(iter.Trade())
@@ -42,10 +37,10 @@ func (it *ListTradesIter) Trade() models.Trade {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListTrades(ctx context.Context, params *models.ListTradesParams, options ...models.RequestOption) (*ListTradesIter, error) {
+func (c *Client) ListTrades(ctx context.Context, params *models.ListTradesParams, options ...models.RequestOption) *ListTradesIter {
 	uri, err := c.EncodeParams(models.ListTradesPath, params)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create iterator: %w", err)
+		return &ListTradesIter{Iter: models.NewIterErr(ctx, err)}
 	}
 
 	return &ListTradesIter{
@@ -60,7 +55,7 @@ func (c *Client) ListTrades(ctx context.Context, params *models.ListTradesParams
 
 			return res, results, err
 		}),
-	}, nil
+	}
 }
 
 // GetLastTrade retrieves the last trade for a specified ticker.

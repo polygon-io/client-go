@@ -2,7 +2,6 @@ package quotes
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/client"
@@ -31,10 +30,6 @@ func (it *ListQuotesIter) Quote() models.Quote {
 // For more details see https://polygon.io/docs/stocks/get_v3_quotes__stockticker.
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListQuotes(context.TODO(), params, opts...)
-//   if err != nil {
-//       return err
-//   }
-//
 //   for iter.Next() {
 //       // do something with the current value
 //       log.Print(iter.Quote())
@@ -42,10 +37,10 @@ func (it *ListQuotesIter) Quote() models.Quote {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListQuotes(ctx context.Context, params *models.ListQuotesParams, options ...models.RequestOption) (*ListQuotesIter, error) {
+func (c *Client) ListQuotes(ctx context.Context, params *models.ListQuotesParams, options ...models.RequestOption) *ListQuotesIter {
 	uri, err := c.EncodeParams(models.ListQuotesPath, params)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create iterator: %w", err)
+		return &ListQuotesIter{Iter: models.NewIterErr(ctx, err)}
 	}
 
 	return &ListQuotesIter{
@@ -60,7 +55,7 @@ func (c *Client) ListQuotes(ctx context.Context, params *models.ListQuotesParams
 
 			return res, results, err
 		}),
-	}, nil
+	}
 }
 
 // GetLastQuote retrieves the last quote (NBBO) for a specified ticker.
