@@ -15,7 +15,7 @@ type Client struct {
 
 // ListQuotesIter is an iterator for the ListQuotes method.
 type ListQuotesIter struct {
-	client.Iter
+	models.Iter
 }
 
 // Quote returns the current result that the iterator points to.
@@ -48,7 +48,7 @@ func (c *Client) ListQuotes(ctx context.Context, params *models.ListQuotesParams
 	}
 
 	return &ListQuotesIter{
-		Iter: client.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
+		Iter: models.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
 			res := &models.ListQuotesResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 

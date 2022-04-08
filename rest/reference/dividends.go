@@ -4,13 +4,12 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/polygon-io/client-go/rest/client"
 	"github.com/polygon-io/client-go/rest/models"
 )
 
 // ListDividendsIter is an iterator for the ListDividends method.
 type ListDividendsIter struct {
-	client.Iter
+	models.Iter
 }
 
 // Dividend returns the current result that the iterator points to.
@@ -43,7 +42,7 @@ func (c *Client) ListDividends(ctx context.Context, params *models.ListDividends
 	}
 
 	return &ListDividendsIter{
-		Iter: client.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
+		Iter: models.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
 			res := &models.ListDividendsResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 

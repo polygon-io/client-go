@@ -15,7 +15,7 @@ type Client struct {
 
 // ListTradesIter is an iterator for the ListTickers method.
 type ListTradesIter struct {
-	client.Iter
+	models.Iter
 }
 
 // Trade returns the current result that the iterator points to.
@@ -48,7 +48,7 @@ func (c *Client) ListTrades(ctx context.Context, params *models.ListTradesParams
 	}
 
 	return &ListTradesIter{
-		Iter: client.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
+		Iter: models.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
 			res := &models.ListTradesResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 

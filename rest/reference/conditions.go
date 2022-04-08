@@ -4,13 +4,12 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/polygon-io/client-go/rest/client"
 	"github.com/polygon-io/client-go/rest/models"
 )
 
 // ListConditionsIter is an iterator for the ListConditions method.
 type ListConditionsIter struct {
-	client.Iter
+	models.Iter
 }
 
 // Condition returns the current result that the iterator points to.
@@ -43,7 +42,7 @@ func (c *Client) ListConditions(ctx context.Context, params *models.ListConditio
 	}
 
 	return &ListConditionsIter{
-		Iter: client.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
+		Iter: models.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
 			res := &models.ListConditionsResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
