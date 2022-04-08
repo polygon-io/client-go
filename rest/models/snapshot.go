@@ -81,7 +81,7 @@ type TickerSnapshot struct {
 	Ticker           string            `json:"ticker,omitempty"`
 	TodaysChange     float64           `json:"todaysChange,omitempty"`
 	TodaysChangePerc float64           `json:"todaysChangePerc,omitempty"`
-	Updated          int64             `json:"updated,omitempty"`
+	Updated          *Nanos            `json:"updated,omitempty"`
 }
 
 type DaySnapshot struct {
@@ -98,7 +98,7 @@ type LastQuoteSnapshot struct {
 	BidPrice  float64 `json:"p,omitempty"`
 	AskSize   float64 `json:"S,omitempty"`
 	BidSize   float64 `json:"s,omitempty"`
-	Timestamp int64   `json:"t,omitempty"`
+	Timestamp *Nanos  `json:"t,omitempty"`
 }
 
 type LastTradeSnapshot struct {
@@ -106,7 +106,7 @@ type LastTradeSnapshot struct {
 	TradeID    string  `json:"i,omitempty"`
 	Price      float64 `json:"p,omitempty"`
 	Size       int     `json:"s,omitempty"`
-	Timestamp  int64   `json:"t,omitempty"`
+	Timestamp  *Nanos  `json:"t,omitempty"`
 	ExchangeID int     `json:"x,omitempty"`
 }
 
@@ -136,7 +136,7 @@ type DayOptionContractSnapshot struct {
 	ChangePercent float64 `json:"change_percent,omitempty"`
 	Close         float64 `json:"close,omitempty"`
 	High          float64 `json:"high,omitempty"`
-	LastUpdated   int64   `json:"last_updated,omitempty"`
+	LastUpdated   *Nanos  `json:"last_updated,omitempty"`
 	Low           float64 `json:"low,omitempty"`
 	Open          float64 `json:"open,omitempty"`
 	PreviousClose float64 `json:"previous_close,omitempty"`
@@ -147,7 +147,7 @@ type DayOptionContractSnapshot struct {
 type OptionDetails struct {
 	ContractType      string  `json:"contract_type,omitempty"`
 	ExerciseStyle     string  `json:"exercise_style,omitempty"`
-	ExpirationDate    string  `json:"expiration_date,omitempty"`
+	ExpirationDate    *Date   `json:"expiration_date,omitempty"`
 	SharesPerContract float64 `json:"shares_per_contract,omitempty"`
 	StrikePrice       float64 `json:"strike_price,omitempty"`
 	Ticker            string  `json:"ticker,omitempty"`
@@ -165,7 +165,7 @@ type LastQuoteOptionContractSnapshot struct {
 	AskSize     float64 `json:"ask_size,omitempty"`
 	Bid         float64 `json:"bid,omitempty"`
 	BidSize     float64 `json:"bid_size,omitempty"`
-	LastUpdated int64   `json:"last_updated,omitempty"`
+	LastUpdated *Nanos  `json:"last_updated,omitempty"`
 	Midpoint    float64 `json:"midpoint,omitempty"`
 	Timeframe   string  `json:"timeframe,omitempty"`
 }
@@ -185,7 +185,7 @@ type SnapshotTickerFullBook struct {
 	Bids     []OrderBookQuote `json:"bids,omitempty"`
 	Spread   float64          `json:"spread,omitempty"`
 	Ticker   string           `json:"ticker,omitempty"`
-	Updated  int64            `json:"updated,omitempty"`
+	Updated  *Nanos           `json:"updated,omitempty"`
 }
 
 type OrderBookQuote struct {
