@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go"
@@ -47,9 +48,9 @@ func TestListTickers(t *testing.T) {
 	registerResponder("https://api.polygon.io/v3/reference/tickers?active=true&cik=5&cusip=10&date=2021-07-22&exchange=4&limit=2&market=stocks&order=asc&sort=ticker&type=CS", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
 	iter, err := c.Reference.ListTickers(context.Background(), models.ListTickersParams{}.
-		WithType("CS").WithMarket(models.Stocks).
+		WithType("CS").WithMarket(models.AssetStocks).
 		WithExchange(4).WithCUSIP(10).WithCIK(5).
-		WithDate("2021-07-22").WithActive(true).
+		WithDate(models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).WithActive(true).
 		WithSort(models.TickerSymbol).WithOrder(models.Asc).WithLimit(2))
 
 	// iter creation
@@ -116,7 +117,7 @@ func TestGetTickerDetails(t *testing.T) {
 	registerResponder("https://api.polygon.io/v3/reference/tickers/A?date=2021-07-22", expectedResponse)
 	res, err := c.Reference.GetTickerDetails(context.Background(), models.GetTickerDetailsParams{
 		Ticker: "A",
-	}.WithDate("2021-07-22"))
+	}.WithDate(models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")

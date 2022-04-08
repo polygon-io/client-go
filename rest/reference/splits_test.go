@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"testing"
+	"time"
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go"
@@ -32,9 +33,9 @@ func TestListSplits(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/reference/splits?execution_date=2020-08-31&limit=2&order=asc&reverse_split=false&sort=ticker&ticker=AAPL", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/reference/splits?execution_date=2021-07-22&limit=2&order=asc&reverse_split=false&sort=ticker&ticker=AAPL", expectedResponse)
 	iter, err := c.Reference.ListSplits(context.Background(), models.ListSplitsParams{}.
-		WithTicker(models.EQ, "AAPL").WithExecutionDate(models.EQ, "2020-08-31").WithReverseSplit(false).
+		WithTicker(models.EQ, "AAPL").WithExecutionDate(models.EQ, models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).WithReverseSplit(false).
 		WithSort(models.TickerSymbol).WithOrder(models.Asc).WithLimit(2))
 
 	// iter creation

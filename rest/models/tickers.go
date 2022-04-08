@@ -117,10 +117,10 @@ type ListTickersResponse struct {
 type GetTickerDetailsParams struct {
 	Ticker string `validate:"required" path:"ticker"`
 
-	Date *string `query:"date"` // todo: this is "2006-01-02" format
+	Date *Date `query:"date"`
 }
 
-func (p GetTickerDetailsParams) WithDate(q string) *GetTickerDetailsParams {
+func (p GetTickerDetailsParams) WithDate(q Date) *GetTickerDetailsParams {
 	p.Date = &q
 	return &p
 }
@@ -133,11 +133,11 @@ type GetTickerDetailsResponse struct {
 
 // GetTickerTypesParams is the set of parameters for the GetTickerTypes method.
 type GetTickerTypesParams struct {
-	AssetClass *string       `query:"asset_class"` // todo: this is similar but slightly different than market type (also we offer four options but only one returns results)
+	AssetClass *AssetClass   `query:"asset_class"` // todo: this is similar but slightly different than market type (also we offer four options but only one returns results)
 	Locale     *MarketLocale `query:"locale"`
 }
 
-func (p GetTickerTypesParams) WithAssetClass(q string) *GetTickerTypesParams {
+func (p GetTickerTypesParams) WithAssetClass(q AssetClass) *GetTickerTypesParams {
 	p.AssetClass = &q
 	return &p
 }

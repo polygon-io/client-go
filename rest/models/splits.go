@@ -10,11 +10,11 @@ type ListSplitsParams struct {
 	TickerGT  *string `query:"ticker.gt"`
 	TickerGTE *string `query:"ticker.gte"`
 
-	ExecutionDateEQ  *string `query:"execution_date"` // todo: this is "YYYY-MM-DD" format, need to figure out the best way to encode this without interfering with the default
-	ExecutionDateLT  *string `query:"execution_date.lt"`
-	ExecutionDateLTE *string `query:"execution_date.lte"`
-	ExecutionDateGT  *string `query:"execution_date.gt"`
-	ExecutionDateGTE *string `query:"execution_date.gte"`
+	ExecutionDateEQ  *Date `query:"execution_date"` // todo: this is "YYYY-MM-DD" format, need to figure out the best way to encode this without interfering with the default
+	ExecutionDateLT  *Date `query:"execution_date.lt"`
+	ExecutionDateLTE *Date `query:"execution_date.lte"`
+	ExecutionDateGT  *Date `query:"execution_date.gt"`
+	ExecutionDateGTE *Date `query:"execution_date.gte"`
 
 	ReverseSplit *bool `query:"reverse_split"`
 
@@ -38,7 +38,7 @@ func (p ListSplitsParams) WithTicker(c Comparator, q string) *ListSplitsParams {
 	return &p
 }
 
-func (p ListSplitsParams) WithExecutionDate(c Comparator, q string) *ListSplitsParams {
+func (p ListSplitsParams) WithExecutionDate(c Comparator, q Date) *ListSplitsParams {
 	if c == EQ {
 		p.ExecutionDateEQ = &q
 	} else if c == LT {
