@@ -20,25 +20,25 @@ func TestGetMarketHolidays(t *testing.T) {
 	{
 		"exchange": "NYSE",
 		"name": "Thanksgiving",
-		"date": "2020-11-26T00:00:00.000Z",
+		"date": "2020-11-26",
 		"status": "closed"
 	},
 	{
 		"exchange": "NASDAQ",
 		"name": "Thanksgiving",
-		"date": "2020-11-26T00:00:00.000Z",
+		"date": "2020-11-26",
 		"status": "closed"
 	},
 	{
 		"exchange": "OTC",
 		"name": "Thanksgiving",
-		"date": "2020-11-26T00:00:00.000Z",
+		"date": "2020-11-26",
 		"status": "closed"
 	},
 	{
 		"exchange": "NASDAQ",
 		"name": "Thanksgiving",
-		"date": "2020-11-27T00:00:00.000Z",
+		"date": "2020-11-27",
 		"status": "early-close",
 		"open": "2020-11-27T14:30:00.000Z",
 		"close": "2020-11-27T18:00:00.000Z"
@@ -46,7 +46,7 @@ func TestGetMarketHolidays(t *testing.T) {
 	{
 		"exchange": "NYSE",
 		"name": "Thanksgiving",
-		"date": "2020-11-27T00:00:00.000Z",
+		"date": "2020-11-27",
 		"status": "early-close",
 		"open": "2020-11-27T14:30:00.000Z",
 		"close": "2020-11-27T18:00:00.000Z"

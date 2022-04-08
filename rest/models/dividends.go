@@ -10,31 +10,31 @@ type ListDividendsParams struct {
 	TickerGT  *string `query:"ticker.gt"`
 	TickerGTE *string `query:"ticker.gte"`
 
-	ExDividendDateEQ  *string `query:"ex_dividend_date"` // todo: this is "YYYY-MM-DD" format, need to figure out the best way to encode this without interfering with the default
-	ExDividendDateLT  *string `query:"ex_dividend_date.lt"`
-	ExDividendDateLTE *string `query:"ex_dividend_date.lte"`
-	ExDividendDateGT  *string `query:"ex_dividend_date.gt"`
-	ExDividendDateGTE *string `query:"ex_dividend_date.gte"`
+	ExDividendDateEQ  *Date `query:"ex_dividend_date"`
+	ExDividendDateLT  *Date `query:"ex_dividend_date.lt"`
+	ExDividendDateLTE *Date `query:"ex_dividend_date.lte"`
+	ExDividendDateGT  *Date `query:"ex_dividend_date.gt"`
+	ExDividendDateGTE *Date `query:"ex_dividend_date.gte"`
 
-	RecordDateEQ  *string `query:"record_date"` // todo: this is "YYYY-MM-DD" format, need to figure out the best way to encode this without interfering with the default
-	RecordDateLT  *string `query:"record_date.lt"`
-	RecordDateLTE *string `query:"record_date.lte"`
-	RecordDateGT  *string `query:"record_date.gt"`
-	RecordDateGTE *string `query:"record_date.gte"`
+	RecordDateEQ  *Date `query:"record_date"`
+	RecordDateLT  *Date `query:"record_date.lt"`
+	RecordDateLTE *Date `query:"record_date.lte"`
+	RecordDateGT  *Date `query:"record_date.gt"`
+	RecordDateGTE *Date `query:"record_date.gte"`
 
-	DeclarationDateEQ  *string `query:"declaration_date"` // todo: this is "YYYY-MM-DD" format, need to figure out the best way to encode this without interfering with the default
-	DeclarationDateLT  *string `query:"declaration_date.lt"`
-	DeclarationDateLTE *string `query:"declaration_date.lte"`
-	DeclarationDateGT  *string `query:"declaration_date.gt"`
-	DeclarationDateGTE *string `query:"declaration_date.gte"`
+	DeclarationDateEQ  *Date `query:"declaration_date"`
+	DeclarationDateLT  *Date `query:"declaration_date.lt"`
+	DeclarationDateLTE *Date `query:"declaration_date.lte"`
+	DeclarationDateGT  *Date `query:"declaration_date.gt"`
+	DeclarationDateGTE *Date `query:"declaration_date.gte"`
 
-	PayDateEQ  *string `query:"pay_date"` // todo: this is "YYYY-MM-DD" format, need to figure out the best way to encode this without interfering with the default
-	PayDateLT  *string `query:"pay_date.lt"`
-	PayDateLTE *string `query:"pay_date.lte"`
-	PayDateGT  *string `query:"pay_date.gt"`
-	PayDateGTE *string `query:"pay_date.gte"`
+	PayDateEQ  *Date `query:"pay_date"`
+	PayDateLT  *Date `query:"pay_date.lt"`
+	PayDateLTE *Date `query:"pay_date.lte"`
+	PayDateGT  *Date `query:"pay_date.gt"`
+	PayDateGTE *Date `query:"pay_date.gte"`
 
-	Frequency *int64 `query:"frequency"` // Enum value
+	Frequency *Frequency `query:"frequency"`
 
 	CashAmountEQ  *float64 `query:"cash_amount"`
 	CashAmountLT  *float64 `query:"cash_amount.lt"`
@@ -42,7 +42,7 @@ type ListDividendsParams struct {
 	CashAmountGT  *float64 `query:"cash_amount.gt"`
 	CashAmountGTE *float64 `query:"cash_amount.gte"`
 
-	DividendType *string `query:"dividend_type"` // Enum value
+	DividendType *DividendType `query:"dividend_type"`
 
 	Sort  *Sort  `query:"sort"`
 	Order *Order `query:"order"`

@@ -4,8 +4,8 @@ const GetExchangesPath = "/v3/reference/exchanges"
 
 // GetExchangesParams is the set of parameters for the GetExchanges method.
 type GetExchangesParams struct {
-	AssetClass *string `query:"asset_class,omitempty"` // todo: enum value
-	Locale     *string `query:"locale,omitempty"`      // todo: enum value
+	AssetClass *AssetClass   `query:"asset_class,omitempty"`
+	Locale     *MarketLocale `query:"locale,omitempty"`
 }
 
 // GetExchangesResponse is the response returned by the GetExchanges method.

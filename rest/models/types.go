@@ -80,6 +80,55 @@ const (
 	Losers  Direction = "losers"
 )
 
+// AssetClass is an identifier for a group of similar financial instruments.
+type AssetClass string
+
+const (
+	AssetStocks  AssetClass = "stocks"
+	AssetOptions AssetClass = "options"
+	AssetCrypto  AssetClass = "crypto"
+	AssetFx      AssetClass = "fx"
+)
+
+// DataType is the type of data.
+type DataType string
+
+const (
+	DataTrade DataType = "trade"
+	DataBBO   DataType = "bbo"
+	DataNBBO  DataType = "nbbo"
+)
+
+// SIP is the type of Securies Information Processor.
+type SIP string
+
+const (
+	CTA  SIP = "CTA"
+	UTP  SIP = "UTP"
+	OPRA SIP = "OPRA"
+)
+
+// Frequency is the number of times a dividend is paid out over the course of one year.
+type Frequency int64
+
+const (
+	OneTime    Frequency = 0
+	Annually   Frequency = 1
+	BiAnnually Frequency = 2
+	Quarterly  Frequency = 4
+	Monthly    Frequency = 12
+)
+
+// DividendType is the type of dividend.
+type DividendType string
+
+const (
+	DividendCD DividendType = "CD"
+	DividendLT DividendType = "LT"
+	DividendSC DividendType = "SC"
+	DividendST DividendType = "ST"
+)
+
 // Comparator is the type of comparison to make for a specific query parameter.
 type Comparator string
 
