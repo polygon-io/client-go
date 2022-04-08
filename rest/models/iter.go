@@ -42,7 +42,7 @@ func NewIterErr(ctx context.Context, err error) Iter {
 
 // Next moves the iterator to the next result.
 func (it *Iter) Next() bool {
-	if it.err != nil || it.ctx.Err() != nil {
+	if it.err != nil {
 		return false
 	}
 
