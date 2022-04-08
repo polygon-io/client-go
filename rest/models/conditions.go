@@ -14,6 +14,41 @@ type ListConditionsParams struct {
 	Limit *int   `query:"limit"`
 }
 
+func (p ListConditionsParams) WithAssetClass(q AssetClass) *ListConditionsParams {
+	p.AssetClass = &q
+	return &p
+}
+
+func (p ListConditionsParams) WithDataType(q DataType) *ListConditionsParams {
+	p.DataType = &q
+	return &p
+}
+
+func (p ListConditionsParams) WithID(q int64) *ListConditionsParams {
+	p.ID = &q
+	return &p
+}
+
+func (p ListConditionsParams) WithSIP(q SIP) *ListConditionsParams {
+	p.SIP = &q
+	return &p
+}
+
+func (p ListConditionsParams) WithSort(q Sort) *ListConditionsParams {
+	p.Sort = &q
+	return &p
+}
+
+func (p ListConditionsParams) WithOrder(q Order) *ListConditionsParams {
+	p.Order = &q
+	return &p
+}
+
+func (p ListConditionsParams) WithLimit(q int) *ListConditionsParams {
+	p.Limit = &q
+	return &p
+}
+
 // ListConditionsResponse is the response returned by the ListConditions method.
 type ListConditionsResponse struct {
 	BaseResponse
