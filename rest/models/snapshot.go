@@ -16,6 +16,11 @@ type GetAllTickersSnapshotParams struct {
 	Tickers *string `query:"tickers"`
 }
 
+func (p GetAllTickersSnapshotParams) WithTickers(q string) *GetAllTickersSnapshotParams {
+	p.Tickers = &q
+	return &p
+}
+
 // GetAllTickersSnapshotResponse is the response returned by the GetAllTickersSnapshot method.
 type GetAllTickersSnapshotResponse struct {
 	BaseResponse

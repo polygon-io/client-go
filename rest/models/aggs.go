@@ -15,10 +15,30 @@ type GetAggsParams struct {
 	From       Millis     `validate:"required" path:"from"`
 	To         Millis     `validate:"required" path:"to"`
 
-	Sort     *Order `query:"sort"`
+	Order    *Order `query:"sort"`
 	Limit    *int   `query:"limit"`
 	Adjusted *bool  `query:"adjusted"`
 	Explain  *bool  `query:"explain"`
+}
+
+func (p GetAggsParams) WithOrder(q Order) *GetAggsParams {
+	p.Order = &q
+	return &p
+}
+
+func (p GetAggsParams) WithLimit(q int) *GetAggsParams {
+	p.Limit = &q
+	return &p
+}
+
+func (p GetAggsParams) WithAdjusted(q bool) *GetAggsParams {
+	p.Adjusted = &q
+	return &p
+}
+
+func (p GetAggsParams) WithExplain(q bool) *GetAggsParams {
+	p.Explain = &q
+	return &p
 }
 
 // GetAggsResponse is the response returned by the GetAggs method.
@@ -40,6 +60,11 @@ type GetGroupedDailyAggsParams struct {
 	Adjusted *bool `query:"adjusted"`
 }
 
+func (p GetGroupedDailyAggsParams) WithAdjusted(q bool) *GetGroupedDailyAggsParams {
+	p.Adjusted = &q
+	return &p
+}
+
 // GetGroupedDailyAggsResponse is the response returned by the GetGroupedDailyAggs method.
 type GetGroupedDailyAggsResponse struct {
 	BaseResponse
@@ -56,6 +81,11 @@ type GetDailyOpenCloseAggParams struct {
 	Date   Date   `validate:"required" path:"date"`
 
 	Adjusted *bool `query:"adjusted"`
+}
+
+func (p GetDailyOpenCloseAggParams) WithAdjusted(q bool) *GetDailyOpenCloseAggParams {
+	p.Adjusted = &q
+	return &p
 }
 
 // GetDailyOpenCloseAggResponse is the response for the GetDailyOpenCloseAgg method.
@@ -77,6 +107,11 @@ type GetPreviousCloseAggParams struct {
 	Ticker string `validate:"required" path:"ticker"`
 
 	Adjusted *bool `query:"adjusted"`
+}
+
+func (p GetPreviousCloseAggParams) WithAdjusted(q bool) *GetPreviousCloseAggParams {
+	p.Adjusted = &q
+	return &p
 }
 
 // GetPreviousCloseAggResponse is the response returned by the GetPreviousCloseAgg method.

@@ -60,11 +60,7 @@ func TestGetAggs(t *testing.T) {
 		Resolution: "day",
 		From:       models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
 		To:         models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC)),
-		Adjusted:   models.Ptr(true),
-		Sort:       models.Ptr(models.Desc),
-		Limit:      models.Ptr(1),
-		Explain:    models.Ptr(false),
-	})
+	}.WithOrder(models.Desc).WithLimit(1).WithAdjusted(true).WithExplain(false))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
@@ -85,10 +81,7 @@ func TestGetAggsWithQueryParam(t *testing.T) {
 		Resolution: "day",
 		From:       models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
 		To:         models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC)),
-		Adjusted:   models.Ptr(true),
-		Sort:       models.Ptr(models.Desc),
-		Limit:      models.Ptr(1),
-	}, models.QueryParam("explain", "false"))
+	}.WithOrder(models.Desc).WithLimit(1).WithAdjusted(true), models.QueryParam("explain", "false"))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
@@ -149,8 +142,7 @@ func TestGetGroupedDailyAggs(t *testing.T) {
 		Locale:     models.US,
 		MarketType: models.Stocks,
 		Date:       models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local)),
-		Adjusted:   models.Ptr(true),
-	})
+	}.WithAdjusted(true))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
@@ -179,10 +171,9 @@ func TestGetDailyOpenCloseAgg(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v1/open-close/AAPL/2020-10-14?adjusted=true", expectedResponse)
 	res, err := c.Aggs.GetDailyOpenCloseAgg(context.Background(), models.GetDailyOpenCloseAggParams{
-		Ticker:   "AAPL",
-		Date:     models.Date(time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local)),
-		Adjusted: models.Ptr(true),
-	})
+		Ticker: "AAPL",
+		Date:   models.Date(time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local)),
+	}.WithAdjusted(true))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
@@ -219,9 +210,8 @@ func TestGetPreviousCloseAgg(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/prev", expectedResponse)
 	res, err := c.Aggs.GetPreviousCloseAgg(context.Background(), models.GetPreviousCloseAggParams{
-		Ticker:   "AAPL",
-		Adjusted: models.Ptr(true),
-	})
+		Ticker: "AAPL",
+	}.WithAdjusted(true))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")

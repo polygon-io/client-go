@@ -128,8 +128,7 @@ func TestListSnapshotAllTickers(t *testing.T) {
 	res, err := c.Snapshot.GetAllTickersSnapshot(context.Background(), models.GetAllTickersSnapshotParams{
 		Locale:     "us",
 		MarketType: "stocks",
-		Tickers:    models.Ptr("AAPL,MSFT"),
-	})
+	}.WithTickers("AAPL,MSFT"))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
@@ -150,7 +149,7 @@ func TestGetTickerSnapshot(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers/AAPL", expectedResponse)
-	res, err := c.Snapshot.GetTickerSnapshot(context.Background(), models.GetTickerSnapshotParams{
+	res, err := c.Snapshot.GetTickerSnapshot(context.Background(), &models.GetTickerSnapshotParams{
 		Ticker:     "AAPL",
 		Locale:     "us",
 		MarketType: "stocks",
@@ -178,7 +177,7 @@ func TestGetGainersLosersSnapshot(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/gainers", expectedResponse)
-	res, err := c.Snapshot.GetGainersLosersSnapshot(context.Background(), models.GetGainersLosersSnapshotParams{
+	res, err := c.Snapshot.GetGainersLosersSnapshot(context.Background(), &models.GetGainersLosersSnapshotParams{
 		Locale:     "us",
 		MarketType: "stocks",
 		Direction:  "gainers",
@@ -249,7 +248,7 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v3/snapshot/options/AAPL/O:AAPL230616C00150000", expectedResponse)
-	res, err := c.Snapshot.GetOptionContractSnapshot(context.Background(), models.GetOptionContractSnapshotParams{
+	res, err := c.Snapshot.GetOptionContractSnapshot(context.Background(), &models.GetOptionContractSnapshotParams{
 		UnderlyingAsset: "AAPL",
 		OptionContract:  "O:AAPL230616C00150000",
 	})
@@ -307,7 +306,7 @@ func TestGetCryptoFullBookSnapshot(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/snapshot/locale/global/markets/crypto/tickers/X:BTCUSD/book", expectedResponse)
-	res, err := c.Snapshot.GetCryptoFullBookSnapshot(context.Background(), models.GetCryptoFullBookSnapshotParams{
+	res, err := c.Snapshot.GetCryptoFullBookSnapshot(context.Background(), &models.GetCryptoFullBookSnapshotParams{
 		Ticker: "X:BTCUSD",
 	})
 
