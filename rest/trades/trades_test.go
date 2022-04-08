@@ -64,7 +64,7 @@ func TestListTrades(t *testing.T) {
 	registerResponder("https://api.polygon.io/v3/trades/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
 	iter, err := c.Trades.ListTrades(context.Background(), models.ListTradesParams{
 		Ticker:       "AAPL",
-		TimestampGTE: models.Ptr(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
+		TimestampGTE: models.Ptr(models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))),
 		Order:        models.Ptr(models.Asc),
 		Limit:        models.Ptr(2),
 		Sort:         models.Ptr(models.Timestamp),
