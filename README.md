@@ -12,7 +12,7 @@ This client is still in pre-release. It only supports the REST API but Websocket
 
 ## Documentation
 
-To get started with this client, you'll need to import two main packages.
+To get started, you'll need to import two main packages.
 
 ```golang
 import (
