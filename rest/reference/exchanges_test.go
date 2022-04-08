@@ -39,7 +39,7 @@ func TestListExchanges(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v3/reference/exchanges?asset_class=stocks&locale=us", expectedResponse)
 	res, err := c.Reference.GetExchanges(context.Background(), models.GetExchangesParams{
-		AssetClass: models.Ptr(models.AssetClassStocks),
+		AssetClass: models.Ptr(models.AssetStocks),
 		Locale:     models.Ptr(models.US),
 	})
 

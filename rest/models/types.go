@@ -84,10 +84,10 @@ const (
 type AssetClass string
 
 const (
-	AssetClassStocks  AssetClass = "stocks"
-	AssetClassOptions AssetClass = "options"
-	AssetClassCrypto  AssetClass = "crypto"
-	AssetClassFx      AssetClass = "fx"
+	AssetStocks  AssetClass = "stocks"
+	AssetOptions AssetClass = "options"
+	AssetCrypto  AssetClass = "crypto"
+	AssetFx      AssetClass = "fx"
 )
 
 // DataType is the type of data.
@@ -103,9 +103,9 @@ const (
 type SIP string
 
 const (
-	CTA  DataType = "CTA"
-	UTP  DataType = "UTP"
-	OPRA DataType = "OPRA"
+	CTA  SIP = "CTA"
+	UTP  SIP = "UTP"
+	OPRA SIP = "OPRA"
 )
 
 // Frequency is the number of times a dividend is paid out over the course of one year.
