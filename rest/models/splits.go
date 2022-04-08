@@ -10,7 +10,7 @@ type ListSplitsParams struct {
 	TickerGT  *string `query:"ticker.gt"`
 	TickerGTE *string `query:"ticker.gte"`
 
-	ExecutionDateEQ  *Date `query:"execution_date"` // todo: this is "YYYY-MM-DD" format, need to figure out the best way to encode this without interfering with the default
+	ExecutionDateEQ  *Date `query:"execution_date"`
 	ExecutionDateLT  *Date `query:"execution_date.lt"`
 	ExecutionDateLTE *Date `query:"execution_date.lte"`
 	ExecutionDateGT  *Date `query:"execution_date.gt"`
