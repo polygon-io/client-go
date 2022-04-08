@@ -1,4 +1,4 @@
-package client_test
+package models_test
 
 import (
 	"context"
@@ -23,7 +23,7 @@ type Client struct {
 }
 
 type ListResourceIter struct {
-	client.Iter
+	models.Iter
 }
 
 func (it *ListResourceIter) Resource() Resource {
@@ -55,7 +55,7 @@ func (c *Client) ListResource(ctx context.Context, params ListResourceParams, op
 	}
 
 	return &ListResourceIter{
-		Iter: client.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
+		Iter: models.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
 			res := &ListResourceResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
@@ -76,7 +76,7 @@ func TestListResource(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	resource1 := Resource{Price: "price1"}
-	expectedRes1 := ListResourceResponse{
+	registerResponder(200, "https://api.polygon.io/resource/ticker1", ListResourceResponse{
 		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
@@ -86,12 +86,11 @@ func TestListResource(t *testing.T) {
 			},
 		},
 		Results: []Resource{resource1},
-	}
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/ticker1", ReqHandler(200, expectedRes1))
+	})
 
 	resource2 := Resource{Price: "price2"}
 	resource3 := Resource{Price: "price3"}
-	expectedRes2 := ListResourceResponse{
+	registerResponder(200, "https://api.polygon.io/resource/ticker1?cursor=NEXT", ListResourceResponse{
 		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req2",
@@ -101,10 +100,9 @@ func TestListResource(t *testing.T) {
 			},
 		},
 		Results: []Resource{resource2, resource3},
-	}
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/ticker1?cursor=NEXT", ReqHandler(200, expectedRes2))
+	})
 
-	expectedRes3 := ListResourceResponse{
+	registerResponder(200, "https://api.polygon.io/resource/ticker1?cursor=NEXTER", ListResourceResponse{
 		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req3",
@@ -113,8 +111,7 @@ func TestListResource(t *testing.T) {
 				NextURL: "https://api.polygon.io/resource/ticker1?cursor=NEXTER",
 			},
 		},
-	}
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/ticker1?cursor=NEXTER", ReqHandler(200, expectedRes3))
+	})
 
 	iter, err := c.ListResource(context.Background(), ListResourceParams{
 		Ticker: "ticker1",
@@ -153,14 +150,13 @@ func TestListResourceError(t *testing.T) {
 		RequestID:    "req1",
 		ErrorMessage: "resource not found",
 	}
-	expectedRes := ListResourceResponse{
-		BaseResponse: baseRes,
-	}
 	expectedErr := models.ErrorResponse{
 		StatusCode:   404,
 		BaseResponse: baseRes,
 	}
-	httpmock.RegisterResponder("GET", "https://api.polygon.io/resource/ticker1", ReqHandler(404, expectedRes))
+	registerResponder(404, "https://api.polygon.io/resource/ticker1", ListResourceResponse{
+		BaseResponse: baseRes,
+	})
 
 	iter, err := c.ListResource(context.Background(), ListResourceParams{
 		Ticker: "ticker1",
@@ -172,19 +168,21 @@ func TestListResourceError(t *testing.T) {
 	assert.NotNil(t, iter.Err())
 	assert.Equal(t, expectedErr.Error(), iter.Err().Error())
 
-	// subsequent calls to iter.Next() should be false, item should be nil, page should be an empty response
+	// subsequent calls to iter.Next() should be false, item should be not nil, page should be an empty response
 	assert.False(t, iter.Next())
-	assert.Nil(t, iter.Item())
+	assert.NotNil(t, iter.Resource())
 }
 
-func ReqHandler(code int, res ListResourceResponse) func(req *http.Request) (*http.Response, error) {
-	return func(req *http.Request) (*http.Response, error) {
-		b, err := json.Marshal(res)
-		if err != nil {
-			return nil, err
-		}
-		resp := httpmock.NewStringResponse(code, string(b))
-		resp.Header.Add("Content-Type", "application/json")
-		return resp, nil
-	}
+func registerResponder(status int, url string, res ListResourceResponse) {
+	httpmock.RegisterResponder("GET", url,
+		func(req *http.Request) (*http.Response, error) {
+			b, err := json.Marshal(res)
+			if err != nil {
+				return nil, err
+			}
+			resp := httpmock.NewStringResponse(status, string(b))
+			resp.Header.Add("Content-Type", "application/json")
+			return resp, nil
+		},
+	)
 }
