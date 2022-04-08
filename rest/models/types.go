@@ -191,7 +191,7 @@ func (m *Millis) MarshalJSON() ([]byte, error) {
 	return json.Marshal(time.Time(*m).UnixMilli())
 }
 
-// Millis represents a Unix time in nanoseconds since January 1, 1970 UTC.
+// Nanos represents a Unix time in nanoseconds since January 1, 1970 UTC.
 type Nanos time.Time
 
 func (n *Nanos) UnmarshalJSON(data []byte) error {
