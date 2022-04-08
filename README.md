@@ -98,5 +98,5 @@ For now, we're generally not accepting pull requests from outside contributors b
 
 [doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go
 [doc]: https://pkg.go.dev/github.com/polygon-io/client-go
-[build-img]: https://github.com/polygon-io/client-go/workflows/test.yml/badge.svg
+[build-img]: https://github.com/polygon-io/client-go/actions/workflows/test.yml/badge.svg
 [build]: https://github.com/polygon-io/client-go/actions
