@@ -23,15 +23,15 @@ func (it *ListConditionsIter) Condition() models.Condition {
 
 // ListConditions retrieves reference conditions.
 func (c *Client) ListConditions(ctx context.Context, params models.ListConditionsParams, options ...models.RequestOption) (*ListConditionsIter, error) {
-	url, err := c.EncodeParams(models.ListConditionsPath, params)
+	uri, err := c.EncodeParams(models.ListConditionsPath, params)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ListConditionsIter{
-		Iter: client.NewIter(ctx, url, func(url string) (models.ListResponse, []interface{}, error) {
+		Iter: client.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
 			res := &models.ListConditionsResponse{}
-			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
+			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
 			results := make([]interface{}, len(res.Results))
 			for i, v := range res.Results {

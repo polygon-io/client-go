@@ -69,11 +69,25 @@ func New(apiKey string) Client {
 }
 
 // Call makes an API call based on the request params and options. The response is automatically unmarshaled.
-func (c *Client) Call(ctx context.Context, method, uri string, params, response interface{}, opts ...models.RequestOption) error {
-	req, err := c.newRequest(ctx, params, response, opts...)
+func (c *Client) Call(ctx context.Context, method, path string, params, response interface{}, opts ...models.RequestOption) error {
+	uri, err := c.EncodeParams(path, params)
 	if err != nil {
-		return fmt.Errorf("failed to create request: %w", err)
+		return err
 	}
+	return c.CallURL(ctx, method, uri, response, opts...)
+}
+
+// CallURL makes an API call based on a request URI and options. The response is automatically unmarshaled.
+func (c *Client) CallURL(ctx context.Context, method, uri string, response interface{}, opts ...models.RequestOption) error {
+	options := mergeOptions(opts...)
+
+	req := c.HTTP.R().SetContext(ctx)
+	if options.APIKey != nil {
+		req.SetAuthToken(*options.APIKey)
+	}
+	req.SetQueryParamsFromValues(options.QueryParams)
+	req.SetHeaderMultiValues(options.Headers)
+	req.SetResult(response).SetError(&models.ErrorResponse{})
 
 	res, err := req.Execute(method, uri)
 	if err != nil {
@@ -87,17 +101,18 @@ func (c *Client) Call(ctx context.Context, method, uri string, params, response 
 	return nil
 }
 
-func (c *Client) EncodeParams(uri string, params interface{}) (string, error) {
+// EncodeParams encodes path and query params and returns a valid request URI.
+func (c *Client) EncodeParams(path string, params interface{}) (string, error) {
 	if err := c.validateParams(params); err != nil {
 		return "", err
 	}
 
-	uri, err := c.encodePathString(uri, params)
+	uri, err := c.encodePath(path, params)
 	if err != nil {
 		return "", err
 	}
 
-	query, err := c.encodeQueryString(params)
+	query, err := c.encodeQuery(params)
 	if err != nil {
 		return "", err
 	} else if query != "" {
@@ -107,41 +122,6 @@ func (c *Client) EncodeParams(uri string, params interface{}) (string, error) {
 	return uri, nil
 }
 
-func (c *Client) newRequest(ctx context.Context, params, response interface{}, opts ...models.RequestOption) (*resty.Request, error) {
-	options := mergeOptions(opts...)
-
-	req := c.HTTP.R().SetContext(ctx)
-	if params != nil {
-		if err := c.validateParams(params); err != nil {
-			return nil, err
-		}
-
-		path, err := c.encodePath(params)
-		if err != nil {
-			return nil, err
-		}
-		req.SetPathParams(path)
-
-		query, err := c.encodeQuery(params)
-		if err != nil {
-			return nil, err
-		}
-		req.SetQueryParamsFromValues(query)
-	}
-
-	if options.APIKey != nil {
-		req.SetAuthToken(*options.APIKey)
-	}
-
-	req.SetQueryParamsFromValues(options.QueryParams)
-
-	req.SetHeaderMultiValues(options.Headers)
-
-	req.SetResult(response).SetError(&models.ErrorResponse{})
-
-	return req, nil
-}
-
 func (c *Client) validateParams(params interface{}) error {
 	if err := c.validate.Struct(params); err != nil {
 		return fmt.Errorf("invalid request params: %w", err)
@@ -149,23 +129,15 @@ func (c *Client) validateParams(params interface{}) error {
 	return nil
 }
 
-func (c *Client) encodePath(params interface{}) (map[string]string, error) {
+func (c *Client) encodePath(uri string, params interface{}) (string, error) {
 	val, err := c.pathEncoder.Encode(&params)
 	if err != nil {
-		return nil, fmt.Errorf("error encoding path params: %w", err)
+		return "", fmt.Errorf("error encoding path params: %w", err)
 	}
 
 	pathParams := map[string]string{}
 	for k, v := range val {
 		pathParams[k] = v[0] // only accept the first one for a given key
-	}
-	return pathParams, nil
-}
-
-func (c *Client) encodePathString(uri string, params interface{}) (string, error) {
-	pathParams, err := c.encodePath(params)
-	if err != nil {
-		return "", err
 	}
 
 	for k, v := range pathParams {
@@ -175,18 +147,10 @@ func (c *Client) encodePathString(uri string, params interface{}) (string, error
 	return uri, nil
 }
 
-func (c *Client) encodeQuery(params interface{}) (url.Values, error) {
+func (c *Client) encodeQuery(params interface{}) (string, error) {
 	query, err := c.queryEncoder.Encode(&params)
 	if err != nil {
-		return nil, fmt.Errorf("error encoding query params: %w", err)
-	}
-	return query, nil
-}
-
-func (c *Client) encodeQueryString(params interface{}) (string, error) {
-	query, err := c.encodeQuery(params)
-	if err != nil {
-		return "", nil
+		return "", fmt.Errorf("error encoding query params: %w", err)
 	}
 	return query.Encode(), nil
 }

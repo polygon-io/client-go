@@ -25,12 +25,12 @@ type Iter struct {
 
 // NewIter returns a new initialized iterator. This method automatically makes the first query to populate
 // the results. List methods should use this helper method when building domain specific iterators.
-func NewIter(ctx context.Context, url string, query Query) Iter {
+func NewIter(ctx context.Context, uri string, query Query) Iter {
 	it := Iter{
 		ctx:   ctx,
 		query: query,
 	}
-	it.page, it.results, it.err = it.query(url)
+	it.page, it.results, it.err = it.query(uri)
 	return it
 }
 
