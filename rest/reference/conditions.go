@@ -2,7 +2,6 @@ package reference
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/models"
@@ -25,10 +24,6 @@ func (it *ListConditionsIter) Condition() models.Condition {
 // For more details see https://polygon.io/docs/stocks/get_v3_reference_conditions.
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListConditions(context.TODO(), params, opts...)
-//   if err != nil {
-//       return err
-//   }
-//
 //   for iter.Next() {
 //       // do something with the current value
 //       log.Print(iter.Condition())
@@ -36,10 +31,10 @@ func (it *ListConditionsIter) Condition() models.Condition {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListConditions(ctx context.Context, params *models.ListConditionsParams, options ...models.RequestOption) (*ListConditionsIter, error) {
+func (c *Client) ListConditions(ctx context.Context, params *models.ListConditionsParams, options ...models.RequestOption) *ListConditionsIter {
 	uri, err := c.EncodeParams(models.ListConditionsPath, params)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create iterator: %w", err)
+		return &ListConditionsIter{Iter: models.NewIterErr(ctx, err)}
 	}
 
 	return &ListConditionsIter{
@@ -54,5 +49,5 @@ func (c *Client) ListConditions(ctx context.Context, params *models.ListConditio
 
 			return res, results, err
 		}),
-	}, nil
+	}
 }
