@@ -15,9 +15,40 @@ type ListQuotesParams struct {
 	TimestampLTE *Nanos `query:"timestamp.lte"`
 	TimestampGT  *Nanos `query:"timestamp.gt"`
 	TimestampGTE *Nanos `query:"timestamp.gte"`
-	Order        *Order `query:"order"`
-	Limit        *int   `query:"limit"`
-	Sort         *Sort  `query:"sort"`
+
+	Order *Order `query:"order"`
+	Limit *int   `query:"limit"`
+	Sort  *Sort  `query:"sort"`
+}
+
+func (p ListQuotesParams) WithTimestamp(c Comparator, q Nanos) *ListQuotesParams {
+	if c == EQ {
+		p.TimestampEQ = &q
+	} else if c == LT {
+		p.TimestampLT = &q
+	} else if c == LTE {
+		p.TimestampLTE = &q
+	} else if c == GT {
+		p.TimestampGT = &q
+	} else if c == GTE {
+		p.TimestampGTE = &q
+	}
+	return &p
+}
+
+func (p ListQuotesParams) WithSort(q Sort) *ListQuotesParams {
+	p.Sort = &q
+	return &p
+}
+
+func (p ListQuotesParams) WithOrder(q Order) *ListQuotesParams {
+	p.Order = &q
+	return &p
+}
+
+func (p ListQuotesParams) WithLimit(q int) *ListQuotesParams {
+	p.Limit = &q
+	return &p
 }
 
 // ListQuotesResponse is the response returned by the ListQuotes method.

@@ -15,9 +15,40 @@ type ListTradesParams struct {
 	TimestampLTE *Nanos `query:"timestamp.lte"`
 	TimestampGT  *Nanos `query:"timestamp.gt"`
 	TimestampGTE *Nanos `query:"timestamp.gte"`
-	Limit        *int   `query:"limit"`
-	Sort         *Sort  `query:"sort"`
-	Order        *Order `query:"order"`
+
+	Sort  *Sort  `query:"sort"`
+	Order *Order `query:"order"`
+	Limit *int   `query:"limit"`
+}
+
+func (p ListTradesParams) WithTimestamp(c Comparator, q Nanos) *ListTradesParams {
+	if c == EQ {
+		p.TimestampEQ = &q
+	} else if c == LT {
+		p.TimestampLT = &q
+	} else if c == LTE {
+		p.TimestampLTE = &q
+	} else if c == GT {
+		p.TimestampGT = &q
+	} else if c == GTE {
+		p.TimestampGTE = &q
+	}
+	return &p
+}
+
+func (p ListTradesParams) WithSort(q Sort) *ListTradesParams {
+	p.Sort = &q
+	return &p
+}
+
+func (p ListTradesParams) WithOrder(q Order) *ListTradesParams {
+	p.Order = &q
+	return &p
+}
+
+func (p ListTradesParams) WithLimit(q int) *ListTradesParams {
+	p.Limit = &q
+	return &p
 }
 
 // ListTradesResponse is the response returned by the ListTrades method.

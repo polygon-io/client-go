@@ -80,6 +80,17 @@ const (
 	Losers  Direction = "losers"
 )
 
+// Comparator is the type of comparison to make for a specific query parameter.
+type Comparator string
+
+const (
+	EQ  Comparator = "eq"
+	LT  Comparator = "lt"
+	LTE Comparator = "lte"
+	GT  Comparator = "gt"
+	GTE Comparator = "gte"
+)
+
 // todo: godoc
 
 type Date time.Time
