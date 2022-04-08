@@ -22,6 +22,20 @@ func (it *ListDividendsIter) Dividend() models.Dividend {
 }
 
 // ListDividends retrieves reference dividends.
+// For more details see https://polygon.io/docs/stocks/get_v3_reference_dividends.
+// This method returns an iterator that should be used to access the results via this pattern:
+//   iter, err := c.ListDividends(context.TODO(), params, opts...)
+//   if err != nil {
+//       return err
+//   }
+//
+//   for iter.Next() {
+//       // do something with the current value
+//       log.Print(iter.Dividend())
+//   }
+//   if iter.Err() != nil {
+//       return err
+//   }
 func (c *Client) ListDividends(ctx context.Context, params *models.ListDividendsParams, options ...models.RequestOption) (*ListDividendsIter, error) {
 	uri, err := c.EncodeParams(models.ListDividendsPath, params)
 	if err != nil {

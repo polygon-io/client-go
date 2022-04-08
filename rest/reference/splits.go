@@ -22,6 +22,20 @@ func (it *ListSplitsIter) Split() models.Split {
 }
 
 // ListSplits retrieves reference splits.
+// For more details see https://polygon.io/docs/stocks/get_v3_reference_splits.
+// This method returns an iterator that should be used to access the results via this pattern:
+//   iter, err := c.ListSplits(context.TODO(), params, opts...)
+//   if err != nil {
+//       return err
+//   }
+//
+//   for iter.Next() {
+//       // do something with the current value
+//       log.Print(iter.Split())
+//   }
+//   if iter.Err() != nil {
+//       return err
+//   }
 func (c *Client) ListSplits(ctx context.Context, params *models.ListSplitsParams, options ...models.RequestOption) (*ListSplitsIter, error) {
 	uri, err := c.EncodeParams(models.ListSplitsPath, params)
 	if err != nil {
