@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
+	polygon "github.com/polygon-io/client-go"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
@@ -110,7 +110,7 @@ var snapshot2 = `{
 }`
 
 func TestListSnapshotAllTickers(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -138,7 +138,7 @@ func TestListSnapshotAllTickers(t *testing.T) {
 }
 
 func TestGetTickerSnapshot(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -163,7 +163,7 @@ func TestGetTickerSnapshot(t *testing.T) {
 }
 
 func TestGetGainersLosersSnapshot(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -191,7 +191,7 @@ func TestGetGainersLosersSnapshot(t *testing.T) {
 }
 
 func TestGetOptionContractSnapshot(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -261,7 +261,7 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 }
 
 func TestGetCryptoFullBookSnapshot(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -317,7 +317,7 @@ func TestGetCryptoFullBookSnapshot(t *testing.T) {
 	assert.Equal(t, expectedResponse, string(b))
 }
 
-func registerResponder(url string, body string) {
+func registerResponder(url, body string) {
 	httpmock.RegisterResponder("GET", url,
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, body)
@@ -327,8 +327,8 @@ func registerResponder(url string, body string) {
 	)
 }
 
-func indent(first bool, data string, indent string) string {
-	lines := strings.Split(string(data), "\n")
+func indent(first bool, data, indent string) string {
+	lines := strings.Split(data, "\n")
 	for i := range lines {
 		if i == 0 && !first {
 			continue

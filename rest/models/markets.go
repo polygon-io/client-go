@@ -2,14 +2,21 @@ package models
 
 const (
 	GetMarketHolidaysPath = "/v1/marketstatus/upcoming"
+	GetMarketStatusPath   = "/v1/marketstatus/now"
 )
-
-// todo: this endpoint is unlikely to ever have params so should we delete this type?
-// GetMarketHolidaysParams is the set of parameters for the GetMarketHolidays method.
-type GetMarketHolidaysParams struct{}
 
 // GetMarketHolidaysResponse is the response returned by the GetMarketHolidays method.
 type GetMarketHolidaysResponse []MarketHoliday
+
+// GetMarketStatusResponse is the response returned by the GetMarketStatus method.
+type GetMarketStatusResponse struct {
+	AfterHours bool              `json:"afterHours"`
+	Currencies map[string]string `json:"currencies,omitempty"`
+	EarlyHours bool              `json:"earlyHours"`
+	Exchanges  map[string]string `json:"exchanges,omitempty"`
+	Market     string            `json:"market,omitempty"`
+	ServerTime string            `json:"serverTime,omitempty"` // todo: "2006-01-02T00:00:00.000Z" format
+}
 
 // MarketHoliday represents a market holiday for a specific exchange.
 type MarketHoliday struct {

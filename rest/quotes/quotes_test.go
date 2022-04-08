@@ -9,13 +9,13 @@ import (
 	"time"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
+	polygon "github.com/polygon-io/client-go"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListQuotes(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -97,7 +97,7 @@ func TestListQuotes(t *testing.T) {
 }
 
 func TestGetLastQuote(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -132,7 +132,7 @@ func TestGetLastQuote(t *testing.T) {
 }
 
 func TestGetLastForexQuote(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := polygon.NewClient("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -161,7 +161,7 @@ func TestGetLastForexQuote(t *testing.T) {
 	assert.Equal(t, expectedResponse, string(b))
 }
 
-func registerResponder(url string, body string) {
+func registerResponder(url, body string) {
 	httpmock.RegisterResponder("GET", url,
 		func(req *http.Request) (*http.Response, error) {
 			resp := httpmock.NewStringResponse(200, body)
@@ -171,8 +171,8 @@ func registerResponder(url string, body string) {
 	)
 }
 
-func indent(first bool, data string, indent string) string {
-	lines := strings.Split(string(data), "\n")
+func indent(first bool, data, indent string) string {
+	lines := strings.Split(data, "\n")
 	for i := range lines {
 		if i == 0 && !first {
 			continue

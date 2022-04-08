@@ -72,7 +72,7 @@ const (
 	Desc Order = "desc"
 )
 
-// Direction is the direction of the snapshot results to return
+// Direction is the direction of the snapshot results to return.
 type Direction string
 
 const (
