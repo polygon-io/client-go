@@ -22,7 +22,7 @@ type GetMarketStatusResponse struct {
 type MarketHoliday struct {
 	Exchange string `json:"exchange,omitempty"`
 	Name     string `json:"name,omitempty"`
-	Date     string `json:"date,omitempty"` // todo: "2006-01-02" format
+	Date     *Date  `json:"date,omitempty"`
 	Status   string `json:"status,omitempty"`
 	Open     string `json:"open,omitempty"`  // todo: "2006-01-02T00:00:00.000Z" format
 	Close    string `json:"close,omitempty"` // todo: "2006-01-02T00:00:00.000Z" format
