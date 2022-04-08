@@ -22,7 +22,7 @@ func (it *ListConditionsIter) Condition() models.Condition {
 }
 
 // ListConditions retrieves reference conditions.
-func (c *Client) ListConditions(ctx context.Context, params models.ListConditionsParams, options ...models.RequestOption) (*ListConditionsIter, error) {
+func (c *Client) ListConditions(ctx context.Context, params *models.ListConditionsParams, options ...models.RequestOption) (*ListConditionsIter, error) {
 	uri, err := c.EncodeParams(models.ListConditionsPath, params)
 	if err != nil {
 		return nil, err

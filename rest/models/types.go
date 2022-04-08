@@ -6,11 +6,6 @@ import (
 	"time"
 )
 
-// Ptr returns a pointer to any value.
-func Ptr[T any](v T) *T {
-	return &v
-}
-
 // MarketType is the type of market.
 type MarketType string
 

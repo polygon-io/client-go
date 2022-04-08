@@ -19,9 +19,9 @@ type ListTickersParams struct {
 	// todo: which ones should be enums?
 	Type     *string     `query:"type"`
 	Market   *MarketType `query:"market"` // todo: this endpoint apparently expects fx instead of forex
-	Exchange *string     `query:"exchange"`
-	CUSIP    *string     `query:"cusip"`
-	CIK      *string     `query:"cik"`
+	Exchange *int        `query:"exchange"`
+	CUSIP    *int        `query:"cusip"`
+	CIK      *int        `query:"cik"`
 	Date     *string     `query:"date"` // todo: this is "2006-01-02" format, need to figure out the best way to encode this without interfering with the default
 	Active   *bool       `query:"active"`
 
@@ -31,6 +31,81 @@ type ListTickersParams struct {
 
 	PageMarker *string `query:"page_marker"`
 	Search     *string `query:"search"`
+}
+
+func (p ListTickersParams) WithTicker(c Comparator, q string) *ListTickersParams {
+	if c == EQ {
+		p.TickerEQ = &q
+	} else if c == LT {
+		p.TickerLT = &q
+	} else if c == LTE {
+		p.TickerLTE = &q
+	} else if c == GT {
+		p.TickerGT = &q
+	} else if c == GTE {
+		p.TickerGTE = &q
+	}
+	return &p
+}
+
+func (p ListTickersParams) WithType(q string) *ListTickersParams {
+	p.Type = &q
+	return &p
+}
+
+func (p ListTickersParams) WithMarket(q MarketType) *ListTickersParams {
+	p.Market = &q
+	return &p
+}
+
+func (p ListTickersParams) WithExchange(q int) *ListTickersParams {
+	p.Exchange = &q
+	return &p
+}
+
+func (p ListTickersParams) WithCUSIP(q int) *ListTickersParams {
+	p.CUSIP = &q
+	return &p
+}
+
+func (p ListTickersParams) WithCIK(q int) *ListTickersParams {
+	p.CIK = &q
+	return &p
+}
+
+func (p ListTickersParams) WithDate(q string) *ListTickersParams {
+	p.Date = &q
+	return &p
+}
+
+func (p ListTickersParams) WithActive(q bool) *ListTickersParams {
+	p.Active = &q
+	return &p
+}
+
+func (p ListTickersParams) WithSort(q Sort) *ListTickersParams {
+	p.Sort = &q
+	return &p
+}
+
+func (p ListTickersParams) WithOrder(q Order) *ListTickersParams {
+	p.Order = &q
+	return &p
+}
+
+func (p ListTickersParams) WithLimit(q int) *ListTickersParams {
+	p.Limit = &q
+	return &p
+}
+
+func (p ListTickersParams) WithPageMarker(q string) *ListTickersParams {
+	p.PageMarker = &q
+	return &p
+}
+
+func (p ListTickersParams) WithSearch(q string) *ListTickersParams {
+	p.Search = &q
+	return &p
 }
 
 // ListTickersResponse is the response returned by the ListTickers method.
@@ -46,6 +121,11 @@ type GetTickerDetailsParams struct {
 	Date *string `query:"date"` // todo: this is "2006-01-02" format
 }
 
+func (p GetTickerDetailsParams) WithDate(q string) *GetTickerDetailsParams {
+	p.Date = &q
+	return &p
+}
+
 // GetTickerDetailsResponse is the response returned by the GetTickerDetails method.
 type GetTickerDetailsResponse struct {
 	BaseResponse
@@ -56,6 +136,16 @@ type GetTickerDetailsResponse struct {
 type GetTickerTypesParams struct {
 	AssetClass *string       `query:"asset_class"` // todo: this is similar but slightly different than market type (also we offer four options but only one returns results)
 	Locale     *MarketLocale `query:"locale"`
+}
+
+func (p GetTickerTypesParams) WithAssetClass(q string) *GetTickerTypesParams {
+	p.AssetClass = &q
+	return &p
+}
+
+func (p GetTickerTypesParams) WithLocale(q MarketLocale) *GetTickerTypesParams {
+	p.Locale = &q
+	return &p
 }
 
 // GetTickerTypesResponse is the response returned by the GetTickerTypes method.

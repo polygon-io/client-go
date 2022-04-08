@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"strings"
 	"testing"
 
@@ -47,18 +46,11 @@ func TestListTickers(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v3/reference/tickers?active=true&cik=5&cusip=10&date=2021-07-22&exchange=4&limit=2&market=stocks&order=asc&sort=ticker&type=CS", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
-	iter, err := c.Reference.ListTickers(context.Background(), models.ListTickersParams{
-		Type:     models.Ptr("CS"),
-		Market:   models.Ptr(models.Stocks),
-		Exchange: models.Ptr(strconv.FormatInt(4, 10)),
-		CUSIP:    models.Ptr(strconv.FormatInt(10, 10)),
-		CIK:      models.Ptr(strconv.FormatInt(5, 10)),
-		Date:     models.Ptr("2021-07-22"),
-		Active:   models.Ptr(true),
-		Sort:     models.Ptr(models.TickerSymbol),
-		Order:    models.Ptr(models.Asc),
-		Limit:    models.Ptr(2),
-	})
+	iter, err := c.Reference.ListTickers(context.Background(), models.ListTickersParams{}.
+		WithType("CS").WithMarket(models.Stocks).
+		WithExchange(4).WithCUSIP(10).WithCIK(5).
+		WithDate("2021-07-22").WithActive(true).
+		WithSort(models.TickerSymbol).WithOrder(models.Asc).WithLimit(2))
 
 	// iter creation
 	assert.Nil(t, err)
@@ -124,8 +116,7 @@ func TestGetTickerDetails(t *testing.T) {
 	registerResponder("https://api.polygon.io/v3/reference/tickers/A?date=2021-07-22", expectedResponse)
 	res, err := c.Reference.GetTickerDetails(context.Background(), models.GetTickerDetailsParams{
 		Ticker: "A",
-		Date:   models.Ptr("2021-07-22"),
-	})
+	}.WithDate("2021-07-22"))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
@@ -154,10 +145,7 @@ func TestGetTickerTypes(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v3/reference/tickers/types?asset_class=stocks&locale=us", expectedResponse)
-	res, err := c.Reference.GetTickerTypes(context.Background(), models.GetTickerTypesParams{
-		AssetClass: models.Ptr("stocks"),
-		Locale:     models.Ptr(models.US),
-	})
+	res, err := c.Reference.GetTickerTypes(context.Background(), models.GetTickerTypesParams{}.WithAssetClass("stocks").WithLocale(models.US))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")

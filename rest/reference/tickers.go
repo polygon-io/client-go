@@ -36,7 +36,7 @@ func (it *ListTickersIter) Ticker() models.Ticker {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListTickers(ctx context.Context, params models.ListTickersParams, options ...models.RequestOption) (*ListTickersIter, error) {
+func (c *Client) ListTickers(ctx context.Context, params *models.ListTickersParams, options ...models.RequestOption) (*ListTickersIter, error) {
 	uri, err := c.EncodeParams(models.ListTickersPath, params)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (c *Client) ListTickers(ctx context.Context, params models.ListTickersParam
 
 // GetTickerDetails retrieves details for a specified ticker.
 // For more details see https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker.
-func (c *Client) GetTickerDetails(ctx context.Context, params models.GetTickerDetailsParams, options ...models.RequestOption) (*models.GetTickerDetailsResponse, error) {
+func (c *Client) GetTickerDetails(ctx context.Context, params *models.GetTickerDetailsParams, options ...models.RequestOption) (*models.GetTickerDetailsResponse, error) {
 	res := &models.GetTickerDetailsResponse{}
 	err := c.Call(ctx, http.MethodGet, models.GetTickerDetailsPath, params, res, options...)
 	return res, err
@@ -67,7 +67,7 @@ func (c *Client) GetTickerDetails(ctx context.Context, params models.GetTickerDe
 
 // GetTickerTypes retrieves all the possible ticker types that can be queried.
 // For more details see https://polygon.io/docs/stocks/get_v3_reference_tickers_types.
-func (c *Client) GetTickerTypes(ctx context.Context, params models.GetTickerTypesParams, options ...models.RequestOption) (*models.GetTickerTypesResponse, error) {
+func (c *Client) GetTickerTypes(ctx context.Context, params *models.GetTickerTypesParams, options ...models.RequestOption) (*models.GetTickerTypesResponse, error) {
 	res := &models.GetTickerTypesResponse{}
 	err := c.Call(ctx, http.MethodGet, models.GetTickerTypesPath, params, res, options...)
 	return res, err

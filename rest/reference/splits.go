@@ -22,7 +22,7 @@ func (it *ListSplitsIter) Split() models.Split {
 }
 
 // ListSplits retrieves reference splits.
-func (c *Client) ListSplits(ctx context.Context, params models.ListSplitsParams, options ...models.RequestOption) (*ListSplitsIter, error) {
+func (c *Client) ListSplits(ctx context.Context, params *models.ListSplitsParams, options ...models.RequestOption) (*ListSplitsIter, error) {
 	uri, err := c.EncodeParams(models.ListSplitsPath, params)
 	if err != nil {
 		return nil, err

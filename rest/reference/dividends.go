@@ -22,7 +22,7 @@ func (it *ListDividendsIter) Dividend() models.Dividend {
 }
 
 // ListDividends retrieves reference dividends.
-func (c *Client) ListDividends(ctx context.Context, params models.ListDividendsParams, options ...models.RequestOption) (*ListDividendsIter, error) {
+func (c *Client) ListDividends(ctx context.Context, params *models.ListDividendsParams, options ...models.RequestOption) (*ListDividendsIter, error) {
 	uri, err := c.EncodeParams(models.ListDividendsPath, params)
 	if err != nil {
 		return nil, err

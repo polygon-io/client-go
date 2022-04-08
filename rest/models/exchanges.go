@@ -8,6 +8,16 @@ type GetExchangesParams struct {
 	Locale     *MarketLocale `query:"locale,omitempty"`
 }
 
+func (p GetExchangesParams) WithAssetClass(q AssetClass) *GetExchangesParams {
+	p.AssetClass = &q
+	return &p
+}
+
+func (p GetExchangesParams) WithLocale(q MarketLocale) *GetExchangesParams {
+	p.Locale = &q
+	return &p
+}
+
 // GetExchangesResponse is the response returned by the GetExchanges method.
 type GetExchangesResponse struct {
 	BaseResponse

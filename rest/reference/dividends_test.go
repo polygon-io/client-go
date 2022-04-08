@@ -39,10 +39,7 @@ func TestListDividends(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v3/reference/dividends?dividend_type=CD&ticker=CSSEN", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/reference/dividends?cursor=YXA9MjUmYXM9JmxpbWl0PTEwJm9yZGVyPWRlc2Mmc29ydD1leF9kaXZpZGVuZF9kYXRlJnRpY2tlcj1DU1NFTg", "{}")
-	iter, err := c.Reference.ListDividends(context.Background(), models.ListDividendsParams{
-		TickerEQ:     models.Ptr("CSSEN"),
-		DividendType: models.Ptr(models.DividendCD),
-	})
+	iter, err := c.Reference.ListDividends(context.Background(), models.ListDividendsParams{}.WithTicker(models.EQ, "CSSEN").WithDividendType(models.DividendCD))
 
 	// iter creation
 	assert.Nil(t, err)

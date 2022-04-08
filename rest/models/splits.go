@@ -23,6 +23,56 @@ type ListSplitsParams struct {
 	Limit *int   `query:"limit"`
 }
 
+func (p ListSplitsParams) WithTicker(c Comparator, q string) *ListSplitsParams {
+	if c == EQ {
+		p.TickerEQ = &q
+	} else if c == LT {
+		p.TickerLT = &q
+	} else if c == LTE {
+		p.TickerLTE = &q
+	} else if c == GT {
+		p.TickerGT = &q
+	} else if c == GTE {
+		p.TickerGTE = &q
+	}
+	return &p
+}
+
+func (p ListSplitsParams) WithExecutionDate(c Comparator, q string) *ListSplitsParams {
+	if c == EQ {
+		p.ExecutionDateEQ = &q
+	} else if c == LT {
+		p.ExecutionDateLT = &q
+	} else if c == LTE {
+		p.ExecutionDateLTE = &q
+	} else if c == GT {
+		p.ExecutionDateGT = &q
+	} else if c == GTE {
+		p.ExecutionDateGTE = &q
+	}
+	return &p
+}
+
+func (p ListSplitsParams) WithReverseSplit(q bool) *ListSplitsParams {
+	p.ReverseSplit = &q
+	return &p
+}
+
+func (p ListSplitsParams) WithSort(q Sort) *ListSplitsParams {
+	p.Sort = &q
+	return &p
+}
+
+func (p ListSplitsParams) WithOrder(q Order) *ListSplitsParams {
+	p.Order = &q
+	return &p
+}
+
+func (p ListSplitsParams) WithLimit(q int) *ListSplitsParams {
+	p.Limit = &q
+	return &p
+}
+
 // ListSplitsResponse is the response returned by the ListSplits method.
 type ListSplitsResponse struct {
 	BaseResponse

@@ -49,6 +49,91 @@ type ListDividendsParams struct {
 	Limit *int   `query:"limit"`
 }
 
+func (p ListDividendsParams) WithTicker(c Comparator, q string) *ListDividendsParams {
+	if c == EQ {
+		p.TickerEQ = &q
+	} else if c == LT {
+		p.TickerLT = &q
+	} else if c == LTE {
+		p.TickerLTE = &q
+	} else if c == GT {
+		p.TickerGT = &q
+	} else if c == GTE {
+		p.TickerGTE = &q
+	}
+	return &p
+}
+
+func (p ListDividendsParams) WithExDividendDate(c Comparator, q Date) *ListDividendsParams {
+	if c == EQ {
+		p.ExDividendDateEQ = &q
+	} else if c == LT {
+		p.ExDividendDateLT = &q
+	} else if c == LTE {
+		p.ExDividendDateLTE = &q
+	} else if c == GT {
+		p.ExDividendDateGT = &q
+	} else if c == GTE {
+		p.ExDividendDateGTE = &q
+	}
+	return &p
+}
+
+func (p ListDividendsParams) WithDeclarationDate(c Comparator, q Date) *ListDividendsParams {
+	if c == EQ {
+		p.DeclarationDateEQ = &q
+	} else if c == LT {
+		p.DeclarationDateLT = &q
+	} else if c == LTE {
+		p.DeclarationDateLTE = &q
+	} else if c == GT {
+		p.DeclarationDateGT = &q
+	} else if c == GTE {
+		p.DeclarationDateGTE = &q
+	}
+	return &p
+}
+
+func (p ListDividendsParams) WithFrequency(q Frequency) *ListDividendsParams {
+	p.Frequency = &q
+	return &p
+}
+
+func (p ListDividendsParams) WithCashAmount(c Comparator, q float64) *ListDividendsParams {
+	if c == EQ {
+		p.CashAmountEQ = &q
+	} else if c == LT {
+		p.CashAmountLT = &q
+	} else if c == LTE {
+		p.CashAmountLTE = &q
+	} else if c == GT {
+		p.CashAmountGT = &q
+	} else if c == GTE {
+		p.CashAmountGTE = &q
+	}
+	return &p
+}
+
+func (p ListDividendsParams) WithDividendType(q DividendType) *ListDividendsParams {
+	p.DividendType = &q
+	return &p
+}
+
+func (p ListDividendsParams) WithSort(q Sort) *ListDividendsParams {
+	p.Sort = &q
+	return &p
+}
+
+func (p ListDividendsParams) WithOrder(q Order) *ListDividendsParams {
+	p.Order = &q
+	return &p
+}
+
+func (p ListDividendsParams) WithLimit(q int) *ListDividendsParams {
+	p.Limit = &q
+	return &p
+}
+
 // ListDividendsResponse is the response returned by the ListDividends method.
 type ListDividendsResponse struct {
 	BaseResponse
