@@ -41,15 +41,24 @@ func New(apiKey string) Client {
 	pe.SetMode(form.ModeExplicit)
 	pe.SetTagName("path")
 	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+		return []string{fmt.Sprint(time.Time(x.(models.Time)).Format("2006-01-02T15:04:05.000Z"))}, nil
+	}, models.Time{})
+	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
 		return []string{fmt.Sprint(time.Time(x.(models.Date)).Format("2006-01-02"))}, nil
 	}, models.Date{})
 	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
 		return []string{fmt.Sprint(time.Time(x.(models.Millis)).UnixMilli())}, nil
 	}, models.Millis{})
+	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+		return []string{fmt.Sprint(time.Time(x.(models.Nanos)).UnixNano())}, nil
+	}, models.Nanos{})
 
 	qe := form.NewEncoder()
 	qe.SetMode(form.ModeExplicit)
 	qe.SetTagName("query")
+	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+		return []string{fmt.Sprint(time.Time(x.(models.Time)).Format("2006-01-02T15:04:05.000Z"))}, nil
+	}, models.Time{})
 	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
 		return []string{fmt.Sprint(time.Time(x.(models.Date)).Format("2006-01-02"))}, nil
 	}, models.Date{})
