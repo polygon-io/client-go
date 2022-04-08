@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	expectedAggsResponseURL = "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-08-22?adjusted=true&explain=false&limit=1&sort=desc"
+	expectedAggsResponseURL = "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&explain=false&limit=1&sort=desc"
 	expectedAggsResponse    = `{
 	"status": "OK",
 	"request_id": "6a7e466379af0a71039d60cc78e72282",
@@ -52,7 +52,7 @@ func TestGetAggs(t *testing.T) {
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
-  registerResponder(expectedAggsResponseURL, expectedAggsResponse)
+	registerResponder(expectedAggsResponseURL, expectedAggsResponse)
 
 	res, err := c.Aggs.GetAggs(context.Background(), models.GetAggsParams{
 		Ticker:     "AAPL",
@@ -83,8 +83,8 @@ func TestGetAggsWithQueryParam(t *testing.T) {
 		Ticker:     "AAPL",
 		Multiplier: 1,
 		Resolution: "day",
-		From:       time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC),
-		To:         time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC),
+		From:       models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
+		To:         models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC)),
 		Adjusted:   models.Ptr(true),
 		Sort:       models.Ptr(models.Desc),
 		Limit:      models.Ptr(1),
