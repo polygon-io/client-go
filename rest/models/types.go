@@ -135,8 +135,27 @@ const (
 	GTE Comparator = "gte"
 )
 
-// todo: godoc
+// Time represents a long date string of the following format: "2006-01-02T15:04:05.000Z".
+type Time time.Time
 
+func (t *Time) UnmarshalJSON(data []byte) error {
+	unquoteData, err := strconv.Unquote(string(data))
+	if err != nil {
+		return err
+	}
+	parsedTime, err := time.Parse("2006-01-02T15:04:05.000Z", unquoteData)
+	if err != nil {
+		return err
+	}
+	*t = Time(parsedTime)
+	return nil
+}
+
+func (t *Time) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(*t).Format("2006-01-02T15:04:05.000Z"))
+}
+
+// Date represents a short date string of the following format: "2006-01-02".
 type Date time.Time
 
 func (d *Date) UnmarshalJSON(data []byte) error {
@@ -156,6 +175,7 @@ func (d *Date) MarshalJSON() ([]byte, error) {
 	return json.Marshal(time.Time(*d).Format("2006-01-02"))
 }
 
+// Millis represents a Unix time in milliseconds since January 1, 1970 UTC.
 type Millis time.Time
 
 func (m *Millis) UnmarshalJSON(data []byte) error {
@@ -171,6 +191,7 @@ func (m *Millis) MarshalJSON() ([]byte, error) {
 	return json.Marshal(time.Time(*m).UnixMilli())
 }
 
+// Millis represents a Unix time in nanoseconds since January 1, 1970 UTC.
 type Nanos time.Time
 
 func (n *Nanos) UnmarshalJSON(data []byte) error {

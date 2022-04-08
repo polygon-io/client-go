@@ -15,7 +15,7 @@ type GetMarketStatusResponse struct {
 	EarlyHours bool              `json:"earlyHours"`
 	Exchanges  map[string]string `json:"exchanges,omitempty"`
 	Market     string            `json:"market,omitempty"`
-	ServerTime string            `json:"serverTime,omitempty"` // todo: "2006-01-02T00:00:00.000Z" format
+	ServerTime *Time             `json:"serverTime,omitempty"`
 }
 
 // MarketHoliday represents a market holiday for a specific exchange.
@@ -24,6 +24,6 @@ type MarketHoliday struct {
 	Name     string `json:"name,omitempty"`
 	Date     *Date  `json:"date,omitempty"`
 	Status   string `json:"status,omitempty"`
-	Open     string `json:"open,omitempty"`  // todo: "2006-01-02T00:00:00.000Z" format
-	Close    string `json:"close,omitempty"` // todo: "2006-01-02T00:00:00.000Z" format
+	Open     *Time  `json:"open,omitempty"`
+	Close    *Time  `json:"close,omitempty"`
 }
