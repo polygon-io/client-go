@@ -1,5 +1,11 @@
 package models
 
+import (
+	"encoding/json"
+	"strconv"
+	"time"
+)
+
 // Ptr returns a pointer to any value.
 func Ptr[T any](v T) *T {
 	return &v
@@ -73,3 +79,57 @@ const (
 	Gainers Direction = "gainers"
 	Losers  Direction = "losers"
 )
+
+// todo: godoc
+
+type Date time.Time
+
+func (d *Date) UnmarshalJSON(data []byte) error {
+	unquoteData, err := strconv.Unquote(string(data))
+	if err != nil {
+		return err
+	}
+	t, err := time.Parse("2006-01-02", unquoteData)
+	if err != nil {
+		return err
+	}
+	*d = Date(t)
+	return nil
+}
+
+func (d *Date) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(*d).Format("2006-01-02"))
+}
+
+type Millis time.Time
+
+func (m *Millis) UnmarshalJSON(data []byte) error {
+	d, err := strconv.ParseInt(string(data), 10, 64)
+	if err != nil {
+		return err
+	}
+	*m = Millis(time.UnixMilli(d))
+	return nil
+}
+
+func (m *Millis) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(*m).UnixMilli())
+}
+
+type Nanos time.Time
+
+func (n *Nanos) UnmarshalJSON(data []byte) error {
+	d, err := strconv.ParseInt(string(data), 10, 64)
+	if err != nil {
+		return err
+	}
+
+	// Go Time package does not include a method to convert UnixNano to a time.
+	timeNano := time.Unix(d/1_000_000_000, d%1_000_000_000)
+	*n = Nanos(timeNano)
+	return nil
+}
+
+func (n *Nanos) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(*n).UnixNano())
+}

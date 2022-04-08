@@ -37,21 +37,28 @@ func New(apiKey string) Client {
 
 	v := validator.New()
 
-	// todo: implement some time types and create specific encoders for them
-
 	pe := form.NewEncoder()
 	pe.SetMode(form.ModeExplicit)
 	pe.SetTagName("path")
 	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(x.(time.Time).Format("2006-01-02"))}, nil
-	}, time.Time{})
+		return []string{fmt.Sprint(time.Time(x.(models.Date)).Format("2006-01-02"))}, nil
+	}, models.Date{})
+	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+		return []string{fmt.Sprint(time.Time(x.(models.Millis)).UnixMilli())}, nil
+	}, models.Millis{})
 
 	qe := form.NewEncoder()
 	qe.SetMode(form.ModeExplicit)
 	qe.SetTagName("query")
 	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(x.(time.Time).UnixNano())}, nil
-	}, time.Time{})
+		return []string{fmt.Sprint(time.Time(x.(models.Date)).Format("2006-01-02"))}, nil
+	}, models.Date{})
+	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+		return []string{fmt.Sprint(time.Time(x.(models.Millis)).UnixMilli())}, nil
+	}, models.Millis{})
+	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+		return []string{fmt.Sprint(time.Time(x.(models.Nanos)).UnixNano())}, nil
+	}, models.Nanos{})
 
 	return Client{
 		HTTP:         c,
