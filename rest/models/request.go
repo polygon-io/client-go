@@ -20,15 +20,15 @@ type RequestOptions struct {
 // RequestOption changes the configuration of RequestOptions.
 type RequestOption func(o *RequestOptions)
 
-// WithAPIKey sets the APIKey for an Option.
-func WithAPIKey(id string) RequestOption {
+// APIKey sets an APIKey as an option.
+func APIKey(id string) RequestOption {
 	return func(o *RequestOptions) {
 		o.APIKey = &id
 	}
 }
 
-// WithHeader sets a Header for an Option.
-func WithHeader(key, value string) RequestOption {
+// Header sets a header as an option.
+func Header(key, value string) RequestOption {
 	return func(o *RequestOptions) {
 		if o.Headers == nil {
 			o.Headers = make(http.Header)
@@ -38,8 +38,8 @@ func WithHeader(key, value string) RequestOption {
 	}
 }
 
-// WithHeader sets a Header for an Option.
-func WithQueryParam(key, value string) RequestOption {
+// QueryParam sets a query param as an option.
+func QueryParam(key, value string) RequestOption {
 	return func(o *RequestOptions) {
 		if o.QueryParams == nil {
 			o.QueryParams = make(url.Values)

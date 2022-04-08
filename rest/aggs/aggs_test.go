@@ -88,7 +88,7 @@ func TestGetAggsWithQueryParam(t *testing.T) {
 		Adjusted:   models.Ptr(true),
 		Sort:       models.Ptr(models.Desc),
 		Limit:      models.Ptr(1),
-	}, models.WithQueryParam("explain", "false"))
+	}, models.QueryParam("explain", "false"))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")

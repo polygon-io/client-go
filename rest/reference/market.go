@@ -11,7 +11,7 @@ import (
 // For more details see https://polygon.io/docs/stocks/get_v1_marketstatus_upcoming.
 func (c *Client) GetMarketHolidays(ctx context.Context, options ...models.RequestOption) (*models.GetMarketHolidaysResponse, error) {
 	res := &models.GetMarketHolidaysResponse{}
-	err := c.Call(ctx, http.MethodGet, models.GetMarketHolidaysPath, nil, res, options...)
+	err := c.CallURL(ctx, http.MethodGet, models.GetMarketHolidaysPath, res, options...)
 	return res, err
 }
 
@@ -19,6 +19,6 @@ func (c *Client) GetMarketHolidays(ctx context.Context, options ...models.Reques
 // For more details see https://polygon.io/docs/stocks/get_v1_marketstatus_now.
 func (c *Client) GetMarketStatus(ctx context.Context, options ...models.RequestOption) (*models.GetMarketStatusResponse, error) {
 	res := &models.GetMarketStatusResponse{}
-	err := c.Call(ctx, http.MethodGet, models.GetMarketStatusPath, nil, res, options...)
+	err := c.CallURL(ctx, http.MethodGet, models.GetMarketStatusPath, res, options...)
 	return res, err
 }

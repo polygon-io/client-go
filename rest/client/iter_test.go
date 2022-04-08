@@ -49,15 +49,15 @@ type ListResourceParams struct {
 }
 
 func (c *Client) ListResource(ctx context.Context, params ListResourceParams, options ...models.RequestOption) (*ListResourceIter, error) {
-	url, err := c.EncodeParams(listResourcePath, params)
+	uri, err := c.EncodeParams(listResourcePath, params)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
 
 	return &ListResourceIter{
-		Iter: client.NewIter(ctx, url, func(url string) (models.ListResponse, []interface{}, error) {
+		Iter: client.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
 			res := &ListResourceResponse{}
-			err := c.Call(ctx, http.MethodGet, url, nil, res, options...)
+			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
 			results := make([]interface{}, len(res.Results))
 			for i, v := range res.Results {

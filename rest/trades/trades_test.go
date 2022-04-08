@@ -67,7 +67,7 @@ func TestListTrades(t *testing.T) {
 		TimestampGTE: models.Ptr(models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))),
 		Order:        models.Ptr(models.Asc),
 		Limit:        models.Ptr(2),
-	}, models.WithQueryParam("sort", string(models.Timestamp)))
+	}, models.QueryParam("sort", string(models.Timestamp)))
 
 	// iter creation
 	assert.Nil(t, err)
