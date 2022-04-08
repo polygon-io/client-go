@@ -1,4 +1,4 @@
-// Package polygon REST and WebSocket clients for the Polygon API.
+// Package polygon defines REST and WebSocket clients for the Polygon API.
 package polygon
 
 import (
