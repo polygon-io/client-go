@@ -2,6 +2,7 @@ package reference
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/models"
@@ -38,7 +39,7 @@ func (it *ListSplitsIter) Split() models.Split {
 func (c *Client) ListSplits(ctx context.Context, params *models.ListSplitsParams, options ...models.RequestOption) (*ListSplitsIter, error) {
 	uri, err := c.EncodeParams(models.ListSplitsPath, params)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
 
 	return &ListSplitsIter{

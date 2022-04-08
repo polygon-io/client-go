@@ -2,6 +2,7 @@ package reference
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/models"
@@ -38,7 +39,7 @@ func (it *ListConditionsIter) Condition() models.Condition {
 func (c *Client) ListConditions(ctx context.Context, params *models.ListConditionsParams, options ...models.RequestOption) (*ListConditionsIter, error) {
 	uri, err := c.EncodeParams(models.ListConditionsPath, params)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
 
 	return &ListConditionsIter{

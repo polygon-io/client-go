@@ -2,6 +2,7 @@ package trades
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/client"
@@ -44,7 +45,7 @@ func (it *ListTradesIter) Trade() models.Trade {
 func (c *Client) ListTrades(ctx context.Context, params *models.ListTradesParams, options ...models.RequestOption) (*ListTradesIter, error) {
 	uri, err := c.EncodeParams(models.ListTradesPath, params)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
 
 	return &ListTradesIter{

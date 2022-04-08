@@ -2,6 +2,7 @@ package reference
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/models"
@@ -38,7 +39,7 @@ func (it *ListTickersIter) Ticker() models.Ticker {
 func (c *Client) ListTickers(ctx context.Context, params *models.ListTickersParams, options ...models.RequestOption) (*ListTickersIter, error) {
 	uri, err := c.EncodeParams(models.ListTickersPath, params)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create iterator: %w", err)
 	}
 
 	return &ListTickersIter{
