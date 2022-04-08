@@ -94,9 +94,9 @@ const (
 type DataType string
 
 const (
-	DataTypeTrade DataType = "trade"
-	DataTypeBBO   DataType = "bbo"
-	DataTypeNBBO  DataType = "nbbo"
+	DataTrade DataType = "trade"
+	DataBBO   DataType = "bbo"
+	DataNBBO  DataType = "nbbo"
 )
 
 // SIP is the type of Securies Information Processor.
