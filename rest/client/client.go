@@ -3,14 +3,11 @@ package client
 import (
 	"context"
 	"fmt"
-	"net/url"
-	"strings"
 	"time"
 
-	"github.com/go-playground/form/v4"
-	"github.com/go-playground/validator/v10"
 	"github.com/go-resty/resty/v2"
 
+	"github.com/polygon-io/client-go/rest/encoder"
 	"github.com/polygon-io/client-go/rest/models"
 )
 
@@ -21,10 +18,8 @@ const (
 
 // Client defines an HTTP client for the Polygon REST API.
 type Client struct {
-	HTTP         *resty.Client
-	validate     *validator.Validate
-	pathEncoder  *form.Encoder
-	queryEncoder *form.Encoder
+	HTTP    *resty.Client
+	encoder *encoder.Encoder
 }
 
 // New returns a new client with the specified API key and default settings.
@@ -35,51 +30,15 @@ func New(apiKey string) Client {
 	c.SetRetryCount(DefaultRetryCount)
 	c.SetTimeout(10 * time.Second)
 
-	v := validator.New()
-
-	pe := form.NewEncoder()
-	pe.SetMode(form.ModeExplicit)
-	pe.SetTagName("path")
-	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(time.Time(x.(models.Time)).Format("2006-01-02T15:04:05.000Z"))}, nil
-	}, models.Time{})
-	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(time.Time(x.(models.Date)).Format("2006-01-02"))}, nil
-	}, models.Date{})
-	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(time.Time(x.(models.Millis)).UnixMilli())}, nil
-	}, models.Millis{})
-	pe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(time.Time(x.(models.Nanos)).UnixNano())}, nil
-	}, models.Nanos{})
-
-	qe := form.NewEncoder()
-	qe.SetMode(form.ModeExplicit)
-	qe.SetTagName("query")
-	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(time.Time(x.(models.Time)).Format("2006-01-02T15:04:05.000Z"))}, nil
-	}, models.Time{})
-	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(time.Time(x.(models.Date)).Format("2006-01-02"))}, nil
-	}, models.Date{})
-	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(time.Time(x.(models.Millis)).UnixMilli())}, nil
-	}, models.Millis{})
-	qe.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
-		return []string{fmt.Sprint(time.Time(x.(models.Nanos)).UnixNano())}, nil
-	}, models.Nanos{})
-
 	return Client{
-		HTTP:         c,
-		validate:     v,
-		pathEncoder:  pe,
-		queryEncoder: qe,
+		HTTP:    c,
+		encoder: encoder.New(),
 	}
 }
 
 // Call makes an API call based on the request params and options. The response is automatically unmarshaled.
 func (c *Client) Call(ctx context.Context, method, path string, params, response interface{}, opts ...models.RequestOption) error {
-	uri, err := c.EncodeParams(path, params)
+	uri, err := c.encoder.EncodeParams(path, params)
 	if err != nil {
 		return err
 	}
@@ -108,60 +67,6 @@ func (c *Client) CallURL(ctx context.Context, method, uri string, response inter
 	}
 
 	return nil
-}
-
-// EncodeParams encodes path and query params and returns a valid request URI.
-func (c *Client) EncodeParams(path string, params interface{}) (string, error) {
-	if err := c.validateParams(params); err != nil {
-		return "", err
-	}
-
-	uri, err := c.encodePath(path, params)
-	if err != nil {
-		return "", err
-	}
-
-	query, err := c.encodeQuery(params)
-	if err != nil {
-		return "", err
-	} else if query != "" {
-		uri += "?" + query
-	}
-
-	return uri, nil
-}
-
-func (c *Client) validateParams(params interface{}) error {
-	if err := c.validate.Struct(params); err != nil {
-		return fmt.Errorf("invalid request params: %w", err)
-	}
-	return nil
-}
-
-func (c *Client) encodePath(uri string, params interface{}) (string, error) {
-	val, err := c.pathEncoder.Encode(&params)
-	if err != nil {
-		return "", fmt.Errorf("error encoding path params: %w", err)
-	}
-
-	pathParams := map[string]string{}
-	for k, v := range val {
-		pathParams[k] = v[0] // only accept the first one for a given key
-	}
-
-	for k, v := range pathParams {
-		uri = strings.ReplaceAll(uri, fmt.Sprintf("{%s}", k), url.PathEscape(v))
-	}
-
-	return uri, nil
-}
-
-func (c *Client) encodeQuery(params interface{}) (string, error) {
-	query, err := c.queryEncoder.Encode(&params)
-	if err != nil {
-		return "", fmt.Errorf("error encoding query params: %w", err)
-	}
-	return query.Encode(), nil
 }
 
 func mergeOptions(opts ...models.RequestOption) *models.RequestOptions {

@@ -4,12 +4,13 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/polygon-io/client-go/rest/iter"
 	"github.com/polygon-io/client-go/rest/models"
 )
 
 // ListConditionsIter is an iterator for the ListConditions method.
 type ListConditionsIter struct {
-	models.Iter
+	iter.Iter
 }
 
 // Condition returns the current result that the iterator points to.
@@ -32,13 +33,8 @@ func (it *ListConditionsIter) Condition() models.Condition {
 //       return err
 //   }
 func (c *Client) ListConditions(ctx context.Context, params *models.ListConditionsParams, options ...models.RequestOption) *ListConditionsIter {
-	uri, err := c.EncodeParams(models.ListConditionsPath, params)
-	if err != nil {
-		return &ListConditionsIter{Iter: models.NewIterErr(ctx, err)}
-	}
-
 	return &ListConditionsIter{
-		Iter: models.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
+		Iter: iter.NewIter(ctx, models.ListConditionsPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
 			res := &models.ListConditionsResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
