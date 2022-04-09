@@ -20,7 +20,7 @@ To get started, you'll need to import two main packages.
 ```golang
 import (
 	polygon "github.com/polygon-io/client-go"
-	"github.com/polygon-io/client-go/models"
+	"github.com/polygon-io/client-go/rest/models"
 )
 ```
 
