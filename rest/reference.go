@@ -10,20 +10,20 @@ import (
 )
 
 const (
-	listTickersPath      = "/v3/reference/tickers"
-	getTickerDetailsPath = "/v3/reference/tickers/{ticker}"
-	getTickerTypesPath   = "/v3/reference/tickers/types"
+	ListTickersPath      = "/v3/reference/tickers"
+	GetTickerDetailsPath = "/v3/reference/tickers/{ticker}"
+	GetTickerTypesPath   = "/v3/reference/tickers/types"
 
-	getMarketHolidaysPath = "/v1/marketstatus/upcoming"
-	getMarketStatusPath   = "/v1/marketstatus/now"
+	GetMarketHolidaysPath = "/v1/marketstatus/upcoming"
+	GetMarketStatusPath   = "/v1/marketstatus/now"
 
-	listSplitsPath = "/v3/reference/splits"
+	ListSplitsPath = "/v3/reference/splits"
 
-	listDividendsPath = "/v3/reference/dividends"
+	ListDividendsPath = "/v3/reference/dividends"
 
-	listConditionsPath = "/v3/reference/conditions"
+	ListConditionsPath = "/v3/reference/conditions"
 
-	getExchangesPath = "/v3/reference/exchanges"
+	GetExchangesPath = "/v3/reference/exchanges"
 )
 
 // ReferenceClient defines a REST client for the Polygon reference API.
@@ -57,7 +57,7 @@ func (it *ListTickersIter) Ticker() models.Ticker {
 //   }
 func (c *ReferenceClient) ListTickers(ctx context.Context, params *models.ListTickersParams, options ...models.RequestOption) *ListTickersIter {
 	return &ListTickersIter{
-		Iter: iter.NewIter(ctx, listTickersPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
+		Iter: iter.NewIter(ctx, ListTickersPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
 			res := &models.ListTickersResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
@@ -75,7 +75,7 @@ func (c *ReferenceClient) ListTickers(ctx context.Context, params *models.ListTi
 // For more details see https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker.
 func (c *ReferenceClient) GetTickerDetails(ctx context.Context, params *models.GetTickerDetailsParams, options ...models.RequestOption) (*models.GetTickerDetailsResponse, error) {
 	res := &models.GetTickerDetailsResponse{}
-	err := c.Call(ctx, http.MethodGet, getTickerDetailsPath, params, res, options...)
+	err := c.Call(ctx, http.MethodGet, GetTickerDetailsPath, params, res, options...)
 	return res, err
 }
 
@@ -83,7 +83,7 @@ func (c *ReferenceClient) GetTickerDetails(ctx context.Context, params *models.G
 // For more details see https://polygon.io/docs/stocks/get_v3_reference_tickers_types.
 func (c *ReferenceClient) GetTickerTypes(ctx context.Context, params *models.GetTickerTypesParams, options ...models.RequestOption) (*models.GetTickerTypesResponse, error) {
 	res := &models.GetTickerTypesResponse{}
-	err := c.Call(ctx, http.MethodGet, getTickerTypesPath, params, res, options...)
+	err := c.Call(ctx, http.MethodGet, GetTickerTypesPath, params, res, options...)
 	return res, err
 }
 
@@ -91,7 +91,7 @@ func (c *ReferenceClient) GetTickerTypes(ctx context.Context, params *models.Get
 // For more details see https://polygon.io/docs/stocks/get_v1_marketstatus_upcoming.
 func (c *ReferenceClient) GetMarketHolidays(ctx context.Context, options ...models.RequestOption) (*models.GetMarketHolidaysResponse, error) {
 	res := &models.GetMarketHolidaysResponse{}
-	err := c.CallURL(ctx, http.MethodGet, getMarketHolidaysPath, res, options...)
+	err := c.CallURL(ctx, http.MethodGet, GetMarketHolidaysPath, res, options...)
 	return res, err
 }
 
@@ -99,7 +99,7 @@ func (c *ReferenceClient) GetMarketHolidays(ctx context.Context, options ...mode
 // For more details see https://polygon.io/docs/stocks/get_v1_marketstatus_now.
 func (c *ReferenceClient) GetMarketStatus(ctx context.Context, options ...models.RequestOption) (*models.GetMarketStatusResponse, error) {
 	res := &models.GetMarketStatusResponse{}
-	err := c.CallURL(ctx, http.MethodGet, getMarketStatusPath, res, options...)
+	err := c.CallURL(ctx, http.MethodGet, GetMarketStatusPath, res, options...)
 	return res, err
 }
 
@@ -129,7 +129,7 @@ func (it *ListSplitsIter) Split() models.Split {
 //   }
 func (c *ReferenceClient) ListSplits(ctx context.Context, params *models.ListSplitsParams, options ...models.RequestOption) *ListSplitsIter {
 	return &ListSplitsIter{
-		Iter: iter.NewIter(ctx, listSplitsPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
+		Iter: iter.NewIter(ctx, ListSplitsPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
 			res := &models.ListSplitsResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
@@ -169,7 +169,7 @@ func (it *ListDividendsIter) Dividend() models.Dividend {
 //   }
 func (c *ReferenceClient) ListDividends(ctx context.Context, params *models.ListDividendsParams, options ...models.RequestOption) *ListDividendsIter {
 	return &ListDividendsIter{
-		Iter: iter.NewIter(ctx, listDividendsPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
+		Iter: iter.NewIter(ctx, ListDividendsPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
 			res := &models.ListDividendsResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
@@ -209,7 +209,7 @@ func (it *ListConditionsIter) Condition() models.Condition {
 //   }
 func (c *ReferenceClient) ListConditions(ctx context.Context, params *models.ListConditionsParams, options ...models.RequestOption) *ListConditionsIter {
 	return &ListConditionsIter{
-		Iter: iter.NewIter(ctx, listConditionsPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
+		Iter: iter.NewIter(ctx, ListConditionsPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
 			res := &models.ListConditionsResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
@@ -226,6 +226,6 @@ func (c *ReferenceClient) ListConditions(ctx context.Context, params *models.Lis
 // GetExchanges lists all exchanges that Polygon knows about.
 func (c *ReferenceClient) GetExchanges(ctx context.Context, params *models.GetExchangesParams, options ...models.RequestOption) (*models.GetExchangesResponse, error) {
 	res := &models.GetExchangesResponse{}
-	err := c.Call(ctx, http.MethodGet, getExchangesPath, params, res, options...)
+	err := c.Call(ctx, http.MethodGet, GetExchangesPath, params, res, options...)
 	return res, err
 }
