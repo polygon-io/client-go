@@ -1,14 +1,15 @@
-package aggs_test
+package polygon_test
 
 import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go"
+	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
@@ -48,7 +49,7 @@ const (
 )
 
 func TestGetAggs(t *testing.T) {
-	c := polygon.NewClient("API_KEY")
+	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -69,7 +70,7 @@ func TestGetAggs(t *testing.T) {
 }
 
 func TestGetAggsWithQueryParam(t *testing.T) {
-	c := polygon.NewClient("API_KEY")
+	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -90,7 +91,7 @@ func TestGetAggsWithQueryParam(t *testing.T) {
 }
 
 func TestGetGroupedDailyAggs(t *testing.T) {
-	c := polygon.NewClient("API_KEY")
+	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -151,7 +152,7 @@ func TestGetGroupedDailyAggs(t *testing.T) {
 }
 
 func TestGetDailyOpenCloseAgg(t *testing.T) {
-	c := polygon.NewClient("API_KEY")
+	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -182,7 +183,7 @@ func TestGetDailyOpenCloseAgg(t *testing.T) {
 }
 
 func TestGetPreviousCloseAgg(t *testing.T) {
-	c := polygon.NewClient("API_KEY")
+	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -227,4 +228,15 @@ func registerResponder(url, body string) {
 			return resp, nil
 		},
 	)
+}
+
+func indent(first bool, data, indent string) string {
+	lines := strings.Split(data, "\n")
+	for i := range lines {
+		if i == 0 && !first {
+			continue
+		}
+		lines[i] = indent + lines[i]
+	}
+	return strings.Join(lines, "\n")
 }
