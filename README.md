@@ -36,8 +36,8 @@ After creating the client, making calls to the Polygon API is simple.
 
 ```golang
 params := models.GetAllTickersSnapshotParams{
-    Locale:     "us",
-    MarketType: "stocks",
+    Locale:     models.US,
+    MarketType: models.Stocks,
 }.WithTickers("AAPL,MSFT")
 
 res, err := c.Snapshot.GetAllTickersSnapshot(context.Background(), params)
@@ -57,10 +57,6 @@ params := models.ListTradesParams{Ticker: "AAPL"}.
     WithOrder(models.Asc)
 
 iter, err := c.Trades.ListTrades(context.Background(), params)
-if err != nil {
-    log.Fatal(err)
-}
-
 for iter.Next() { // iter.Next() advances the iterator to the next value in the list
     log.Print(iter.Trade()) // do something with the current value
 }

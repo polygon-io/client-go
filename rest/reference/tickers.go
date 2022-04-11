@@ -4,12 +4,13 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/polygon-io/client-go/rest/iter"
 	"github.com/polygon-io/client-go/rest/models"
 )
 
 // ListTickersIter is an iterator for the ListTickers method.
 type ListTickersIter struct {
-	models.Iter
+	iter.Iter
 }
 
 // Ticker returns the current result that the iterator points to.
@@ -32,13 +33,8 @@ func (it *ListTickersIter) Ticker() models.Ticker {
 //       return err
 //   }
 func (c *Client) ListTickers(ctx context.Context, params *models.ListTickersParams, options ...models.RequestOption) *ListTickersIter {
-	uri, err := c.EncodeParams(models.ListTickersPath, params)
-	if err != nil {
-		return &ListTickersIter{Iter: models.NewIterErr(ctx, err)}
-	}
-
 	return &ListTickersIter{
-		Iter: models.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
+		Iter: iter.NewIter(ctx, models.ListTickersPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
 			res := &models.ListTickersResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 

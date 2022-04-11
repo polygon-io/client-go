@@ -1,4 +1,4 @@
-package models_test
+package iter_test
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/polygon-io/client-go/rest/client"
+	"github.com/polygon-io/client-go/rest/iter"
 	"github.com/polygon-io/client-go/rest/models"
 )
 
@@ -22,7 +23,7 @@ type Client struct {
 }
 
 type ListResourceIter struct {
-	models.Iter
+	iter.Iter
 }
 
 func (it *ListResourceIter) Resource() Resource {
@@ -48,13 +49,8 @@ type ListResourceParams struct {
 }
 
 func (c *Client) ListResource(ctx context.Context, params *ListResourceParams, options ...models.RequestOption) *ListResourceIter {
-	uri, err := c.EncodeParams(listResourcePath, params)
-	if err != nil {
-		return &ListResourceIter{Iter: models.NewIterErr(ctx, err)}
-	}
-
 	return &ListResourceIter{
-		Iter: models.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
+		Iter: iter.NewIter(ctx, listResourcePath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
 			res := &ListResourceResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 

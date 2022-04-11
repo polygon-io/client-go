@@ -2,12 +2,6 @@ package models
 
 import "fmt"
 
-// ListResponse defines an interface that list API responses must implement.
-type ListResponse interface {
-	// NextPageURL returns a URL for retrieving the next page of list results.
-	NextPageURL() string
-}
-
 // BaseResponse has all possible attributes that any response can use. It's intended to be embedded in a
 // domain specific response struct.
 type BaseResponse struct {
@@ -26,7 +20,7 @@ type PaginationHooks struct {
 	NextURL string `json:"next_url,omitempty"`
 }
 
-func (p PaginationHooks) NextPageURL() string {
+func (p PaginationHooks) NextPage() string {
 	return p.NextURL
 }
 

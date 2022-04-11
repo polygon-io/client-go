@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/client"
+	"github.com/polygon-io/client-go/rest/iter"
 	"github.com/polygon-io/client-go/rest/models"
 )
 
@@ -15,7 +16,7 @@ type Client struct {
 
 // ListTradesIter is an iterator for the ListTickers method.
 type ListTradesIter struct {
-	models.Iter
+	iter.Iter
 }
 
 // Trade returns the current result that the iterator points to.
@@ -38,13 +39,8 @@ func (it *ListTradesIter) Trade() models.Trade {
 //       return err
 //   }
 func (c *Client) ListTrades(ctx context.Context, params *models.ListTradesParams, options ...models.RequestOption) *ListTradesIter {
-	uri, err := c.EncodeParams(models.ListTradesPath, params)
-	if err != nil {
-		return &ListTradesIter{Iter: models.NewIterErr(ctx, err)}
-	}
-
 	return &ListTradesIter{
-		Iter: models.NewIter(ctx, uri, func(uri string) (models.ListResponse, []interface{}, error) {
+		Iter: iter.NewIter(ctx, models.ListTradesPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
 			res := &models.ListTradesResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
