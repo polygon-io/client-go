@@ -1,10 +1,5 @@
 package models
 
-const (
-	GetMarketHolidaysPath = "/v1/marketstatus/upcoming"
-	GetMarketStatusPath   = "/v1/marketstatus/now"
-)
-
 // GetMarketHolidaysResponse is the response returned by the GetMarketHolidays method.
 type GetMarketHolidaysResponse []MarketHoliday
 

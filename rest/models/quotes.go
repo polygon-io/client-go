@@ -1,11 +1,5 @@
 package models
 
-const (
-	ListQuotesPath        = "/v3/quotes/{ticker}"
-	GetLastQuotePath      = "/v2/last/nbbo/{ticker}"
-	GetLastForexQuotePath = "/v1/last_quote/currencies/{from}/{to}"
-)
-
 // ListQuotesParams is the set of parameters for the ListQuotes method.
 type ListQuotesParams struct {
 	Ticker string `validate:"required" path:"ticker"`

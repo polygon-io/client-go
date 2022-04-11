@@ -56,7 +56,7 @@ params := models.ListTradesParams{Ticker: "AAPL"}.
     WithTimestamp(models.GTE, models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
     WithOrder(models.Asc)
 
-iter, err := c.Trades.ListTrades(context.Background(), params)
+iter := c.Trades.ListTrades(context.Background(), params)
 for iter.Next() { // iter.Next() advances the iterator to the next value in the list
     log.Print(iter.Trade()) // do something with the current value
 }

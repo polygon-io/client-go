@@ -9,6 +9,12 @@ import (
 	"github.com/polygon-io/client-go/rest/models"
 )
 
+const (
+	ListQuotesPath        = "/v3/quotes/{ticker}"
+	GetLastQuotePath      = "/v2/last/nbbo/{ticker}"
+	GetLastForexQuotePath = "/v1/last_quote/currencies/{from}/{to}"
+)
+
 // QuotesClient defines a REST client for the Polygon quotes API.
 type QuotesClient struct {
 	client.Client
@@ -40,7 +46,7 @@ func (it *ListQuotesIter) Quote() models.Quote {
 //   }
 func (c *QuotesClient) ListQuotes(ctx context.Context, params *models.ListQuotesParams, options ...models.RequestOption) *ListQuotesIter {
 	return &ListQuotesIter{
-		Iter: iter.NewIter(ctx, models.ListQuotesPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
+		Iter: iter.NewIter(ctx, ListQuotesPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
 			res := &models.ListQuotesResponse{}
 			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 
@@ -58,7 +64,7 @@ func (c *QuotesClient) ListQuotes(ctx context.Context, params *models.ListQuotes
 // For more details see https://polygon.io/docs/stocks/get_v2_last_nbbo__stocksticker.
 func (c *QuotesClient) GetLastQuote(ctx context.Context, params *models.GetLastQuoteParams, options ...models.RequestOption) (*models.GetLastQuoteResponse, error) {
 	res := &models.GetLastQuoteResponse{}
-	err := c.Call(ctx, http.MethodGet, models.GetLastQuotePath, params, res, options...)
+	err := c.Call(ctx, http.MethodGet, GetLastQuotePath, params, res, options...)
 	return res, err
 }
 
@@ -66,6 +72,6 @@ func (c *QuotesClient) GetLastQuote(ctx context.Context, params *models.GetLastQ
 // For more details see https://polygon.io/docs/forex/get_v1_last_quote_currencies__from___to.
 func (c *QuotesClient) GetLastForexQuote(ctx context.Context, params *models.GetLastForexQuoteParams, options ...models.RequestOption) (*models.GetLastForexQuoteResponse, error) {
 	res := &models.GetLastForexQuoteResponse{}
-	err := c.Call(ctx, http.MethodGet, models.GetLastForexQuotePath, params, res, options...)
+	err := c.Call(ctx, http.MethodGet, GetLastForexQuotePath, params, res, options...)
 	return res, err
 }

@@ -1,13 +1,5 @@
 package models
 
-const (
-	GetAllTickersSnapshotPath     = "/v2/snapshot/locale/{locale}/markets/{marketType}/tickers"
-	GetTickerSnapshotPath         = "/v2/snapshot/locale/{locale}/markets/{marketType}/tickers/{ticker}"
-	GetGainersLosersSnapshotPath  = "/v2/snapshot/locale/{locale}/markets/{marketType}/{direction}"
-	GetOptionContractSnapshotPath = "/v3/snapshot/options/{underlyingAsset}/{optionContract}"
-	GetCryptoFullBookSnapshotPath = "/v2/snapshot/locale/global/markets/crypto/tickers/{ticker}/book"
-)
-
 // GetAllTickersSnapshotParams is the set of parameters for the GetAllTickersSnapshot method.
 type GetAllTickersSnapshotParams struct {
 	Locale     MarketLocale `validate:"required" path:"locale"`
