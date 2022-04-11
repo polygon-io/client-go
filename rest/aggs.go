@@ -8,6 +8,13 @@ import (
 	"github.com/polygon-io/client-go/rest/models"
 )
 
+const (
+	getAggsPath              = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
+	getGroupedDailyAggsPath  = "/v2/aggs/grouped/locale/{locale}/market/{marketType}/{date}"
+	getDailyOpenCloseAggPath = "/v1/open-close/{ticker}/{date}"
+	getPreviousCloseAggPath  = "/v2/aggs/ticker/{ticker}/prev"
+)
+
 // AggsClient defines a REST client for the Polygon aggs API.
 type AggsClient struct {
 	client.Client
@@ -18,7 +25,7 @@ type AggsClient struct {
 // For more details see https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to.
 func (ac *AggsClient) GetAggs(ctx context.Context, params *models.GetAggsParams, opts ...models.RequestOption) (*models.GetAggsResponse, error) {
 	res := &models.GetAggsResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetAggsPath, params, res, opts...)
+	err := ac.Call(ctx, http.MethodGet, getAggsPath, params, res, opts...)
 	return res, err
 }
 
@@ -26,7 +33,7 @@ func (ac *AggsClient) GetAggs(ctx context.Context, params *models.GetAggsParams,
 // For more details see https://polygon.io/docs/stocks/get_v2_aggs_grouped_locale_us_market_stocks__date.
 func (ac *AggsClient) GetGroupedDailyAggs(ctx context.Context, params *models.GetGroupedDailyAggsParams, opts ...models.RequestOption) (*models.GetGroupedDailyAggsResponse, error) {
 	res := &models.GetGroupedDailyAggsResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetGroupedDailyAggsPath, params, res, opts...)
+	err := ac.Call(ctx, http.MethodGet, getGroupedDailyAggsPath, params, res, opts...)
 	return res, err
 }
 
@@ -34,7 +41,7 @@ func (ac *AggsClient) GetGroupedDailyAggs(ctx context.Context, params *models.Ge
 // For more details see https://polygon.io/docs/stocks/get_v1_open-close__stocksticker___date.
 func (ac *AggsClient) GetDailyOpenCloseAgg(ctx context.Context, params *models.GetDailyOpenCloseAggParams, opts ...models.RequestOption) (*models.GetDailyOpenCloseAggResponse, error) {
 	res := &models.GetDailyOpenCloseAggResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetDailyOpenCloseAggPath, params, res, opts...)
+	err := ac.Call(ctx, http.MethodGet, getDailyOpenCloseAggPath, params, res, opts...)
 	return res, err
 }
 
@@ -42,6 +49,6 @@ func (ac *AggsClient) GetDailyOpenCloseAgg(ctx context.Context, params *models.G
 // For more details see https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__prev.
 func (ac *AggsClient) GetPreviousCloseAgg(ctx context.Context, params *models.GetPreviousCloseAggParams, opts ...models.RequestOption) (*models.GetPreviousCloseAggResponse, error) {
 	res := &models.GetPreviousCloseAggResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetPreviousCloseAggPath, params, res, opts...)
+	err := ac.Call(ctx, http.MethodGet, getPreviousCloseAggPath, params, res, opts...)
 	return res, err
 }

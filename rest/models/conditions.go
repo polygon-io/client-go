@@ -1,7 +1,5 @@
 package models
 
-const ListConditionsPath = "/v3/reference/conditions"
-
 // ListConditionsParams is the set of parameters for the ListConditions method.
 type ListConditionsParams struct {
 	AssetClass *AssetClass `query:"asset_class,omitempty"`

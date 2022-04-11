@@ -1,12 +1,5 @@
 package models
 
-const (
-	GetAggsPath              = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
-	GetGroupedDailyAggsPath  = "/v2/aggs/grouped/locale/{locale}/market/{marketType}/{date}"
-	GetDailyOpenCloseAggPath = "/v1/open-close/{ticker}/{date}"
-	GetPreviousCloseAggPath  = "/v2/aggs/ticker/{ticker}/prev"
-)
-
 // GetAggsParams is the set of parameters for the GetAggs method.
 type GetAggsParams struct {
 	Ticker     string     `validate:"required" path:"ticker"`

@@ -2,12 +2,6 @@ package models
 
 import "time"
 
-const (
-	ListTickersPath      = "/v3/reference/tickers"
-	GetTickerDetailsPath = "/v3/reference/tickers/{ticker}"
-	GetTickerTypesPath   = "/v3/reference/tickers/types"
-)
-
 // ListTickersParams is the set of parameters for the ListTickers method.
 type ListTickersParams struct {
 	TickerEQ  *string `query:"ticker"`

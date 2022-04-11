@@ -8,6 +8,14 @@ import (
 	"github.com/polygon-io/client-go/rest/models"
 )
 
+const (
+	getAllTickersSnapshotPath     = "/v2/snapshot/locale/{locale}/markets/{marketType}/tickers"
+	getTickerSnapshotPath         = "/v2/snapshot/locale/{locale}/markets/{marketType}/tickers/{ticker}"
+	getGainersLosersSnapshotPath  = "/v2/snapshot/locale/{locale}/markets/{marketType}/{direction}"
+	getOptionContractSnapshotPath = "/v3/snapshot/options/{underlyingAsset}/{optionContract}"
+	getCryptoFullBookSnapshotPath = "/v2/snapshot/locale/global/markets/crypto/tickers/{ticker}/book"
+)
+
 // SnapshotClient defines a REST client for the Polygon snapshot API.
 type SnapshotClient struct {
 	client.Client
@@ -17,7 +25,7 @@ type SnapshotClient struct {
 // For more details see https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks_tickers.
 func (ac *SnapshotClient) GetAllTickersSnapshot(ctx context.Context, params *models.GetAllTickersSnapshotParams, opts ...models.RequestOption) (*models.GetAllTickersSnapshotResponse, error) {
 	res := &models.GetAllTickersSnapshotResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetAllTickersSnapshotPath, params, res, opts...)
+	err := ac.Call(ctx, http.MethodGet, getAllTickersSnapshotPath, params, res, opts...)
 	return res, err
 }
 
@@ -25,7 +33,7 @@ func (ac *SnapshotClient) GetAllTickersSnapshot(ctx context.Context, params *mod
 // For more details see https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks_tickers__stocksticker.
 func (ac *SnapshotClient) GetTickerSnapshot(ctx context.Context, params *models.GetTickerSnapshotParams, opts ...models.RequestOption) (*models.GetTickerSnapshotResponse, error) {
 	res := &models.GetTickerSnapshotResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetTickerSnapshotPath, params, res, opts...)
+	err := ac.Call(ctx, http.MethodGet, getTickerSnapshotPath, params, res, opts...)
 	return res, err
 }
 
@@ -33,7 +41,7 @@ func (ac *SnapshotClient) GetTickerSnapshot(ctx context.Context, params *models.
 // For more details see https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks__direction.
 func (ac *SnapshotClient) GetGainersLosersSnapshot(ctx context.Context, params *models.GetGainersLosersSnapshotParams, opts ...models.RequestOption) (*models.GetGainersLosersSnapshotResponse, error) {
 	res := &models.GetGainersLosersSnapshotResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetGainersLosersSnapshotPath, params, res, opts...)
+	err := ac.Call(ctx, http.MethodGet, getGainersLosersSnapshotPath, params, res, opts...)
 	return res, err
 }
 
@@ -41,7 +49,7 @@ func (ac *SnapshotClient) GetGainersLosersSnapshot(ctx context.Context, params *
 // For more details see https://polygon.io/docs/options/get_v3_snapshot_options__underlyingasset___optioncontract.
 func (ac *SnapshotClient) GetOptionContractSnapshot(ctx context.Context, params *models.GetOptionContractSnapshotParams, opts ...models.RequestOption) (*models.GetOptionContractSnapshotResponse, error) {
 	res := &models.GetOptionContractSnapshotResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetOptionContractSnapshotPath, params, res, opts...)
+	err := ac.Call(ctx, http.MethodGet, getOptionContractSnapshotPath, params, res, opts...)
 	return res, err
 }
 
@@ -49,6 +57,6 @@ func (ac *SnapshotClient) GetOptionContractSnapshot(ctx context.Context, params 
 // For more details see https://polygon.io/docs/crypto/get_v2_snapshot_locale_global_markets_crypto_tickers__ticker__book.
 func (ac *SnapshotClient) GetCryptoFullBookSnapshot(ctx context.Context, params *models.GetCryptoFullBookSnapshotParams, opts ...models.RequestOption) (*models.GetCryptoFullBookSnapshotResponse, error) {
 	res := &models.GetCryptoFullBookSnapshotResponse{}
-	err := ac.Call(ctx, http.MethodGet, models.GetCryptoFullBookSnapshotPath, params, res, opts...)
+	err := ac.Call(ctx, http.MethodGet, getCryptoFullBookSnapshotPath, params, res, opts...)
 	return res, err
 }

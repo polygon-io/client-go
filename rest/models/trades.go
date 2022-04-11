@@ -1,11 +1,5 @@
 package models
 
-const (
-	ListTradesPath         = "/v3/trades/{ticker}"
-	GetLastTradePath       = "/v2/last/trade/{ticker}"
-	GetLastCryptoTradePath = "/v1/last/crypto/{from}/{to}"
-)
-
 // ListTradesParams is the set of parameters for the ListTrades method.
 type ListTradesParams struct {
 	Ticker string `validate:"required" path:"ticker"`

@@ -1,7 +1,5 @@
 package models
 
-const GetExchangesPath = "/v3/reference/exchanges"
-
 // GetExchangesParams is the set of parameters for the GetExchanges method.
 type GetExchangesParams struct {
 	AssetClass *AssetClass   `query:"asset_class,omitempty"`

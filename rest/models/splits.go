@@ -1,7 +1,5 @@
 package models
 
-const ListSplitsPath = "/v3/reference/splits"
-
 // ListSplitsParams is the set of parameters for the ListSplits method.
 type ListSplitsParams struct {
 	TickerEQ  *string `query:"ticker"`

@@ -1,7 +1,5 @@
 package models
 
-const ListDividendsPath = "/v3/reference/dividends"
-
 // ListDividendsParams is the set of parameters for the ListDividends method.
 type ListDividendsParams struct {
 	TickerEQ  *string `query:"ticker"`
