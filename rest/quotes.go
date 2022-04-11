@@ -1,4 +1,4 @@
-package quotes
+package polygon
 
 import (
 	"context"
@@ -9,8 +9,8 @@ import (
 	"github.com/polygon-io/client-go/rest/models"
 )
 
-// Client defines a REST client for the Polygon quotes API.
-type Client struct {
+// QuotesClient defines a REST client for the Polygon quotes API.
+type QuotesClient struct {
 	client.Client
 }
 
@@ -38,7 +38,7 @@ func (it *ListQuotesIter) Quote() models.Quote {
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *Client) ListQuotes(ctx context.Context, params *models.ListQuotesParams, options ...models.RequestOption) *ListQuotesIter {
+func (c *QuotesClient) ListQuotes(ctx context.Context, params *models.ListQuotesParams, options ...models.RequestOption) *ListQuotesIter {
 	return &ListQuotesIter{
 		Iter: iter.NewIter(ctx, models.ListQuotesPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
 			res := &models.ListQuotesResponse{}
@@ -56,7 +56,7 @@ func (c *Client) ListQuotes(ctx context.Context, params *models.ListQuotesParams
 
 // GetLastQuote retrieves the last quote (NBBO) for a specified ticker.
 // For more details see https://polygon.io/docs/stocks/get_v2_last_nbbo__stocksticker.
-func (c *Client) GetLastQuote(ctx context.Context, params *models.GetLastQuoteParams, options ...models.RequestOption) (*models.GetLastQuoteResponse, error) {
+func (c *QuotesClient) GetLastQuote(ctx context.Context, params *models.GetLastQuoteParams, options ...models.RequestOption) (*models.GetLastQuoteResponse, error) {
 	res := &models.GetLastQuoteResponse{}
 	err := c.Call(ctx, http.MethodGet, models.GetLastQuotePath, params, res, options...)
 	return res, err
@@ -64,7 +64,7 @@ func (c *Client) GetLastQuote(ctx context.Context, params *models.GetLastQuotePa
 
 // GetLastForexQuote retrieves the last quote (BBO) for a forex currency pair.
 // For more details see https://polygon.io/docs/forex/get_v1_last_quote_currencies__from___to.
-func (c *Client) GetLastForexQuote(ctx context.Context, params *models.GetLastForexQuoteParams, options ...models.RequestOption) (*models.GetLastForexQuoteResponse, error) {
+func (c *QuotesClient) GetLastForexQuote(ctx context.Context, params *models.GetLastForexQuoteParams, options ...models.RequestOption) (*models.GetLastForexQuoteResponse, error) {
 	res := &models.GetLastForexQuoteResponse{}
 	err := c.Call(ctx, http.MethodGet, models.GetLastForexQuotePath, params, res, options...)
 	return res, err

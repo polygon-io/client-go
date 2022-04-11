@@ -19,7 +19,7 @@ To get started, you'll need to import two main packages.
 
 ```golang
 import (
-	polygon "github.com/polygon-io/client-go"
+	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
 )
 ```
@@ -27,7 +27,7 @@ import (
 Next, create a new client with your [API key](https://polygon.io/dashboard/signup).
 
 ```golang
-c := polygon.NewClient("YOUR_API_KEY")
+c := polygon.New("YOUR_API_KEY")
 ```
 
 ### Using the client
@@ -92,7 +92,7 @@ For now, we're generally not accepting pull requests from outside contributors b
 
 -------------------------------------------------------------------------------
 
-[doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go
-[doc]: https://pkg.go.dev/github.com/polygon-io/client-go
+[doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go/rest
+[doc]: https://pkg.go.dev/github.com/polygon-io/client-go/rest
 [build-img]: https://github.com/polygon-io/client-go/actions/workflows/test.yml/badge.svg
 [build]: https://github.com/polygon-io/client-go/actions

@@ -1,21 +1,19 @@
-package quotes_test
+package polygon_test
 
 import (
 	"context"
 	"encoding/json"
-	"net/http"
-	"strings"
 	"testing"
 	"time"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go"
+	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListQuotes(t *testing.T) {
-	c := polygon.NewClient("API_KEY")
+	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -92,7 +90,7 @@ func TestListQuotes(t *testing.T) {
 }
 
 func TestGetLastQuote(t *testing.T) {
-	c := polygon.NewClient("API_KEY")
+	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -127,7 +125,7 @@ func TestGetLastQuote(t *testing.T) {
 }
 
 func TestGetLastForexQuote(t *testing.T) {
-	c := polygon.NewClient("API_KEY")
+	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -154,25 +152,4 @@ func TestGetLastForexQuote(t *testing.T) {
 	b, err := json.MarshalIndent(res, "", "\t")
 	assert.Nil(t, err)
 	assert.Equal(t, expectedResponse, string(b))
-}
-
-func registerResponder(url, body string) {
-	httpmock.RegisterResponder("GET", url,
-		func(req *http.Request) (*http.Response, error) {
-			resp := httpmock.NewStringResponse(200, body)
-			resp.Header.Add("Content-Type", "application/json")
-			return resp, nil
-		},
-	)
-}
-
-func indent(first bool, data, indent string) string {
-	lines := strings.Split(data, "\n")
-	for i := range lines {
-		if i == 0 && !first {
-			continue
-		}
-		lines[i] = indent + lines[i]
-	}
-	return strings.Join(lines, "\n")
 }
