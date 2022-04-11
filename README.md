@@ -52,16 +52,21 @@ log.Print(res) // do something with the result
 Our list methods return iterators that handle pagination for you.
 
 ```golang
+// create a new iterator
 params := models.ListTradesParams{Ticker: "AAPL"}.
     WithTimestamp(models.GTE, models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
     WithOrder(models.Asc)
-
 iter := c.Trades.ListTrades(context.Background(), params)
-for iter.Next() { // iter.Next() advances the iterator to the next value in the list
+
+// iter.Next() advances the iterator to the next value in the list
+for iter.Next() {
     log.Print(iter.Trade()) // do something with the current value
 }
+
+// if the loop breaks, it has either reached the end of the list or an error has occurred
+// you can check if something went wrong with iter.Err()
 if iter.Err() != nil {
-    log.Fatal(err) // the loop will break if an error occurs while iterating
+    log.Fatal(iter.Err())
 }
 ```
 
