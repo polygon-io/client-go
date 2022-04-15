@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -16,6 +17,8 @@ import (
 
 type Client struct {
 	apiKey string
+	feed   Feed
+	market Market
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -59,6 +62,8 @@ func New(config Config) (*Client, error) {
 
 	c := &Client{
 		apiKey: config.APIKey,
+		feed:   config.Feed,
+		market: config.Market,
 		ctx:    ctx,
 		cancel: cancel,
 		conn:   conn,
@@ -74,7 +79,75 @@ func New(config Config) (*Client, error) {
 	return c, nil
 }
 
-// todo: Subscribe, Unsubscribe, etc
+func supportsTopic(market Market, topic Topic) bool {
+	switch market {
+	case Stocks:
+		return topic > stocksMin && topic < stocksMax
+	case Options:
+		return topic > optionsMin && topic < optionsMax
+	case Forex:
+		return topic > forexMin && topic < forexMax
+	case Crypto:
+		return topic > cryptoMin && topic < cryptoMax
+	}
+	return false
+}
+
+// todo: maybe strip "." from tickers?
+func getParams(market Market, topic Topic, tickers ...string) (string, error) {
+	if !supportsTopic(market, topic) {
+		return "", fmt.Errorf("topic '%v' not supported for feed '%v'", topic, market)
+	}
+
+	if len(tickers) == 0 {
+		return topic.prefix() + ".*", nil
+	}
+
+	var params []string
+	for _, ticker := range tickers {
+		params = append(params, topic.prefix()+"."+ticker)
+	}
+
+	return strings.Join(params, ","), nil
+}
+
+func (c *Client) Subscribe(topic Topic, tickers ...string) error {
+	params, err := getParams(c.market, topic, tickers...)
+	if err != nil {
+		return err
+	}
+
+	subscribe, err := json.Marshal(&models.ControlMessage{
+		Action: models.Subscribe,
+		Params: params,
+	})
+	if err != nil {
+		return err
+	}
+
+	c.log.Debugf("subscribing to '%v'", params)
+	c.wQueue <- subscribe
+	return nil
+}
+
+func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
+	params, err := getParams(c.market, topic, tickers...)
+	if err != nil {
+		return err
+	}
+
+	unsubscribe, err := json.Marshal(&models.ControlMessage{
+		Action: models.Unsubscribe,
+		Params: params,
+	})
+	if err != nil {
+		return err
+	}
+
+	c.log.Debugf("unsubscribing from '%v'", params)
+	c.wQueue <- unsubscribe
+	return nil
+}
 
 func (c *Client) Close() error {
 	c.cancel()
@@ -204,7 +277,7 @@ func (c *Client) handleStatus(msg json.RawMessage) error {
 	case "connected":
 		c.log.Infof("connection successful")
 		b, err := json.Marshal(models.ControlMessage{
-			Action: "auth",
+			Action: models.Auth,
 			Params: c.apiKey,
 		})
 		if err != nil {
@@ -219,7 +292,9 @@ func (c *Client) handleStatus(msg json.RawMessage) error {
 		c.Close()
 		return nil
 	case "success":
-		c.log.Infof("subscription successful") // todo: can subscriptions fail?
+		c.log.Infof("subscription successful") // todo: improve this
+	case "error":
+		c.log.Errorf("received an error: %v", cm.Message) // todo: improve this
 	default:
 		c.log.Debugf("unknown status message '%v'", cm.Status)
 	}
