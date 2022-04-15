@@ -68,19 +68,19 @@ func TestListQuotes(t *testing.T) {
 
 	// iter creation
 	assert.Nil(t, iter.Err())
-	assert.NotNil(t, iter.Quote())
+	assert.NotNil(t, iter.Item())
 
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Quote(), "", "\t")
+	b, err := json.MarshalIndent(iter.Item(), "", "\t")
 	assert.Nil(t, err)
 	assert.Equal(t, quote1, string(b))
 
 	// second item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err = json.MarshalIndent(iter.Quote(), "", "\t")
+	b, err = json.MarshalIndent(iter.Item(), "", "\t")
 	assert.Nil(t, err)
 	assert.Equal(t, quote2, string(b))
 

@@ -14,25 +14,25 @@ type ListResponse interface {
 
 // Query defines a closure that domain specific iterators must implement. The implementation should
 // include a call to the API and should return the API response with a separate slice of the results.
-type Query func(string) (ListResponse, []interface{}, error)
+type Query[T any] func(string) (ListResponse, []T, error)
 
-// Iter defines an iterator type that is returned by list methods. It's intended to be embedded in a
-// domain specific iterator struct.
-type Iter struct {
+// Iter defines an iterator type that list methods should return. The contained type should typically
+// be a model that's returned in the results of a list method response.
+type Iter[T any] struct {
 	ctx   context.Context
-	query Query
+	query Query[T]
 
 	page    ListResponse
-	item    interface{}
-	results []interface{}
+	item    T
+	results []T
 
 	err error
 }
 
 // NewIter returns a new initialized iterator. This method automatically makes the first query to populate
 // the results. List methods should use this helper method when building domain specific iterators.
-func NewIter(ctx context.Context, path string, params interface{}, query Query) Iter {
-	it := Iter{
+func NewIter[T any](ctx context.Context, path string, params interface{}, query Query[T]) *Iter[T] {
+	it := Iter[T]{
 		ctx:   ctx,
 		query: query,
 	}
@@ -40,15 +40,15 @@ func NewIter(ctx context.Context, path string, params interface{}, query Query) 
 	uri, err := encoder.New().EncodeParams(path, params)
 	if err != nil {
 		it.err = err
-		return it
+		return &it
 	}
 
 	it.page, it.results, it.err = it.query(uri)
-	return it
+	return &it
 }
 
 // Next moves the iterator to the next result.
-func (it *Iter) Next() bool {
+func (it *Iter[T]) Next() bool {
 	if it.err != nil {
 		return false
 	}
@@ -72,11 +72,11 @@ func (it *Iter) Next() bool {
 }
 
 // Item returns the result that the iterator is currently pointing to.
-func (it *Iter) Item() interface{} {
+func (it *Iter[T]) Item() T {
 	return it.item
 }
 
 // Err returns any errors that occur during iteration.
-func (it *Iter) Err() error {
+func (it *Iter[T]) Err() error {
 	return it.err
 }

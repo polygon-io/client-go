@@ -22,17 +22,6 @@ type Client struct {
 	client.Client
 }
 
-type ListResourceIter struct {
-	iter.Iter
-}
-
-func (it *ListResourceIter) Resource() Resource {
-	if it.Item() != nil {
-		return it.Item().(Resource)
-	}
-	return Resource{}
-}
-
 type ListResourceResponse struct {
 	models.BaseResponse
 	Results []Resource `json:"results,omitempty"`
@@ -48,20 +37,12 @@ type ListResourceParams struct {
 	Timestamp *string `query:"timestamp"`
 }
 
-func (c *Client) ListResource(ctx context.Context, params *ListResourceParams, options ...models.RequestOption) *ListResourceIter {
-	return &ListResourceIter{
-		Iter: iter.NewIter(ctx, listResourcePath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
-			res := &ListResourceResponse{}
-			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
-
-			results := make([]interface{}, len(res.Results))
-			for i, v := range res.Results {
-				results[i] = v
-			}
-
-			return res, results, err
-		}),
-	}
+func (c *Client) ListResource(ctx context.Context, params *ListResourceParams, options ...models.RequestOption) *iter.Iter[Resource] {
+	return iter.NewIter(ctx, listResourcePath, params, func(uri string) (iter.ListResponse, []Resource, error) {
+		res := &ListResourceResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
 }
 
 func TestListResource(t *testing.T) {
@@ -114,19 +95,19 @@ func TestListResource(t *testing.T) {
 
 	// verify the first page
 	assert.Nil(t, iter.Err())
-	assert.NotNil(t, iter.Resource())
+	assert.NotNil(t, iter.Item())
 	// verify the first and second quotes
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, resource1, iter.Resource())
+	assert.Equal(t, resource1, iter.Item())
 
 	// verify the second page
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, resource2, iter.Resource())
+	assert.Equal(t, resource2, iter.Item())
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	assert.Equal(t, resource3, iter.Resource())
+	assert.Equal(t, resource3, iter.Item())
 
 	// verify the third page (end of list)
 	assert.False(t, iter.Next()) // this should be false since the third page has no results
@@ -164,7 +145,7 @@ func TestListResourceError(t *testing.T) {
 
 	// subsequent calls to iter.Next() should be false, item should be not nil, page should be an empty response
 	assert.False(t, iter.Next())
-	assert.NotNil(t, iter.Resource())
+	assert.NotNil(t, iter.Item())
 }
 
 func TestListResourceEncodeError(t *testing.T) {
@@ -182,7 +163,7 @@ func TestListResourceEncodeError(t *testing.T) {
 
 	// subsequent calls to iter.Next() should be false, item should be not nil, page should be an empty response
 	assert.False(t, iter.Next())
-	assert.NotNil(t, iter.Resource())
+	assert.NotNil(t, iter.Item())
 }
 
 func registerResponder(status int, url string, res ListResourceResponse) {

@@ -20,44 +20,22 @@ type TradesClient struct {
 	client.Client
 }
 
-// ListTradesIter is an iterator for the ListTickers method.
-type ListTradesIter struct {
-	iter.Iter
-}
-
-// Trade returns the current result that the iterator points to.
-func (it *ListTradesIter) Trade() models.Trade {
-	if it.Item() != nil {
-		return it.Item().(models.Trade)
-	}
-	return models.Trade{}
-}
-
 // ListTrades retrieves trades for a specified ticker.
 // For more details see https://polygon.io/docs/stocks/get_v3_trades__stockticker.
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListTrades(context.TODO(), params, opts...)
 //   for iter.Next() {
-//       // do something with the current value
-//       log.Print(iter.Trade())
+//       log.Print(iter.Item()) // do something with the current value
 //   }
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *TradesClient) ListTrades(ctx context.Context, params *models.ListTradesParams, options ...models.RequestOption) *ListTradesIter {
-	return &ListTradesIter{
-		Iter: iter.NewIter(ctx, ListTradesPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
-			res := &models.ListTradesResponse{}
-			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
-
-			results := make([]interface{}, len(res.Results))
-			for i, v := range res.Results {
-				results[i] = v
-			}
-
-			return res, results, err
-		}),
-	}
+func (c *TradesClient) ListTrades(ctx context.Context, params *models.ListTradesParams, options ...models.RequestOption) *iter.Iter[models.Trade] {
+	return iter.NewIter(ctx, ListTradesPath, params, func(uri string) (iter.ListResponse, []models.Trade, error) {
+		res := &models.ListTradesResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
 }
 
 // GetLastTrade retrieves the last trade for a specified ticker.
