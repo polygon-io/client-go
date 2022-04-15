@@ -158,7 +158,7 @@ func (c *Client) process() {
 		case <-c.ctx.Done():
 			return
 		case data := <-c.rQueue:
-			c.handle(data) // todo: this might merit a "data router" type
+			c.handle(data)
 		}
 	}
 }
@@ -171,7 +171,7 @@ func (c *Client) handle(data []byte) {
 	}
 
 	for _, msg := range msgs {
-		if err := c.route(msg); err != nil {
+		if err := c.route(msg); err != nil { // todo: this might merit a "data router" type
 			c.log.Errorf("failed to process message: %v", err)
 		}
 	}
