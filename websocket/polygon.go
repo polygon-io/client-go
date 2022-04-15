@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -92,7 +93,75 @@ func (c *Client) Connect() error {
 	return nil
 }
 
-// todo: Subscribe, Unsubscribe, etc
+func supportsTopic(market Market, topic Topic) bool {
+	switch market {
+	case Stocks:
+		return topic > stocksMin && topic < stocksMax
+	case Options:
+		return topic > optionsMin && topic < optionsMax
+	case Forex:
+		return topic > forexMin && topic < forexMax
+	case Crypto:
+		return topic > cryptoMin && topic < cryptoMax
+	}
+	return false
+}
+
+// todo: maybe strip "." from tickers?
+func getParams(market Market, topic Topic, tickers ...string) (string, error) {
+	if !supportsTopic(market, topic) {
+		return "", fmt.Errorf("topic '%v' not supported for feed '%v'", topic, market)
+	}
+
+	if len(tickers) == 0 {
+		return topic.prefix() + ".*", nil
+	}
+
+	var params []string
+	for _, ticker := range tickers {
+		params = append(params, topic.prefix()+"."+ticker)
+	}
+
+	return strings.Join(params, ","), nil
+}
+
+func (c *Client) Subscribe(topic Topic, tickers ...string) error {
+	params, err := getParams(c.market, topic, tickers...)
+	if err != nil {
+		return err
+	}
+
+	subscribe, err := json.Marshal(&models.ControlMessage{
+		Action: models.Subscribe,
+		Params: params,
+	})
+	if err != nil {
+		return err
+	}
+
+	c.log.Debugf("subscribing to '%v'", params) // todo: remove before release
+	c.wQueue <- subscribe
+	return nil
+}
+
+func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
+	params, err := getParams(c.market, topic, tickers...)
+	if err != nil {
+		return err
+	}
+
+	unsubscribe, err := json.Marshal(&models.ControlMessage{
+		Action: models.Unsubscribe,
+		Params: params,
+	})
+	if err != nil {
+		return err
+	}
+
+	c.log.Debugf("unsubscribing from '%v'", params) // todo: remove before release
+	c.wQueue <- unsubscribe
+	return nil
+}
 
 func (c *Client) Close() error {
 	if c.conn == nil {
@@ -238,7 +307,9 @@ func (c *Client) handleStatus(msg json.RawMessage) {
 		c.Close()
 		return
 	case "success":
-		c.log.Debugf("subscription successful") // todo: can subscriptions fail?
+		c.log.Infof("subscription successful") // todo: improve this
+	case "error":
+		c.log.Errorf("received an error: %v", cm.Message) // todo: improve this
 	default:
 		c.log.Infof("unknown status message '%v'", cm.Status)
 	}
