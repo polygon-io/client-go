@@ -42,15 +42,17 @@ func New(config Config) (*Client, error) {
 	// todo: is this default dialer sufficient? might want to let user pass in a context so they can cancel the dial
 	conn, res, err := websocket.DefaultDialer.Dial(url, nil)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to dial server: %w", err)
 	} else if res.StatusCode != 101 {
 		return nil, errors.New("server failed to switch protocols")
 	}
+
 	conn.SetReadLimit(maxMessageSize)
-	conn.SetReadDeadline(time.Now().Add(pongWait))
+	if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
+		return nil, fmt.Errorf("failed to set read deadline: %w", err)
+	}
 	conn.SetPongHandler(func(string) error {
-		conn.SetReadDeadline(time.Now().Add(pongWait))
-		return nil
+		return conn.SetReadDeadline(time.Now().Add(pongWait))
 	})
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -125,13 +127,19 @@ func (c *Client) write() {
 		case <-c.ctx.Done():
 			return
 		case <-ticker.C:
-			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
+				c.log.Errorf("failed to set write deadline: %v", err)
+				return // todo: should this return?
+			}
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				c.log.Errorf("failed to send ping message: %v", err)
 				return
 			}
 		case msg := <-c.wQueue:
-			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
+				c.log.Errorf("failed to set write deadline: %v", err)
+				return // todo: should this return?
+			}
 			if err := c.conn.WriteMessage(websocket.TextMessage, msg); err != nil {
 				c.log.Errorf("failed to send message: %v", err)
 				return
