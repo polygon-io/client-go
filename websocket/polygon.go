@@ -158,12 +158,12 @@ func (c *Client) process() {
 		case <-c.ctx.Done():
 			return
 		case data := <-c.rQueue:
-			c.route(data) // todo: this might merit a "data router" type
+			c.handle(data) // todo: this might merit a "data router" type
 		}
 	}
 }
 
-func (c *Client) route(data []byte) {
+func (c *Client) handle(data []byte) {
 	var msgs []json.RawMessage
 	if err := json.Unmarshal(data, &msgs); err != nil {
 		c.log.Errorf("failed to process raw messages: %v", err)
@@ -171,13 +171,13 @@ func (c *Client) route(data []byte) {
 	}
 
 	for _, msg := range msgs {
-		if err := c.handle(msg); err != nil {
+		if err := c.route(msg); err != nil {
 			c.log.Errorf("failed to process message: %v", err)
 		}
 	}
 }
 
-func (c *Client) handle(msg json.RawMessage) error {
+func (c *Client) route(msg json.RawMessage) error {
 	var ev models.EventType
 	err := json.Unmarshal(msg, &ev)
 	if err != nil {
