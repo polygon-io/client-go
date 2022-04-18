@@ -43,14 +43,15 @@ func New(config Config) (*Client, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	c := &Client{
-		apiKey: config.APIKey,
-		feed:   config.Feed,
-		market: config.Market,
-		ctx:    ctx,
-		cancel: cancel,
-		rQueue: make(chan []byte, 10000),
-		wQueue: make(chan []byte, 100),
-		log:    config.Log,
+		apiKey:        config.APIKey,
+		feed:          config.Feed,
+		market:        config.Market,
+		subscriptions: make(map[string]struct{}),
+		ctx:           ctx,
+		cancel:        cancel,
+		rQueue:        make(chan []byte, 10000),
+		wQueue:        make(chan []byte, 100),
+		log:           config.Log,
 	}
 
 	// push an auth message to the write queue
