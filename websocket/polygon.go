@@ -112,7 +112,7 @@ func supportsTopic(market Market, topic Topic) bool {
 }
 
 // todo: maybe strip "." from tickers?
-func (c *Client) getParams(subscribe bool, market Market, topic Topic, tickers ...string) (string, error) {
+func getParams(market Market, topic Topic, tickers ...string) (string, error) {
 	if !supportsTopic(market, topic) {
 		return "", fmt.Errorf("topic '%v' not supported for feed '%v'", topic, market)
 	}
@@ -124,11 +124,7 @@ func (c *Client) getParams(subscribe bool, market Market, topic Topic, tickers .
 	var params []string
 	for _, ticker := range tickers {
 		params = append(params, topic.prefix()+"."+ticker)
-		if subscribe {
-			c.setSubscription(topic.prefix(), ticker)
-		} else {
-			c.deleteSubscription(topic.prefix(), ticker)
-		}
+
 	}
 
 	return strings.Join(params, ","), nil
@@ -136,11 +132,8 @@ func (c *Client) getParams(subscribe bool, market Market, topic Topic, tickers .
 
 func (c *Client) setSubscription(topic string, ticker string) {
 	_, exists := c.subscriptions[topic]
-	if !exists {
+	if !exists || ticker == "*" {
 		c.subscriptions[topic] = make(set)
-	}
-	if ticker == "*" {
-		c.deleteAllTopicSubscriptions(topic)
 	}
 	c.subscriptions[topic][ticker] = struct{}{}
 }
@@ -153,14 +146,14 @@ func (c *Client) deleteSubscription(topic string, ticker string) {
 	delete(c.subscriptions[topic], ticker)
 }
 
-func (c *Client) deleteAllTopicSubscriptions(topic string) {
-	c.subscriptions[topic] = make(set)
-}
-
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
-	params, err := c.getParams(true, c.market, topic, tickers...)
+	params, err := getParams(c.market, topic, tickers...)
 	if err != nil {
 		return err
+	}
+
+	for _, t := range tickers {
+		c.setSubscription(topic.prefix(), t)
 	}
 
 	subscribe, err := json.Marshal(&models.ControlMessage{
@@ -177,9 +170,13 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 }
 
 func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
-	params, err := c.getParams(false, c.market, topic, tickers...)
+	params, err := getParams(c.market, topic, tickers...)
 	if err != nil {
 		return err
+	}
+
+	for _, t := range tickers {
+		c.deleteSubscription(topic.prefix(), t)
 	}
 
 	unsubscribe, err := json.Marshal(&models.ControlMessage{
