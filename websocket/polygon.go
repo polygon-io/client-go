@@ -16,6 +16,8 @@ import (
 
 type Client struct {
 	apiKey string
+	feed   Feed
+	market Market
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -27,56 +29,76 @@ type Client struct {
 	log Logger
 }
 
-// todo: might want to separate Connect logic out from New
 func New(config Config) (*Client, error) {
 	if config.APIKey == "" {
 		return nil, errors.New("API key is required")
 	}
 
-	url := fmt.Sprintf("wss://%v.polygon.io/%v", string(config.Feed), string(config.Market))
-
 	if config.Log == nil {
 		config.Log = &nopLogger{}
 	}
-
-	// todo: is this default dialer sufficient? might want to let user pass in a context so they can cancel the dial
-	conn, res, err := websocket.DefaultDialer.Dial(url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("failed to dial server: %w", err)
-	} else if res.StatusCode != 101 {
-		return nil, errors.New("server failed to switch protocols")
-	}
-
-	conn.SetReadLimit(maxMessageSize)
-	if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-		return nil, fmt.Errorf("failed to set read deadline: %w", err)
-	}
-	conn.SetPongHandler(func(string) error {
-		return conn.SetReadDeadline(time.Now().Add(pongWait))
-	})
 
 	ctx, cancel := context.WithCancel(context.Background())
 
 	c := &Client{
 		apiKey: config.APIKey,
+		feed:   config.Feed,
+		market: config.Market,
 		ctx:    ctx,
 		cancel: cancel,
-		conn:   conn,
 		rQueue: make(chan []byte, 10000),
 		wQueue: make(chan []byte, 100),
 		log:    config.Log,
 	}
 
+	// push an auth message to the write queue
+	if err := c.authenticate(); err != nil {
+		return nil, err
+	}
+
+	return c, nil
+}
+
+func (c *Client) Connect() error {
+	if c.conn != nil {
+		return nil
+	}
+
+	// todo: is this default dialer sufficient? might want to let user pass in a context so they can cancel the dial
+	url := fmt.Sprintf("wss://%v.polygon.io/%v", string(c.feed), string(c.market))
+	conn, res, err := websocket.DefaultDialer.Dial(url, nil)
+	if err != nil {
+		return fmt.Errorf("failed to dial server: %w", err)
+	} else if res.StatusCode != 101 {
+		return errors.New("server failed to switch protocols")
+	}
+
+	conn.SetReadLimit(maxMessageSize)
+	if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
+		return fmt.Errorf("failed to set read deadline: %w", err)
+	}
+	conn.SetPongHandler(func(string) error {
+		return conn.SetReadDeadline(time.Now().Add(pongWait))
+	})
+	c.conn = conn
+
+	// todo: on reconnect, need to clear the write queue and push an auth message to the front
+	//       this is a potential data race, might need to stop and restart write thread beforehand
+
 	go c.read()
 	go c.write()
 	go c.process()
 
-	return c, nil
+	return nil
 }
 
 // todo: Subscribe, Unsubscribe, etc
 
 func (c *Client) Close() error {
+	if c.conn == nil {
+		return nil
+	}
+
 	c.cancel()
 	// todo: verify that this is thread-safe and potentially refactor to just push a message to the wQueue
 	err := c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""), time.Now().Add(writeWait))
@@ -85,6 +107,19 @@ func (c *Client) Close() error {
 		return err
 	}
 	c.log.Infof("connection closed successfully")
+	return nil
+}
+
+func (c *Client) authenticate() error {
+	b, err := json.Marshal(models.ControlMessage{
+		Action: "auth",
+		Params: c.apiKey,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to marshal auth message: %w", err)
+	}
+
+	c.wQueue <- b
 	return nil
 }
 
@@ -195,25 +230,16 @@ func (c *Client) handleStatus(msg json.RawMessage) {
 
 	switch cm.Status {
 	case "connected":
-		c.log.Infof("connection successful")
-		b, err := json.Marshal(models.ControlMessage{
-			Action: "auth",
-			Params: c.apiKey,
-		})
-		if err != nil {
-			c.log.Errorf("authentication failed, closing connection")
-			c.Close() // fatal errors should close the connection
-		}
-		c.wQueue <- b
+		c.log.Debugf("connection successful")
 	case "auth_success":
-		c.log.Infof("authentication successful")
+		c.log.Debugf("authentication successful")
 	case "auth_failed":
 		c.log.Errorf("authentication failed, closing connection")
 		c.Close()
 		return
 	case "success":
-		c.log.Infof("subscription successful") // todo: can subscriptions fail?
+		c.log.Debugf("subscription successful") // todo: can subscriptions fail?
 	default:
-		c.log.Debugf("unknown status message '%v'", cm.Status)
+		c.log.Infof("unknown status message '%v'", cm.Status)
 	}
 }
