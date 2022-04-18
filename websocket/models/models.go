@@ -1,5 +1,13 @@
 package models
 
+type Action string
+
+const (
+	Auth        Action = "auth"
+	Subscribe   Action = "subscribe"
+	Unsubscribe Action = "unsubscribe"
+)
+
 type EventType struct {
 	EventType string `json:"ev,omitempty"`
 }
@@ -8,11 +16,9 @@ type ControlMessage struct {
 	EventType
 	Status  string `json:"status,omitempty"`
 	Message string `json:"message,omitempty"`
-	Action  string `json:"action,omitempty"`
+	Action  Action `json:"action,omitempty"`
 	Params  string `json:"params,omitempty"`
 }
-
-type SecondAggs chan Agg
 
 // Agg is an aggregation of all the activity on a specified ticker between the start and end timestamps.
 type Agg struct {

@@ -24,7 +24,7 @@ func TestMain(t *testing.T) {
 	c, err := polygonws.New(polygonws.Config{
 		APIKey: apiKey,
 		Feed:   polygonws.RealTime,
-		Market: polygonws.Stocks,
+		Market: polygonws.Crypto,
 		Log:    log,
 	})
 	if err != nil {
@@ -40,6 +40,14 @@ func TestMain(t *testing.T) {
 	// calling connect again shouldn't panic or data race
 	if err := c.Connect(); err != nil {
 		log.Fatal(err)
+	}
+
+	if err := c.Subscribe(polygonws.CryptoTrades, "BTC-USD", "ETH-USD"); err != nil {
+		log.Error(err)
+	}
+	time.Sleep(1 * time.Second)
+	if err := c.Unsubscribe(polygonws.CryptoTrades, "BTC-USD"); err != nil {
+		log.Error(err)
 	}
 
 	for {
