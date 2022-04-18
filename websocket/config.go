@@ -17,6 +17,12 @@ type Logger interface {
 	Errorf(template string, args ...interface{})
 }
 
+type nopLogger struct{}
+
+func (l *nopLogger) Debugf(template string, args ...interface{}) {}
+func (l *nopLogger) Infof(template string, args ...interface{})  {}
+func (l *nopLogger) Errorf(template string, args ...interface{}) {}
+
 type Feed string
 
 const (

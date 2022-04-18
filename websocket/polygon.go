@@ -9,10 +9,10 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/polygon-io/client-go/websocket/models"
-	"go.uber.org/zap"
 )
 
 // todo: add reconnect logic
+// todo: in general, successful calls should be debug and unknown messages should be info
 
 type Client struct {
 	apiKey string
@@ -36,7 +36,7 @@ func New(config Config) (*Client, error) {
 	url := fmt.Sprintf("wss://%v.polygon.io/%v", string(config.Feed), string(config.Market))
 
 	if config.Log == nil {
-		config.Log = zap.NewNop().Sugar()
+		config.Log = &nopLogger{}
 	}
 
 	// todo: is this default dialer sufficient? might want to let user pass in a context so they can cancel the dial
@@ -78,6 +78,7 @@ func New(config Config) (*Client, error) {
 
 func (c *Client) Close() error {
 	c.cancel()
+	// todo: verify that this is thread-safe and potentially refactor to just push a message to the wQueue
 	err := c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""), time.Now().Add(writeWait))
 	if err != nil {
 		c.log.Errorf("failed to gracefully close: %v", err)
@@ -127,11 +128,8 @@ func (c *Client) write() {
 		case <-c.ctx.Done():
 			return
 		case <-ticker.C:
-			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
-				c.log.Errorf("failed to set write deadline: %v", err)
-				return // todo: should this return?
-			}
-			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+			err := c.conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(writeWait))
+			if err != nil {
 				c.log.Errorf("failed to send ping message: %v", err)
 				return
 			}
@@ -148,6 +146,7 @@ func (c *Client) write() {
 	}
 }
 
+// todo: add config option to skip message processing
 func (c *Client) process() {
 	defer func() {
 		c.log.Debugf("closing process thread")
@@ -158,46 +157,41 @@ func (c *Client) process() {
 		case <-c.ctx.Done():
 			return
 		case data := <-c.rQueue:
-			c.handle(data)
+			var msgs []json.RawMessage
+			if err := json.Unmarshal(data, &msgs); err != nil {
+				c.log.Errorf("failed to process raw messages: %v", err)
+				continue
+			}
+			c.route(msgs)
 		}
 	}
 }
 
-func (c *Client) handle(data []byte) {
-	var msgs []json.RawMessage
-	if err := json.Unmarshal(data, &msgs); err != nil {
-		c.log.Errorf("failed to process raw messages: %v", err)
-		return
-	}
-
+// todo: this might merit a "data router" type
+func (c *Client) route(msgs []json.RawMessage) {
 	for _, msg := range msgs {
-		if err := c.route(msg); err != nil { // todo: this might merit a "data router" type
+		var ev models.EventType
+		err := json.Unmarshal(msg, &ev)
+		if err != nil {
 			c.log.Errorf("failed to process message: %v", err)
+			return
 		}
+
+		switch ev.EventType {
+		case "status":
+			c.handleStatus(msg)
+		default:
+			c.log.Debugf("unknown message type '%v'", ev.EventType)
+		}
+		c.log.Errorf("failed to process message: %v", err)
 	}
 }
 
-func (c *Client) route(msg json.RawMessage) error {
-	var ev models.EventType
-	err := json.Unmarshal(msg, &ev)
-	if err != nil {
-		return err
-	}
-
-	switch ev.EventType {
-	case "status":
-		return c.handleStatus(msg)
-	default:
-		c.log.Debugf("unknown message type '%v'", ev.EventType)
-	}
-
-	return nil
-}
-
-func (c *Client) handleStatus(msg json.RawMessage) error {
+func (c *Client) handleStatus(msg json.RawMessage) {
 	var cm models.ControlMessage
 	if err := json.Unmarshal(msg, &cm); err != nil {
-		return err
+		c.log.Errorf("failed to unmarshal message")
+		return
 	}
 
 	switch cm.Status {
@@ -217,12 +211,10 @@ func (c *Client) handleStatus(msg json.RawMessage) error {
 	case "auth_failed":
 		c.log.Errorf("authentication failed, closing connection")
 		c.Close()
-		return nil
+		return
 	case "success":
 		c.log.Infof("subscription successful") // todo: can subscriptions fail?
 	default:
 		c.log.Debugf("unknown status message '%v'", cm.Status)
 	}
-
-	return nil
 }
