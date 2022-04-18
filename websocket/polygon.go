@@ -60,6 +60,10 @@ func New(config Config) (*Client, error) {
 }
 
 func (c *Client) Connect() error {
+	if c.conn != nil {
+		return nil
+	}
+
 	// todo: is this default dialer sufficient? might want to let user pass in a context so they can cancel the dial
 	url := fmt.Sprintf("wss://%v.polygon.io/%v", string(c.feed), string(c.market))
 	conn, res, err := websocket.DefaultDialer.Dial(url, nil)
