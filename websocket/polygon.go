@@ -183,14 +183,13 @@ func (c *Client) route(msgs []json.RawMessage) {
 		default:
 			c.log.Debugf("unknown message type '%v'", ev.EventType)
 		}
-		c.log.Errorf("failed to process message: %v", err)
 	}
 }
 
 func (c *Client) handleStatus(msg json.RawMessage) {
 	var cm models.ControlMessage
 	if err := json.Unmarshal(msg, &cm); err != nil {
-		c.log.Errorf("failed to unmarshal message")
+		c.log.Errorf("failed to unmarshal message: %v", err)
 		return
 	}
 
