@@ -16,10 +16,13 @@ import (
 // todo: in general, successful calls should be debug and unknown messages should be info
 // todo: probably remove some junk logging before release too
 
+type set map[string]struct{}
+
 type Client struct {
-	apiKey string
-	feed   Feed
-	market Market
+	apiKey        string
+	feed          Feed
+	market        Market
+	subscriptions map[string]set
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -43,14 +46,15 @@ func New(config Config) (*Client, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	c := &Client{
-		apiKey: config.APIKey,
-		feed:   config.Feed,
-		market: config.Market,
-		ctx:    ctx,
-		cancel: cancel,
-		rQueue: make(chan []byte, 10000),
-		wQueue: make(chan []byte, 100),
-		log:    config.Log,
+		apiKey:        config.APIKey,
+		feed:          config.Feed,
+		market:        config.Market,
+		subscriptions: make(map[string]set),
+		ctx:           ctx,
+		cancel:        cancel,
+		rQueue:        make(chan []byte, 10000),
+		wQueue:        make(chan []byte, 100),
+		log:           config.Log,
 	}
 
 	// push an auth message to the write queue
@@ -126,10 +130,32 @@ func getParams(market Market, topic Topic, tickers ...string) (string, error) {
 	return strings.Join(params, ","), nil
 }
 
+func (c *Client) setSubscription(prefix string, ticker string) {
+	_, exists := c.subscriptions[prefix]
+	if !exists || ticker == "*" {
+		c.subscriptions[prefix] = make(set)
+	}
+	c.subscriptions[prefix][ticker] = struct{}{}
+}
+
+func (c *Client) deleteSubscription(prefix string, ticker string) {
+	if _, prefixExists := c.subscriptions[prefix]; !prefixExists {
+		c.subscriptions[prefix] = make(set)
+	}
+	if _, tickerExists := c.subscriptions[prefix][ticker]; !tickerExists {
+		c.log.Infof("already unsubscribed to this ticker")
+	}
+	delete(c.subscriptions[prefix], ticker)
+}
+
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 	params, err := getParams(c.market, topic, tickers...)
 	if err != nil {
 		return err
+	}
+
+	for _, t := range tickers {
+		c.setSubscription(topic.prefix(), t)
 	}
 
 	subscribe, err := json.Marshal(&models.ControlMessage{
@@ -149,6 +175,10 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 	params, err := getParams(c.market, topic, tickers...)
 	if err != nil {
 		return err
+	}
+
+	for _, t := range tickers {
+		c.deleteSubscription(topic.prefix(), t)
 	}
 
 	unsubscribe, err := json.Marshal(&models.ControlMessage{

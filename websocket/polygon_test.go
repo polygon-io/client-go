@@ -49,6 +49,13 @@ func TestMain(t *testing.T) {
 	if err := c.Unsubscribe(polygonws.CryptoTrades, "BTC-USD"); err != nil {
 		log.Error(err)
 	}
+	if err := c.Subscribe(polygonws.CryptoTrades, "*"); err != nil {
+		log.Error(err)
+	}
+	time.Sleep(1 * time.Second)
+	if err := c.Unsubscribe(polygonws.CryptoTrades, "*"); err != nil {
+		log.Error(err)
+	}
 
 	for {
 		select {
