@@ -129,20 +129,20 @@ func getParams(market Market, topic Topic, tickers ...string) (string, error) {
 	return strings.Join(params, ","), nil
 }
 
-func (c *Client) setSubscription(topic string, ticker string) {
-	_, exists := c.subscriptions[topic]
+func (c *Client) setSubscription(prefix string, ticker string) {
+	_, exists := c.subscriptions[prefix]
 	if !exists || ticker == "*" {
-		c.subscriptions[topic] = make(set)
+		c.subscriptions[prefix] = make(set)
 	}
-	c.subscriptions[topic][ticker] = struct{}{}
+	c.subscriptions[prefix][ticker] = struct{}{}
 }
 
-func (c *Client) deleteSubscription(topic string, ticker string) {
-	_, exists := c.subscriptions[topic]
+func (c *Client) deleteSubscription(prefix string, ticker string) {
+	_, exists := c.subscriptions[prefix]
 	if !exists {
-		c.subscriptions[topic] = make(set)
+		c.subscriptions[prefix] = make(set)
 	}
-	delete(c.subscriptions[topic], ticker)
+	delete(c.subscriptions[prefix], ticker)
 }
 
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
