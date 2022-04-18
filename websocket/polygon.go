@@ -138,11 +138,10 @@ func (c *Client) setSubscription(prefix string, ticker string) {
 }
 
 func (c *Client) deleteSubscription(prefix string, ticker string) {
-	_, exists := c.subscriptions[prefix]
-	if !exists {
+	if _, exists := c.subscriptions[prefix]; !exists {
 		c.subscriptions[prefix] = make(set)
 	}
-	if _, includes := c.subscriptions[prefix][ticker]; includes {
+	if _, exists := c.subscriptions[prefix][ticker]; !exists {
 		c.log.Infof("already unsubscribed to this ticker")
 	}
 	delete(c.subscriptions[prefix], ticker)
