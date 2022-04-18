@@ -31,7 +31,7 @@ type Iter[T any] struct {
 
 // NewIter returns a new initialized iterator. This method automatically makes the first query to populate
 // the results. List methods should use this helper method when building domain specific iterators.
-func NewIter[T any](ctx context.Context, path string, params interface{}, query Query[T]) *Iter[T] {
+func NewIter[T any](ctx context.Context, path string, params any, query Query[T]) *Iter[T] {
 	it := Iter[T]{
 		ctx:   ctx,
 		query: query,

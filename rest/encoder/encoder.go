@@ -28,7 +28,7 @@ func New() *Encoder {
 }
 
 // EncodeParams encodes path and query params and returns a valid request URI.
-func (e *Encoder) EncodeParams(path string, params interface{}) (string, error) {
+func (e *Encoder) EncodeParams(path string, params any) (string, error) {
 	if err := e.validateParams(params); err != nil {
 		return "", err
 	}
@@ -48,14 +48,14 @@ func (e *Encoder) EncodeParams(path string, params interface{}) (string, error) 
 	return uri, nil
 }
 
-func (e *Encoder) validateParams(params interface{}) error {
+func (e *Encoder) validateParams(params any) error {
 	if err := e.validate.Struct(params); err != nil {
 		return fmt.Errorf("invalid request params: %w", err)
 	}
 	return nil
 }
 
-func (e *Encoder) encodePath(uri string, params interface{}) (string, error) {
+func (e *Encoder) encodePath(uri string, params any) (string, error) {
 	val, err := e.pathEncoder.Encode(&params)
 	if err != nil {
 		return "", fmt.Errorf("error encoding path params: %w", err)
@@ -73,7 +73,7 @@ func (e *Encoder) encodePath(uri string, params interface{}) (string, error) {
 	return uri, nil
 }
 
-func (e *Encoder) encodeQuery(params interface{}) (string, error) {
+func (e *Encoder) encodeQuery(params any) (string, error) {
 	query, err := e.queryEncoder.Encode(&params)
 	if err != nil {
 		return "", fmt.Errorf("error encoding query params: %w", err)
@@ -86,16 +86,16 @@ func newEncoder(tag string) *form.Encoder {
 	e.SetMode(form.ModeExplicit)
 	e.SetTagName(tag)
 
-	e.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+	e.RegisterCustomTypeFunc(func(x any) ([]string, error) {
 		return []string{fmt.Sprint(time.Time(x.(models.Time)).Format("2006-01-02T15:04:05.000Z"))}, nil
 	}, models.Time{})
-	e.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+	e.RegisterCustomTypeFunc(func(x any) ([]string, error) {
 		return []string{fmt.Sprint(time.Time(x.(models.Date)).Format("2006-01-02"))}, nil
 	}, models.Date{})
-	e.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+	e.RegisterCustomTypeFunc(func(x any) ([]string, error) {
 		return []string{fmt.Sprint(time.Time(x.(models.Millis)).UnixMilli())}, nil
 	}, models.Millis{})
-	e.RegisterCustomTypeFunc(func(x interface{}) ([]string, error) {
+	e.RegisterCustomTypeFunc(func(x any) ([]string, error) {
 		return []string{fmt.Sprint(time.Time(x.(models.Nanos)).UnixNano())}, nil
 	}, models.Nanos{})
 
