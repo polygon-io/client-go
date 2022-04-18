@@ -37,7 +37,10 @@ func TestMain(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	c.Connect() // calling connect again shouldn't panic or data race
+	// calling connect again shouldn't panic or data race
+	if err := c.Connect(); err != nil {
+		log.Fatal(err)
+	}
 
 	for {
 		select {
