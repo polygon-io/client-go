@@ -20,44 +20,22 @@ type QuotesClient struct {
 	client.Client
 }
 
-// ListQuotesIter is an iterator for the ListQuotes method.
-type ListQuotesIter struct {
-	iter.Iter
-}
-
-// Quote returns the current result that the iterator points to.
-func (it *ListQuotesIter) Quote() models.Quote {
-	if it.Item() != nil {
-		return it.Item().(models.Quote)
-	}
-	return models.Quote{}
-}
-
 // ListQuotes retrieves quotes for a specified ticker.
 // For more details see https://polygon.io/docs/stocks/get_v3_quotes__stockticker.
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListQuotes(context.TODO(), params, opts...)
 //   for iter.Next() {
-//       // do something with the current value
-//       log.Print(iter.Quote())
+//       log.Print(iter.Item()) // do something with the current value
 //   }
 //   if iter.Err() != nil {
 //       return err
 //   }
-func (c *QuotesClient) ListQuotes(ctx context.Context, params *models.ListQuotesParams, options ...models.RequestOption) *ListQuotesIter {
-	return &ListQuotesIter{
-		Iter: iter.NewIter(ctx, ListQuotesPath, params, func(uri string) (iter.ListResponse, []interface{}, error) {
-			res := &models.ListQuotesResponse{}
-			err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
-
-			results := make([]interface{}, len(res.Results))
-			for i, v := range res.Results {
-				results[i] = v
-			}
-
-			return res, results, err
-		}),
-	}
+func (c *QuotesClient) ListQuotes(ctx context.Context, params *models.ListQuotesParams, options ...models.RequestOption) *iter.Iter[models.Quote] {
+	return iter.NewIter(ctx, ListQuotesPath, params, func(uri string) (iter.ListResponse, []models.Quote, error) {
+		res := &models.ListQuotesResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
 }
 
 // GetLastQuote retrieves the last quote (NBBO) for a specified ticker.

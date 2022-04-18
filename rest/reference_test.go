@@ -53,12 +53,12 @@ func TestListTickers(t *testing.T) {
 
 	// iter creation
 	assert.Nil(t, iter.Err())
-	assert.NotNil(t, iter.Ticker())
+	assert.NotNil(t, iter.Item())
 
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Ticker(), "", "\t")
+	b, err := json.MarshalIndent(iter.Item(), "", "\t")
 	assert.Nil(t, err)
 	assert.Equal(t, ticker1, string(b))
 
@@ -261,12 +261,12 @@ func TestListSplits(t *testing.T) {
 
 	// iter creation
 	assert.Nil(t, iter.Err())
-	assert.NotNil(t, iter.Split())
+	assert.NotNil(t, iter.Item())
 
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Split(), "", "\t")
+	b, err := json.MarshalIndent(iter.Item(), "", "\t")
 	assert.Nil(t, err)
 	assert.Equal(t, split1, string(b))
 
@@ -307,12 +307,12 @@ func TestListDividends(t *testing.T) {
 
 	// iter creation
 	assert.Nil(t, iter.Err())
-	assert.NotNil(t, iter.Dividend())
+	assert.NotNil(t, iter.Item())
 
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Dividend(), "", "\t")
+	b, err := json.MarshalIndent(iter.Item(), "", "\t")
 	assert.Nil(t, err)
 	assert.Equal(t, dividend1, string(b))
 
@@ -369,12 +369,12 @@ func TestListConditions(t *testing.T) {
 
 	// iter creation
 	assert.Nil(t, iter.Err())
-	assert.NotNil(t, iter.Condition())
+	assert.NotNil(t, iter.Item())
 
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Condition(), "", "\t")
+	b, err := json.MarshalIndent(iter.Item(), "", "\t")
 	assert.Nil(t, err)
 	assert.Equal(t, condition, string(b))
 

@@ -60,7 +60,7 @@ iter := c.Trades.ListTrades(context.Background(), params)
 
 // iter.Next() advances the iterator to the next value in the list
 for iter.Next() {
-    log.Print(iter.Trade()) // do something with the current value
+    log.Print(iter.Item()) // do something with the current value
 }
 
 // if the loop breaks, it has either reached the end of the list or an error has occurred
