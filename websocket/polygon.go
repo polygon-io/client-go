@@ -142,6 +142,9 @@ func (c *Client) deleteSubscription(prefix string, ticker string) {
 	if !exists {
 		c.subscriptions[prefix] = make(set)
 	}
+	if _, includes := c.subscriptions[prefix][ticker]; includes {
+		c.log.Infof("already unsubscribed to this ticker")
+	}
 	delete(c.subscriptions[prefix], ticker)
 }
 
