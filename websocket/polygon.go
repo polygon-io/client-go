@@ -124,7 +124,6 @@ func getParams(market Market, topic Topic, tickers ...string) (string, error) {
 	var params []string
 	for _, ticker := range tickers {
 		params = append(params, topic.prefix()+"."+ticker)
-
 	}
 
 	return strings.Join(params, ","), nil
