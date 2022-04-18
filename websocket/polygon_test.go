@@ -32,6 +32,11 @@ func TestMain(t *testing.T) {
 	}
 	defer c.Close()
 
+	c.Close() // this shouldn't panic
+	if err := c.Connect(); err != nil {
+		log.Fatal(err)
+	}
+
 	for {
 		select {
 		case <-ctx.Done():
