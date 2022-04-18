@@ -24,10 +24,11 @@ func (l *nopLogger) Infof(template string, args ...any)  {}
 func (l *nopLogger) Errorf(template string, args ...any) {}
 
 type Config struct {
-	APIKey string
-	Feed   Feed
-	Market Market
-	Log    Logger
+	APIKey    string
+	Feed      Feed
+	Market    Market
+	ParseData bool
+	Log       Logger
 }
 
 type Feed string
