@@ -16,9 +16,10 @@ import (
 // todo: in general, successful calls should be debug and unknown messages should be info
 
 type Client struct {
-	apiKey string
-	feed   Feed
-	market Market
+	apiKey        string
+	feed          Feed
+	market        Market
+	subscriptions map[string]struct{} // set of feed.ticker subscriptions
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -125,6 +126,20 @@ func getParams(market Market, topic Topic, tickers ...string) (string, error) {
 	return strings.Join(params, ","), nil
 }
 
+func (c *Client) setSubscription(params string) {
+	subs := strings.Split(params, ",")
+	for _, s := range subs {
+		c.subscriptions[s] = struct{}{}
+	}
+}
+
+func (c *Client) deleteSubscription(params string) {
+	subs := strings.Split(params, ",")
+	for _, s := range subs {
+		delete(c.subscriptions, s)
+	}
+}
+
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 	params, err := getParams(c.market, topic, tickers...)
 	if err != nil {
@@ -141,6 +156,7 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 
 	c.log.Debugf("subscribing to '%v'", params) // todo: remove before release
 	c.wQueue <- subscribe
+	c.setSubscription(params)
 	return nil
 }
 
@@ -160,6 +176,7 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 
 	c.log.Debugf("unsubscribing from '%v'", params) // todo: remove before release
 	c.wQueue <- unsubscribe
+	c.deleteSubscription(params)
 	return nil
 }
 
