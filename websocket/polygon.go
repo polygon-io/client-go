@@ -19,7 +19,7 @@ type Client struct {
 	apiKey        string
 	feed          Feed
 	market        Market
-	subscriptions map[string]struct{} // set of feed.ticker subscriptions
+	subscriptions map[string]struct{} // set of topic.ticker subscriptions
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -129,6 +129,9 @@ func getParams(market Market, topic Topic, tickers ...string) (string, error) {
 func (c *Client) setSubscription(params string) {
 	subs := strings.Split(params, ",")
 	for _, s := range subs {
+		if strings.Contains(s, "*") {
+			c.deleteAllTopicSubscriptions(strings.Split(s, ".")[0])
+		}
 		c.subscriptions[s] = struct{}{}
 	}
 }
@@ -137,6 +140,14 @@ func (c *Client) deleteSubscription(params string) {
 	subs := strings.Split(params, ",")
 	for _, s := range subs {
 		delete(c.subscriptions, s)
+	}
+}
+
+func (c *Client) deleteAllTopicSubscriptions(topic string) {
+	for key := range c.subscriptions {
+		if strings.Split(key, ".")[0] == topic {
+			delete(c.subscriptions, key)
+		}
 	}
 }
 
