@@ -51,7 +51,10 @@ func New(config Config) (*Client, error) {
 		log:    config.Log,
 	}
 
-	c.authenticate() // push an auth message to the write queue
+	// push an auth message to the write queue
+	if err := c.authenticate(); err != nil {
+		return nil, err
+	}
 
 	return c, nil
 }
