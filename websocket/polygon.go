@@ -15,11 +15,13 @@ import (
 // todo: add reconnect logic
 // todo: in general, successful calls should be debug and unknown messages should be info
 
+type set map[string]struct{}
+
 type Client struct {
 	apiKey        string
 	feed          Feed
 	market        Market
-	subscriptions map[string]struct{} // set of topic.ticker subscriptions
+	subscriptions map[string]set
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -46,7 +48,7 @@ func New(config Config) (*Client, error) {
 		apiKey:        config.APIKey,
 		feed:          config.Feed,
 		market:        config.Market,
-		subscriptions: make(map[string]struct{}),
+		subscriptions: make(map[string]set),
 		ctx:           ctx,
 		cancel:        cancel,
 		rQueue:        make(chan []byte, 10000),
@@ -110,7 +112,7 @@ func supportsTopic(market Market, topic Topic) bool {
 }
 
 // todo: maybe strip "." from tickers?
-func getParams(market Market, topic Topic, tickers ...string) (string, error) {
+func (c *Client) getParams(subscribe bool, market Market, topic Topic, tickers ...string) (string, error) {
 	if !supportsTopic(market, topic) {
 		return "", fmt.Errorf("topic '%v' not supported for feed '%v'", topic, market)
 	}
@@ -122,38 +124,41 @@ func getParams(market Market, topic Topic, tickers ...string) (string, error) {
 	var params []string
 	for _, ticker := range tickers {
 		params = append(params, topic.prefix()+"."+ticker)
+		if subscribe {
+			c.setSubscription(topic.prefix(), ticker)
+		} else {
+			c.deleteSubscription(topic.prefix(), ticker)
+		}
 	}
 
 	return strings.Join(params, ","), nil
 }
 
-func (c *Client) setSubscription(params string) {
-	subs := strings.Split(params, ",")
-	for _, s := range subs {
-		if strings.Contains(s, "*") {
-			c.deleteAllTopicSubscriptions(strings.Split(s, ".")[0])
-		}
-		c.subscriptions[s] = struct{}{}
+func (c *Client) setSubscription(topic string, ticker string) {
+	_, exists := c.subscriptions[topic]
+	if !exists {
+		c.subscriptions[topic] = make(set)
 	}
+	if ticker == "*" {
+		c.deleteAllTopicSubscriptions(topic)
+	}
+	c.subscriptions[topic][ticker] = struct{}{}
 }
 
-func (c *Client) deleteSubscription(params string) {
-	subs := strings.Split(params, ",")
-	for _, s := range subs {
-		delete(c.subscriptions, s)
+func (c *Client) deleteSubscription(topic string, ticker string) {
+	_, exists := c.subscriptions[topic]
+	if !exists {
+		c.subscriptions[topic] = make(set)
 	}
+	delete(c.subscriptions[topic], ticker)
 }
 
 func (c *Client) deleteAllTopicSubscriptions(topic string) {
-	for key := range c.subscriptions {
-		if strings.Split(key, ".")[0] == topic {
-			delete(c.subscriptions, key)
-		}
-	}
+	c.subscriptions[topic] = make(set)
 }
 
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
-	params, err := getParams(c.market, topic, tickers...)
+	params, err := c.getParams(true, c.market, topic, tickers...)
 	if err != nil {
 		return err
 	}
@@ -168,12 +173,11 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 
 	c.log.Debugf("subscribing to '%v'", params) // todo: remove before release
 	c.wQueue <- subscribe
-	c.setSubscription(params)
 	return nil
 }
 
 func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
-	params, err := getParams(c.market, topic, tickers...)
+	params, err := c.getParams(false, c.market, topic, tickers...)
 	if err != nil {
 		return err
 	}
@@ -188,7 +192,6 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 
 	c.log.Debugf("unsubscribing from '%v'", params) // todo: remove before release
 	c.wQueue <- unsubscribe
-	c.deleteSubscription(params)
 	return nil
 }
 
