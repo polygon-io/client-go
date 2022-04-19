@@ -14,6 +14,9 @@ import (
 
 // todo: add reconnect logic
 // todo: in general, successful calls should be debug and unknown messages should be info
+// todo: probably remove some junk logging before release too
+
+type set map[string]struct{}
 
 type set map[string]struct{}
 
@@ -167,7 +170,7 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 		return err
 	}
 
-	c.log.Debugf("subscribing to '%v'", params) // todo: remove before release
+	c.log.Debugf("subscribing to '%v'", params)
 	c.wQueue <- subscribe
 	return nil
 }
@@ -193,20 +196,11 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 	return nil
 }
 
-func (c *Client) Close() error {
+func (c *Client) Close() {
 	if c.conn == nil {
-		return nil
+		return
 	}
-
 	c.cancel()
-	// todo: verify that this is thread-safe and potentially refactor to just push a message to the wQueue
-	err := c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""), time.Now().Add(writeWait))
-	if err != nil {
-		c.log.Errorf("failed to gracefully close: %v", err)
-		return err
-	}
-	c.log.Infof("connection closed successfully")
-	return nil
 }
 
 func (c *Client) authenticate() error {
@@ -225,7 +219,6 @@ func (c *Client) authenticate() error {
 func (c *Client) read() {
 	defer func() {
 		c.log.Debugf("closing read thread")
-		c.conn.Close() // todo: should this force close?
 	}()
 
 	for {
@@ -254,12 +247,18 @@ func (c *Client) write() {
 	defer func() {
 		c.log.Debugf("closing write thread")
 		ticker.Stop()
-		c.conn.Close() // todo: should this force close?
+		c.conn.Close()
 	}()
 
 	for {
 		select {
 		case <-c.ctx.Done():
+			err := c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""), time.Now().Add(writeWait))
+			if err != nil {
+				c.log.Errorf("failed to gracefully close: %v", err)
+				return
+			}
+			c.log.Debugf("connection closed successfully")
 			return
 		case <-ticker.C:
 			err := c.conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(writeWait))
@@ -270,7 +269,7 @@ func (c *Client) write() {
 		case msg := <-c.wQueue:
 			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
 				c.log.Errorf("failed to set write deadline: %v", err)
-				return // todo: should this return?
+				return
 			}
 			if err := c.conn.WriteMessage(websocket.TextMessage, msg); err != nil {
 				c.log.Errorf("failed to send message: %v", err)
@@ -334,13 +333,14 @@ func (c *Client) handleStatus(msg json.RawMessage) {
 		c.log.Debugf("authentication successful")
 	case "auth_failed":
 		c.log.Errorf("authentication failed, closing connection")
-		c.Close()
+		// todo: this is a fatal error so need to cancel any reconnects
+		c.cancel()
 		return
 	case "success":
-		c.log.Infof("subscription successful") // todo: improve this
+		c.log.Debugf("received a successful status message: %v", cm.Message)
 	case "error":
-		c.log.Errorf("received an error: %v", cm.Message) // todo: improve this
+		c.log.Errorf("received an error status message: %v", cm.Message)
 	default:
-		c.log.Infof("unknown status message '%v'", cm.Status)
+		c.log.Infof("unknown status message '%v': %v", cm.Status, cm.Message)
 	}
 }
