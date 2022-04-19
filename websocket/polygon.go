@@ -129,22 +129,26 @@ func getParams(market Market, topic Topic, tickers ...string) (string, error) {
 	return strings.Join(params, ","), nil
 }
 
-func (c *Client) setSubscription(prefix string, ticker string) {
-	_, exists := c.subscriptions[prefix]
-	if !exists || ticker == "*" {
-		c.subscriptions[prefix] = make(set)
+func (c *Client) setSubscriptions(topic Topic, tickers ...string) {
+	for _, t := range tickers {
+		_, exists := c.subscriptions[topic.prefix()]
+		if !exists || t == "*" {
+			c.subscriptions[topic.prefix()] = make(set)
+		}
+		c.subscriptions[topic.prefix()][t] = struct{}{}
 	}
-	c.subscriptions[prefix][ticker] = struct{}{}
 }
 
-func (c *Client) deleteSubscription(prefix string, ticker string) {
-	if _, prefixExists := c.subscriptions[prefix]; !prefixExists {
-		c.subscriptions[prefix] = make(set)
+func (c *Client) deleteSubscriptions(topic Topic, tickers ...string) {
+	for _, t := range tickers {
+		if _, prefixExists := c.subscriptions[topic.prefix()]; !prefixExists {
+			c.subscriptions[topic.prefix()] = make(set)
+		}
+		if _, tickerExists := c.subscriptions[topic.prefix()][t]; !tickerExists {
+			c.log.Infof("already unsubscribed to this ticker")
+		}
+		delete(c.subscriptions[topic.prefix()], t)
 	}
-	if _, tickerExists := c.subscriptions[prefix][ticker]; !tickerExists {
-		c.log.Infof("already unsubscribed to this ticker")
-	}
-	delete(c.subscriptions[prefix], ticker)
 }
 
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
@@ -153,9 +157,7 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 		return err
 	}
 
-	for _, t := range tickers {
-		c.setSubscription(topic.prefix(), t)
-	}
+	c.setSubscriptions(topic, tickers...)
 
 	subscribe, err := json.Marshal(&models.ControlMessage{
 		Action: models.Subscribe,
@@ -176,9 +178,7 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 		return err
 	}
 
-	for _, t := range tickers {
-		c.deleteSubscription(topic.prefix(), t)
-	}
+	c.deleteSubscriptions(topic, tickers...)
 
 	unsubscribe, err := json.Marshal(&models.ControlMessage{
 		Action: models.Unsubscribe,
