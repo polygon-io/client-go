@@ -85,6 +85,7 @@ func printOutput(c *polygonws.Client) {
 	}
 }
 
+//nolint:deadcode
 func printRawOutput(c *polygonws.Client) {
 	for {
 		out := c.Output()
