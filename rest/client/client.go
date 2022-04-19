@@ -37,7 +37,7 @@ func New(apiKey string) Client {
 }
 
 // Call makes an API call based on the request params and options. The response is automatically unmarshaled.
-func (c *Client) Call(ctx context.Context, method, path string, params, response interface{}, opts ...models.RequestOption) error {
+func (c *Client) Call(ctx context.Context, method, path string, params, response any, opts ...models.RequestOption) error {
 	uri, err := c.encoder.EncodeParams(path, params)
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func (c *Client) Call(ctx context.Context, method, path string, params, response
 }
 
 // CallURL makes an API call based on a request URI and options. The response is automatically unmarshaled.
-func (c *Client) CallURL(ctx context.Context, method, uri string, response interface{}, opts ...models.RequestOption) error {
+func (c *Client) CallURL(ctx context.Context, method, uri string, response any, opts ...models.RequestOption) error {
 	options := mergeOptions(opts...)
 
 	req := c.HTTP.R().SetContext(ctx)

@@ -12,16 +12,16 @@ const (
 )
 
 type Logger interface {
-	Debugf(template string, args ...interface{})
-	Infof(template string, args ...interface{})
-	Errorf(template string, args ...interface{})
+	Debugf(template string, args ...any)
+	Infof(template string, args ...any)
+	Errorf(template string, args ...any)
 }
 
 type nopLogger struct{}
 
-func (l *nopLogger) Debugf(template string, args ...interface{}) {}
-func (l *nopLogger) Infof(template string, args ...interface{})  {}
-func (l *nopLogger) Errorf(template string, args ...interface{}) {}
+func (l *nopLogger) Debugf(template string, args ...any) {}
+func (l *nopLogger) Infof(template string, args ...any)  {}
+func (l *nopLogger) Errorf(template string, args ...any) {}
 
 type Config struct {
 	APIKey string
