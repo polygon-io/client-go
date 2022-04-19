@@ -31,6 +31,9 @@ type Client struct {
 	rQueue chan []byte
 	wQueue chan []byte
 
+	parseData bool
+	output    chan any
+
 	log Logger
 }
 
@@ -54,6 +57,8 @@ func New(config Config) (*Client, error) {
 		cancel:        cancel,
 		rQueue:        make(chan []byte, 10000),
 		wQueue:        make(chan []byte, 100),
+		parseData:     config.ParseData,
+		output:        make(chan any, 100000),
 		log:           config.Log,
 	}
 
@@ -115,7 +120,7 @@ func supportsTopic(market Market, topic Topic) bool {
 // todo: maybe strip "." from tickers?
 func getParams(market Market, topic Topic, tickers ...string) (string, error) {
 	if !supportsTopic(market, topic) {
-		return "", fmt.Errorf("topic '%v' not supported for feed '%v'", topic, market)
+		return "", fmt.Errorf("topic '%v' not supported for feed '%v'", topic.prefix(), market)
 	}
 
 	if len(tickers) == 0 {
@@ -168,7 +173,6 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 		return err
 	}
 
-	c.log.Debugf("subscribing to '%v'", params)
 	c.wQueue <- subscribe
 	return nil
 }
@@ -189,9 +193,12 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 		return err
 	}
 
-	c.log.Debugf("unsubscribing from '%v'", params) // todo: remove before release
 	c.wQueue <- unsubscribe
 	return nil
+}
+
+func (c *Client) Output() any {
+	return <-c.output
 }
 
 func (c *Client) Close() {
@@ -277,10 +284,10 @@ func (c *Client) write() {
 	}
 }
 
-// todo: add config option to skip message processing
 func (c *Client) process() {
 	defer func() {
 		c.log.Debugf("closing process thread")
+		close(c.output)
 	}()
 
 	for {
@@ -298,7 +305,6 @@ func (c *Client) process() {
 	}
 }
 
-// todo: this might merit a "data router" type
 func (c *Client) route(msgs []json.RawMessage) {
 	for _, msg := range msgs {
 		var ev models.EventType
@@ -308,11 +314,11 @@ func (c *Client) route(msgs []json.RawMessage) {
 			return
 		}
 
-		switch ev.EventType {
+		switch ev.EventType { // todo: enum?
 		case "status":
 			c.handleStatus(msg)
 		default:
-			c.log.Debugf("unknown message type '%v'", ev.EventType)
+			c.handleData(ev.EventType, msg)
 		}
 	}
 }
@@ -340,5 +346,45 @@ func (c *Client) handleStatus(msg json.RawMessage) {
 		c.log.Errorf("received an error status message: %v", cm.Message)
 	default:
 		c.log.Infof("unknown status message '%v': %v", cm.Status, cm.Message)
+	}
+}
+
+func (c *Client) handleData(eventType string, msg json.RawMessage) {
+	if !c.parseData {
+		c.output <- msg // push raw data to output channel
+		return
+	}
+
+	// todo: quotes, etc
+	if eventType == "A" || eventType == "AM" {
+		var out models.EquityAgg
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	} else if eventType == "CA" || eventType == "XA" {
+		var out models.CurrencyAgg
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	} else if eventType == "T" {
+		var out models.EquityTrade
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	} else if eventType == "XT" {
+		var out models.CurrencyTrade
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	} else {
+		c.log.Infof("unknown message type '%v'", eventType)
 	}
 }
