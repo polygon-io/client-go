@@ -355,36 +355,92 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 		return
 	}
 
-	// todo: quotes, etc
-	if eventType == "A" || eventType == "AM" {
+	switch eventType {
+	case "A":
 		var out models.EquityAgg
 		if err := json.Unmarshal(msg, &out); err != nil {
 			c.log.Errorf("failed to unmarshal message: %v", err)
 			return
 		}
 		c.output <- out
-	} else if eventType == "CA" || eventType == "XA" {
+	case "AM":
+		var out models.EquityAgg
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	case "CA":
 		var out models.CurrencyAgg
 		if err := json.Unmarshal(msg, &out); err != nil {
 			c.log.Errorf("failed to unmarshal message: %v", err)
 			return
 		}
 		c.output <- out
-	} else if eventType == "T" {
+	case "XA":
+		var out models.CurrencyAgg
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	case "T":
 		var out models.EquityTrade
 		if err := json.Unmarshal(msg, &out); err != nil {
 			c.log.Errorf("failed to unmarshal message: %v", err)
 			return
 		}
 		c.output <- out
-	} else if eventType == "XT" {
-		var out models.CurrencyTrade
+	case "XT":
+		var out models.CryptoTrade
 		if err := json.Unmarshal(msg, &out); err != nil {
 			c.log.Errorf("failed to unmarshal message: %v", err)
 			return
 		}
 		c.output <- out
-	} else {
+	case "Q":
+		var out models.EquityQuote
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	case "C":
+		var out models.ForexQuote
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	case "XQ":
+		var out models.CryptoQuote
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	case "NOI":
+		var out models.Imbalance
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	case "LULD":
+		var out models.LimitUpLimitDown
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	case "XL2":
+		var out models.Level2Book
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	default:
 		c.log.Infof("unknown message type '%v'", eventType)
 	}
 }
