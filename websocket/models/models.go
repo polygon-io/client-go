@@ -66,7 +66,7 @@ type EquityTrade struct {
 	SequenceNumber int64   `json:"q,omitempty"`
 }
 
-type CurrencyTrade struct {
+type CryptoTrade struct {
 	EventType
 	Symbol            string  `json:"sym,omitempty"`
 	Exchange          int32   `json:"x,omitempty"`
@@ -93,13 +93,25 @@ type EquityQuote struct {
 	SequenceNumber int64   `json:"q,omitempty"`
 }
 
-type CurrencyQuote struct {
+type ForexQuote struct {
 	EventType
-	Pair       string  `json:"pair,omitempty"`
+	Pair       string  `json:"p,omitempty"`
 	ExchangeID int32   `json:"x,omitempty"`
 	AskPrice   float64 `json:"a,omitempty"`
 	BidPrice   float64 `json:"b,omitempty"`
 	Timestamp  int64   `json:"t,omitempty"`
+}
+
+type CryptoQuote struct {
+	EventType
+	Pair              string  `json:"pair,omitempty"`
+	BidPrice          float64 `json:"bp,omitempty"`
+	BidSize           int32   `json:"bs,omitempty"`
+	AskPrice          float64 `json:"ap,omitempty"`
+	AskSize           int32   `json:"as,omitempty"`
+	Timestamp         int64   `json:"t,omitempty"`
+	ExchangeID        int32   `json:"x,omitempty"`
+	ReceivedTimestamp int64   `json:"r,omitempty"`
 }
 
 type Imbalance struct {
