@@ -40,6 +40,7 @@ func TestSubscriptions(t *testing.T) {
 	_, aapl := c.subscriptions["AM"]["AAPL"]
 	_, tsla := c.subscriptions["AM"]["TSLA"]
 	assert.Equal(t, true, aapl)
+	assert.Equal(t, true, tsla)
 	c.deleteSubscriptions(Topic(12), "AAPL", "NFLX")
 	_, aapl = c.subscriptions["AM"]["AAPL"]
 	assert.Equal(t, false, aapl)
