@@ -12,9 +12,11 @@ import (
 	"github.com/polygon-io/client-go/websocket/models"
 )
 
-// todo: add reconnect logic
 // todo: in general, successful calls should be debug and unknown messages should be info
 // todo: probably remove some junk logging before release too
+
+// todo: potentially add backoff logic and let users configure parts of this
+const reconnectInterval = 5 * time.Second
 
 type set map[string]struct{}
 
@@ -23,6 +25,8 @@ type Client struct {
 	feed          Feed
 	market        Market
 	subscriptions map[string]set
+
+	reconnecting bool
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -62,11 +66,6 @@ func New(config Config) (*Client, error) {
 		log:           config.Log,
 	}
 
-	// push an auth message to the write queue
-	if err := c.authenticate(); err != nil {
-		return nil, err
-	}
-
 	return c, nil
 }
 
@@ -74,86 +73,55 @@ func (c *Client) Connect() error {
 	if c.conn != nil {
 		return nil
 	}
-
-	// todo: is this default dialer sufficient? might want to let user pass in a context so they can cancel the dial
-	url := fmt.Sprintf("wss://%v.polygon.io/%v", string(c.feed), string(c.market))
-	conn, res, err := websocket.DefaultDialer.Dial(url, nil)
-	if err != nil {
-		return fmt.Errorf("failed to dial server: %w", err)
-	} else if res.StatusCode != 101 {
-		return errors.New("server failed to switch protocols")
-	}
-
-	conn.SetReadLimit(maxMessageSize)
-	if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-		return fmt.Errorf("failed to set read deadline: %w", err)
-	}
-	conn.SetPongHandler(func(string) error {
-		return conn.SetReadDeadline(time.Now().Add(pongWait))
-	})
-	c.conn = conn
-
-	// todo: on reconnect, need to clear the write queue and push an auth message to the front
-	//       this is a potential data race, might need to stop and restart write thread beforehand
-
-	go c.read()
-	go c.write()
-	go c.process()
-
-	return nil
+	return c.connect()
 }
 
-func supportsTopic(market Market, topic Topic) bool {
-	switch market {
-	case Stocks:
-		return topic > stocksMin && topic < stocksMax
-	case Options:
-		return topic > optionsMin && topic < optionsMax
-	case Forex:
-		return topic > forexMin && topic < forexMax
-	case Crypto:
-		return topic > cryptoMin && topic < cryptoMax
-	}
-	return false
-}
-
-// todo: maybe strip "." from tickers?
-func getParams(market Market, topic Topic, tickers ...string) (string, error) {
-	if !supportsTopic(market, topic) {
-		return "", fmt.Errorf("topic '%v' not supported for feed '%v'", topic.prefix(), market)
-	}
-
-	if len(tickers) == 0 {
-		return topic.prefix() + ".*", nil
-	}
-
-	var params []string
-	for _, ticker := range tickers {
-		params = append(params, topic.prefix()+"."+ticker)
-	}
-
-	return strings.Join(params, ","), nil
-}
-
-func (c *Client) setSubscriptions(topic Topic, tickers ...string) {
-	for _, t := range tickers {
-		_, exists := c.subscriptions[topic.prefix()]
-		if !exists || t == "*" {
-			c.subscriptions[topic.prefix()] = make(set)
+// todo: should this close after a certain number of retries?
+func (c *Client) connect() error {
+	for {
+		if c.reconnecting {
+			time.Sleep(reconnectInterval)
 		}
-		c.subscriptions[topic.prefix()][t] = struct{}{}
-	}
-}
 
-func (c *Client) deleteSubscriptions(topic Topic, tickers ...string) {
-	for _, t := range tickers {
-		if _, prefixExists := c.subscriptions[topic.prefix()]; !prefixExists {
-			c.subscriptions[topic.prefix()] = make(set)
+		// todo: is this default dialer sufficient? might want to let user pass in a context so they can cancel the dial
+		url := fmt.Sprintf("wss://%v.polygon.io/%v", string(c.feed), string(c.market))
+		conn, res, err := websocket.DefaultDialer.Dial(url, nil)
+		if err != nil {
+			c.log.Errorf("failed to dial server: %v", err)
+			c.reconnecting = true
+			continue
+		} else if res.StatusCode != 101 {
+			c.log.Errorf("server failed to switch protocols")
+			c.reconnecting = true
+			continue
 		}
-		if _, tickerExists := c.subscriptions[topic.prefix()][t]; !tickerExists {
-			c.log.Infof("already unsubscribed to this ticker")
+
+		conn.SetReadLimit(maxMessageSize)
+		if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
+			c.log.Errorf("failed to set read deadline: %v", err)
+			c.reconnecting = true
+			continue
 		}
-		delete(c.subscriptions[topic.prefix()], t)
+		conn.SetPongHandler(func(string) error {
+			return conn.SetReadDeadline(time.Now().Add(pongWait))
+		})
+
+		c.conn = conn
+		c.reconnecting = false
+
+		c.wQueue = make(chan []byte, 100)
+		if err := c.authenticate(); err != nil {
+			c.log.Errorf("failed to write auth message: %v", err)
+		}
+		c.pushSubscriptions()
+
+		go c.read()
+		go c.write()
+		go c.process()
+
+		c.log.Debugf("connected successfully")
+
+		return nil
 	}
 }
 
@@ -442,5 +410,78 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 		c.output <- out
 	default:
 		c.log.Infof("unknown message type '%v'", eventType)
+	}
+}
+
+func supportsTopic(market Market, topic Topic) bool {
+	switch market {
+	case Stocks:
+		return topic > stocksMin && topic < stocksMax
+	case Options:
+		return topic > optionsMin && topic < optionsMax
+	case Forex:
+		return topic > forexMin && topic < forexMax
+	case Crypto:
+		return topic > cryptoMin && topic < cryptoMax
+	}
+	return false
+}
+
+func getParams(market Market, topic Topic, tickers ...string) (string, error) {
+	if !supportsTopic(market, topic) {
+		return "", fmt.Errorf("topic '%v' not supported for feed '%v'", topic.prefix(), market)
+	}
+
+	if len(tickers) == 0 {
+		return topic.prefix() + ".*", nil
+	}
+
+	var params []string
+	for _, ticker := range tickers {
+		params = append(params, topic.prefix()+"."+ticker)
+	}
+
+	return strings.Join(params, ","), nil
+}
+
+func (c *Client) setSubscriptions(topic Topic, tickers ...string) {
+	for _, t := range tickers {
+		_, exists := c.subscriptions[topic.prefix()]
+		if !exists || t == "*" {
+			c.subscriptions[topic.prefix()] = make(set)
+		}
+		c.subscriptions[topic.prefix()][t] = struct{}{}
+	}
+}
+
+func (c *Client) pushSubscriptions() {
+	for prefix, tickers := range c.subscriptions {
+		var params []string
+		for ticker, _ := range tickers {
+			params = append(params, prefix+"."+ticker)
+		}
+
+		subscribe, err := json.Marshal(&models.ControlMessage{
+			Action: models.Subscribe,
+			Params: strings.Join(params, ","),
+		})
+		if err != nil {
+			c.log.Errorf("failed to build subscription: %v", err)
+			continue
+		}
+
+		c.wQueue <- subscribe
+	}
+}
+
+func (c *Client) deleteSubscriptions(topic Topic, tickers ...string) {
+	for _, t := range tickers {
+		if _, prefixExists := c.subscriptions[topic.prefix()]; !prefixExists {
+			c.subscriptions[topic.prefix()] = make(set)
+		}
+		if _, tickerExists := c.subscriptions[topic.prefix()][t]; !tickerExists {
+			c.log.Infof("already unsubscribed to this ticker")
+		}
+		delete(c.subscriptions[topic.prefix()], t)
 	}
 }
