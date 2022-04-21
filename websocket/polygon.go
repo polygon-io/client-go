@@ -8,15 +8,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/cenkalti/backoff/v4"
 	"github.com/gorilla/websocket"
 	"github.com/polygon-io/client-go/websocket/models"
 )
 
 // todo: in general, successful calls should be debug and unknown messages should be info
 // todo: probably remove some junk logging before release too
-
-// todo: potentially add backoff logic and let users configure parts of this
-const reconnectInterval = 5 * time.Second
 
 type set map[string]struct{}
 
@@ -26,7 +24,7 @@ type Client struct {
 	market        Market
 	subscriptions map[string]set
 
-	reconnecting bool
+	backoff backoff.BackOff
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -41,7 +39,11 @@ type Client struct {
 	log Logger
 }
 
-func New(config Config) (*Client, error) {
+func New(ctx context.Context, config Config) (*Client, error) {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
 	if config.APIKey == "" {
 		return nil, errors.New("API key is required")
 	}
@@ -50,15 +52,16 @@ func New(config Config) (*Client, error) {
 		config.Log = &nopLogger{}
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
+	tctx, tcancel := context.WithCancel(context.Background())
 
 	c := &Client{
 		apiKey:        config.APIKey,
 		feed:          config.Feed,
 		market:        config.Market,
 		subscriptions: make(map[string]set),
-		ctx:           ctx,
-		cancel:        cancel,
+		backoff:       backoff.NewExponentialBackOff(),
+		ctx:           tctx,
+		cancel:        tcancel,
 		rQueue:        make(chan []byte, 10000),
 		wQueue:        make(chan []byte, 100),
 		parseData:     config.ParseData,
@@ -66,63 +69,60 @@ func New(config Config) (*Client, error) {
 		log:           config.Log,
 	}
 
+	c.backoff = backoff.WithContext(backoff.NewExponentialBackOff(), ctx)
+
 	return c, nil
 }
 
+// todo: ctx to allow user to cancel?
 func (c *Client) Connect() error {
 	if c.conn != nil {
 		return nil
 	}
-	return c.connect()
+
+	if err := backoff.Retry(c.connect, c.backoff); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-// todo: should this close after a certain number of retries?
 func (c *Client) connect() error {
-	for {
-		if c.reconnecting {
-			time.Sleep(reconnectInterval)
-		}
-
-		// todo: is this default dialer sufficient? might want to let user pass in a context so they can cancel the dial
-		url := fmt.Sprintf("wss://%v.polygon.io/%v", string(c.feed), string(c.market))
-		conn, res, err := websocket.DefaultDialer.Dial(url, nil)
-		if err != nil {
-			c.log.Errorf("failed to dial server: %v", err)
-			c.reconnecting = true
-			continue
-		} else if res.StatusCode != 101 {
-			c.log.Errorf("server failed to switch protocols")
-			c.reconnecting = true
-			continue
-		}
-
-		conn.SetReadLimit(maxMessageSize)
-		if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-			c.log.Errorf("failed to set read deadline: %v", err)
-			c.reconnecting = true
-			continue
-		}
-		conn.SetPongHandler(func(string) error {
-			return conn.SetReadDeadline(time.Now().Add(pongWait))
-		})
-
-		c.conn = conn
-		c.reconnecting = false
-
-		c.wQueue = make(chan []byte, 100)
-		if err := c.authenticate(); err != nil {
-			c.log.Errorf("failed to write auth message: %v", err)
-		}
-		c.pushSubscriptions()
-
-		go c.read()
-		go c.write()
-		go c.process()
-
-		c.log.Debugf("connected successfully")
-
-		return nil
+	// todo: is this default dialer sufficient? might want to let user pass in a context so they can cancel the dial
+	url := fmt.Sprintf("wss://%v.polygon.io/%v", string(c.feed), string(c.market))
+	conn, res, err := websocket.DefaultDialer.Dial(url, nil)
+	if err != nil {
+		c.log.Errorf("failed to dial server: %v", err)
+		return err
+	} else if res.StatusCode != 101 {
+		c.log.Errorf("server failed to switch protocols")
+		return errors.New("server failed to switch protocols")
 	}
+
+	conn.SetReadLimit(maxMessageSize)
+	if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
+		c.log.Errorf("failed to set read deadline: %v", err)
+		return err
+	}
+	conn.SetPongHandler(func(string) error {
+		return conn.SetReadDeadline(time.Now().Add(pongWait))
+	})
+
+	c.conn = conn
+
+	c.wQueue = make(chan []byte, 100)
+	if err := c.authenticate(); err != nil {
+		c.log.Errorf("failed to write auth message: %v", err)
+	}
+	c.pushSubscriptions()
+
+	go c.read()
+	go c.write()
+	go c.process()
+
+	c.log.Debugf("connected successfully")
+
+	return nil
 }
 
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
