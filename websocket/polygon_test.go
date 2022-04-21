@@ -1,99 +1,66 @@
-package polygonws_test
+package polygonws
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"os"
 	"testing"
-	"time"
 
-	polygonws "github.com/polygon-io/client-go/websocket"
 	"github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestMain(t *testing.T) {
-	apiKey := os.Getenv("API_KEY")
-	if apiKey == "" {
-		return // skip in CI for now
-	}
+func TestSupportsTopic(t *testing.T) {
+	assert.Equal(t, true, supportsTopic("stocks", StocksMinAggs))
+	assert.Equal(t, false, supportsTopic("stocks", stocksMax))
+	assert.Equal(t, true, supportsTopic("options", OptionsSecAggs))
+	assert.Equal(t, false, supportsTopic("options", StocksMinAggs))
+	assert.Equal(t, true, supportsTopic("forex", ForexQuotes))
+	assert.Equal(t, false, supportsTopic("forex", OptionsQuotes))
+	assert.Equal(t, true, supportsTopic("crypto", CryptoL2Book))
+	assert.Equal(t, false, supportsTopic("crypto", cryptoMin))
+	assert.Equal(t, false, supportsTopic("testMarket", StocksImbalances))
+}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
-
-	log := logrus.New()
-	log.SetLevel(logrus.DebugLevel)
-	c, err := polygonws.New(polygonws.Config{
-		APIKey:    apiKey,
-		Feed:      polygonws.RealTime,
-		Market:    polygonws.Stocks,
-		ParseData: true, // comment for raw data handling
-		Log:       log,
+func TestGetParams(t *testing.T) {
+	p1, _ := getParams("stocks", StocksMinAggs, "AAPL", "GME", "HOOD")
+	p2, _ := getParams("stocks", StocksMinAggs)
+	s1 := "AM.AAPL,AM.GME,AM.HOOD"
+	s2 := "AM.*"
+	assert.Equal(t, p1, s1)
+	assert.Equal(t, p2, s2)
+}
+func TestSubscriptions(t *testing.T) {
+	c, _ := New(Config{
+		APIKey:    "test",
+		Feed:      RealTime,
+		Market:    Stocks,
+		ParseData: true,
+		Log:       logrus.New(),
 	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer c.Close()
 
-	c.Close() // this shouldn't panic
-	if err := c.Connect(); err != nil {
-		log.Fatal(err)
-	}
-
-	// calling connect again shouldn't panic or data race
-	if err := c.Connect(); err != nil {
-		log.Fatal(err)
-	}
-
-	go printOutput(c) // comment for raw data handling
-	// go printRawOutput(c) // uncomment for raw data handling
-
-	if err := c.Subscribe(polygonws.StocksSecAggs, "AAPL", "MSFT"); err != nil {
-		log.Error(err)
-	}
-
-	time.Sleep(5 * time.Second)
-	if err := c.Subscribe(polygonws.StocksTrades, "*"); err != nil {
-		log.Error(err)
-	}
-
-	time.Sleep(250 * time.Millisecond)
-	if err := c.Unsubscribe(polygonws.StocksTrades, "*"); err != nil {
-		log.Error(err)
-	}
-
-	time.Sleep(5 * time.Second)
-	if err := c.Unsubscribe(polygonws.StocksSecAggs, "MSFT"); err != nil {
-		log.Error(err)
-	}
-
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		}
-	}
-}
-
-func printOutput(c *polygonws.Client) {
-	for {
-		out := c.Output()
-		if out == nil {
-			break
-		}
-		fmt.Println(out)
-	}
-}
-
-//nolint:deadcode
-func printRawOutput(c *polygonws.Client) {
-	for {
-		out := c.Output()
-		if out == nil {
-			break
-		}
-		if b, ok := out.(json.RawMessage); ok {
-			fmt.Println(string(b))
-		}
-	}
+	c.setSubscriptions(StocksMinAggs, "AAPL", "TSLA")
+	_, aapl := c.subscriptions["AM"]["AAPL"]
+	_, tsla := c.subscriptions["AM"]["TSLA"]
+	assert.Equal(t, true, aapl)
+	assert.Equal(t, true, tsla)
+	c.deleteSubscriptions(StocksMinAggs, "AAPL", "NFLX")
+	_, aapl = c.subscriptions["AM"]["AAPL"]
+	assert.Equal(t, false, aapl)
+	c.setSubscriptions(StocksMinAggs, "*")
+	_, all := c.subscriptions["AM"]["*"]
+	_, tsla = c.subscriptions["AM"]["TSLA"]
+	assert.Equal(t, false, tsla)
+	assert.Equal(t, true, all)
+	c.deleteSubscriptions(StocksMinAggs, "*")
+	_, all = c.subscriptions["AM"]["*"]
+	assert.Equal(t, false, all)
+	_, trade := c.subscriptions["T"]
+	assert.Equal(t, false, trade)
+	c.deleteSubscriptions(StocksTrades, "RDFN")
+	_, trade = c.subscriptions["T"]
+	assert.Equal(t, true, trade)
+	c.setSubscriptions(StocksTrades, "FB")
+	_, fb := c.subscriptions["T"]["FB"]
+	assert.Equal(t, true, fb)
+	c.deleteSubscriptions(StocksTrades, "*")
+	_, fb = c.subscriptions["T"]["FB"]
+	assert.Equal(t, true, fb)
 }
