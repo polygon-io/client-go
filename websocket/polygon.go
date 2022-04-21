@@ -70,6 +70,7 @@ func New(ctx context.Context, config Config) (*Client, error) {
 	}
 
 	c.backoff = backoff.WithContext(backoff.NewExponentialBackOff(), ctx)
+	c.backoff = backoff.WithMaxRetries(c.backoff, 25) // todo: let user configure?
 
 	return c, nil
 }
@@ -79,7 +80,10 @@ func (c *Client) Connect() error {
 		return nil
 	}
 
-	if err := backoff.Retry(c.connect, c.backoff); err != nil {
+	notify := func(err error, _ time.Duration) {
+		c.log.Errorf("%v", err)
+	}
+	if err := backoff.RetryNotify(c.connect, c.backoff, notify); err != nil {
 		return err
 	}
 
@@ -91,17 +95,14 @@ func (c *Client) connect() error {
 	url := fmt.Sprintf("wss://%v.polygon.io/%v", string(c.feed), string(c.market))
 	conn, res, err := websocket.DefaultDialer.Dial(url, nil)
 	if err != nil {
-		c.log.Errorf("failed to dial server: %v", err)
-		return err
+		return fmt.Errorf("failed to dial server: %w", err)
 	} else if res.StatusCode != 101 {
-		c.log.Errorf("server failed to switch protocols")
 		return errors.New("server failed to switch protocols")
 	}
 
 	conn.SetReadLimit(maxMessageSize)
 	if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-		c.log.Errorf("failed to set read deadline: %v", err)
-		return err
+		return fmt.Errorf("failed to set read deadline: %w", err)
 	}
 	conn.SetPongHandler(func(string) error {
 		return conn.SetReadDeadline(time.Now().Add(pongWait))
@@ -111,7 +112,7 @@ func (c *Client) connect() error {
 
 	c.wQueue = make(chan []byte, 100)
 	if err := c.authenticate(); err != nil {
-		c.log.Errorf("failed to write auth message: %v", err)
+		return fmt.Errorf("failed to write auth message: %w", err)
 	}
 	c.pushSubscriptions()
 
