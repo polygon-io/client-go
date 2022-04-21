@@ -74,7 +74,6 @@ func New(ctx context.Context, config Config) (*Client, error) {
 	return c, nil
 }
 
-// todo: ctx to allow user to cancel?
 func (c *Client) Connect() error {
 	if c.conn != nil {
 		return nil
