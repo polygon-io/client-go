@@ -18,7 +18,7 @@ func TestMain(t *testing.T) {
 		return // skip in CI for now
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
 	log := logrus.New()
@@ -35,6 +35,11 @@ func TestMain(t *testing.T) {
 	}
 	defer c.Close()
 
+	// test subscribing before connecting
+	if err := c.Subscribe(polygonws.StocksSecAggs, "AAPL", "MSFT"); err != nil {
+		log.Error(err)
+	}
+
 	c.Close() // this shouldn't panic
 	if err := c.Connect(); err != nil {
 		log.Fatal(err)
@@ -47,10 +52,6 @@ func TestMain(t *testing.T) {
 
 	go printOutput(c) // comment for raw data handling
 	// go printRawOutput(c) // uncomment for raw data handling
-
-	if err := c.Subscribe(polygonws.StocksSecAggs, "AAPL", "MSFT"); err != nil {
-		log.Error(err)
-	}
 
 	time.Sleep(5 * time.Second)
 	if err := c.Subscribe(polygonws.StocksTrades, "*"); err != nil {
