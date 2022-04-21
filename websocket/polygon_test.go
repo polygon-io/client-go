@@ -57,4 +57,10 @@ func TestSubscriptions(t *testing.T) {
 	c.deleteSubscriptions(StocksTrades, "RDFN")
 	_, trade = c.subscriptions["T"]
 	assert.Equal(t, true, trade)
+	c.setSubscriptions(StocksTrades, "FB")
+	_, fb := c.subscriptions["T"]["FB"]
+	assert.Equal(t, true, fb)
+	c.deleteSubscriptions(StocksTrades, "*")
+	_, fb = c.subscriptions["T"]["FB"]
+	assert.Equal(t, true, fb)
 }
