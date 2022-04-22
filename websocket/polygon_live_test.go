@@ -59,7 +59,7 @@ func TestMain(t *testing.T) {
 	}
 
 	time.Sleep(250 * time.Millisecond)
-	if err := c.Unsubscribe(polygonws.StocksTrades, "*"); err != nil {
+	if err := c.Unsubscribe(polygonws.StocksTrades); err != nil {
 		log.Error(err)
 	}
 
