@@ -81,7 +81,7 @@ func (c *Client) Connect() error {
 	}
 
 	notify := func(err error, _ time.Duration) {
-		c.log.Errorf("%v", err)
+		c.log.Errorf(err.Error())
 	}
 	if err := backoff.RetryNotify(c.connect, c.backoff, notify); err != nil {
 		return err
