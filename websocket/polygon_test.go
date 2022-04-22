@@ -63,5 +63,5 @@ func TestSubscriptions(t *testing.T) {
 	assert.Equal(t, true, fb)
 	c.deleteSubscriptions(StocksTrades, "*")
 	_, fb = c.subscriptions["T"]["FB"]
-	assert.Equal(t, true, fb)
+	assert.Equal(t, false, fb)
 }

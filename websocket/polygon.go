@@ -11,6 +11,9 @@ import (
 	"github.com/cenkalti/backoff/v4"
 	"github.com/gorilla/websocket"
 	"github.com/polygon-io/client-go/websocket/models"
+
+	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 )
 
 // todo: in general, successful calls should be debug and unknown messages should be info
@@ -475,10 +478,13 @@ func (c *Client) pushSubscriptions() {
 }
 
 func (c *Client) deleteSubscriptions(topic Topic, tickers ...string) {
+	if _, prefixExists := c.subscriptions[topic.prefix()]; !prefixExists {
+		c.subscriptions[topic.prefix()] = make(set)
+	}
+	if slices.Contains(tickers, "*") {
+		tickers = maps.Keys(c.subscriptions[topic.prefix()])
+	}
 	for _, t := range tickers {
-		if _, prefixExists := c.subscriptions[topic.prefix()]; !prefixExists {
-			c.subscriptions[topic.prefix()] = make(set)
-		}
 		if _, tickerExists := c.subscriptions[topic.prefix()][t]; !tickerExists {
 			c.log.Infof("already unsubscribed to this ticker")
 		}
