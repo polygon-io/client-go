@@ -59,12 +59,21 @@ func TestMain(t *testing.T) {
 	}
 
 	time.Sleep(250 * time.Millisecond)
-	if err := c.Unsubscribe(polygonws.StocksTrades, "*"); err != nil {
+	if err := c.Unsubscribe(polygonws.StocksTrades); err != nil {
 		log.Error(err)
 	}
 
 	time.Sleep(5 * time.Second)
 	if err := c.Unsubscribe(polygonws.StocksSecAggs, "MSFT"); err != nil {
+		log.Error(err)
+	}
+
+	time.Sleep(1 * time.Second)
+	if err := c.Subscribe(polygonws.StocksSecAggs, "SNAP", "IBM", "LPL"); err != nil {
+		log.Error(err)
+	}
+	time.Sleep(5 * time.Second)
+	if err := c.Unsubscribe(polygonws.StocksSecAggs, "SNAP", "*"); err != nil {
 		log.Error(err)
 	}
 
