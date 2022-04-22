@@ -45,7 +45,7 @@ func TestSubscriptions(t *testing.T) {
 	_ = c.Unsubscribe(StocksMinAggs, "AAPL", "NFLX")
 	_, aapl = c.subscriptions["AM"]["AAPL"]
 	assert.Equal(t, false, aapl)
-	_ = c.Subscribe(StocksMinAggs, "*")
+	_ = c.Subscribe(StocksMinAggs)
 	_, all := c.subscriptions["AM"]["*"]
 	_, tsla = c.subscriptions["AM"]["TSLA"]
 	assert.Equal(t, false, tsla)
@@ -61,7 +61,7 @@ func TestSubscriptions(t *testing.T) {
 	_ = c.Subscribe(StocksTrades, "FB")
 	_, fb := c.subscriptions["T"]["FB"]
 	assert.Equal(t, true, fb)
-	_ = c.Unsubscribe(StocksTrades, "*")
+	_ = c.Unsubscribe(StocksTrades)
 	_, fb = c.subscriptions["T"]["FB"]
 	assert.Equal(t, false, fb)
 }
