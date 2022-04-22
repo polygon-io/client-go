@@ -1,6 +1,7 @@
 package polygonws
 
 import (
+	"context"
 	"testing"
 
 	"github.com/sirupsen/logrus"
@@ -28,7 +29,7 @@ func TestGetParams(t *testing.T) {
 	assert.Equal(t, p2, s2)
 }
 func TestSubscriptions(t *testing.T) {
-	c, _ := New(Config{
+	c, _ := New(context.Background(), Config{
 		APIKey:    "test",
 		Feed:      RealTime,
 		Market:    Stocks,

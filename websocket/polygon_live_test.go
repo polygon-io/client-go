@@ -23,7 +23,7 @@ func TestMain(t *testing.T) {
 
 	log := logrus.New()
 	log.SetLevel(logrus.DebugLevel)
-	c, err := polygonws.New(polygonws.Config{
+	c, err := polygonws.New(ctx, polygonws.Config{
 		APIKey:    apiKey,
 		Feed:      polygonws.RealTime,
 		Market:    polygonws.Stocks,
