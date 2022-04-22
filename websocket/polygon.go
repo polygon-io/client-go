@@ -6,14 +6,15 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/gorilla/websocket"
 	"github.com/polygon-io/client-go/websocket/models"
-
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
+	"gopkg.in/tomb.v2"
 )
 
 // todo: in general, successful calls should be debug and unknown messages should be info
@@ -29,8 +30,9 @@ type Client struct {
 
 	backoff backoff.BackOff
 
-	ctx    context.Context
-	cancel context.CancelFunc
+	mtx    sync.Mutex
+	rwtomb tomb.Tomb
+	ptomb  tomb.Tomb
 
 	conn   *websocket.Conn
 	rQueue chan []byte
@@ -38,6 +40,7 @@ type Client struct {
 
 	parseData bool
 	output    chan any
+	// todo: maybe add an error channel to signal fatal errors
 
 	log Logger
 }
@@ -55,16 +58,12 @@ func New(ctx context.Context, config Config) (*Client, error) {
 		config.Log = &nopLogger{}
 	}
 
-	tctx, tcancel := context.WithCancel(context.Background())
-
 	c := &Client{
 		apiKey:        config.APIKey,
 		feed:          config.Feed,
 		market:        config.Market,
 		subscriptions: make(map[string]set),
 		backoff:       backoff.NewExponentialBackOff(),
-		ctx:           tctx,
-		cancel:        tcancel,
 		rQueue:        make(chan []byte, 10000),
 		wQueue:        make(chan []byte, 100),
 		parseData:     config.ParseData,
@@ -94,7 +93,6 @@ func (c *Client) Connect() error {
 }
 
 func (c *Client) connect() error {
-	// todo: is this default dialer sufficient? might want to let user pass in a context so they can cancel the dial
 	url := fmt.Sprintf("wss://%v.polygon.io/%v", string(c.feed), string(c.market))
 	conn, res, err := websocket.DefaultDialer.Dial(url, nil)
 	if err != nil {
@@ -119,9 +117,12 @@ func (c *Client) connect() error {
 	}
 	c.pushSubscriptions()
 
-	go c.read()
-	go c.write()
-	go c.process()
+	c.rwtomb = tomb.Tomb{}
+	c.rwtomb.Go(c.read)
+	c.rwtomb.Go(c.write)
+
+	c.ptomb = tomb.Tomb{} // todo: don't restart this thread on reconnect?
+	c.ptomb.Go(c.process)
 
 	c.log.Debugf("connected successfully")
 
@@ -189,10 +190,27 @@ func (c *Client) Output() any {
 }
 
 func (c *Client) Close() {
+	c.mtx.Lock()
+	defer c.mtx.Unlock()
+
 	if c.conn == nil {
 		return
 	}
-	c.cancel()
+
+	c.rwtomb.Kill(nil)
+	if err := c.rwtomb.Wait(); err != nil {
+		c.log.Errorf("r/w threads closed: %v", err)
+	}
+
+	c.ptomb.Kill(nil)
+	if err := c.ptomb.Wait(); err != nil {
+		c.log.Errorf("process thread closed: %v", err)
+	}
+
+	close(c.output)
+
+	c.conn.Close()
+	c.conn = nil
 }
 
 func (c *Client) authenticate() error {
@@ -208,113 +226,113 @@ func (c *Client) authenticate() error {
 	return nil
 }
 
-func (c *Client) read() {
+func (c *Client) read() error {
 	defer func() {
-		c.log.Debugf("closing read thread")
+		c.log.Debugf("read thread closed")
 	}()
 
 	for {
 		select {
-		case <-c.ctx.Done():
-			return
+		case <-c.rwtomb.Dying():
+			return nil
 		default:
 			_, msg, err := c.conn.ReadMessage()
 			if err != nil {
 				if websocket.IsCloseError(err, websocket.CloseNormalClosure) {
-					break
+					return nil
 				} else if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure) {
-					c.log.Errorf("connection closed unexpectedly: %v", err)
-					break
+					return fmt.Errorf("connection closed unexpectedly: %w", err)
 				}
-				c.log.Errorf("failed to read message: %v", err)
-				break
+				return fmt.Errorf("failed to read message: %w", err)
 			}
 			c.rQueue <- msg
 		}
 	}
 }
 
-func (c *Client) write() {
+func (c *Client) write() error {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
-		c.log.Debugf("closing write thread")
+		c.log.Debugf("write thread closed")
 		ticker.Stop()
-		c.conn.Close()
+		go c.Close()
 	}()
 
 	for {
 		select {
-		case <-c.ctx.Done():
-			err := c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""), time.Now().Add(writeWait))
-			if err != nil {
+		case <-c.rwtomb.Dying():
+			if err := c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""), time.Now().Add(writeWait)); err != nil {
 				c.log.Errorf("failed to gracefully close: %v", err)
-				return
 			}
-			c.log.Debugf("connection closed successfully")
-			return
+			return nil
 		case <-ticker.C:
-			err := c.conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(writeWait))
-			if err != nil {
-				c.log.Errorf("failed to send ping message: %v", err)
-				return
+			if err := c.conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(writeWait)); err != nil {
+				return fmt.Errorf("failed to send ping message: %w", err)
 			}
 		case msg := <-c.wQueue:
 			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
-				c.log.Errorf("failed to set write deadline: %v", err)
-				return
+				return fmt.Errorf("failed to set write deadline: %w", err)
 			}
 			if err := c.conn.WriteMessage(websocket.TextMessage, msg); err != nil {
-				c.log.Errorf("failed to send message: %v", err)
-				return
+				return fmt.Errorf("failed to send message: %w", err)
 			}
+		default:
+			continue
 		}
 	}
 }
 
-func (c *Client) process() {
+func (c *Client) process() error {
 	defer func() {
-		c.log.Debugf("closing process thread")
-		close(c.output)
+		c.log.Debugf("process thread closed")
 	}()
 
 	for {
 		select {
-		case <-c.ctx.Done():
-			return
+		case <-c.ptomb.Dying():
+			return nil
 		case data := <-c.rQueue:
 			var msgs []json.RawMessage
 			if err := json.Unmarshal(data, &msgs); err != nil {
 				c.log.Errorf("failed to process raw messages: %v", err)
 				continue
 			}
-			c.route(msgs)
+			if err := c.route(msgs); err != nil {
+				return err
+			}
+		default:
+			continue
 		}
 	}
 }
 
-func (c *Client) route(msgs []json.RawMessage) {
+func (c *Client) route(msgs []json.RawMessage) error {
 	for _, msg := range msgs {
 		var ev models.EventType
 		err := json.Unmarshal(msg, &ev)
 		if err != nil {
 			c.log.Errorf("failed to process message: %v", err)
-			return
+			continue
 		}
 
 		switch ev.EventType { // todo: enum?
 		case "status":
-			c.handleStatus(msg)
+			if err := c.handleStatus(msg); err != nil {
+				return err
+			}
 		default:
 			c.handleData(ev.EventType, msg)
 		}
 	}
+
+	return nil
 }
 
-func (c *Client) handleStatus(msg json.RawMessage) {
+func (c *Client) handleStatus(msg json.RawMessage) error {
 	var cm models.ControlMessage
 	if err := json.Unmarshal(msg, &cm); err != nil {
 		c.log.Errorf("failed to unmarshal message: %v", err)
-		return
+		return nil
 	}
 
 	switch cm.Status {
@@ -323,10 +341,8 @@ func (c *Client) handleStatus(msg json.RawMessage) {
 	case "auth_success":
 		c.log.Debugf("authentication successful")
 	case "auth_failed":
-		c.log.Errorf("authentication failed, closing connection")
-		// todo: this is a fatal error so need to cancel any reconnects
-		c.cancel()
-		return
+		// this is a fatal error so need to close the connection
+		return errors.New("authentication failed, closing connection")
 	case "success":
 		c.log.Debugf("received a successful status message: %v", cm.Message)
 	case "error":
@@ -334,6 +350,8 @@ func (c *Client) handleStatus(msg json.RawMessage) {
 	default:
 		c.log.Infof("unknown status message '%v': %v", cm.Status, cm.Message)
 	}
+
+	return nil
 }
 
 func (c *Client) handleData(eventType string, msg json.RawMessage) {
