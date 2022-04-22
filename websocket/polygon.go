@@ -464,7 +464,7 @@ func getParams(market Market, topic Topic, tickers ...string) (string, error) {
 }
 
 func (c *Client) setSubscriptions(topic Topic, tickers ...string) {
-	if tickers[0] == "*" {
+	if len(tickers) > 0 && tickers[0] == "*" {
 		c.subscriptions[topic.prefix()] = make(set)
 	}
 	for _, t := range tickers {
