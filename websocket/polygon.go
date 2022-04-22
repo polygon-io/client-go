@@ -128,7 +128,18 @@ func (c *Client) connect() error {
 	return nil
 }
 
+func (c *Client) checkPrefix(topic Topic) {
+	if _, prefixExists := c.subscriptions[topic.prefix()]; !prefixExists {
+		c.subscriptions[topic.prefix()] = make(set)
+	}
+}
+
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
+	c.checkPrefix(topic)
+	if slices.Contains(tickers, "*") {
+		tickers = []string{"*"}
+	}
+
 	params, err := getParams(c.market, topic, tickers...)
 	if err != nil {
 		return err
@@ -149,6 +160,11 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 }
 
 func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
+	c.checkPrefix(topic)
+	if slices.Contains(tickers, "*") {
+		tickers = maps.Keys(c.subscriptions[topic.prefix()])
+	}
+
 	params, err := getParams(c.market, topic, tickers...)
 	if err != nil {
 		return err
@@ -448,11 +464,10 @@ func getParams(market Market, topic Topic, tickers ...string) (string, error) {
 }
 
 func (c *Client) setSubscriptions(topic Topic, tickers ...string) {
+	if tickers[0] == "*" {
+		c.subscriptions[topic.prefix()] = make(set)
+	}
 	for _, t := range tickers {
-		_, exists := c.subscriptions[topic.prefix()]
-		if !exists || t == "*" {
-			c.subscriptions[topic.prefix()] = make(set)
-		}
 		c.subscriptions[topic.prefix()][t] = struct{}{}
 	}
 }
@@ -478,12 +493,6 @@ func (c *Client) pushSubscriptions() {
 }
 
 func (c *Client) deleteSubscriptions(topic Topic, tickers ...string) {
-	if _, prefixExists := c.subscriptions[topic.prefix()]; !prefixExists {
-		c.subscriptions[topic.prefix()] = make(set)
-	}
-	if slices.Contains(tickers, "*") {
-		tickers = maps.Keys(c.subscriptions[topic.prefix()])
-	}
 	for _, t := range tickers {
 		if _, tickerExists := c.subscriptions[topic.prefix()][t]; !tickerExists {
 			c.log.Infof("already unsubscribed to this ticker")
