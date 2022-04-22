@@ -128,14 +128,14 @@ func (c *Client) connect() error {
 	return nil
 }
 
-func (c *Client) checkPrefix(topic Topic) {
+func (c *Client) setTopic(topic Topic) {
 	if _, prefixExists := c.subscriptions[topic.prefix()]; !prefixExists {
 		c.subscriptions[topic.prefix()] = make(set)
 	}
 }
 
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
-	c.checkPrefix(topic)
+	c.setTopic(topic)
 	if slices.Contains(tickers, "*") {
 		tickers = []string{"*"}
 	}
@@ -160,7 +160,7 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 }
 
 func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
-	c.checkPrefix(topic)
+	c.setTopic(topic)
 	if slices.Contains(tickers, "*") {
 		tickers = maps.Keys(c.subscriptions[topic.prefix()])
 	}
@@ -475,7 +475,7 @@ func (c *Client) setSubscriptions(topic Topic, tickers ...string) {
 func (c *Client) pushSubscriptions() {
 	for prefix, tickers := range c.subscriptions {
 		var params []string
-		for ticker, _ := range tickers {
+		for ticker := range tickers {
 			params = append(params, prefix+"."+ticker)
 		}
 
