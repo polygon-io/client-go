@@ -37,31 +37,31 @@ func TestSubscriptions(t *testing.T) {
 		Log:       logrus.New(),
 	})
 
-	c.setSubscriptions(StocksMinAggs, "AAPL", "TSLA")
+	c.Subscribe(StocksMinAggs, "AAPL", "TSLA")
 	_, aapl := c.subscriptions["AM"]["AAPL"]
 	_, tsla := c.subscriptions["AM"]["TSLA"]
 	assert.Equal(t, true, aapl)
 	assert.Equal(t, true, tsla)
-	c.deleteSubscriptions(StocksMinAggs, "AAPL", "NFLX")
+	c.Unsubscribe(StocksMinAggs, "AAPL", "NFLX")
 	_, aapl = c.subscriptions["AM"]["AAPL"]
 	assert.Equal(t, false, aapl)
-	c.setSubscriptions(StocksMinAggs, "*")
+	c.Subscribe(StocksMinAggs, "*")
 	_, all := c.subscriptions["AM"]["*"]
 	_, tsla = c.subscriptions["AM"]["TSLA"]
 	assert.Equal(t, false, tsla)
 	assert.Equal(t, true, all)
-	c.deleteSubscriptions(StocksMinAggs, "*")
+	c.Unsubscribe(StocksMinAggs, "*")
 	_, all = c.subscriptions["AM"]["*"]
 	assert.Equal(t, false, all)
 	_, trade := c.subscriptions["T"]
 	assert.Equal(t, false, trade)
-	c.deleteSubscriptions(StocksTrades, "RDFN")
+	c.Unsubscribe(StocksTrades, "RDFN")
 	_, trade = c.subscriptions["T"]
 	assert.Equal(t, true, trade)
-	c.setSubscriptions(StocksTrades, "FB")
+	c.Subscribe(StocksTrades, "FB")
 	_, fb := c.subscriptions["T"]["FB"]
 	assert.Equal(t, true, fb)
-	c.deleteSubscriptions(StocksTrades, "*")
+	c.Unsubscribe(StocksTrades, "*")
 	_, fb = c.subscriptions["T"]["FB"]
 	assert.Equal(t, false, fb)
 }
