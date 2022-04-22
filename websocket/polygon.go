@@ -136,7 +136,7 @@ func (c *Client) setTopic(topic Topic) {
 
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 	c.setTopic(topic)
-	if slices.Contains(tickers, "*") {
+	if len(tickers) == 0 || slices.Contains(tickers, "*") {
 		tickers = []string{"*"}
 	}
 
@@ -161,7 +161,7 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 
 func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 	c.setTopic(topic)
-	if slices.Contains(tickers, "*") {
+	if len(tickers) == 0 || slices.Contains(tickers, "*") {
 		tickers = maps.Keys(c.subscriptions[topic.prefix()])
 	}
 
