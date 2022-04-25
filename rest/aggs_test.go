@@ -51,11 +51,11 @@ const (
 func TestGetAggs(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 	registerResponder(expectedAggsResponseURL, expectedAggsResponse)
 
-	res, err := c.Aggs.GetAggs(context.Background(), models.GetAggsParams{
+	res, err := c.GetAggs(context.Background(), models.GetAggsParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
 		Resolution: "day",
@@ -72,11 +72,11 @@ func TestGetAggs(t *testing.T) {
 func TestGetAggsWithQueryParam(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 	registerResponder(expectedAggsResponseURL, expectedAggsResponse)
 
-	res, err := c.Aggs.GetAggs(context.Background(), models.GetAggsParams{
+	res, err := c.GetAggs(context.Background(), models.GetAggsParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
 		Resolution: "day",
@@ -93,7 +93,7 @@ func TestGetAggsWithQueryParam(t *testing.T) {
 func TestGetGroupedDailyAggs(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -139,7 +139,7 @@ func TestGetGroupedDailyAggs(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/2021-07-22", expectedResponse)
-	res, err := c.Aggs.GetGroupedDailyAggs(context.Background(), models.GetGroupedDailyAggsParams{
+	res, err := c.GetGroupedDailyAggs(context.Background(), models.GetGroupedDailyAggsParams{
 		Locale:     models.US,
 		MarketType: models.Stocks,
 		Date:       models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local)),
@@ -154,7 +154,7 @@ func TestGetGroupedDailyAggs(t *testing.T) {
 func TestGetDailyOpenCloseAgg(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -171,7 +171,7 @@ func TestGetDailyOpenCloseAgg(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v1/open-close/AAPL/2020-10-14?adjusted=true", expectedResponse)
-	res, err := c.Aggs.GetDailyOpenCloseAgg(context.Background(), models.GetDailyOpenCloseAggParams{
+	res, err := c.GetDailyOpenCloseAgg(context.Background(), models.GetDailyOpenCloseAggParams{
 		Ticker: "AAPL",
 		Date:   models.Date(time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local)),
 	}.WithAdjusted(true))
@@ -185,7 +185,7 @@ func TestGetDailyOpenCloseAgg(t *testing.T) {
 func TestGetPreviousCloseAgg(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -210,7 +210,7 @@ func TestGetPreviousCloseAgg(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/prev", expectedResponse)
-	res, err := c.Aggs.GetPreviousCloseAgg(context.Background(), models.GetPreviousCloseAggParams{
+	res, err := c.GetPreviousCloseAgg(context.Background(), models.GetPreviousCloseAggParams{
 		Ticker: "AAPL",
 	}.WithAdjusted(true))
 

@@ -15,7 +15,7 @@ import (
 func TestListTickers(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	ticker1 := `{
@@ -45,7 +45,7 @@ func TestListTickers(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v3/reference/tickers?active=true&cik=5&cusip=10&date=2021-07-22&exchange=4&limit=2&market=stocks&order=asc&sort=ticker&type=CS", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
-	iter := c.Reference.ListTickers(context.Background(), models.ListTickersParams{}.
+	iter := c.ListTickers(context.Background(), models.ListTickersParams{}.
 		WithType("CS").WithMarket(models.AssetStocks).
 		WithExchange(4).WithCUSIP(10).WithCIK(5).
 		WithDate(models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).WithActive(true).
@@ -70,7 +70,7 @@ func TestListTickers(t *testing.T) {
 func TestGetTickerDetails(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -112,7 +112,7 @@ func TestGetTickerDetails(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v3/reference/tickers/A?date=2021-07-22", expectedResponse)
-	res, err := c.Reference.GetTickerDetails(context.Background(), models.GetTickerDetailsParams{
+	res, err := c.GetTickerDetails(context.Background(), models.GetTickerDetailsParams{
 		Ticker: "A",
 	}.WithDate(models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))))
 
@@ -125,7 +125,7 @@ func TestGetTickerDetails(t *testing.T) {
 func TestGetTickerTypes(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -143,7 +143,7 @@ func TestGetTickerTypes(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v3/reference/tickers/types?asset_class=stocks&locale=us", expectedResponse)
-	res, err := c.Reference.GetTickerTypes(context.Background(), models.GetTickerTypesParams{}.WithAssetClass("stocks").WithLocale(models.US))
+	res, err := c.GetTickerTypes(context.Background(), models.GetTickerTypesParams{}.WithAssetClass("stocks").WithLocale(models.US))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
@@ -154,7 +154,7 @@ func TestGetTickerTypes(t *testing.T) {
 func TestGetMarketHolidays(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `[
@@ -195,7 +195,7 @@ func TestGetMarketHolidays(t *testing.T) {
 ]`
 
 	registerResponder("https://api.polygon.io/v1/marketstatus/upcoming", expectedResponse)
-	res, err := c.Reference.GetMarketHolidays(context.Background())
+	res, err := c.GetMarketHolidays(context.Background())
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
@@ -206,7 +206,7 @@ func TestGetMarketHolidays(t *testing.T) {
 func TestGetMarketStatus(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -226,7 +226,7 @@ func TestGetMarketStatus(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v1/marketstatus/now", expectedResponse)
-	res, err := c.Reference.GetMarketStatus(context.Background())
+	res, err := c.GetMarketStatus(context.Background())
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")
 	assert.Nil(t, err)
@@ -236,7 +236,7 @@ func TestGetMarketStatus(t *testing.T) {
 func TestListSplits(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	split1 := `{
@@ -255,7 +255,7 @@ func TestListSplits(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v3/reference/splits?execution_date=2021-07-22&limit=2&order=asc&reverse_split=false&sort=ticker&ticker=AAPL", expectedResponse)
-	iter := c.Reference.ListSplits(context.Background(), models.ListSplitsParams{}.
+	iter := c.ListSplits(context.Background(), models.ListSplitsParams{}.
 		WithTicker(models.EQ, "AAPL").WithExecutionDate(models.EQ, models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).WithReverseSplit(false).
 		WithSort(models.TickerSymbol).WithOrder(models.Asc).WithLimit(2))
 
@@ -278,7 +278,7 @@ func TestListSplits(t *testing.T) {
 func TestListDividends(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	dividend1 := `{
@@ -303,7 +303,7 @@ func TestListDividends(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v3/reference/dividends?dividend_type=CD&ticker=CSSEN", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/reference/dividends?cursor=YXA9MjUmYXM9JmxpbWl0PTEwJm9yZGVyPWRlc2Mmc29ydD1leF9kaXZpZGVuZF9kYXRlJnRpY2tlcj1DU1NFTg", "{}")
-	iter := c.Reference.ListDividends(context.Background(), models.ListDividendsParams{}.WithTicker(models.EQ, "CSSEN").WithDividendType(models.DividendCD))
+	iter := c.ListDividends(context.Background(), models.ListDividendsParams{}.WithTicker(models.EQ, "CSSEN").WithDividendType(models.DividendCD))
 
 	// iter creation
 	assert.Nil(t, iter.Err())
@@ -324,7 +324,7 @@ func TestListDividends(t *testing.T) {
 func TestListConditions(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	condition := `{
@@ -365,7 +365,7 @@ func TestListConditions(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v3/reference/conditions?asset_class=stocks&data_type=trade&limit=1", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/reference/conditions?cursor=YXA9MiZhcz0mYXNzZXRfY2xhc3M9c3RvY2tzJmRhdGFfdHlwZT10cmFkZSZsaW1pdD0yJnNvcnQ9YXNzZXRfY2xhc3M", "{}")
-	iter := c.Reference.ListConditions(context.Background(), models.ListConditionsParams{}.WithAssetClass(models.AssetStocks).WithDataType(models.DataTrade).WithLimit(1))
+	iter := c.ListConditions(context.Background(), models.ListConditionsParams{}.WithAssetClass(models.AssetStocks).WithDataType(models.DataTrade).WithLimit(1))
 
 	// iter creation
 	assert.Nil(t, iter.Err())
@@ -386,7 +386,7 @@ func TestListConditions(t *testing.T) {
 func TestListExchanges(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Reference.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -410,7 +410,7 @@ func TestListExchanges(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v3/reference/exchanges?asset_class=stocks&locale=us", expectedResponse)
-	res, err := c.Reference.GetExchanges(context.Background(), models.GetExchangesParams{}.WithAssetClass(models.AssetStocks).WithLocale(models.US))
+	res, err := c.GetExchanges(context.Background(), models.GetExchangesParams{}.WithAssetClass(models.AssetStocks).WithLocale(models.US))
 
 	assert.Nil(t, err)
 	b, err := json.MarshalIndent(res, "", "\t")

@@ -15,7 +15,7 @@ import (
 func TestListTrades(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Trades.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	trade1 := `{
@@ -60,7 +60,7 @@ func TestListTrades(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v3/trades/AAPL?limit=2&order=asc&sort=timestamp&timestamp.gte=1626912000000000000", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/trades/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy&sort=timestamp", "{}")
-	iter := c.Trades.ListTrades(context.Background(), models.ListTradesParams{Ticker: "AAPL"}.
+	iter := c.ListTrades(context.Background(), models.ListTradesParams{Ticker: "AAPL"}.
 		WithTimestamp(models.GTE, models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
 		WithOrder(models.Asc).WithLimit(2), models.QueryParam("sort", string(models.Timestamp)))
 
@@ -90,7 +90,7 @@ func TestListTrades(t *testing.T) {
 func TestGetLastTrade(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Trades.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -115,7 +115,7 @@ func TestGetLastTrade(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/last/trade/AAPL", expectedResponse)
-	res, err := c.Trades.GetLastTrade(context.Background(), &models.GetLastTradeParams{
+	res, err := c.GetLastTrade(context.Background(), &models.GetLastTradeParams{
 		Ticker: "AAPL",
 	})
 
@@ -128,7 +128,7 @@ func TestGetLastTrade(t *testing.T) {
 func TestGetLastCryptoTrade(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -147,7 +147,7 @@ func TestGetLastCryptoTrade(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v1/last/crypto/BTC/USD", expectedResponse)
-	res, err := c.Trades.GetLastCryptoTrade(context.Background(), &models.GetLastCryptoTradeParams{
+	res, err := c.GetLastCryptoTrade(context.Background(), &models.GetLastCryptoTradeParams{
 		From: "BTC",
 		To:   "USD",
 	})

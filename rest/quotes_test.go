@@ -15,7 +15,7 @@ import (
 func TestListQuotes(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	quote1 := `{
@@ -62,7 +62,7 @@ func TestListQuotes(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp=1626912000000000000", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/quotes/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
-	iter := c.Quotes.ListQuotes(context.Background(), models.ListQuotesParams{Ticker: "AAPL"}.
+	iter := c.ListQuotes(context.Background(), models.ListQuotesParams{Ticker: "AAPL"}.
 		WithTimestamp(models.EQ, models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
 		WithSort(models.Timestamp).WithOrder(models.Asc).WithLimit(2))
 
@@ -92,7 +92,7 @@ func TestListQuotes(t *testing.T) {
 func TestGetLastQuote(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -114,7 +114,7 @@ func TestGetLastQuote(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/last/nbbo/AAPL", expectedResponse)
-	res, err := c.Quotes.GetLastQuote(context.Background(), &models.GetLastQuoteParams{
+	res, err := c.GetLastQuote(context.Background(), &models.GetLastQuoteParams{
 		Ticker: "AAPL",
 	})
 
@@ -127,7 +127,7 @@ func TestGetLastQuote(t *testing.T) {
 func TestGetLastForexQuote(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Quotes.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -143,7 +143,7 @@ func TestGetLastForexQuote(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v1/last_quote/currencies/USD/GBP", expectedResponse)
-	res, err := c.Quotes.GetLastForexQuote(context.Background(), &models.GetLastForexQuoteParams{
+	res, err := c.GetLastForexQuote(context.Background(), &models.GetLastForexQuoteParams{
 		From: "USD",
 		To:   "GBP",
 	})
