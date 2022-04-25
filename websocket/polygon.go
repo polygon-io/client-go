@@ -21,6 +21,7 @@ import (
 
 type set map[string]struct{}
 
+// Client defines a client to the Polygon WebSocket API.
 type Client struct {
 	apiKey        string
 	feed          Feed
@@ -45,6 +46,7 @@ type Client struct {
 	log Logger
 }
 
+// New creates a client for the Polygon WebSocket API.
 func New(config Config) (*Client, error) {
 	if config.APIKey == "" {
 		return nil, errors.New("API key is required")
@@ -138,9 +140,8 @@ func (c *Client) reconnect() {
 	}
 
 	c.rwtomb.Kill(nil)
-	rwerr := c.rwtomb.Wait()
-	if rwerr != nil {
-		c.log.Errorf("r/w threads closed: %v", rwerr)
+	if err := c.rwtomb.Wait(); err != nil {
+		c.log.Errorf("r/w threads closed: %v", err)
 	}
 
 	if c.conn != nil {
@@ -153,8 +154,16 @@ func (c *Client) reconnect() {
 	notify := func(err error, _ time.Duration) {
 		c.log.Errorf(err.Error())
 	}
-	if err := backoff.RetryNotify(c.connect(true), c.backoff, notify); err != nil {
-		c.log.Errorf("error reconnecting: %v", err) // todo: is this a fatal error?
+	err := backoff.RetryNotify(c.connect(true), c.backoff, notify)
+	if err != nil {
+		c.log.Errorf("error reconnecting, closing connection")
+
+		c.ptomb.Kill(nil)
+		if err := c.ptomb.Wait(); err != nil {
+			c.log.Errorf("process thread closed: %v", err)
+		}
+
+		close(c.output)
 	}
 }
 
@@ -235,15 +244,13 @@ func (c *Client) Close() {
 	c.shouldClose = true
 
 	c.rwtomb.Kill(nil)
-	rwerr := c.rwtomb.Wait()
-	if rwerr != nil {
-		c.log.Errorf("r/w threads closed: %v", rwerr)
+	if err := c.rwtomb.Wait(); err != nil {
+		c.log.Errorf("r/w threads closed: %v", err)
 	}
 
 	c.ptomb.Kill(nil)
-	perr := c.ptomb.Wait()
-	if perr != nil {
-		c.log.Errorf("process thread closed: %v", perr)
+	if err := c.ptomb.Wait(); err != nil {
+		c.log.Errorf("process thread closed: %v", err)
 	}
 
 	close(c.output)
