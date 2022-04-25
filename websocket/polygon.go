@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
 	"sync"
 	"time"
 
@@ -19,14 +18,11 @@ import (
 // todo: in general, successful calls should be debug and unknown messages should be info
 // todo: probably remove some junk logging before release too
 
-type set map[string]struct{}
-
 // Client defines a client to the Polygon WebSocket API.
 type Client struct {
-	apiKey        string
-	feed          Feed
-	market        Market
-	subscriptions map[string]set
+	apiKey string
+	feed   Feed
+	market Market
 
 	shouldClose bool
 	backoff     backoff.BackOff
@@ -36,8 +32,9 @@ type Client struct {
 	ptomb  tomb.Tomb
 
 	conn   *websocket.Conn
-	rQueue chan []byte
-	wQueue chan []byte
+	rQueue chan json.RawMessage
+	wQueue chan json.RawMessage
+	subs   subscriptions
 
 	parseData bool
 	output    chan any
@@ -57,16 +54,16 @@ func New(config Config) (*Client, error) {
 	}
 
 	c := &Client{
-		apiKey:        config.APIKey,
-		feed:          config.Feed,
-		market:        config.Market,
-		subscriptions: make(map[string]set),
-		backoff:       backoff.NewExponentialBackOff(),
-		rQueue:        make(chan []byte, 10000),
-		wQueue:        make(chan []byte, 100),
-		parseData:     config.ParseData,
-		output:        make(chan any, 100000),
-		log:           config.Log,
+		apiKey:    config.APIKey,
+		feed:      config.Feed,
+		market:    config.Market,
+		backoff:   backoff.NewExponentialBackOff(),
+		rQueue:    make(chan json.RawMessage, 10000),
+		wQueue:    make(chan json.RawMessage, 1000),
+		subs:      make(subscriptions),
+		parseData: config.ParseData,
+		output:    make(chan any, 100000),
+		log:       config.Log,
 	}
 
 	c.backoff = backoff.WithMaxRetries(c.backoff, 25) // todo: let user configure?
@@ -109,14 +106,17 @@ func (c *Client) connect(reconnect bool) func() error {
 		conn.SetPongHandler(func(string) error {
 			return conn.SetReadDeadline(time.Now().Add(pongWait))
 		})
-
 		c.conn = conn
 
-		c.wQueue = make(chan []byte, 100)
+		// reset write queue and push auth/subscription messages
+		c.wQueue = make(chan json.RawMessage, 1000)
 		if err := c.authenticate(); err != nil {
-			return fmt.Errorf("failed to write auth message: %w", err)
+			return err
 		}
-		c.pushSubscriptions()
+		subs := c.subs.get()
+		for _, msg := range subs {
+			c.wQueue <- msg
+		}
 
 		c.rwtomb = tomb.Tomb{}
 		c.rwtomb.Go(c.read)
@@ -167,65 +167,53 @@ func (c *Client) reconnect() {
 	}
 }
 
-func (c *Client) setTopic(topic Topic) {
-	if _, prefixExists := c.subscriptions[topic.prefix()]; !prefixExists {
-		c.subscriptions[topic.prefix()] = make(set)
-	}
-}
-
+// Subscribe sends a subscription message for a topic and set of tickers. If no
+// tickers are passed, it will subscribe to all tickers for a given topic.
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 	c.mtx.Lock()
 	defer c.mtx.Unlock()
 
-	c.setTopic(topic)
+	if !c.market.supports(topic) {
+		return fmt.Errorf("topic '%v' not supported for cluster '%v'", topic.prefix(), c.market)
+	}
+
 	if len(tickers) == 0 || slices.Contains(tickers, "*") {
 		tickers = []string{"*"}
 	}
 
-	params, err := getParams(c.market, topic, tickers...)
+	subscribe, err := getSub(models.Subscribe, topic, tickers...)
 	if err != nil {
 		return err
 	}
 
-	c.setSubscriptions(topic, tickers...)
-
-	subscribe, err := json.Marshal(&models.ControlMessage{
-		Action: models.Subscribe,
-		Params: params,
-	})
-	if err != nil {
-		return err
-	}
-
+	c.subs.add(topic, tickers...)
 	c.wQueue <- subscribe
+
 	return nil
 }
 
+// Unsubscribe sends a message to unsubscribe from a topic and set of tickers. If no
+// tickers are passed, it will unsubscribe from all tickers for a given topic.
 func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 	c.mtx.Lock()
 	defer c.mtx.Unlock()
 
-	c.setTopic(topic)
+	if !c.market.supports(topic) {
+		return fmt.Errorf("topic '%v' not supported for cluster '%v'", topic.prefix(), c.market)
+	}
+
 	if len(tickers) == 0 || slices.Contains(tickers, "*") {
-		tickers = maps.Keys(c.subscriptions[topic.prefix()])
+		tickers = maps.Keys(c.subs[topic])
 	}
 
-	params, err := getParams(c.market, topic, tickers...)
+	unsubscribe, err := getSub(models.Unsubscribe, topic, tickers...)
 	if err != nil {
 		return err
 	}
 
-	c.deleteSubscriptions(topic, tickers...)
-
-	unsubscribe, err := json.Marshal(&models.ControlMessage{
-		Action: models.Unsubscribe,
-		Params: params,
-	})
-	if err != nil {
-		return err
-	}
-
+	c.subs.delete(topic, tickers...)
 	c.wQueue <- unsubscribe
+
 	return nil
 }
 
@@ -496,74 +484,5 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 		c.output <- out
 	default:
 		c.log.Infof("unknown message type '%v'", eventType)
-	}
-}
-
-func supportsTopic(market Market, topic Topic) bool {
-	switch market {
-	case Stocks:
-		return topic > stocksMin && topic < stocksMax
-	case Options:
-		return topic > optionsMin && topic < optionsMax
-	case Forex:
-		return topic > forexMin && topic < forexMax
-	case Crypto:
-		return topic > cryptoMin && topic < cryptoMax
-	}
-	return false
-}
-
-func getParams(market Market, topic Topic, tickers ...string) (string, error) {
-	if !supportsTopic(market, topic) {
-		return "", fmt.Errorf("topic '%v' not supported for feed '%v'", topic.prefix(), market)
-	}
-
-	if len(tickers) == 0 {
-		return topic.prefix() + ".*", nil
-	}
-
-	var params []string
-	for _, ticker := range tickers {
-		params = append(params, topic.prefix()+"."+ticker)
-	}
-
-	return strings.Join(params, ","), nil
-}
-
-func (c *Client) setSubscriptions(topic Topic, tickers ...string) {
-	if len(tickers) > 0 && tickers[0] == "*" {
-		c.subscriptions[topic.prefix()] = make(set)
-	}
-	for _, t := range tickers {
-		c.subscriptions[topic.prefix()][t] = struct{}{}
-	}
-}
-
-func (c *Client) pushSubscriptions() {
-	for prefix, tickers := range c.subscriptions {
-		var params []string
-		for ticker := range tickers {
-			params = append(params, prefix+"."+ticker)
-		}
-
-		subscribe, err := json.Marshal(&models.ControlMessage{
-			Action: models.Subscribe,
-			Params: strings.Join(params, ","),
-		})
-		if err != nil {
-			c.log.Errorf("failed to build subscription: %v", err)
-			continue
-		}
-
-		c.wQueue <- subscribe
-	}
-}
-
-func (c *Client) deleteSubscriptions(topic Topic, tickers ...string) {
-	for _, t := range tickers {
-		if _, tickerExists := c.subscriptions[topic.prefix()][t]; !tickerExists {
-			c.log.Infof("already unsubscribed to this ticker")
-		}
-		delete(c.subscriptions[topic.prefix()], t)
 	}
 }

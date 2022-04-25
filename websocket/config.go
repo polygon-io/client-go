@@ -48,6 +48,20 @@ const (
 	Crypto  Market = "crypto"
 )
 
+func (m Market) supports(topic Topic) bool {
+	switch m {
+	case Stocks:
+		return topic > stocksMin && topic < stocksMax
+	case Options:
+		return topic > optionsMin && topic < optionsMax
+	case Forex:
+		return topic > forexMin && topic < forexMax
+	case Crypto:
+		return topic > cryptoMin && topic < cryptoMax
+	}
+	return false
+}
+
 type Topic uint8
 
 const (
