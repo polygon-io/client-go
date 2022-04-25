@@ -18,12 +18,13 @@ func TestMain(t *testing.T) {
 		return // skip in CI for now
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
 	defer cancel()
 
 	log := logrus.New()
 	log.SetLevel(logrus.DebugLevel)
-	c, err := polygonws.New(ctx, polygonws.Config{
+	log.SetFormatter(&logrus.JSONFormatter{})
+	c, err := polygonws.New(polygonws.Config{
 		APIKey:    apiKey,
 		Feed:      polygonws.RealTime,
 		Market:    polygonws.Stocks,
@@ -53,7 +54,7 @@ func TestMain(t *testing.T) {
 	go printOutput(c) // comment for raw data handling
 	// go printRawOutput(c) // uncomment for raw data handling
 
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 	if err := c.Subscribe(polygonws.StocksTrades, "*"); err != nil {
 		log.Error(err)
 	}
@@ -68,12 +69,17 @@ func TestMain(t *testing.T) {
 		log.Error(err)
 	}
 
-	time.Sleep(1 * time.Second)
+	time.Sleep(10 * time.Second)
 	if err := c.Subscribe(polygonws.StocksSecAggs, "SNAP", "IBM", "LPL"); err != nil {
 		log.Error(err)
 	}
 	time.Sleep(5 * time.Second)
 	if err := c.Unsubscribe(polygonws.StocksSecAggs, "SNAP", "*"); err != nil {
+		log.Error(err)
+	}
+
+	time.Sleep(15 * time.Second)
+	if err := c.Subscribe(polygonws.StocksSecAggs, "AAPL", "MSFT"); err != nil {
 		log.Error(err)
 	}
 
