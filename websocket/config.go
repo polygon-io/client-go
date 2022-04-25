@@ -5,8 +5,8 @@ import "time"
 // todo: add more config options with validation (waits, feed/market, etc)
 
 const (
-	writeWait      = 10 * time.Second
-	pongWait       = 30 * time.Second
+	writeWait      = 5 * time.Second
+	pongWait       = 10 * time.Second
 	pingPeriod     = (pongWait * 9) / 10
 	maxMessageSize = 1000000 // todo: 1MB, what's the limit on the server side?
 )

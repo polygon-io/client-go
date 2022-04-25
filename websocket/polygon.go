@@ -1,7 +1,6 @@
 package polygonws
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -22,13 +21,15 @@ import (
 
 type set map[string]struct{}
 
+// Client defines a client to the Polygon WebSocket API.
 type Client struct {
 	apiKey        string
 	feed          Feed
 	market        Market
 	subscriptions map[string]set
 
-	backoff backoff.BackOff
+	shouldClose bool
+	backoff     backoff.BackOff
 
 	mtx    sync.Mutex
 	rwtomb tomb.Tomb
@@ -45,11 +46,8 @@ type Client struct {
 	log Logger
 }
 
-func New(ctx context.Context, config Config) (*Client, error) {
-	if ctx == nil {
-		ctx = context.Background()
-	}
-
+// New creates a client for the Polygon WebSocket API.
+func New(config Config) (*Client, error) {
 	if config.APIKey == "" {
 		return nil, errors.New("API key is required")
 	}
@@ -71,13 +69,15 @@ func New(ctx context.Context, config Config) (*Client, error) {
 		log:           config.Log,
 	}
 
-	c.backoff = backoff.WithContext(backoff.NewExponentialBackOff(), ctx)
 	c.backoff = backoff.WithMaxRetries(c.backoff, 25) // todo: let user configure?
 
 	return c, nil
 }
 
 func (c *Client) Connect() error {
+	c.mtx.Lock()
+	defer c.mtx.Unlock()
+
 	if c.conn != nil {
 		return nil
 	}
@@ -85,48 +85,86 @@ func (c *Client) Connect() error {
 	notify := func(err error, _ time.Duration) {
 		c.log.Errorf(err.Error())
 	}
-	if err := backoff.RetryNotify(c.connect, c.backoff, notify); err != nil {
+	if err := backoff.RetryNotify(c.connect(false), c.backoff, notify); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (c *Client) connect() error {
-	url := fmt.Sprintf("wss://%v.polygon.io/%v", string(c.feed), string(c.market))
-	conn, res, err := websocket.DefaultDialer.Dial(url, nil)
+func (c *Client) connect(reconnect bool) func() error {
+	return func() error {
+		url := fmt.Sprintf("wss://%v.polygon.io/%v", string(c.feed), string(c.market))
+		conn, res, err := websocket.DefaultDialer.Dial(url, nil)
+		if err != nil {
+			return fmt.Errorf("failed to dial server: %w", err)
+		} else if res.StatusCode != 101 {
+			return errors.New("server failed to switch protocols")
+		}
+
+		conn.SetReadLimit(maxMessageSize)
+		if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
+			return fmt.Errorf("failed to set read deadline: %w", err)
+		}
+		conn.SetPongHandler(func(string) error {
+			return conn.SetReadDeadline(time.Now().Add(pongWait))
+		})
+
+		c.conn = conn
+
+		c.wQueue = make(chan []byte, 100)
+		if err := c.authenticate(); err != nil {
+			return fmt.Errorf("failed to write auth message: %w", err)
+		}
+		c.pushSubscriptions()
+
+		c.rwtomb = tomb.Tomb{}
+		c.rwtomb.Go(c.read)
+		c.rwtomb.Go(c.write)
+
+		if !reconnect {
+			c.ptomb = tomb.Tomb{}
+			c.ptomb.Go(c.process)
+		}
+
+		return nil
+	}
+}
+
+func (c *Client) reconnect() {
+	c.mtx.Lock()
+	defer c.mtx.Unlock()
+
+	if c.shouldClose {
+		return
+	}
+
+	c.rwtomb.Kill(nil)
+	if err := c.rwtomb.Wait(); err != nil {
+		c.log.Errorf("r/w threads closed: %v", err)
+	}
+
+	if c.conn != nil {
+		c.conn.Close()
+		c.conn = nil
+	}
+
+	c.log.Debugf("disconnected unexpectedly, reconnecting")
+
+	notify := func(err error, _ time.Duration) {
+		c.log.Errorf(err.Error())
+	}
+	err := backoff.RetryNotify(c.connect(true), c.backoff, notify)
 	if err != nil {
-		return fmt.Errorf("failed to dial server: %w", err)
-	} else if res.StatusCode != 101 {
-		return errors.New("server failed to switch protocols")
+		c.log.Errorf("error reconnecting, closing connection")
+
+		c.ptomb.Kill(nil)
+		if err := c.ptomb.Wait(); err != nil {
+			c.log.Errorf("process thread closed: %v", err)
+		}
+
+		close(c.output)
 	}
-
-	conn.SetReadLimit(maxMessageSize)
-	if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-		return fmt.Errorf("failed to set read deadline: %w", err)
-	}
-	conn.SetPongHandler(func(string) error {
-		return conn.SetReadDeadline(time.Now().Add(pongWait))
-	})
-
-	c.conn = conn
-
-	c.wQueue = make(chan []byte, 100)
-	if err := c.authenticate(); err != nil {
-		return fmt.Errorf("failed to write auth message: %w", err)
-	}
-	c.pushSubscriptions()
-
-	c.rwtomb = tomb.Tomb{}
-	c.rwtomb.Go(c.read)
-	c.rwtomb.Go(c.write)
-
-	c.ptomb = tomb.Tomb{} // todo: don't restart this thread on reconnect?
-	c.ptomb.Go(c.process)
-
-	c.log.Debugf("connected successfully")
-
-	return nil
 }
 
 func (c *Client) setTopic(topic Topic) {
@@ -136,6 +174,9 @@ func (c *Client) setTopic(topic Topic) {
 }
 
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
+	c.mtx.Lock()
+	defer c.mtx.Unlock()
+
 	c.setTopic(topic)
 	if len(tickers) == 0 || slices.Contains(tickers, "*") {
 		tickers = []string{"*"}
@@ -161,6 +202,9 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 }
 
 func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
+	c.mtx.Lock()
+	defer c.mtx.Unlock()
+
 	c.setTopic(topic)
 	if len(tickers) == 0 || slices.Contains(tickers, "*") {
 		tickers = maps.Keys(c.subscriptions[topic.prefix()])
@@ -196,6 +240,8 @@ func (c *Client) Close() {
 	if c.conn == nil {
 		return
 	}
+
+	c.shouldClose = true
 
 	c.rwtomb.Kill(nil)
 	if err := c.rwtomb.Wait(); err != nil {
@@ -255,14 +301,14 @@ func (c *Client) write() error {
 	defer func() {
 		c.log.Debugf("write thread closed")
 		ticker.Stop()
-		go c.Close()
+		go c.reconnect()
 	}()
 
 	for {
 		select {
 		case <-c.rwtomb.Dying():
 			if err := c.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""), time.Now().Add(writeWait)); err != nil {
-				c.log.Errorf("failed to gracefully close: %v", err)
+				return fmt.Errorf("failed to gracefully close: %w", err)
 			}
 			return nil
 		case <-ticker.C:
@@ -282,9 +328,12 @@ func (c *Client) write() error {
 	}
 }
 
-func (c *Client) process() error {
+func (c *Client) process() (err error) {
 	defer func() {
 		c.log.Debugf("process thread closed")
+		if err != nil {
+			go c.Close() // this client should close if it hits a fatal error (e.g. auth failed)
+		}
 	}()
 
 	for {
