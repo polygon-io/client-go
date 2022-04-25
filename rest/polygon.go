@@ -8,22 +8,22 @@ import (
 // PolygonClient defines a client to the Polygon REST API.
 type PolygonClient struct {
 	client.Client
-	Aggs      *AggsClient
-	Quotes    *QuotesClient
-	Reference *ReferenceClient
-	Trades    *TradesClient
-	Snapshot  *SnapshotClient
+	AggsClient
+	QuotesClient
+	ReferenceClient
+	TradesClient
+	SnapshotClient
 }
 
 // New creates a client for the Polygon REST API.
 func New(apiKey string) *PolygonClient {
 	c := client.New(apiKey)
 	return &PolygonClient{
-		Client:    c,
-		Aggs:      &AggsClient{Client: c},
-		Quotes:    &QuotesClient{Client: c},
-		Reference: &ReferenceClient{Client: c},
-		Trades:    &TradesClient{Client: c},
-		Snapshot:  &SnapshotClient{Client: c},
+		Client:          c,
+		AggsClient:      AggsClient{Client: c},
+		QuotesClient:    QuotesClient{Client: c},
+		ReferenceClient: ReferenceClient{Client: c},
+		TradesClient:    TradesClient{Client: c},
+		SnapshotClient:  SnapshotClient{Client: c},
 	}
 }

@@ -110,7 +110,7 @@ var snapshot2 = `{
 func TestListSnapshotAllTickers(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -123,7 +123,7 @@ func TestListSnapshotAllTickers(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=AAPL%2CMSFT", expectedResponse)
-	res, err := c.Snapshot.GetAllTickersSnapshot(context.Background(), models.GetAllTickersSnapshotParams{
+	res, err := c.GetAllTickersSnapshot(context.Background(), models.GetAllTickersSnapshotParams{
 		Locale:     "us",
 		MarketType: "stocks",
 	}.WithTickers("AAPL,MSFT"))
@@ -137,7 +137,7 @@ func TestListSnapshotAllTickers(t *testing.T) {
 func TestGetTickerSnapshot(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -147,7 +147,7 @@ func TestGetTickerSnapshot(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers/AAPL", expectedResponse)
-	res, err := c.Snapshot.GetTickerSnapshot(context.Background(), &models.GetTickerSnapshotParams{
+	res, err := c.GetTickerSnapshot(context.Background(), &models.GetTickerSnapshotParams{
 		Ticker:     "AAPL",
 		Locale:     "us",
 		MarketType: "stocks",
@@ -162,7 +162,7 @@ func TestGetTickerSnapshot(t *testing.T) {
 func TestGetGainersLosersSnapshot(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -175,7 +175,7 @@ func TestGetGainersLosersSnapshot(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/gainers", expectedResponse)
-	res, err := c.Snapshot.GetGainersLosersSnapshot(context.Background(), &models.GetGainersLosersSnapshotParams{
+	res, err := c.GetGainersLosersSnapshot(context.Background(), &models.GetGainersLosersSnapshotParams{
 		Locale:     "us",
 		MarketType: "stocks",
 		Direction:  "gainers",
@@ -190,7 +190,7 @@ func TestGetGainersLosersSnapshot(t *testing.T) {
 func TestGetOptionContractSnapshot(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -246,7 +246,7 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v3/snapshot/options/AAPL/O:AAPL230616C00150000", expectedResponse)
-	res, err := c.Snapshot.GetOptionContractSnapshot(context.Background(), &models.GetOptionContractSnapshotParams{
+	res, err := c.GetOptionContractSnapshot(context.Background(), &models.GetOptionContractSnapshotParams{
 		UnderlyingAsset: "AAPL",
 		OptionContract:  "O:AAPL230616C00150000",
 	})
@@ -260,7 +260,7 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 func TestGetCryptoFullBookSnapshot(t *testing.T) {
 	c := polygon.New("API_KEY")
 
-	httpmock.ActivateNonDefault(c.Aggs.HTTP.GetClient())
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
 	expectedResponse := `{
@@ -304,7 +304,7 @@ func TestGetCryptoFullBookSnapshot(t *testing.T) {
 }`
 
 	registerResponder("https://api.polygon.io/v2/snapshot/locale/global/markets/crypto/tickers/X:BTCUSD/book", expectedResponse)
-	res, err := c.Snapshot.GetCryptoFullBookSnapshot(context.Background(), &models.GetCryptoFullBookSnapshotParams{
+	res, err := c.GetCryptoFullBookSnapshot(context.Background(), &models.GetCryptoFullBookSnapshotParams{
 		Ticker: "X:BTCUSD",
 	})
 

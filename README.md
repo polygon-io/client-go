@@ -40,7 +40,7 @@ params := models.GetAllTickersSnapshotParams{
     MarketType: models.Stocks,
 }.WithTickers("AAPL,MSFT")
 
-res, err := c.Snapshot.GetAllTickersSnapshot(context.Background(), params)
+res, err := c.GetAllTickersSnapshot(context.Background(), params)
 if err != nil {
     log.Fatal(err)
 }
@@ -56,7 +56,7 @@ Our list methods return iterators that handle pagination for you.
 params := models.ListTradesParams{Ticker: "AAPL"}.
     WithTimestamp(models.GTE, models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
     WithOrder(models.Asc)
-iter := c.Trades.ListTrades(context.Background(), params)
+iter := c.ListTrades(context.Background(), params)
 
 // iter.Next() advances the iterator to the next value in the list
 for iter.Next() {
@@ -81,7 +81,7 @@ params := &models.GetGroupedDailyAggsParams{
     Date:       models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local)),
 }
 
-res, err := c.Aggs.GetGroupedDailyAggs(context.Background(), params,
+res, err := c.GetGroupedDailyAggs(context.Background(), params,
     models.APIKey("YOUR_OTHER_API_KEY"),
     models.Header("X-CUSTOM-HEADER", "VALUE"),
     models.QueryParam("adjusted", strconv.FormatBool(true)))
