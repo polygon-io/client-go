@@ -37,7 +37,7 @@ func (ac *AggsClient) GetGroupedDailyAggs(ctx context.Context, params *models.Ge
 	return res, err
 }
 
-// GetDailyOpenClose retrieves the open, close and afterhours prices of a specific symbol on a certain date.
+// GetDailyOpenCloseAgg retrieves the open, close and afterhours prices of a specific symbol on a certain date.
 // For more details see https://polygon.io/docs/stocks/get_v1_open-close__stocksticker___date.
 func (ac *AggsClient) GetDailyOpenCloseAgg(ctx context.Context, params *models.GetDailyOpenCloseAggParams, opts ...models.RequestOption) (*models.GetDailyOpenCloseAggResponse, error) {
 	res := &models.GetDailyOpenCloseAggResponse{}
@@ -45,7 +45,7 @@ func (ac *AggsClient) GetDailyOpenCloseAgg(ctx context.Context, params *models.G
 	return res, err
 }
 
-// GetPreviousClose retrieves the previous day's open, high, low, and close (OHLC) for the specified ticker.
+// GetPreviousCloseAgg retrieves the previous day's open, high, low, and close (OHLC) for the specified ticker.
 // For more details see https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__prev.
 func (ac *AggsClient) GetPreviousCloseAgg(ctx context.Context, params *models.GetPreviousCloseAggParams, opts ...models.RequestOption) (*models.GetPreviousCloseAggResponse, error) {
 	res := &models.GetPreviousCloseAggResponse{}
