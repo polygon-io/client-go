@@ -5,8 +5,8 @@ import (
 	"github.com/polygon-io/client-go/rest/client"
 )
 
-// PolygonClient defines a client to the Polygon REST API.
-type PolygonClient struct {
+// Client defines a client to the Polygon REST API.
+type Client struct {
 	client.Client
 	AggsClient
 	QuotesClient
@@ -16,9 +16,9 @@ type PolygonClient struct {
 }
 
 // New creates a client for the Polygon REST API.
-func New(apiKey string) *PolygonClient {
+func New(apiKey string) *Client {
 	c := client.New(apiKey)
-	return &PolygonClient{
+	return &Client{
 		Client:          c,
 		AggsClient:      AggsClient{Client: c},
 		QuotesClient:    QuotesClient{Client: c},
