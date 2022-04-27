@@ -53,6 +53,7 @@ const (
 	CIK                Sort = "cik"
 	CompositeFIGI      Sort = "composite_figi"
 	ShareClassFIGI     Sort = "share_class_figi"
+	PublishedUTC       Sort = "published_utc"
 	LastUpdatedUTC     Sort = "last_updated_utc"
 	DelistedUTC        Sort = "delisted_utc"
 	Timestamp          Sort = "timestamp"
@@ -143,11 +144,20 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	parsedTime, err := time.Parse("2006-01-02T15:04:05.000Z", unquoteData)
-	if err != nil {
-		return err
+
+	// attempt to parse time
+	if parsedTime, err := time.Parse("2006-01-02T15:04:05.000Z", unquoteData); err == nil {
+		*t = Time(parsedTime)
+		return nil
 	}
-	*t = Time(parsedTime)
+
+	// attempt with a different format
+	if parsedTime, err := time.Parse("2006-01-02T15:04:05Z", unquoteData); err != nil {
+		return err
+	} else {
+		*t = Time(parsedTime)
+	}
+
 	return nil
 }
 
