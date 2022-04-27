@@ -30,7 +30,7 @@ func TestListTickers(t *testing.T) {
 	"cik": "0001090872",
 	"composite_figi": "BBG000BWQYZ5",
 	"share_class_figi": "BBG001SCTQY4",
-	"last_updated_utc": "2021-04-25T00:00:00Z"
+	"last_updated_utc": "2021-04-25T00:00:00.000Z"
 }`
 
 	expectedResponse := `{
@@ -88,7 +88,7 @@ func TestGetTickerDetails(t *testing.T) {
 		"cik": "0000320193",
 		"composite_figi": "BBG000B9XRY4",
 		"share_class_figi": "BBG001S5N8V8",
-		"last_updated_utc": "2021-04-25T00:00:00Z",
+		"last_updated_utc": "2021-04-25T00:00:00.000Z",
 		"market_cap": 2771126040150,
 		"phone_number": "(408) 996-1010",
 		"address": {
@@ -120,6 +120,93 @@ func TestGetTickerDetails(t *testing.T) {
 	b, err := json.MarshalIndent(res, "", "\t")
 	assert.Nil(t, err)
 	assert.Equal(t, expectedResponse, string(b))
+}
+
+func TestListTickerNews(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	news1 := `{
+	"id": "nJsSJJdwViHZcw5367rZi7_qkXLfMzacXBfpv-vD9UA",
+	"publisher": {
+		"name": "Benzinga",
+		"homepage_url": "https://www.benzinga.com/",
+		"logo_url": "https://s3.polygon.io/public/public/assets/news/logos/benzinga.svg",
+		"favicon_url": "https://s3.polygon.io/public/public/assets/news/favicons/benzinga.ico"
+	},
+	"title": "Cathie Wood Adds More Coinbase, Skillz, Trims Square",
+	"author": "Rachit Vats",
+	"published_utc": "2021-04-26T02:33:17.000Z",
+	"article_url": "https://www.benzinga.com/markets/cryptocurrency/21/04/20784086/cathie-wood-adds-more-coinbase-skillz-trims-square",
+	"tickers": [
+		"DOCU",
+		"DDD",
+		"NIU",
+		"ARKF",
+		"NVDA",
+		"SKLZ",
+		"PCAR",
+		"MASS",
+		"PSTI",
+		"SPFR",
+		"TREE",
+		"PHR",
+		"IRDM",
+		"BEAM",
+		"ARKW",
+		"ARKK",
+		"ARKG",
+		"PSTG",
+		"SQ",
+		"IONS",
+		"SYRS"
+	],
+	"amp_url": "https://amp.benzinga.com/amp/content/20784086",
+	"image_url": "https://cdn2.benzinga.com/files/imagecache/og_image_social_share_1200x630/images/story/2012/andre-francois-mckenzie-auhr4gcqcce-unsplash.jpg?width=720",
+	"description": "Cathie Wood-led Ark Investment Management on Friday snapped up another 221,167 shares...",
+	"keywords": [
+		"Sector ETFs",
+		"Penny Stocks",
+		"Cryptocurrency",
+		"Small Cap",
+		"Markets",
+		"Trading Ideas",
+		"ETFs"
+	]
+}`
+
+	expectedResponse := `{
+	"status": "OK",
+	"count": 1,
+	"next_url": "https://api.polygon.io/v2/reference/news?cursor=eyJsaW1pdCI6MSwic29ydCI6InB1Ymxpc2hlZF91dGMiLCJvcmRlciI6ImFzY2VuZGluZyIsInRpY2tlciI6e30sInB1Ymxpc2hlZF91dGMiOnsiZ3RlIjoiMjAyMS0wNC0yNiJ9LCJzZWFyY2hfYWZ0ZXIiOlsxNjE5NDA0Mzk3MDAwLG51bGxdfQ",
+	"request_id": "831afdb0b8078549fed053476984947a",
+	"results": [
+` + indent(true, news1, "\t\t") + `
+	]
+}`
+
+	registerResponder("https://api.polygon.io/v2/reference/news?limit=2&order=asc&published_utc.lt=1626912000000&sort=published_utc&ticker.lte=AAPL", expectedResponse)
+	registerResponder("https://api.polygon.io/v2/reference/news?cursor=eyJsaW1pdCI6MSwic29ydCI6InB1Ymxpc2hlZF91dGMiLCJvcmRlciI6ImFzY2VuZGluZyIsInRpY2tlciI6e30sInB1Ymxpc2hlZF91dGMiOnsiZ3RlIjoiMjAyMS0wNC0yNiJ9LCJzZWFyY2hfYWZ0ZXIiOlsxNjE5NDA0Mzk3MDAwLG51bGxdfQ", "{}")
+	iter := c.ListTickerNews(context.Background(), models.ListTickerNewsParams{}.
+		WithTicker(models.LTE, "AAPL").WithPublishedUTC(models.LT, models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
+		WithSort(models.PublishedUTC).WithOrder(models.Asc).WithLimit(2))
+
+	// iter creation
+	assert.Nil(t, iter.Err())
+	assert.NotNil(t, iter.Item())
+
+	// first item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	b, err := json.MarshalIndent(iter.Item(), "", "\t")
+	assert.Nil(t, err)
+	assert.Equal(t, news1, string(b))
+
+	// end of list
+	assert.False(t, iter.Next())
+	assert.Nil(t, iter.Err())
 }
 
 func TestGetTickerTypes(t *testing.T) {

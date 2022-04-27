@@ -1,7 +1,5 @@
 package models
 
-import "time"
-
 // ListTickersParams is the set of parameters for the ListTickers method.
 type ListTickersParams struct {
 	TickerEQ  *string `query:"ticker"`
@@ -125,6 +123,76 @@ type GetTickerDetailsResponse struct {
 	Results Ticker `json:"results,omitempty"`
 }
 
+// ListTickerNewsParams is the set of parameters for the ListTickerNews method.
+type ListTickerNewsParams struct {
+	TickerEQ  *string `query:"ticker"`
+	TickerLT  *string `query:"ticker.lt"`
+	TickerLTE *string `query:"ticker.lte"`
+	TickerGT  *string `query:"ticker.gt"`
+	TickerGTE *string `query:"ticker.gte"`
+
+	PublishedUtcEQ  *Millis `query:"published_utc"`
+	PublishedUtcLT  *Millis `query:"published_utc.lt"`
+	PublishedUtcLTE *Millis `query:"published_utc.lte"`
+	PublishedUtcGT  *Millis `query:"published_utc.gt"`
+	PublishedUtcGTE *Millis `query:"published_utc.gte"`
+
+	Sort  *Sort  `query:"sort"`
+	Order *Order `query:"order"`
+	Limit *int   `query:"limit"`
+}
+
+func (p ListTickerNewsParams) WithTicker(c Comparator, q string) *ListTickerNewsParams {
+	if c == EQ {
+		p.TickerEQ = &q
+	} else if c == LT {
+		p.TickerLT = &q
+	} else if c == LTE {
+		p.TickerLTE = &q
+	} else if c == GT {
+		p.TickerGT = &q
+	} else if c == GTE {
+		p.TickerGTE = &q
+	}
+	return &p
+}
+
+func (p ListTickerNewsParams) WithPublishedUTC(c Comparator, q Millis) *ListTickerNewsParams {
+	if c == EQ {
+		p.PublishedUtcEQ = &q
+	} else if c == LT {
+		p.PublishedUtcLT = &q
+	} else if c == LTE {
+		p.PublishedUtcLTE = &q
+	} else if c == GT {
+		p.PublishedUtcGT = &q
+	} else if c == GTE {
+		p.PublishedUtcGTE = &q
+	}
+	return &p
+}
+
+func (p ListTickerNewsParams) WithSort(q Sort) *ListTickerNewsParams {
+	p.Sort = &q
+	return &p
+}
+
+func (p ListTickerNewsParams) WithOrder(q Order) *ListTickerNewsParams {
+	p.Order = &q
+	return &p
+}
+
+func (p ListTickerNewsParams) WithLimit(q int) *ListTickerNewsParams {
+	p.Limit = &q
+	return &p
+}
+
+// ListTickerNewsResponse is the response returned by the ListTickerNews method.
+type ListTickerNewsResponse struct {
+	BaseResponse
+	Results []TickerNews `json:"results,omitempty"`
+}
+
 // GetTickerTypesParams is the set of parameters for the GetTickerTypes method.
 type GetTickerTypesParams struct {
 	AssetClass *AssetClass   `query:"asset_class"`
@@ -164,8 +232,8 @@ type Ticker struct {
 	CIK                         string          `json:"cik,omitempty"`
 	CompositeFIGI               string          `json:"composite_figi,omitempty"`
 	ShareClassFIGI              string          `json:"share_class_figi,omitempty"`
-	LastUpdatedUTC              time.Time       `json:"last_updated_utc,omitempty"`
-	DelistedUTC                 int64           `json:"delisted_utc,omitempty"`
+	LastUpdatedUTC              *Time           `json:"last_updated_utc,omitempty"`
+	DelistedUTC                 *Time           `json:"delisted_utc,omitempty"`
 	MarketCap                   float64         `json:"market_cap,omitempty"`
 	PhoneNumber                 string          `json:"phone_number,omitempty"`
 	Address                     *CompanyAddress `json:"address,omitempty"`
@@ -199,6 +267,27 @@ type Branding struct {
 	AccentColor string `json:"accent_color,omitempty"`
 	LightColor  string `json:"light_color,omitempty"`
 	DarkColor   string `json:"dark_color,omitempty"`
+}
+
+type TickerNews struct {
+	ID           string     `json:"id,omitempty"`
+	Publisher    *Publisher `json:"publisher,omitempty"`
+	Title        string     `json:"title,omitempty"`
+	Author       string     `json:"author,omitempty"`
+	PublishedUTC *Time      `json:"published_utc,omitempty"`
+	ArticleURL   string     `json:"article_url,omitempty"`
+	Tickers      []string   `json:"tickers,omitempty"`
+	AMPURL       string     `json:"amp_url,omitempty"`
+	ImageURL     string     `json:"image_url,omitempty"`
+	Description  string     `json:"description,omitempty"`
+	Keywords     []string   `json:"keywords,omitempty"`
+}
+
+type Publisher struct {
+	Name        string `json:"name,omitempty"`
+	HomepageURL string `json:"homepage_url,omitempty"`
+	LogoURL     string `json:"logo_url,omitempty"`
+	FaviconURL  string `json:"favicon_url,omitempty"`
 }
 
 // TickerType represents a type of ticker with a code that the API understands.

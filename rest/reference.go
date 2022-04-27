@@ -12,6 +12,7 @@ import (
 const (
 	ListTickersPath      = "/v3/reference/tickers"
 	GetTickerDetailsPath = "/v3/reference/tickers/{ticker}"
+	ListTickerNewsPath   = "/v2/reference/news"
 	GetTickerTypesPath   = "/v3/reference/tickers/types"
 
 	GetMarketHolidaysPath = "/v1/marketstatus/upcoming"
@@ -55,6 +56,16 @@ func (c *ReferenceClient) GetTickerDetails(ctx context.Context, params *models.G
 	res := &models.GetTickerDetailsResponse{}
 	err := c.Call(ctx, http.MethodGet, GetTickerDetailsPath, params, res, options...)
 	return res, err
+}
+
+// ListTickerNews retrieves news articles for a specified ticker.
+// For more details see https://polygon.io/docs/stocks/get_v2_reference_news.
+func (c *ReferenceClient) ListTickerNews(ctx context.Context, params *models.ListTickerNewsParams, options ...models.RequestOption) *iter.Iter[models.TickerNews] {
+	return iter.NewIter(ctx, ListTickerNewsPath, params, func(uri string) (iter.ListResponse, []models.TickerNews, error) {
+		res := &models.ListTickerNewsResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
 }
 
 // GetTickerTypes retrieves all the possible ticker types that can be queried.
