@@ -90,6 +90,10 @@ func TestConnectAuthSuccess(t *testing.T) {
 	// closing before connecting shouldn't do anthing
 	c.Close()
 
+	// accessing output early shouldn't do anything
+	out := c.Output()
+	assert.Nil(t, out)
+
 	// connect successfully
 	err = c.Connect()
 	assert.Nil(t, err)

@@ -154,39 +154,21 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 	return nil
 }
 
+// Output returns the next message in the output queue. If no messages are available, it returns nil.
 func (c *Client) Output() any {
-	return <-c.output
+	select {
+	case out := <-c.output:
+		return out
+	default:
+		return nil
+	}
 }
 
+// Close attempt to gracefully close the connection to the server.
 func (c *Client) Close() {
 	c.mtx.Lock()
 	defer c.mtx.Unlock()
 	c.close(false)
-}
-
-func (c *Client) close(reconnect bool) {
-	if c.conn == nil {
-		return
-	}
-
-	c.rwtomb.Kill(nil)
-	if err := c.rwtomb.Wait(); err != nil {
-		c.log.Errorf("r/w threads closed: %v", err)
-	}
-
-	if !reconnect {
-		c.ptomb.Kill(nil)
-		if err := c.ptomb.Wait(); err != nil {
-			c.log.Errorf("process thread closed: %v", err)
-		}
-		c.shouldClose = true
-		close(c.output)
-	}
-
-	if c.conn != nil {
-		c.conn.Close()
-		c.conn = nil
-	}
 }
 
 func newConn(url string) (*websocket.Conn, error) {
@@ -220,7 +202,7 @@ func (c *Client) connect(reconnect bool) func() error {
 		// reset write queue and push auth message
 		c.wQueue = make(chan json.RawMessage, 1000)
 		auth, err := json.Marshal(models.ControlMessage{
-			Action: "auth",
+			Action: models.Auth,
 			Params: c.apiKey,
 		})
 		if err != nil {
@@ -266,6 +248,31 @@ func (c *Client) reconnect() {
 	if err != nil {
 		c.log.Errorf("error reconnecting, closing connection")
 		c.close(false)
+	}
+}
+
+func (c *Client) close(reconnect bool) {
+	if c.conn == nil {
+		return
+	}
+
+	c.rwtomb.Kill(nil)
+	if err := c.rwtomb.Wait(); err != nil {
+		c.log.Errorf("r/w threads closed: %v", err)
+	}
+
+	if !reconnect {
+		c.ptomb.Kill(nil)
+		if err := c.ptomb.Wait(); err != nil {
+			c.log.Errorf("process thread closed: %v", err)
+		}
+		c.shouldClose = true
+		close(c.output)
+	}
+
+	if c.conn != nil {
+		c.conn.Close()
+		c.conn = nil
 	}
 }
 

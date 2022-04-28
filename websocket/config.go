@@ -4,13 +4,29 @@ import (
 	"errors"
 )
 
+// Config is a set of WebSocket client options.
 type Config struct {
-	APIKey     string
-	Feed       Feed
-	Market     Market
+	// APIKey is the API key used to authenticate against the server.
+	APIKey string
+
+	// Feed is the data feed (e.g. Delayed, RealTime) which represents the server host.
+	Feed Feed
+
+	// Market is the type of market (e.g. Stocks, Crypto) used to connect to the server.
+	Market Market
+
+	// MaxRetries is the maximum number of retry attempts that will occur. If the maximum
+	// is reached, the client will close the connection. Omitting this will cause the
+	// client to reconnect indefinitely until the user closes it.
 	MaxRetries *uint64
-	ParseData  bool
-	Log        Logger
+
+	// ParseData is a flag indicating whether data should be parsed into models or
+	// returned as a raw JSON
+	ParseData bool
+
+	// Log is an optional logger. Any logger implementation can be used as long as it
+	// implements the basic Logger interface. Omitting this will disable client logging.
+	Log Logger
 }
 
 func (c *Config) validate() error {
@@ -25,6 +41,7 @@ func (c *Config) validate() error {
 	return nil
 }
 
+// Feed is the data feed (e.g. Delayed, RealTime) which represents the server host.
 type Feed string
 
 const (
@@ -35,6 +52,7 @@ const (
 	PolyFeedPlus Feed = "wss://polyfeedplus.polygon.io"
 )
 
+// Market is the type of market (e.g. Stocks, Crypto) used to connect to the server.
 type Market string
 
 const (
@@ -58,6 +76,7 @@ func (m Market) supports(topic Topic) bool {
 	return true // assume user knows what they're doing if they use some unknown market
 }
 
+// Topic is the data type used to subscribe and retrieve data from the server.
 type Topic uint8
 
 const (
@@ -128,6 +147,7 @@ func (t Topic) prefix() string {
 	return ""
 }
 
+// Logger is a basic logger interface used for logging within the client.
 type Logger interface {
 	Debugf(template string, args ...any)
 	Infof(template string, args ...any)
