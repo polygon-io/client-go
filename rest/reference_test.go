@@ -58,9 +58,10 @@ func TestListTickers(t *testing.T) {
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Item(), "", "\t")
+	var expect models.Ticker
+	err := json.Unmarshal([]byte(ticker1), &expect)
 	assert.Nil(t, err)
-	assert.Equal(t, ticker1, string(b))
+	assert.Equal(t, expect, iter.Item())
 
 	// end of list
 	assert.False(t, iter.Next())
@@ -115,11 +116,12 @@ func TestGetTickerDetails(t *testing.T) {
 	res, err := c.GetTickerDetails(context.Background(), models.GetTickerDetailsParams{
 		Ticker: "A",
 	}.WithDate(models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))))
+	assert.Nil(t, err)
 
+	var expect models.GetTickerDetailsResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestListTickerNews(t *testing.T) {
@@ -200,9 +202,10 @@ func TestListTickerNews(t *testing.T) {
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Item(), "", "\t")
+	var expect models.TickerNews
+	err := json.Unmarshal([]byte(news1), &expect)
 	assert.Nil(t, err)
-	assert.Equal(t, news1, string(b))
+	assert.Equal(t, expect, iter.Item())
 
 	// end of list
 	assert.False(t, iter.Next())
@@ -231,11 +234,12 @@ func TestGetTickerTypes(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v3/reference/tickers/types?asset_class=stocks&locale=us", expectedResponse)
 	res, err := c.GetTickerTypes(context.Background(), models.GetTickerTypesParams{}.WithAssetClass("stocks").WithLocale(models.US))
+	assert.Nil(t, err)
 
+	var expect models.GetTickerTypesResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetMarketHolidays(t *testing.T) {
@@ -283,11 +287,12 @@ func TestGetMarketHolidays(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v1/marketstatus/upcoming", expectedResponse)
 	res, err := c.GetMarketHolidays(context.Background())
+	assert.Nil(t, err)
 
+	var expect models.GetMarketHolidaysResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetMarketStatus(t *testing.T) {
@@ -315,9 +320,11 @@ func TestGetMarketStatus(t *testing.T) {
 	registerResponder("https://api.polygon.io/v1/marketstatus/now", expectedResponse)
 	res, err := c.GetMarketStatus(context.Background())
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
+
+	var expect models.GetMarketStatusResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestListSplits(t *testing.T) {
@@ -326,7 +333,7 @@ func TestListSplits(t *testing.T) {
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	split1 := `{
+	split := `{
 	"execution_date": "2020-08-31",
 	"split_from": 1,
 	"split_to": 4,
@@ -337,7 +344,7 @@ func TestListSplits(t *testing.T) {
 	"status": "OK",
 	"request_id": "2b539ae65c1478dee109b7397bd591b2",
 	"results": [
-` + indent(true, split1, "\t\t") + `
+` + indent(true, split, "\t\t") + `
 	]
 }`
 
@@ -353,9 +360,10 @@ func TestListSplits(t *testing.T) {
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Item(), "", "\t")
+	var expect models.Split
+	err := json.Unmarshal([]byte(split), &expect)
 	assert.Nil(t, err)
-	assert.Equal(t, split1, string(b))
+	assert.Equal(t, expect, iter.Item())
 
 	// end of list
 	assert.False(t, iter.Next())
@@ -368,7 +376,7 @@ func TestListDividends(t *testing.T) {
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	dividend1 := `{
+	dividend := `{
 	"cash_amount": 0.59375,
 	"declaration_date": "2020-09-09",
 	"dividend_type": "CD",
@@ -384,7 +392,7 @@ func TestListDividends(t *testing.T) {
 	"request_id": "eca6d9a0d8dc1cd1b29d2d3112fe938e",
 	"next_url": "https://api.polygon.io/v3/reference/dividends?cursor=YXA9MjUmYXM9JmxpbWl0PTEwJm9yZGVyPWRlc2Mmc29ydD1leF9kaXZpZGVuZF9kYXRlJnRpY2tlcj1DU1NFTg",
 	"results": [
-` + indent(true, dividend1, "\t\t") + `
+` + indent(true, dividend, "\t\t") + `
 	]
 }`
 
@@ -399,9 +407,10 @@ func TestListDividends(t *testing.T) {
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Item(), "", "\t")
+	var expect models.Dividend
+	err := json.Unmarshal([]byte(dividend), &expect)
 	assert.Nil(t, err)
-	assert.Equal(t, dividend1, string(b))
+	assert.Equal(t, expect, iter.Item())
 
 	// end of list
 	assert.False(t, iter.Next())
@@ -461,16 +470,17 @@ func TestListConditions(t *testing.T) {
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Item(), "", "\t")
+	var expect models.Condition
+	err := json.Unmarshal([]byte(condition), &expect)
 	assert.Nil(t, err)
-	assert.Equal(t, condition, string(b))
+	assert.Equal(t, expect, iter.Item())
 
 	// end of list
 	assert.False(t, iter.Next())
 	assert.Nil(t, iter.Err())
 }
 
-func TestListExchanges(t *testing.T) {
+func TestGetExchanges(t *testing.T) {
 	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
@@ -498,9 +508,10 @@ func TestListExchanges(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/v3/reference/exchanges?asset_class=stocks&locale=us", expectedResponse)
 	res, err := c.GetExchanges(context.Background(), models.GetExchangesParams{}.WithAssetClass(models.AssetStocks).WithLocale(models.US))
+	assert.Nil(t, err)
 
+	var expect models.GetExchangesResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }

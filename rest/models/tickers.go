@@ -232,8 +232,8 @@ type Ticker struct {
 	CIK                         string          `json:"cik,omitempty"`
 	CompositeFIGI               string          `json:"composite_figi,omitempty"`
 	ShareClassFIGI              string          `json:"share_class_figi,omitempty"`
-	LastUpdatedUTC              *Time           `json:"last_updated_utc,omitempty"`
-	DelistedUTC                 *Time           `json:"delisted_utc,omitempty"`
+	LastUpdatedUTC              Time            `json:"last_updated_utc,omitempty"`
+	DelistedUTC                 Time            `json:"delisted_utc,omitempty"`
 	MarketCap                   float64         `json:"market_cap,omitempty"`
 	PhoneNumber                 string          `json:"phone_number,omitempty"`
 	Address                     *CompanyAddress `json:"address,omitempty"`
@@ -245,7 +245,7 @@ type Ticker struct {
 	HomepageURL                 string          `json:"homepage_url,omitempty"`
 	TotalEmployees              int32           `json:"total_employees,omitempty"`
 	ListDate                    string          `json:"list_date,omitempty"`
-	Branding                    *Branding       `json:"branding,omitempty"`
+	Branding                    Branding        `json:"branding,omitempty"`
 	ShareClassSharesOutstanding int64           `json:"share_class_shares_outstanding,omitempty"`
 	WeightedSharesOutstanding   int64           `json:"weighted_shares_outstanding,omitempty"`
 }
@@ -270,17 +270,17 @@ type Branding struct {
 }
 
 type TickerNews struct {
-	ID           string     `json:"id,omitempty"`
-	Publisher    *Publisher `json:"publisher,omitempty"`
-	Title        string     `json:"title,omitempty"`
-	Author       string     `json:"author,omitempty"`
-	PublishedUTC *Time      `json:"published_utc,omitempty"`
-	ArticleURL   string     `json:"article_url,omitempty"`
-	Tickers      []string   `json:"tickers,omitempty"`
-	AMPURL       string     `json:"amp_url,omitempty"`
-	ImageURL     string     `json:"image_url,omitempty"`
-	Description  string     `json:"description,omitempty"`
-	Keywords     []string   `json:"keywords,omitempty"`
+	ID           string    `json:"id,omitempty"`
+	Publisher    Publisher `json:"publisher,omitempty"`
+	Title        string    `json:"title,omitempty"`
+	Author       string    `json:"author,omitempty"`
+	PublishedUTC Time      `json:"published_utc,omitempty"`
+	ArticleURL   string    `json:"article_url,omitempty"`
+	Tickers      []string  `json:"tickers,omitempty"`
+	AMPURL       string    `json:"amp_url,omitempty"`
+	ImageURL     string    `json:"image_url,omitempty"`
+	Description  string    `json:"description,omitempty"`
+	Keywords     []string  `json:"keywords,omitempty"`
 }
 
 type Publisher struct {

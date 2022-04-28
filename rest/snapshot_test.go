@@ -127,11 +127,12 @@ func TestListSnapshotAllTickers(t *testing.T) {
 		Locale:     "us",
 		MarketType: "stocks",
 	}.WithTickers("AAPL,MSFT"))
+	assert.Nil(t, err)
 
+	var expect models.GetAllTickersSnapshotResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetTickerSnapshot(t *testing.T) {
@@ -152,11 +153,12 @@ func TestGetTickerSnapshot(t *testing.T) {
 		Locale:     "us",
 		MarketType: "stocks",
 	})
+	assert.Nil(t, err)
 
+	var expect models.GetTickerSnapshotResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetGainersLosersSnapshot(t *testing.T) {
@@ -180,11 +182,12 @@ func TestGetGainersLosersSnapshot(t *testing.T) {
 		MarketType: "stocks",
 		Direction:  "gainers",
 	})
+	assert.Nil(t, err)
 
+	var expect models.GetGainersLosersSnapshotResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetOptionContractSnapshot(t *testing.T) {
@@ -250,11 +253,12 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 		UnderlyingAsset: "AAPL",
 		OptionContract:  "O:AAPL230616C00150000",
 	})
+	assert.Nil(t, err)
 
+	var expect models.GetOptionContractSnapshotResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetCryptoFullBookSnapshot(t *testing.T) {
@@ -307,9 +311,10 @@ func TestGetCryptoFullBookSnapshot(t *testing.T) {
 	res, err := c.GetCryptoFullBookSnapshot(context.Background(), &models.GetCryptoFullBookSnapshotParams{
 		Ticker: "X:BTCUSD",
 	})
+	assert.Nil(t, err)
 
+	var expect models.GetCryptoFullBookSnapshotResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }

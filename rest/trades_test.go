@@ -71,16 +71,18 @@ func TestListTrades(t *testing.T) {
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Item(), "", "\t")
+	var expect1 models.Trade
+	err := json.Unmarshal([]byte(trade1), &expect1)
 	assert.Nil(t, err)
-	assert.Equal(t, trade1, string(b))
+	assert.Equal(t, expect1, iter.Item())
 
 	// second item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err = json.MarshalIndent(iter.Item(), "", "\t")
+	var expect2 models.Trade
+	err = json.Unmarshal([]byte(trade2), &expect2)
 	assert.Nil(t, err)
-	assert.Equal(t, trade2, string(b))
+	assert.Equal(t, expect2, iter.Item())
 
 	// end of list
 	assert.False(t, iter.Next())
@@ -118,11 +120,12 @@ func TestGetLastTrade(t *testing.T) {
 	res, err := c.GetLastTrade(context.Background(), &models.GetLastTradeParams{
 		Ticker: "AAPL",
 	})
+	assert.Nil(t, err)
 
+	var expect models.GetLastTradeResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetLastCryptoTrade(t *testing.T) {
@@ -151,9 +154,10 @@ func TestGetLastCryptoTrade(t *testing.T) {
 		From: "BTC",
 		To:   "USD",
 	})
+	assert.Nil(t, err)
 
+	var expect models.GetLastCryptoTradeResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }

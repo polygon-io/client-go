@@ -81,23 +81,23 @@ type Trade struct {
 	Correction           int     `json:"correction,omitempty"`
 	Exchange             int     `json:"exchange,omitempty"`
 	ID                   string  `json:"id,omitempty"`
-	ParticipantTimestamp *Nanos  `json:"participant_timestamp,omitempty"`
+	ParticipantTimestamp Nanos   `json:"participant_timestamp,omitempty"`
 	Price                float64 `json:"price,omitempty"`
 	SequenceNumber       int64   `json:"sequence_number,omitempty"`
-	SipTimestamp         *Nanos  `json:"sip_timestamp,omitempty"`
+	SipTimestamp         Nanos   `json:"sip_timestamp,omitempty"`
 	Size                 float64 `json:"size,omitempty"`
 	Tape                 int32   `json:"tape,omitempty"`
 	TrfID                int     `json:"trf_id,omitempty"`
-	TrfTimestamp         *Nanos  `json:"trf_timestamp,omitempty"`
+	TrfTimestamp         Nanos   `json:"trf_timestamp,omitempty"`
 }
 
 // LastTrade is the most recent trade for a specified ticker.
 type LastTrade struct {
 	Ticker               string  `json:"T,omitempty"`
-	TRFTimestamp         *Nanos  `json:"f,omitempty"`
+	TRFTimestamp         Nanos   `json:"f,omitempty"`
 	SequenceNumber       int64   `json:"q,omitempty"`
-	Timestamp            *Nanos  `json:"t,omitempty"`
-	ParticipantTimestamp *Nanos  `json:"y,omitempty"`
+	Timestamp            Nanos   `json:"t,omitempty"`
+	ParticipantTimestamp Nanos   `json:"y,omitempty"`
 	Conditions           []int32 `json:"c,omitempty"`
 	Correction           uint32  `json:"e,omitempty"`
 	ID                   string  `json:"i,omitempty"`
