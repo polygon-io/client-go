@@ -127,7 +127,7 @@ type Agg struct {
 	Close             float64 `json:"c,omitempty"`
 	High              float64 `json:"h,omitempty"`
 	Low               float64 `json:"l,omitempty"`
-	Timestamp         *Millis `json:"t,omitempty"`
+	Timestamp         Millis  `json:"t,omitempty"`
 	Transactions      int64   `json:"n,omitempty"`
 	Market            string  `json:"m,omitempty"`
 	Exchange          int32   `json:"x,omitempty"`
@@ -135,6 +135,6 @@ type Agg struct {
 	OfficialOpenPrice float64 `json:"op,omitempty"`
 	AverageSize       float64 `json:"z,omitempty"`
 	AccumulatedVolume float64 `json:"av,omitempty"`
-	StartTimestamp    *Millis `json:"s,omitempty"`
-	EndTimestamp      *Millis `json:"e,omitempty"`
+	StartTimestamp    Millis  `json:"s,omitempty"`
+	EndTimestamp      Millis  `json:"e,omitempty"`
 }

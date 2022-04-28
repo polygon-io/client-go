@@ -85,11 +85,11 @@ type Quote struct {
 	BidSize              float64 `json:"bid_size,omitempty"`
 	Conditions           []int32 `json:"conditions,omitempty"`
 	Indicators           []int32 `json:"indicators,omitempty"`
-	ParticipantTimestamp *Nanos  `json:"participant_timestamp,omitempty"`
-	SequenceNumber       *Nanos  `json:"sequence_number,omitempty"`
-	SipTimestamp         *Nanos  `json:"sip_timestamp,omitempty"`
+	ParticipantTimestamp Nanos   `json:"participant_timestamp,omitempty"`
+	SequenceNumber       Nanos   `json:"sequence_number,omitempty"`
+	SipTimestamp         Nanos   `json:"sip_timestamp,omitempty"`
 	Tape                 int32   `json:"tape,omitempty"`
-	TrfTimestamp         *Nanos  `json:"trf_timestamp,omitempty"`
+	TrfTimestamp         Nanos   `json:"trf_timestamp,omitempty"`
 }
 
 // LastQuote is the most recent NBBO for a ticker symbol.
@@ -103,11 +103,11 @@ type LastQuote struct {
 	BidSize              float64 `json:"s,omitempty"`
 	Conditions           []int32 `json:"c,omitempty"`
 	Indicators           []int32 `json:"i,omitempty"`
-	ParticipantTimestamp *Nanos  `json:"y,omitempty"`
-	SequenceNumber       *Nanos  `json:"q,omitempty"`
-	SipTimestamp         *Nanos  `json:"t,omitempty"`
+	ParticipantTimestamp Nanos   `json:"y,omitempty"`
+	SequenceNumber       Nanos   `json:"q,omitempty"`
+	SipTimestamp         Nanos   `json:"t,omitempty"`
 	Tape                 int32   `json:"z,omitempty"`
-	TrfTimestamp         *Nanos  `json:"f,omitempty"`
+	TrfTimestamp         Nanos   `json:"f,omitempty"`
 }
 
 // ForexQuote is a BBO for a forex currency pair.
@@ -115,5 +115,5 @@ type ForexQuote struct {
 	Ask       float64 `json:"ask,omitempty"`
 	Bid       float64 `json:"bid,omitempty"`
 	Exchange  int     `json:"exchange,omitempty"`
-	Timestamp *Nanos  `json:"timestamp,omitempty"`
+	Timestamp Nanos   `json:"timestamp,omitempty"`
 }

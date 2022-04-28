@@ -62,11 +62,12 @@ func TestGetAggs(t *testing.T) {
 		From:       models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
 		To:         models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC)),
 	}.WithOrder(models.Desc).WithLimit(1).WithAdjusted(true).WithExplain(false))
+	assert.Nil(t, err)
 
+	var expect models.GetAggsResponse
+	err = json.Unmarshal([]byte(expectedAggsResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedAggsResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetAggsWithQueryParam(t *testing.T) {
@@ -83,11 +84,12 @@ func TestGetAggsWithQueryParam(t *testing.T) {
 		From:       models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
 		To:         models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC)),
 	}.WithOrder(models.Desc).WithLimit(1).WithAdjusted(true), models.QueryParam("explain", "false"))
+	assert.Nil(t, err)
 
+	var expect models.GetAggsResponse
+	err = json.Unmarshal([]byte(expectedAggsResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedAggsResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetGroupedDailyAggs(t *testing.T) {
@@ -144,11 +146,12 @@ func TestGetGroupedDailyAggs(t *testing.T) {
 		MarketType: models.Stocks,
 		Date:       models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local)),
 	}.WithAdjusted(true))
+	assert.Nil(t, err)
 
+	var expect models.GetGroupedDailyAggsResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetDailyOpenCloseAgg(t *testing.T) {
@@ -175,11 +178,12 @@ func TestGetDailyOpenCloseAgg(t *testing.T) {
 		Ticker: "AAPL",
 		Date:   models.Date(time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local)),
 	}.WithAdjusted(true))
+	assert.Nil(t, err)
 
+	var expect models.GetDailyOpenCloseAggResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetPreviousCloseAgg(t *testing.T) {
@@ -213,11 +217,12 @@ func TestGetPreviousCloseAgg(t *testing.T) {
 	res, err := c.GetPreviousCloseAgg(context.Background(), models.GetPreviousCloseAggParams{
 		Ticker: "AAPL",
 	}.WithAdjusted(true))
+	assert.Nil(t, err)
 
+	var expect models.GetPreviousCloseAggResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func registerResponder(url, body string) {

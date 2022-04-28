@@ -73,16 +73,18 @@ func TestListQuotes(t *testing.T) {
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err := json.MarshalIndent(iter.Item(), "", "\t")
+	var expect1 models.Quote
+	err := json.Unmarshal([]byte(quote1), &expect1)
 	assert.Nil(t, err)
-	assert.Equal(t, quote1, string(b))
+	assert.Equal(t, expect1, iter.Item())
 
 	// second item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	b, err = json.MarshalIndent(iter.Item(), "", "\t")
+	var expect2 models.Quote
+	err = json.Unmarshal([]byte(quote2), &expect2)
 	assert.Nil(t, err)
-	assert.Equal(t, quote2, string(b))
+	assert.Equal(t, expect2, iter.Item())
 
 	// end of list
 	assert.False(t, iter.Next())
@@ -117,11 +119,12 @@ func TestGetLastQuote(t *testing.T) {
 	res, err := c.GetLastQuote(context.Background(), &models.GetLastQuoteParams{
 		Ticker: "AAPL",
 	})
+	assert.Nil(t, err)
 
+	var expect models.GetLastQuoteResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetLastForexQuote(t *testing.T) {
@@ -147,9 +150,10 @@ func TestGetLastForexQuote(t *testing.T) {
 		From: "USD",
 		To:   "GBP",
 	})
+	assert.Nil(t, err)
 
+	var expect models.GetLastForexQuoteResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
-	b, err := json.MarshalIndent(res, "", "\t")
-	assert.Nil(t, err)
-	assert.Equal(t, expectedResponse, string(b))
+	assert.Equal(t, &expect, res)
 }
