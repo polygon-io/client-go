@@ -17,7 +17,7 @@ func TestSupportsTopic(t *testing.T) {
 	assert.Equal(t, false, Forex.supports(OptionsQuotes))
 	assert.Equal(t, true, Crypto.supports(CryptoL2Book))
 	assert.Equal(t, false, Crypto.supports(cryptoMin))
-	assert.Equal(t, false, Market("testMarket").supports(StocksImbalances))
+	assert.Equal(t, true, Market("testMarket").supports(StocksImbalances))
 }
 
 func TestGet(t *testing.T) {

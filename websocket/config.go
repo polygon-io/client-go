@@ -1,42 +1,38 @@
 package polygonws
 
-import "time"
-
-// todo: add more config options with validation (waits, feed/market, etc)
-
-const (
-	writeWait      = 5 * time.Second
-	pongWait       = 10 * time.Second
-	pingPeriod     = (pongWait * 9) / 10
-	maxMessageSize = 1000000 // todo: 1MB, what's the limit on the server side?
+import (
+	"errors"
 )
 
-type Logger interface {
-	Debugf(template string, args ...any)
-	Infof(template string, args ...any)
-	Errorf(template string, args ...any)
+type Config struct {
+	APIKey     string
+	Feed       Feed
+	Market     Market
+	MaxRetries *uint64
+	ParseData  bool
+	Log        Logger
 }
 
-type nopLogger struct{}
+func (c *Config) validate() error {
+	if c.APIKey == "" {
+		return errors.New("API key is required")
+	}
 
-func (l *nopLogger) Debugf(template string, args ...any) {}
-func (l *nopLogger) Infof(template string, args ...any)  {}
-func (l *nopLogger) Errorf(template string, args ...any) {}
+	if c.Log == nil {
+		c.Log = &nopLogger{}
+	}
 
-type Config struct {
-	APIKey    string
-	Feed      Feed
-	Market    Market
-	ParseData bool
-	Log       Logger
+	return nil
 }
 
 type Feed string
 
 const (
-	RealTime Feed = "socket"
-	Delayed  Feed = "delayed"
-	// todo: polyfeed, etc
+	Delayed      Feed = "wss://delayed.polygon.io"
+	RealTime     Feed = "wss://socket.polygon.io"
+	Nasdaq       Feed = "wss://nasdaqfeed.polygon.io"
+	PolyFeed     Feed = "wss://polyfeed.polygon.io"
+	PolyFeedPlus Feed = "wss://polyfeedplus.polygon.io"
 )
 
 type Market string
@@ -59,7 +55,7 @@ func (m Market) supports(topic Topic) bool {
 	case Crypto:
 		return topic > cryptoMin && topic < cryptoMax
 	}
-	return false
+	return true // assume user knows what they're doing if they use some unknown market
 }
 
 type Topic uint8
@@ -129,6 +125,17 @@ func (t Topic) prefix() string {
 	case CryptoL2Book:
 		return "XL2"
 	}
-
 	return ""
 }
+
+type Logger interface {
+	Debugf(template string, args ...any)
+	Infof(template string, args ...any)
+	Errorf(template string, args ...any)
+}
+
+type nopLogger struct{}
+
+func (l *nopLogger) Debugf(template string, args ...any) {}
+func (l *nopLogger) Infof(template string, args ...any)  {}
+func (l *nopLogger) Errorf(template string, args ...any) {}

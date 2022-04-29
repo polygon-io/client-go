@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/url"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,14 +17,19 @@ import (
 	"gopkg.in/tomb.v2"
 )
 
-// todo: in general, successful calls should be debug and unknown messages should be info
-// todo: probably remove some junk logging before release too
+const (
+	writeWait      = 5 * time.Second
+	pongWait       = 10 * time.Second
+	pingPeriod     = (pongWait * 9) / 10
+	maxMessageSize = 1000000 // 1MB
+)
 
 // Client defines a client to the Polygon WebSocket API.
 type Client struct {
 	apiKey string
 	feed   Feed
 	market Market
+	url    string
 
 	shouldClose bool
 	backoff     backoff.BackOff
@@ -45,12 +52,8 @@ type Client struct {
 
 // New creates a client for the Polygon WebSocket API.
 func New(config Config) (*Client, error) {
-	if config.APIKey == "" {
-		return nil, errors.New("API key is required")
-	}
-
-	if config.Log == nil {
-		config.Log = &nopLogger{}
+	if err := config.validate(); err != nil {
+		return nil, fmt.Errorf("invalid client options: %w", err)
 	}
 
 	c := &Client{
@@ -66,11 +69,23 @@ func New(config Config) (*Client, error) {
 		log:       config.Log,
 	}
 
-	c.backoff = backoff.WithMaxRetries(c.backoff, 25) // todo: let user configure?
+	uri, err := url.Parse(string(c.feed))
+	if err != nil {
+		return nil, fmt.Errorf("invalid data feed format: %v", err)
+	}
+	uri.Path = strings.Join([]string{uri.Path, string(c.market)}, "/")
+	c.url = uri.String()
+
+	if config.MaxRetries != nil {
+		c.backoff = backoff.WithMaxRetries(c.backoff, *config.MaxRetries)
+	}
 
 	return c, nil
 }
 
+// Connect dials the WebSocket server and starts the read/write and process threads.
+// If any subscription messages are pushed before connecting, it will also send those
+// to the server.
 func (c *Client) Connect() error {
 	c.mtx.Lock()
 	defer c.mtx.Unlock()
@@ -89,84 +104,6 @@ func (c *Client) Connect() error {
 	return nil
 }
 
-func (c *Client) connect(reconnect bool) func() error {
-	return func() error {
-		url := fmt.Sprintf("wss://%v.polygon.io/%v", string(c.feed), string(c.market))
-		conn, res, err := websocket.DefaultDialer.Dial(url, nil)
-		if err != nil {
-			return fmt.Errorf("failed to dial server: %w", err)
-		} else if res.StatusCode != 101 {
-			return errors.New("server failed to switch protocols")
-		}
-
-		conn.SetReadLimit(maxMessageSize)
-		if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
-			return fmt.Errorf("failed to set read deadline: %w", err)
-		}
-		conn.SetPongHandler(func(string) error {
-			return conn.SetReadDeadline(time.Now().Add(pongWait))
-		})
-		c.conn = conn
-
-		// reset write queue and push auth/subscription messages
-		c.wQueue = make(chan json.RawMessage, 1000)
-		if err := c.authenticate(); err != nil {
-			return err
-		}
-		subs := c.subs.get()
-		for _, msg := range subs {
-			c.wQueue <- msg
-		}
-
-		c.rwtomb = tomb.Tomb{}
-		c.rwtomb.Go(c.read)
-		c.rwtomb.Go(c.write)
-
-		if !reconnect {
-			c.ptomb = tomb.Tomb{}
-			c.ptomb.Go(c.process)
-		}
-
-		return nil
-	}
-}
-
-func (c *Client) reconnect() {
-	c.mtx.Lock()
-	defer c.mtx.Unlock()
-
-	if c.shouldClose {
-		return
-	}
-
-	c.rwtomb.Kill(nil)
-	if err := c.rwtomb.Wait(); err != nil {
-		c.log.Errorf("r/w threads closed: %v", err)
-	}
-
-	if c.conn != nil {
-		c.conn.Close()
-		c.conn = nil
-	}
-
-	c.log.Debugf("disconnected unexpectedly, reconnecting")
-
-	notify := func(err error, _ time.Duration) {
-		c.log.Errorf(err.Error())
-	}
-	err := backoff.RetryNotify(c.connect(true), c.backoff, notify)
-	if err != nil {
-		c.log.Errorf("error reconnecting, closing connection")
-
-		c.ptomb.Kill(nil)
-		if err := c.ptomb.Wait(); err != nil {
-			c.log.Errorf("process thread closed: %v", err)
-		}
-
-		close(c.output)
-	}
-}
-
 // Subscribe sends a subscription message for a topic and set of tickers. If no
 // tickers are passed, it will subscribe to all tickers for a given topic.
 func (c *Client) Subscribe(topic Topic, tickers ...string) error {
@@ -174,7 +111,7 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 	defer c.mtx.Unlock()
 
 	if !c.market.supports(topic) {
-		return fmt.Errorf("topic '%v' not supported for cluster '%v'", topic.prefix(), c.market)
+		return fmt.Errorf("topic '%v' not supported for market '%v'", topic.prefix(), c.market)
 	}
 
 	if len(tickers) == 0 || slices.Contains(tickers, "*") {
@@ -199,7 +136,7 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 	defer c.mtx.Unlock()
 
 	if !c.market.supports(topic) {
-		return fmt.Errorf("topic '%v' not supported for cluster '%v'", topic.prefix(), c.market)
+		return fmt.Errorf("topic '%v' not supported for market '%v'", topic.prefix(), c.market)
 	}
 
 	if len(tickers) == 0 || slices.Contains(tickers, "*") {
@@ -224,40 +161,112 @@ func (c *Client) Output() any {
 func (c *Client) Close() {
 	c.mtx.Lock()
 	defer c.mtx.Unlock()
+	c.close(false)
+}
 
+func (c *Client) close(reconnect bool) {
 	if c.conn == nil {
 		return
 	}
-
-	c.shouldClose = true
 
 	c.rwtomb.Kill(nil)
 	if err := c.rwtomb.Wait(); err != nil {
 		c.log.Errorf("r/w threads closed: %v", err)
 	}
 
-	c.ptomb.Kill(nil)
-	if err := c.ptomb.Wait(); err != nil {
-		c.log.Errorf("process thread closed: %v", err)
+	if !reconnect {
+		c.ptomb.Kill(nil)
+		if err := c.ptomb.Wait(); err != nil {
+			c.log.Errorf("process thread closed: %v", err)
+		}
+		c.shouldClose = true
+		close(c.output)
 	}
 
-	close(c.output)
-
-	c.conn.Close()
-	c.conn = nil
+	if c.conn != nil {
+		c.conn.Close()
+		c.conn = nil
+	}
 }
 
-func (c *Client) authenticate() error {
-	b, err := json.Marshal(models.ControlMessage{
-		Action: "auth",
-		Params: c.apiKey,
-	})
+func newConn(url string) (*websocket.Conn, error) {
+	conn, res, err := websocket.DefaultDialer.Dial(url, nil)
 	if err != nil {
-		return fmt.Errorf("failed to marshal auth message: %w", err)
+		return nil, fmt.Errorf("failed to dial server: %w", err)
+	} else if res.StatusCode != 101 {
+		return nil, errors.New("server failed to switch protocols")
 	}
 
-	c.wQueue <- b
-	return nil
+	conn.SetReadLimit(maxMessageSize)
+	if err := conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
+		return nil, fmt.Errorf("failed to set read deadline: %w", err)
+	}
+	conn.SetPongHandler(func(string) error {
+		return conn.SetReadDeadline(time.Now().Add(pongWait))
+	})
+
+	return conn, nil
+}
+
+func (c *Client) connect(reconnect bool) func() error {
+	return func() error {
+		// dial the server
+		conn, err := newConn(c.url)
+		if err != nil {
+			return err
+		}
+		c.conn = conn
+
+		// reset write queue and push auth message
+		c.wQueue = make(chan json.RawMessage, 1000)
+		auth, err := json.Marshal(models.ControlMessage{
+			Action: "auth",
+			Params: c.apiKey,
+		})
+		if err != nil {
+			return fmt.Errorf("failed to marshal auth message: %w", err)
+		}
+		c.wQueue <- auth
+
+		// push subscription messages
+		subs := c.subs.get()
+		for _, msg := range subs {
+			c.wQueue <- msg
+		}
+
+		// start the threads
+		c.rwtomb = tomb.Tomb{}
+		c.rwtomb.Go(c.read)
+		c.rwtomb.Go(c.write)
+		if !reconnect {
+			c.ptomb = tomb.Tomb{}
+			c.ptomb.Go(c.process)
+		}
+
+		return nil
+	}
+}
+
+func (c *Client) reconnect() {
+	c.mtx.Lock()
+	defer c.mtx.Unlock()
+
+	if c.shouldClose {
+		return
+	}
+
+	c.close(true)
+
+	c.log.Debugf("unexpected disconnect, reconnecting")
+
+	notify := func(err error, _ time.Duration) {
+		c.log.Errorf(err.Error())
+	}
+	err := backoff.RetryNotify(c.connect(true), c.backoff, notify)
+	if err != nil {
+		c.log.Errorf("error reconnecting, closing connection")
+		c.close(false)
+	}
 }
 
 func (c *Client) read() error {
@@ -352,7 +361,7 @@ func (c *Client) route(msgs []json.RawMessage) error {
 			continue
 		}
 
-		switch ev.EventType { // todo: enum?
+		switch ev.EventType {
 		case "status":
 			if err := c.handleStatus(msg); err != nil {
 				return err
