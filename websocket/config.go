@@ -20,9 +20,8 @@ type Config struct {
 	// client to reconnect indefinitely until the user closes it.
 	MaxRetries *uint64
 
-	// ParseData is a flag indicating whether data should be parsed into models or
-	// returned as a raw JSON
-	ParseData bool
+	// RawData is a flag indicating whether data should be returned as a raw JSON.
+	RawData bool
 
 	// Log is an optional logger. Any logger implementation can be used as long as it
 	// implements the basic Logger interface. Omitting this will disable client logging.

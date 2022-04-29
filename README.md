@@ -102,7 +102,7 @@ import (
 )
 ```
 
-Next, create a new client with your API key and a few other config options.
+Next, create a new client with your API key and a couple other config options.
 
 ```golang
 // create a new client
@@ -110,7 +110,6 @@ c, err := polygonws.New(polygonws.Config{
     APIKey:    "YOUR_API_KEY",
     Feed:      polygonws.RealTime,
     Market:    polygonws.Stocks,
-    ParseData: true, // this tells the client to unmarshal data into models
 })
 if err != nil {
     log.Fatal(err)

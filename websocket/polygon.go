@@ -43,8 +43,8 @@ type Client struct {
 	wQueue chan json.RawMessage
 	subs   subscriptions
 
-	parseData bool
-	output    chan any
+	rawData bool
+	output  chan any
 	// todo: maybe add an error channel to signal fatal errors
 
 	log Logger
@@ -57,16 +57,16 @@ func New(config Config) (*Client, error) {
 	}
 
 	c := &Client{
-		apiKey:    config.APIKey,
-		feed:      config.Feed,
-		market:    config.Market,
-		backoff:   backoff.NewExponentialBackOff(),
-		rQueue:    make(chan json.RawMessage, 10000),
-		wQueue:    make(chan json.RawMessage, 1000),
-		subs:      make(subscriptions),
-		parseData: config.ParseData,
-		output:    make(chan any, 100000),
-		log:       config.Log,
+		apiKey:  config.APIKey,
+		feed:    config.Feed,
+		market:  config.Market,
+		backoff: backoff.NewExponentialBackOff(),
+		rQueue:  make(chan json.RawMessage, 10000),
+		wQueue:  make(chan json.RawMessage, 1000),
+		subs:    make(subscriptions),
+		rawData: config.RawData,
+		output:  make(chan any, 100000),
+		log:     config.Log,
 	}
 
 	uri, err := url.Parse(string(c.feed))
@@ -157,8 +157,11 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 // Output returns the next message in the output queue. If no messages are available, it returns nil.
 func (c *Client) Output() any {
 	select {
-	case out := <-c.output:
-		return out
+	case out, ok := <-c.output:
+		if ok {
+			return out
+		}
+		return nil
 	default:
 		return nil
 	}
@@ -408,7 +411,7 @@ func (c *Client) handleStatus(msg json.RawMessage) error {
 }
 
 func (c *Client) handleData(eventType string, msg json.RawMessage) {
-	if !c.parseData {
+	if c.rawData {
 		c.output <- msg // push raw data to output channel
 		return
 	}
