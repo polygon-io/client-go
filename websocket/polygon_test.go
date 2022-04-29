@@ -48,10 +48,9 @@ func connect(w http.ResponseWriter, r *http.Request) {
 func TestNew(t *testing.T) {
 	// successful creation
 	c, err := New(Config{
-		APIKey:    "test",
-		Feed:      PolyFeed,
-		Market:    Options,
-		ParseData: true,
+		APIKey: "test",
+		Feed:   PolyFeed,
+		Market: Options,
 	})
 	assert.NotNil(t, c)
 	assert.Nil(t, err)
@@ -90,6 +89,10 @@ func TestConnectAuthSuccess(t *testing.T) {
 	// closing before connecting shouldn't do anthing
 	c.Close()
 
+	// accessing output early shouldn't do anything
+	out := c.Output()
+	assert.Nil(t, out)
+
 	// connect successfully
 	err = c.Connect()
 	assert.Nil(t, err)
@@ -97,6 +100,9 @@ func TestConnectAuthSuccess(t *testing.T) {
 	// connecting twice shouldn't do anything
 	err = c.Connect()
 	assert.Nil(t, err)
+
+	c.Close()
+	c.Output()
 }
 
 func TestConnectAuthFailure(t *testing.T) {

@@ -1,7 +1,6 @@
 package models
 
-// todo: verify models before release
-
+// Action is the set of recognized actions used in control messages.
 type Action string
 
 const (
@@ -10,10 +9,14 @@ const (
 	Unsubscribe Action = "unsubscribe"
 )
 
+// EventType is the type of message received. It should be present in
+// every message sent by the server.
 type EventType struct {
 	EventType string `json:"ev,omitempty"`
 }
 
+// ControlMessage is a message to signal status and control events to
+// and from the server.
 type ControlMessage struct {
 	EventType
 	Status  string `json:"status,omitempty"`
@@ -22,6 +25,7 @@ type ControlMessage struct {
 	Params  string `json:"params,omitempty"`
 }
 
+// EquityAgg is an aggregate for either stock tickers or option contracts.
 type EquityAgg struct {
 	EventType
 	Symbol            string  `json:"sym,omitempty"`
@@ -39,6 +43,7 @@ type EquityAgg struct {
 	EndTimestamp      int64   `json:"e,omitempty"`
 }
 
+// CurrencyAgg is an aggregate for either forex currency pairs or crypto pairs.
 type CurrencyAgg struct {
 	EventType
 	Pair           string  `json:"pair,omitempty"`
@@ -53,6 +58,7 @@ type CurrencyAgg struct {
 	AVGTradeSize   int32   `json:"z,omitempty"`
 }
 
+// EquityTrade is trade data for either stock tickers or option contracts.
 type EquityTrade struct {
 	EventType
 	Symbol         string  `json:"sym,omitempty"`
@@ -66,6 +72,7 @@ type EquityTrade struct {
 	SequenceNumber int64   `json:"q,omitempty"`
 }
 
+// CryptoTrade is a trade for a crypto pair.
 type CryptoTrade struct {
 	EventType
 	Symbol            string  `json:"sym,omitempty"`
@@ -78,6 +85,7 @@ type CryptoTrade struct {
 	ReceivedTimestamp int64   `json:"r,omitempty"`
 }
 
+// EquityQuote is a quote for either stock tickers or option contracts.
 type EquityQuote struct {
 	EventType
 	Symbol         string  `json:"sym,omitempty"`
@@ -93,6 +101,7 @@ type EquityQuote struct {
 	SequenceNumber int64   `json:"q,omitempty"`
 }
 
+// ForexQuote is a quote for a forex currency pair.
 type ForexQuote struct {
 	EventType
 	Pair       string  `json:"p,omitempty"`
@@ -102,6 +111,7 @@ type ForexQuote struct {
 	Timestamp  int64   `json:"t,omitempty"`
 }
 
+// CryptoQuote is a quote for a crypto pair.
 type CryptoQuote struct {
 	EventType
 	Pair              string  `json:"pair,omitempty"`
@@ -114,6 +124,7 @@ type CryptoQuote struct {
 	ReceivedTimestamp int64   `json:"r,omitempty"`
 }
 
+// Imbalance is an imbalance event for a given stock ticker symbol.
 type Imbalance struct {
 	EventType
 	Symbol            string  `json:"T,omitempty"`
@@ -127,6 +138,7 @@ type Imbalance struct {
 	BookClearingPrice float64 `json:"b,omitempty"`
 }
 
+// LimitUpLimitDown is a LULD event for a given stock ticker symbol.
 type LimitUpLimitDown struct {
 	EventType
 	Symbol         string  `json:"T,omitempty"`
@@ -138,6 +150,7 @@ type LimitUpLimitDown struct {
 	SequenceNumber int64   `json:"q,omitempty"`
 }
 
+// Level2Book is level 2 book data for a given crypto pair.
 type Level2Book struct {
 	EventType
 	Pair              string    `json:"pair,omitempty"`

@@ -43,8 +43,8 @@ type Client struct {
 	wQueue chan json.RawMessage
 	subs   subscriptions
 
-	parseData bool
-	output    chan any
+	rawData bool
+	output  chan any
 	// todo: maybe add an error channel to signal fatal errors
 
 	log Logger
@@ -57,16 +57,16 @@ func New(config Config) (*Client, error) {
 	}
 
 	c := &Client{
-		apiKey:    config.APIKey,
-		feed:      config.Feed,
-		market:    config.Market,
-		backoff:   backoff.NewExponentialBackOff(),
-		rQueue:    make(chan json.RawMessage, 10000),
-		wQueue:    make(chan json.RawMessage, 1000),
-		subs:      make(subscriptions),
-		parseData: config.ParseData,
-		output:    make(chan any, 100000),
-		log:       config.Log,
+		apiKey:  config.APIKey,
+		feed:    config.Feed,
+		market:  config.Market,
+		backoff: backoff.NewExponentialBackOff(),
+		rQueue:  make(chan json.RawMessage, 10000),
+		wQueue:  make(chan json.RawMessage, 1000),
+		subs:    make(subscriptions),
+		rawData: config.RawData,
+		output:  make(chan any, 100000),
+		log:     config.Log,
 	}
 
 	uri, err := url.Parse(string(c.feed))
@@ -154,39 +154,24 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 	return nil
 }
 
+// Output returns the next message in the output queue. If no messages are available, it returns nil.
 func (c *Client) Output() any {
-	return <-c.output
+	select {
+	case out, ok := <-c.output:
+		if ok {
+			return out
+		}
+		return nil
+	default:
+		return nil
+	}
 }
 
+// Close attempt to gracefully close the connection to the server.
 func (c *Client) Close() {
 	c.mtx.Lock()
 	defer c.mtx.Unlock()
 	c.close(false)
-}
-
-func (c *Client) close(reconnect bool) {
-	if c.conn == nil {
-		return
-	}
-
-	c.rwtomb.Kill(nil)
-	if err := c.rwtomb.Wait(); err != nil {
-		c.log.Errorf("r/w threads closed: %v", err)
-	}
-
-	if !reconnect {
-		c.ptomb.Kill(nil)
-		if err := c.ptomb.Wait(); err != nil {
-			c.log.Errorf("process thread closed: %v", err)
-		}
-		c.shouldClose = true
-		close(c.output)
-	}
-
-	if c.conn != nil {
-		c.conn.Close()
-		c.conn = nil
-	}
 }
 
 func newConn(url string) (*websocket.Conn, error) {
@@ -220,7 +205,7 @@ func (c *Client) connect(reconnect bool) func() error {
 		// reset write queue and push auth message
 		c.wQueue = make(chan json.RawMessage, 1000)
 		auth, err := json.Marshal(models.ControlMessage{
-			Action: "auth",
+			Action: models.Auth,
 			Params: c.apiKey,
 		})
 		if err != nil {
@@ -266,6 +251,31 @@ func (c *Client) reconnect() {
 	if err != nil {
 		c.log.Errorf("error reconnecting, closing connection")
 		c.close(false)
+	}
+}
+
+func (c *Client) close(reconnect bool) {
+	if c.conn == nil {
+		return
+	}
+
+	c.rwtomb.Kill(nil)
+	if err := c.rwtomb.Wait(); err != nil {
+		c.log.Errorf("r/w threads closed: %v", err)
+	}
+
+	if !reconnect {
+		c.ptomb.Kill(nil)
+		if err := c.ptomb.Wait(); err != nil {
+			c.log.Errorf("process thread closed: %v", err)
+		}
+		c.shouldClose = true
+		close(c.output)
+	}
+
+	if c.conn != nil {
+		c.conn.Close()
+		c.conn = nil
 	}
 }
 
@@ -401,7 +411,7 @@ func (c *Client) handleStatus(msg json.RawMessage) error {
 }
 
 func (c *Client) handleData(eventType string, msg json.RawMessage) {
-	if !c.parseData {
+	if c.rawData {
 		c.output <- msg // push raw data to output channel
 		return
 	}

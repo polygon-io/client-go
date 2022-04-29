@@ -25,11 +25,11 @@ func TestMain(t *testing.T) {
 	log.SetLevel(logrus.DebugLevel)
 	log.SetFormatter(&logrus.JSONFormatter{})
 	c, err := polygonws.New(polygonws.Config{
-		APIKey:    apiKey,
-		Feed:      polygonws.RealTime,
-		Market:    polygonws.Stocks,
-		ParseData: true, // comment for raw data handling
-		Log:       log,
+		APIKey: apiKey,
+		Feed:   polygonws.RealTime,
+		Market: polygonws.Stocks,
+		// RawData: true, // uncomment for raw data handling
+		Log: log,
 	})
 	if err != nil {
 		log.Fatal(err)
