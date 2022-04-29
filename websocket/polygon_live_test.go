@@ -51,8 +51,8 @@ func TestMain(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	go printOutput(c) // comment for raw data handling
-	// go printRawOutput(c) // uncomment for raw data handling
+	go printOutput(ctx, c) // comment for raw data handling
+	// go printRawOutput(ctx, c) // uncomment for raw data handling
 
 	time.Sleep(10 * time.Second)
 	if err := c.Subscribe(polygonws.StocksTrades, "*"); err != nil {
@@ -91,25 +91,35 @@ func TestMain(t *testing.T) {
 	}
 }
 
-func printOutput(c *polygonws.Client) {
+func printOutput(ctx context.Context, client *polygonws.Client) {
 	for {
-		out := c.Output()
-		if out == nil {
-			break
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			out := client.Output()
+			if out == nil {
+				continue
+			}
+			fmt.Println(out)
 		}
-		fmt.Println(out)
 	}
 }
 
 //nolint:deadcode
-func printRawOutput(c *polygonws.Client) {
+func printRawOutput(ctx context.Context, client *polygonws.Client) {
 	for {
-		out := c.Output()
-		if out == nil {
-			break
-		}
-		if b, ok := out.(json.RawMessage); ok {
-			fmt.Println(string(b))
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			out := client.Output()
+			if out == nil {
+				continue
+			}
+			if b, ok := out.(json.RawMessage); ok {
+				fmt.Println(string(b))
+			}
 		}
 	}
 }
