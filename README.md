@@ -3,7 +3,7 @@
 <!-- todo: add a codecov badge -->
 <!-- todo: figure out a way to show all build statuses -->
 
-[![Docs][doc-img]][doc] [![Build][build-img]][build]
+[![Build][build-img]][build]
 
 The official Go client library for the [Polygon](https://polygon.io/) REST and WebSocket API.
 
@@ -14,6 +14,8 @@ See the [docs](https://polygon.io/docs/stocks/getting-started) for more details 
 This client is still in pre-release. It only supports the REST API but WebSocket support is coming soon. The public interface is relatively stable at this point but is still liable to change slightly until we release v1.
 
 ## REST API Client
+
+[![rest-docs][rest-doc-img]][rest-doc]
 
 To get started, you'll need to import two main packages.
 
@@ -92,6 +94,8 @@ log.Print(res) // do something with the result
 ```
 
 ## WebSocket Client
+
+[![ws-docs][ws-doc-img]][ws-doc]
 
 Import the WebSocket client and models packages to get started.
 
@@ -176,7 +180,9 @@ For now, we're generally not accepting pull requests from outside contributors b
 
 -------------------------------------------------------------------------------
 
-[doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go/rest
-[doc]: https://pkg.go.dev/github.com/polygon-io/client-go/rest
+[rest-doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go/rest
+[rest-doc]: https://pkg.go.dev/github.com/polygon-io/client-go/rest
+[ws-doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go/websocket
+[ws-doc]: https://pkg.go.dev/github.com/polygon-io/client-go/websocket
 [build-img]: https://github.com/polygon-io/client-go/actions/workflows/test.yml/badge.svg
 [build]: https://github.com/polygon-io/client-go/actions
