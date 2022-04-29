@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	ListQuotesPath        = "/v3/quotes/{ticker}"
-	GetLastQuotePath      = "/v2/last/nbbo/{ticker}"
-	GetLastForexQuotePath = "/v1/last_quote/currencies/{from}/{to}"
+	ListQuotesPath                    = "/v3/quotes/{ticker}"
+	GetLastQuotePath                  = "/v2/last/nbbo/{ticker}"
+	GetLastForexQuotePath             = "/v1/last_quote/currencies/{from}/{to}"
+	GetRealTimeCurrencyConversionPath = "/v1/conversion/{from}/{to}"
 )
 
 // QuotesClient defines a REST client for the Polygon quotes API.
@@ -51,5 +52,14 @@ func (c *QuotesClient) GetLastQuote(ctx context.Context, params *models.GetLastQ
 func (c *QuotesClient) GetLastForexQuote(ctx context.Context, params *models.GetLastForexQuoteParams, options ...models.RequestOption) (*models.GetLastForexQuoteResponse, error) {
 	res := &models.GetLastForexQuoteResponse{}
 	err := c.Call(ctx, http.MethodGet, GetLastForexQuotePath, params, res, options...)
+	return res, err
+}
+
+// GetRealTimeCurrencyConversion retrieves retrieves currency conversion using the latest
+// market conversion rates. Note that you can convert in both directions.
+// For more details see https://polygon.io/docs/forex/get_v1_conversion__from___to.
+func (c *QuotesClient) GetRealTimeCurrencyConversion(ctx context.Context, params *models.GetRealTimeCurrencyConversionParams, options ...models.RequestOption) (*models.GetRealTimeCurrencyConversionResponse, error) {
+	res := &models.GetRealTimeCurrencyConversionResponse{}
+	err := c.Call(ctx, http.MethodGet, GetRealTimeCurrencyConversionPath, params, res, options...)
 	return res, err
 }

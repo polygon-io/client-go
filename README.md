@@ -12,7 +12,7 @@ The official Go client library for the [Polygon](https://polygon.io/) REST and W
 
 See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API. 
 
-This client is still in pre-release. It only supports the REST API but WebSocket support is coming soon. The public interface is relatively stable at this point but is still liable to change slightly until we release v1.
+This client is still in pre-release. The public interface is relatively stable at this point but is still liable to change slightly until we release v1.
 
 ## REST API Client
 

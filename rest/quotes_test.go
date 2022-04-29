@@ -157,3 +157,36 @@ func TestGetLastForexQuote(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, &expect, res)
 }
+
+func TestGetRealTimeCurrencyConversion(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := `{
+	"status": "success",
+	"initialAmount": 100,
+	"converted": 73.14,
+	"from": "AUD",
+	"to": "USD",
+	"last": {
+		"ask": 1.3673344,
+		"bid": 1.3672596,
+		"exchange": 48,
+		"timestamp": 1605555313000
+	}
+}`
+
+	registerResponder("https://api.polygon.io/v1/conversion/USD/GBP", expectedResponse)
+	res, err := c.GetRealTimeCurrencyConversion(context.Background(), &models.GetRealTimeCurrencyConversionParams{
+		From: "USD",
+		To:   "GBP",
+	})
+	assert.Nil(t, err)
+
+	var expect models.GetRealTimeCurrencyConversionResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
+	assert.Nil(t, err)
+	assert.Equal(t, &expect, res)
+}

@@ -75,6 +75,22 @@ type GetLastForexQuoteResponse struct {
 	Last   ForexQuote `json:"last,omitempty"`
 }
 
+// GetRealTimeCurrencyConversionParams is the set of parameters for the GetRealTimeCurrencyConversion method.
+type GetRealTimeCurrencyConversionParams struct {
+	From string `validate:"required" path:"from"`
+	To   string `validate:"required" path:"to"`
+}
+
+// GetRealTimeCurrencyConversionResponse is the response returned by the GetRealTimeCurrencyConversion method.
+type GetRealTimeCurrencyConversionResponse struct {
+	BaseResponse
+	InitialAmount float64    `json:"initialAmount,omitempty"`
+	Converted     float64    `json:"converted,omitempty"`
+	From          string     `json:"from,omitempty"`
+	To            string     `json:"to,omitempty"`
+	LastQuote     ForexQuote `json:"last,omitempty"`
+}
+
 // Quote is an NBBO for a ticker symbol in a given time range.
 type Quote struct {
 	AskExchange          int     `json:"ask_exchange,omitempty"`
