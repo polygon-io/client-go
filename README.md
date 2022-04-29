@@ -2,6 +2,7 @@
 
 <!-- todo: add a codecov badge -->
 <!-- todo: figure out a way to show all build statuses -->
+<!-- todo: consider moving some stuff into separate readmes -->
 
 [![Build][build-img]][build]
 
