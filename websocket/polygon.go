@@ -247,6 +247,22 @@ func (c *Client) reconnect() {
 	}
 }
 
+func (c *Client) closeOutput() {
+	defer func() {
+		if r := recover(); r != nil {
+			c.log.Debugf("output channel was closed by user")
+		} else {
+			c.log.Debugf("output channel closed")
+		}
+	}()
+	close(c.output)
+}
+
+func Close(ch chan int) {
+	defer func() { recover() }()
+	close(ch)
+}
+
 func (c *Client) close(reconnect bool) {
 	if c.conn == nil {
 		return
@@ -262,15 +278,8 @@ func (c *Client) close(reconnect bool) {
 		if err := c.ptomb.Wait(); err != nil {
 			c.log.Errorf("process thread closed: %v", err)
 		}
-
 		c.shouldClose = true
-
-		select {
-		case <-c.output:
-			c.log.Debugf("output channel was closed by user")
-		default:
-			close(c.output)
-		}
+		c.closeOutput()
 	}
 
 	if c.conn != nil {
