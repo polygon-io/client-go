@@ -258,11 +258,6 @@ func (c *Client) closeOutput() {
 	close(c.output)
 }
 
-func Close(ch chan int) {
-	defer func() { recover() }()
-	close(ch)
-}
-
 func (c *Client) close(reconnect bool) {
 	if c.conn == nil {
 		return
