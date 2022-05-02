@@ -51,13 +51,15 @@ func TestMain(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	go printOutput(ctx, c) // comment for raw data handling
-	// go printRawOutput(ctx, c) // uncomment for raw data handling
+	go printOutput(c) // comment for raw data handling
+	// go printRawOutput(c) // uncomment for raw data handling
 
 	time.Sleep(10 * time.Second)
 	if err := c.Subscribe(polygonws.StocksTrades, "*"); err != nil {
 		log.Error(err)
 	}
+
+	// close(c.Output()) // uncomment to test behavior when output channel is closed
 
 	time.Sleep(250 * time.Millisecond)
 	if err := c.Unsubscribe(polygonws.StocksTrades); err != nil {
@@ -91,35 +93,17 @@ func TestMain(t *testing.T) {
 	}
 }
 
-func printOutput(ctx context.Context, client *polygonws.Client) {
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		default:
-			out := client.Output()
-			if out == nil {
-				continue
-			}
-			fmt.Println(out)
-		}
+func printOutput(client *polygonws.Client) {
+	for out := range client.Output() {
+		fmt.Println(out)
 	}
 }
 
 //nolint:deadcode
-func printRawOutput(ctx context.Context, client *polygonws.Client) {
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		default:
-			out := client.Output()
-			if out == nil {
-				continue
-			}
-			if b, ok := out.(json.RawMessage); ok {
-				fmt.Println(string(b))
-			}
+func printRawOutput(client *polygonws.Client) {
+	for out := range client.Output() {
+		if b, ok := out.(json.RawMessage); ok {
+			fmt.Println(string(b))
 		}
 	}
 }

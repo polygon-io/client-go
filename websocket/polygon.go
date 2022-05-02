@@ -154,17 +154,10 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 	return nil
 }
 
-// Output returns the next message in the output queue. If no messages are available, it returns nil.
-func (c *Client) Output() any {
-	select {
-	case out, ok := <-c.output:
-		if ok {
-			return out
-		}
-		return nil
-	default:
-		return nil
-	}
+// Output returns the output queue. If the channel is closed by the user (not
+// recommended), the client connection will close as well.
+func (c *Client) Output() chan any {
+	return c.output
 }
 
 // Close attempt to gracefully close the connection to the server.
@@ -269,8 +262,15 @@ func (c *Client) close(reconnect bool) {
 		if err := c.ptomb.Wait(); err != nil {
 			c.log.Errorf("process thread closed: %v", err)
 		}
+
 		c.shouldClose = true
-		close(c.output)
+
+		select {
+		case <-c.output:
+			c.log.Debugf("output channel was closed by user")
+		default:
+			close(c.output)
+		}
 	}
 
 	if c.conn != nil {
@@ -329,8 +329,6 @@ func (c *Client) write() error {
 			if err := c.conn.WriteMessage(websocket.TextMessage, msg); err != nil {
 				return fmt.Errorf("failed to send message: %w", err)
 			}
-		default:
-			continue
 		}
 	}
 }
@@ -338,7 +336,8 @@ func (c *Client) write() error {
 func (c *Client) process() (err error) {
 	defer func() {
 		c.log.Debugf("process thread closed")
-		if err != nil {
+		r := recover()
+		if r != nil || err != nil {
 			go c.Close() // this client should close if it hits a fatal error (e.g. auth failed)
 		}
 	}()
@@ -356,8 +355,6 @@ func (c *Client) process() (err error) {
 			if err := c.route(msgs); err != nil {
 				return err
 			}
-		default:
-			continue
 		}
 	}
 }
