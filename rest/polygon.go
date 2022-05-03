@@ -13,6 +13,7 @@ type Client struct {
 	ReferenceClient
 	TradesClient
 	SnapshotClient
+	VXClient
 }
 
 // New creates a client for the Polygon REST API.
@@ -25,5 +26,6 @@ func New(apiKey string) *Client {
 		ReferenceClient: ReferenceClient{Client: c},
 		TradesClient:    TradesClient{Client: c},
 		SnapshotClient:  SnapshotClient{Client: c},
+		VXClient:        VXClient{Client: c},
 	}
 }
