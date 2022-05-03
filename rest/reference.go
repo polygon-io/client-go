@@ -22,6 +22,8 @@ const (
 
 	ListDividendsPath = "/v3/reference/dividends"
 
+	ListFinancialsPath = "/vX/reference/financials"
+
 	ListConditionsPath = "/v3/reference/conditions"
 
 	GetExchangesPath = "/v3/reference/exchanges"
@@ -123,6 +125,14 @@ func (c *ReferenceClient) ListSplits(ctx context.Context, params *models.ListSpl
 func (c *ReferenceClient) ListDividends(ctx context.Context, params *models.ListDividendsParams, options ...models.RequestOption) *iter.Iter[models.Dividend] {
 	return iter.NewIter(ctx, ListDividendsPath, params, func(uri string) (iter.ListResponse, []models.Dividend, error) {
 		res := &models.ListDividendsResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
+}
+
+func (c *ReferenceClient) ListFinancials(ctx context.Context, params *models.ListFinancialsParams, options ...models.RequestOption) *iter.Iter[models.Financial] {
+	return iter.NewIter(ctx, ListFinancialsPath, params, func(uri string) (iter.ListResponse, []models.Financial, error) {
+		res := &models.ListFinancialsResponse{}
 		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 		return res, res.Results, err
 	})
