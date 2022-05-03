@@ -137,11 +137,11 @@ const (
 )
 
 // TimeFrame is the type of time frame query parameter for stock financials.
-type TimeFrame string
+type Timeframe string
 
 const (
-	ANNUAL    TimeFrame = "annual"
-	QUARTERLY TimeFrame = "quarterly"
+	ANNUAL    Timeframe = "annual"
+	QUARTERLY Timeframe = "quarterly"
 )
 
 // Time represents a long date string of the following format: "2006-01-02T15:04:05.000Z".
