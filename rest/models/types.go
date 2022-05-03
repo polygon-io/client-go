@@ -136,6 +136,14 @@ const (
 	GTE Comparator = "gte"
 )
 
+// NameComparator is the type of comparison to make for the company_name query parameter in Stock Financials.
+type NameComparator string
+
+const (
+	FULL   NameComparator = "full"
+	SEARCH NameComparator = "search"
+)
+
 // TimeFrame is the type of time frame query parameter for stock financials.
 type Timeframe string
 
