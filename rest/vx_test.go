@@ -335,7 +335,7 @@ func TestListFinancials(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/vX/reference/financials?ticker=MTX", expectedResponse)
 	registerResponder("https://api.polygon.io/vX/reference/financials?cursor=YXA9MjAyMjA0MDMmYXM9MDAwMDg5MTAxNC0yMi0wMDAwMjImaGFzX3hicmw9dHJ1ZSZsaW1pdD0xJnNvcnQ9cGVyaW9kX29mX3JlcG9ydF9kYXRlJnR5cGU9MTAtUQ", "{}")
-	iter := c.ListFinancials(context.Background(), models.ListFinancialsParams{}.WithTicker("MTX"))
+	iter := c.VX.ListFinancials(context.Background(), models.ListFinancialsParams{}.WithTicker("MTX"))
 
 	// iter creation
 	assert.Nil(t, iter.Err())
