@@ -136,6 +136,14 @@ const (
 	GTE Comparator = "gte"
 )
 
+// TimeFrame is the type of time frame query parameter for stock financials.
+type TimeFrame string
+
+const (
+	ANNUAL    TimeFrame = "annual"
+	QUARTERLY TimeFrame = "quarterly"
+)
+
 // Time represents a long date string of the following format: "2006-01-02T15:04:05.000Z".
 type Time time.Time
 
