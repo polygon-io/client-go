@@ -119,16 +119,16 @@ type ListStockFinancialsResponse struct {
 
 // StockFinancial contains detailed information on a specified stock financial.
 type StockFinancial struct {
-	CIK                 string                          `json:"cik,omitempty"`
-	CompanyName         string                          `json:"company_name,omitempty"`
-	EndDate             string                          `json:"end_date,omitempty"`
-	FilingDate          string                          `json:"filing_date,omitempty"`
-	Financials          map[string]map[string]DataPoint `json:"financials,omitempty"`
-	FiscalPeriod        string                          `json:"fiscal_period,omitempty"`
-	FiscalYear          string                          `json:"fiscal_year,omitempty"`
-	SourceFilingFileUrl string                          `json:"source_filing_file_url,omitempty"`
-	SourceFilingUrl     string                          `json:"source_filing_url,omitempty"`
-	StartDate           string                          `json:"start_date,omitempty"`
+	CIK                 string               `json:"cik,omitempty"`
+	CompanyName         string               `json:"company_name,omitempty"`
+	EndDate             string               `json:"end_date,omitempty"`
+	FilingDate          string               `json:"filing_date,omitempty"`
+	Financials          map[string]Financial `json:"financials,omitempty"`
+	FiscalPeriod        string               `json:"fiscal_period,omitempty"`
+	FiscalYear          string               `json:"fiscal_year,omitempty"`
+	SourceFilingFileUrl string               `json:"source_filing_file_url,omitempty"`
+	SourceFilingUrl     string               `json:"source_filing_url,omitempty"`
+	StartDate           string               `json:"start_date,omitempty"`
 }
 
 type DataPoint struct {
@@ -139,3 +139,5 @@ type DataPoint struct {
 	Value   float64 `json:"value,omitempty"`
 	Xpath   string  `json:"xpath,omitempty"`
 }
+
+type Financial map[string]DataPoint
