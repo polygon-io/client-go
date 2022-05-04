@@ -140,8 +140,8 @@ const (
 type NameComparator string
 
 const (
-	FULL   NameComparator = "full"
-	SEARCH NameComparator = "search"
+	Full   NameComparator = "full"
+	Search NameComparator = "search"
 )
 
 // TimeFrame is the type of time frame query parameter for stock financials.
