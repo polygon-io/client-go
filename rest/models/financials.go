@@ -131,6 +131,7 @@ type StockFinancial struct {
 	StartDate           string               `json:"start_date,omitempty"`
 }
 
+// Financial aliases nested data points of information for a stock financial.
 type Financial map[string]struct {
 	Formula string  `json:"formula,omitempty"`
 	Label   string  `json:"label,omitempty"`
