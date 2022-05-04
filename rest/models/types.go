@@ -136,6 +136,22 @@ const (
 	GTE Comparator = "gte"
 )
 
+// NameComparator is the type of comparison to make for the company_name query parameter in Stock Financials.
+type NameComparator string
+
+const (
+	Full   NameComparator = "full"
+	Search NameComparator = "search"
+)
+
+// TimeFrame is the type of time frame query parameter for stock financials.
+type Timeframe string
+
+const (
+	TFAnnual    Timeframe = "annual"
+	TFQuarterly Timeframe = "quarterly"
+)
+
 // Time represents a long date string of the following format: "2006-01-02T15:04:05.000Z".
 type Time time.Time
 
