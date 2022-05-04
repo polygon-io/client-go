@@ -2,7 +2,6 @@ package polygonws_test
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
@@ -24,42 +23,54 @@ func TestMain(t *testing.T) {
 	log := logrus.New()
 	log.SetLevel(logrus.DebugLevel)
 	log.SetFormatter(&logrus.JSONFormatter{})
+
+	rawData := true
+	var maxRetries uint64 = 5
 	c, err := polygonws.New(polygonws.Config{
-		APIKey: apiKey,
-		Feed:   polygonws.RealTime,
-		Market: polygonws.Stocks,
-		// RawData: true, // uncomment for raw data handling
-		Log: log,
+		APIKey:     apiKey,
+		Feed:       polygonws.RealTime,
+		Market:     polygonws.Stocks,
+		MaxRetries: &maxRetries,
+		RawData:    rawData,
+		Log:        log,
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer c.Close()
 
-	// test subscribing before connecting
+	go subscribe(c, log)
+	if err := c.Connect(); err != nil {
+		log.Fatal(err)
+	}
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-c.Error():
+			return
+		case out, more := <-c.Output():
+			if !more {
+				return
+			}
+			if rawData {
+				out = fmt.Sprintf("%s", out)
+			}
+			fmt.Println(out)
+		}
+	}
+}
+
+func subscribe(c *polygonws.Client, log *logrus.Logger) {
 	if err := c.Subscribe(polygonws.StocksSecAggs, "AAPL", "MSFT"); err != nil {
 		log.Error(err)
 	}
-
-	c.Close() // this shouldn't panic
-	if err := c.Connect(); err != nil {
-		log.Fatal(err)
-	}
-
-	// calling connect again shouldn't panic or data race
-	if err := c.Connect(); err != nil {
-		log.Fatal(err)
-	}
-
-	go printOutput(c) // comment for raw data handling
-	// go printRawOutput(c) // uncomment for raw data handling
 
 	time.Sleep(10 * time.Second)
 	if err := c.Subscribe(polygonws.StocksTrades, "*"); err != nil {
 		log.Error(err)
 	}
-
-	// close(c.Output()) // uncomment to test behavior when output channel is closed
 
 	time.Sleep(250 * time.Millisecond)
 	if err := c.Unsubscribe(polygonws.StocksTrades); err != nil {
@@ -83,27 +94,5 @@ func TestMain(t *testing.T) {
 	time.Sleep(15 * time.Second)
 	if err := c.Subscribe(polygonws.StocksSecAggs, "AAPL", "MSFT"); err != nil {
 		log.Error(err)
-	}
-
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		}
-	}
-}
-
-func printOutput(client *polygonws.Client) {
-	for out := range client.Output() {
-		fmt.Println(out)
-	}
-}
-
-//nolint:deadcode
-func printRawOutput(client *polygonws.Client) {
-	for out := range client.Output() {
-		if b, ok := out.(json.RawMessage); ok {
-			fmt.Println(string(b))
-		}
 	}
 }

@@ -126,6 +126,9 @@ func TestConnectAuthFailure(t *testing.T) {
 
 	err = c.Connect()
 	assert.Nil(t, err)
+
+	err = <-c.Error()
+	assert.NotNil(t, err)
 }
 
 func TestConnectRetryFailure(t *testing.T) {
