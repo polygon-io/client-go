@@ -148,8 +148,8 @@ const (
 type Timeframe string
 
 const (
-	ANNUAL    Timeframe = "annual"
-	QUARTERLY Timeframe = "quarterly"
+	TFAnnual    Timeframe = "annual"
+	TFQuarterly Timeframe = "quarterly"
 )
 
 // Time represents a long date string of the following format: "2006-01-02T15:04:05.000Z".
