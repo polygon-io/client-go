@@ -6,8 +6,8 @@ type ListStockFinancialsParams struct {
 
 	CIK *string `query:"cik"`
 
-	CompanyNameFULL   *string `query:"company_name"`
-	CompanyNameSEARCH *string `query:"company_name.search"`
+	CompanyNameFull   *string `query:"company_name"`
+	CompanyNameSearch *string `query:"company_name.search"`
 
 	SIC *string `query:"sic"`
 
@@ -43,10 +43,10 @@ func (p ListStockFinancialsParams) WithCIK(q string) *ListStockFinancialsParams 
 }
 
 func (p ListStockFinancialsParams) WithCompanyName(c NameComparator, q string) *ListStockFinancialsParams {
-	if c == FULL {
-		p.CompanyNameFULL = &q
-	} else if c == SEARCH {
-		p.CompanyNameSEARCH = &q
+	if c == Full {
+		p.CompanyNameFull = &q
+	} else if c == Search {
+		p.CompanyNameSearch = &q
 	}
 	return &p
 }
