@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListFinancials(t *testing.T) {
+func TestListStockFinancials(t *testing.T) {
 	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
@@ -335,7 +335,7 @@ func TestListFinancials(t *testing.T) {
 
 	registerResponder("https://api.polygon.io/vX/reference/financials?ticker=MTX", expectedResponse)
 	registerResponder("https://api.polygon.io/vX/reference/financials?cursor=YXA9MjAyMjA0MDMmYXM9MDAwMDg5MTAxNC0yMi0wMDAwMjImaGFzX3hicmw9dHJ1ZSZsaW1pdD0xJnNvcnQ9cGVyaW9kX29mX3JlcG9ydF9kYXRlJnR5cGU9MTAtUQ", "{}")
-	iter := c.VX.ListFinancials(context.Background(), models.ListFinancialsParams{}.WithTicker("MTX"))
+	iter := c.VX.ListStockFinancials(context.Background(), models.ListStockFinancialsParams{}.WithTicker("MTX"))
 
 	// iter creation
 	assert.Nil(t, iter.Err())
@@ -344,7 +344,7 @@ func TestListFinancials(t *testing.T) {
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
-	var expect models.Financial
+	var expect models.StockFinancial
 	err := json.Unmarshal([]byte(financial), &expect)
 	assert.Nil(t, err)
 	assert.Equal(t, expect, iter.Item())

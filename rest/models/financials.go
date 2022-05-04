@@ -1,7 +1,7 @@
 package models
 
-// ListFinancialsParams is the set of parameters for the ListFinancials method.
-type ListFinancialsParams struct {
+// ListStockFinancialsParams is the set of parameters for the ListFinancials method.
+type ListStockFinancialsParams struct {
 	Ticker *string `query:"ticker"`
 
 	CIK *string `query:"cik"`
@@ -32,17 +32,17 @@ type ListFinancialsParams struct {
 	Limit *int   `query:"limit"`
 }
 
-func (p ListFinancialsParams) WithTicker(q string) *ListFinancialsParams {
+func (p ListStockFinancialsParams) WithTicker(q string) *ListStockFinancialsParams {
 	p.Ticker = &q
 	return &p
 }
 
-func (p ListFinancialsParams) WithCIK(q string) *ListFinancialsParams {
+func (p ListStockFinancialsParams) WithCIK(q string) *ListStockFinancialsParams {
 	p.CIK = &q
 	return &p
 }
 
-func (p ListFinancialsParams) WithCompanyName(c NameComparator, q string) *ListFinancialsParams {
+func (p ListStockFinancialsParams) WithCompanyName(c NameComparator, q string) *ListStockFinancialsParams {
 	if c == FULL {
 		p.CompanyNameFULL = &q
 	} else if c == SEARCH {
@@ -51,12 +51,12 @@ func (p ListFinancialsParams) WithCompanyName(c NameComparator, q string) *ListF
 	return &p
 }
 
-func (p ListFinancialsParams) WithSIC(q string) *ListFinancialsParams {
+func (p ListStockFinancialsParams) WithSIC(q string) *ListStockFinancialsParams {
 	p.SIC = &q
 	return &p
 }
 
-func (p ListFinancialsParams) WithFilingDate(c Comparator, q Date) *ListFinancialsParams {
+func (p ListStockFinancialsParams) WithFilingDate(c Comparator, q Date) *ListStockFinancialsParams {
 	if c == EQ {
 		p.FilingDateEQ = &q
 	} else if c == LT {
@@ -71,7 +71,7 @@ func (p ListFinancialsParams) WithFilingDate(c Comparator, q Date) *ListFinancia
 	return &p
 }
 
-func (p ListFinancialsParams) WithPeriodOfReportDate(c Comparator, q Date) *ListFinancialsParams {
+func (p ListStockFinancialsParams) WithPeriodOfReportDate(c Comparator, q Date) *ListStockFinancialsParams {
 	if c == EQ {
 		p.PeriodOfReportDateEQ = &q
 	} else if c == LT {
@@ -86,39 +86,39 @@ func (p ListFinancialsParams) WithPeriodOfReportDate(c Comparator, q Date) *List
 	return &p
 }
 
-func (p ListFinancialsParams) WithTimeframe(q Timeframe) *ListFinancialsParams {
+func (p ListStockFinancialsParams) WithTimeframe(q Timeframe) *ListStockFinancialsParams {
 	p.Timeframe = &q
 	return &p
 }
 
-func (p ListFinancialsParams) WithIncludeSources(q bool) *ListFinancialsParams {
+func (p ListStockFinancialsParams) WithIncludeSources(q bool) *ListStockFinancialsParams {
 	p.IncludeSources = &q
 	return &p
 }
 
-func (p ListFinancialsParams) WithSort(q Sort) *ListFinancialsParams {
+func (p ListStockFinancialsParams) WithSort(q Sort) *ListStockFinancialsParams {
 	p.Sort = &q
 	return &p
 }
 
-func (p ListFinancialsParams) WithOrder(q Order) *ListFinancialsParams {
+func (p ListStockFinancialsParams) WithOrder(q Order) *ListStockFinancialsParams {
 	p.Order = &q
 	return &p
 }
 
-func (p ListFinancialsParams) WithLimit(q int) *ListFinancialsParams {
+func (p ListStockFinancialsParams) WithLimit(q int) *ListStockFinancialsParams {
 	p.Limit = &q
 	return &p
 }
 
-// ListFinancialsResponse is the response returned by the ListFinancials method.
-type ListFinancialsResponse struct {
+// ListStockFinancialsResponse is the response returned by the ListFinancials method.
+type ListStockFinancialsResponse struct {
 	BaseResponse
-	Results []Financial `json:"results,omitempty"`
+	Results []StockFinancial `json:"results,omitempty"`
 }
 
-// Financial contains detailed information on a specified stock financial.
-type Financial struct {
+// StockFinancial contains detailed information on a specified stock financial.
+type StockFinancial struct {
 	CIK                 string                 `json:"cik,omitempty"`
 	CompanyName         string                 `json:"company_name,omitempty"`
 	EndDate             string                 `json:"end_date,omitempty"`
@@ -129,4 +129,13 @@ type Financial struct {
 	SourceFilingFileUrl string                 `json:"source_filing_file_url,omitempty"`
 	SourceFilingUrl     string                 `json:"source_filing_url,omitempty"`
 	StartDate           string                 `json:"start_date,omitempty"`
+}
+
+type DataPoint struct {
+	Formula string  `json:"formula,omitempty"`
+	Label   string  `json:"label,omitempty"`
+	Order   int32   `json:"order,omitempty"`
+	Unit    string  `json:"unit,omitempty"`
+	Value   float64 `json:"value,omitempty"`
+	Xpath   string  `json:"xpath,omitempty"`
 }

@@ -18,10 +18,10 @@ type VXClient struct {
 	client.Client
 }
 
-// ListFinancials gets historical financial data for a stock ticker. This method utilizes an experimental API and could experience breaking changes or deprecation.
-func (c *VXClient) ListFinancials(ctx context.Context, params *models.ListFinancialsParams, options ...models.RequestOption) *iter.Iter[models.Financial] {
-	return iter.NewIter(ctx, ListFinancialsPath, params, func(uri string) (iter.ListResponse, []models.Financial, error) {
-		res := &models.ListFinancialsResponse{}
+// ListStockFinancials gets historical financial data for a stock ticker. This method utilizes an experimental API and could experience breaking changes or deprecation.
+func (c *VXClient) ListStockFinancials(ctx context.Context, params *models.ListStockFinancialsParams, options ...models.RequestOption) *iter.Iter[models.StockFinancial] {
+	return iter.NewIter(ctx, ListFinancialsPath, params, func(uri string) (iter.ListResponse, []models.StockFinancial, error) {
+		res := &models.ListStockFinancialsResponse{}
 		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 		return res, res.Results, err
 	})
