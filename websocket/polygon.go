@@ -45,7 +45,7 @@ type Client struct {
 
 	rawData bool
 	output  chan any
-	// todo: maybe add an error channel to signal fatal errors
+	err     chan error
 
 	log Logger
 }
@@ -66,6 +66,7 @@ func New(config Config) (*Client, error) {
 		subs:    make(subscriptions),
 		rawData: config.RawData,
 		output:  make(chan any, 100000),
+		err:     make(chan error),
 		log:     config.Log,
 	}
 
@@ -154,10 +155,16 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 	return nil
 }
 
-// Output returns the output queue. If the channel is closed by the user (not
-// recommended), the client connection will close as well.
+// Output returns the output queue. If the channel is closed by the user (not recommended),
+// the client connection will close as well.
 func (c *Client) Output() chan any {
 	return c.output
+}
+
+// Error returns an error channel. If the client hits a fatal error (e.g. auth failed),
+// it will push an error to this channel and close the connection.
+func (c *Client) Error() chan error {
+	return c.err
 }
 
 // Close attempt to gracefully close the connection to the server.
@@ -233,24 +240,25 @@ func (c *Client) reconnect() {
 		return
 	}
 
+	c.log.Debugf("unexpected disconnect: reconnecting")
 	c.close(true)
-
-	c.log.Debugf("unexpected disconnect, reconnecting")
 
 	notify := func(err error, _ time.Duration) {
 		c.log.Errorf(err.Error())
 	}
 	err := backoff.RetryNotify(c.connect(true), c.backoff, notify)
 	if err != nil {
-		c.log.Errorf("error reconnecting, closing connection")
+		err = fmt.Errorf("error reconnecting: %w: closing connection", err)
+		c.log.Errorf(err.Error())
 		c.close(false)
+		c.err <- err
 	}
 }
 
 func (c *Client) closeOutput() {
 	defer func() {
 		if r := recover(); r != nil {
-			c.log.Debugf("output channel was closed by user")
+			c.log.Debugf("user closed output channel")
 		} else {
 			c.log.Debugf("output channel closed")
 		}
@@ -339,10 +347,15 @@ func (c *Client) write() error {
 
 func (c *Client) process() (err error) {
 	defer func() {
+		// this client should close if it panics (e.g. user closed output
+		// channel) or if it hits a fatal error (e.g. auth failed)
 		c.log.Debugf("process thread closed")
-		r := recover()
-		if r != nil || err != nil {
-			go c.Close() // this client should close if it hits a fatal error (e.g. auth failed)
+		if r := recover(); r != nil {
+			go c.Close()
+			c.err <- errors.New("user closed output channel")
+		} else if err != nil {
+			go c.Close()
+			c.err <- err
 		}
 	}()
 
@@ -399,7 +412,7 @@ func (c *Client) handleStatus(msg json.RawMessage) error {
 		c.log.Debugf("authentication successful")
 	case "auth_failed":
 		// this is a fatal error so need to close the connection
-		return errors.New("authentication failed, closing connection")
+		return errors.New("authentication failed: closing connection")
 	case "success":
 		c.log.Debugf("received a successful status message: %v", cm.Message)
 	case "error":

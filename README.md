@@ -10,9 +10,9 @@ The official Go client library for the [Polygon](https://polygon.io/) REST and W
 
 `go get github.com/polygon-io/client-go`
 
-See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API. 
+This client is still in pre-release. The public interface is relatively stable at this point but is still liable to change slightly until we release v1. It also makes use of Go generics and thus requires Go 1.18.
 
-This client is still in pre-release. The public interface is relatively stable at this point but is still liable to change slightly until we release v1.
+See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API.
 
 ## REST API Client
 
@@ -131,29 +131,7 @@ The client automatically reconnects to the server when the connection is dropped
 
 ### Using the client
 
-After creating a client, subscribe to a topic and start accessing data.
-
-```golang
-// subscribe to a specific ticker
-if err := c.Subscribe(polygonws.StocksSecAggs, "AAPL"); err != nil {
-    log.Fatal(err)
-}
-
-for {
-    // do something with the first message
-    if out := c.Output(); out != nil {
-        log.Print(out)
-        break
-    }
-}
-
-// passing a topic by itself will unsubscribe from all tickers
-if err := c.Unsubscribe(polygonws.StocksSecAggs); err != nil {
-    log.Fatal(err)
-}
-```
-
-This client lets you subscribe to as many topics as desired. Currently, all of the data is stored in a single output channel.
+After creating a client, subscribe to one or more topics and start accessing data. Currently, all of the data is pushed to a single output channel.
 
 ```golang
 // passing a topic by itself will subscribe to all tickers
@@ -165,12 +143,20 @@ if err := c.Subscribe(polygonws.StocksTrades, "TSLA", "GME"); err != nil {
 }
 
 for {
-    out := c.Output()
-    switch out.(type) {
-    case models.EquityAgg:
-        // do something with the agg
-    case models.EquityTrade:
-        // do something with the trade
+    select {
+    case err := <-c.Error(): // check for any fatal errors (e.g. auth failed)
+        log.Fatal(err)
+    case out, more := <-c.Output(): // read the next data message
+        if !more {
+            return
+        }
+
+        switch out.(type) {
+        case models.EquityAgg:
+            log.Print(out) // do something with the agg
+        case models.EquityTrade:
+            log.Print(out) // do something with the trade
+        }
     }
 }
 ```
