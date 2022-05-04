@@ -131,7 +131,7 @@ type StockFinancial struct {
 	StartDate           string               `json:"start_date,omitempty"`
 }
 
-type DataPoint struct {
+type Financial map[string]struct {
 	Formula string  `json:"formula,omitempty"`
 	Label   string  `json:"label,omitempty"`
 	Order   int32   `json:"order,omitempty"`
@@ -139,5 +139,3 @@ type DataPoint struct {
 	Value   float64 `json:"value,omitempty"`
 	Xpath   string  `json:"xpath,omitempty"`
 }
-
-type Financial map[string]DataPoint
