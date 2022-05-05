@@ -6,7 +6,7 @@ YELLOW := $(shell tput -Txterm setaf 3)
 WHITE  := $(shell tput -Txterm setaf 7)
 RESET  := $(shell tput -Txterm sgr0)
 
-.PHONY: help fmt lint test
+.PHONY: help fmt lint test example test-coverage display-coverage
 
 ## Show help
 help:
@@ -34,6 +34,11 @@ lint:
 test:
 	@echo Running tests
 	@go test -race -v ./...
+
+## Run the WebSocket example
+example:
+	@echo Running the WebSocket example
+	@go run websocket/example/main.go
 
 ## Run the tests with coverage
 test-coverage:

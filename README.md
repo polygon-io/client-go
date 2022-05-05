@@ -161,6 +161,8 @@ for {
 }
 ```
 
+See the [full example](./websocket/example/main.go) for more details on how to use this client effectively.
+
 ## Contributing
 
 For now, we're generally not accepting pull requests from outside contributors but we're open to bug reports and feature requests. Or if you have more general feedback, feel free to reach out on our [Slack channel](https://polygon.io/contact).
