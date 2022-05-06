@@ -155,15 +155,14 @@ func (c *Client) Unsubscribe(topic Topic, tickers ...string) error {
 	return nil
 }
 
-// Output returns the output queue. If the channel is closed by the user (not recommended),
-// the client connection will close as well.
-func (c *Client) Output() chan any {
+// Output returns the output queue.
+func (c *Client) Output() <-chan any {
 	return c.output
 }
 
 // Error returns an error channel. If the client hits a fatal error (e.g. auth failed),
 // it will push an error to this channel and close the connection.
-func (c *Client) Error() chan error {
+func (c *Client) Error() <-chan error {
 	return c.err
 }
 
@@ -256,14 +255,8 @@ func (c *Client) reconnect() {
 }
 
 func (c *Client) closeOutput() {
-	defer func() {
-		if r := recover(); r != nil {
-			c.log.Debugf("user closed output channel")
-		} else {
-			c.log.Debugf("output channel closed")
-		}
-	}()
 	close(c.output)
+	c.log.Debugf("output channel closed")
 }
 
 func (c *Client) close(reconnect bool) {
@@ -347,13 +340,9 @@ func (c *Client) write() error {
 
 func (c *Client) process() (err error) {
 	defer func() {
-		// this client should close if it panics (e.g. user closed output
-		// channel) or if it hits a fatal error (e.g. auth failed)
+		// this client should close if it hits a fatal error (e.g. auth failed)
 		c.log.Debugf("process thread closed")
-		if r := recover(); r != nil {
-			go c.Close()
-			c.err <- errors.New("user closed output channel")
-		} else if err != nil {
+		if err != nil {
 			go c.Close()
 			c.err <- err
 		}
