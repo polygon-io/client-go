@@ -1,5 +1,6 @@
 .DEFAULT_GOAL       := help
 TARGET_MAX_CHAR_NUM := 20
+VERSION             := ""
 
 GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
@@ -23,7 +24,7 @@ help:
 ## Format
 fmt:
 	@echo Formatting
-	@go fmt .
+	@go fmt ./...
 
 ## Lint with golangci-lint
 lint:
@@ -49,3 +50,16 @@ test-coverage:
 display-coverage:
 	@echo Displaying test coverage
 	@go tool cover -html=cover.out
+
+## Publish a new release (usage: make release VERSION={VERSION_TAG})
+release: fmt lint test
+	@echo Tagging release with version '${VERSION}'
+	@[[ "${VERSION}" == v* ]] || { echo "Must pass a version tag starting with 'v' (e.g. "make release VERSION=v0.1.0")" ; exit 1; }
+	@sed -i.bak '/const clientVersion/s/.*/const clientVersion = "${VERSION}"/' rest/client/client.go && rm rest/client/client.go.bak
+	@git add -p rest/client/client.go
+	@git checkout -b stage-${VERSION}
+	@git commit -m "update client version tag to '${VERSION}'"
+	@echo Creating and merging a PR
+	@gh pr create --fill && gh pr merge --admin --squash --delete-branch
+	@echo Publishing a release
+	@gh release create ${VERSION}
