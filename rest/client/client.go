@@ -31,7 +31,7 @@ func New(apiKey string) Client {
 	c.SetAuthToken(apiKey)
 	c.SetRetryCount(DefaultRetryCount)
 	c.SetTimeout(10 * time.Second)
-	c.SetHeader("User-Agent", fmt.Sprintf("Go client %v", clientVersion))
+	c.SetHeader("User-Agent", fmt.Sprintf("Polygon.io GoClient/%v", clientVersion))
 
 	return Client{
 		HTTP:    c,
