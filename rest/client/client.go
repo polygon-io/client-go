@@ -11,6 +11,8 @@ import (
 	"github.com/polygon-io/client-go/rest/models"
 )
 
+const clientVersion = "v0.7.1"
+
 const (
 	APIURL            = "https://api.polygon.io"
 	DefaultRetryCount = 3
@@ -29,7 +31,7 @@ func New(apiKey string) Client {
 	c.SetAuthToken(apiKey)
 	c.SetRetryCount(DefaultRetryCount)
 	c.SetTimeout(10 * time.Second)
-	c.SetHeader("User-Agent", "Go client")
+	c.SetHeader("User-Agent", fmt.Sprintf("Polygon.io GoClient/%v", clientVersion))
 
 	return Client{
 		HTTP:    c,
