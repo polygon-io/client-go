@@ -56,7 +56,7 @@ release: fmt lint test
 	@echo Tagging release with version '${VERSION}'
 	@[[ "${VERSION}" == v* ]] || { echo "Must pass a version tag starting with 'v' (e.g. "make release VERSION=v0.1.0")" ; exit 1; }
 	@sed -i.bak '/const clientVersion/s/.*/const clientVersion = "${VERSION}"/' rest/client/client.go && rm rest/client/client.go.bak
-	@git add -p rest/client/client.go
+	@git reset && git add -p rest/client/client.go
 	@git checkout -b stage-${VERSION}
 	@git commit -m "update client version tag to '${VERSION}'"
 	@echo Creating and merging a PR
