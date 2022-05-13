@@ -146,24 +146,21 @@ type ListStockFinancialsResponse struct {
 
 // StockFinancial contains detailed information on a specified stock financial.
 type StockFinancial struct {
-	CIK                 string               `json:"cik,omitempty"`
-	CompanyName         string               `json:"company_name,omitempty"`
-	EndDate             string               `json:"end_date,omitempty"`
-	FilingDate          string               `json:"filing_date,omitempty"`
-	Financials          map[string]Financial `json:"financials,omitempty"`
-	FiscalPeriod        string               `json:"fiscal_period,omitempty"`
-	FiscalYear          string               `json:"fiscal_year,omitempty"`
-	SourceFilingFileUrl string               `json:"source_filing_file_url,omitempty"`
-	SourceFilingUrl     string               `json:"source_filing_url,omitempty"`
-	StartDate           string               `json:"start_date,omitempty"`
-}
-
-// Financial aliases nested data points of information for a stock financial.
-type Financial map[string]struct {
-	Formula string  `json:"formula,omitempty"`
-	Label   string  `json:"label,omitempty"`
-	Order   int32   `json:"order,omitempty"`
-	Unit    string  `json:"unit,omitempty"`
-	Value   float64 `json:"value,omitempty"`
-	Xpath   string  `json:"xpath,omitempty"`
+	CIK         string `json:"cik,omitempty"`
+	CompanyName string `json:"company_name,omitempty"`
+	EndDate     string `json:"end_date,omitempty"`
+	FilingDate  string `json:"filing_date,omitempty"`
+	Financials  map[string]map[string]struct {
+		Formula string  `json:"formula,omitempty"`
+		Label   string  `json:"label,omitempty"`
+		Order   int32   `json:"order,omitempty"`
+		Unit    string  `json:"unit,omitempty"`
+		Value   float64 `json:"value,omitempty"`
+		Xpath   string  `json:"xpath,omitempty"`
+	} `json:"financials,omitempty"`
+	FiscalPeriod        string `json:"fiscal_period,omitempty"`
+	FiscalYear          string `json:"fiscal_year,omitempty"`
+	SourceFilingFileUrl string `json:"source_filing_file_url,omitempty"`
+	SourceFilingUrl     string `json:"source_filing_url,omitempty"`
+	StartDate           string `json:"start_date,omitempty"`
 }

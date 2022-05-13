@@ -267,71 +267,62 @@ type GetTickerTypesResponse struct {
 
 // Ticker contains detailed information on a specified ticker symbol.
 type Ticker struct {
-	Active                      bool           `json:"active"`
-	Address                     CompanyAddress `json:"address,omitempty"`
-	Branding                    Branding       `json:"branding,omitempty"`
-	CIK                         string         `json:"cik,omitempty"`
-	CompositeFIGI               string         `json:"composite_figi,omitempty"`
-	CurrencyName                string         `json:"currency_name,omitempty"`
-	DelistedUTC                 Time           `json:"delisted_utc,omitempty"`
-	Description                 string         `json:"description,omitempty"`
-	HomepageURL                 string         `json:"homepage_url,omitempty"`
-	LastUpdatedUTC              Time           `json:"last_updated_utc,omitempty"`
-	ListDate                    Date           `json:"list_date,omitempty"`
-	Locale                      string         `json:"locale,omitempty"`
-	Market                      string         `json:"market,omitempty"`
-	MarketCap                   float64        `json:"market_cap,omitempty"`
-	Name                        string         `json:"name,omitempty"`
-	PhoneNumber                 string         `json:"phone_number,omitempty"`
-	PrimaryExchange             string         `json:"primary_exchange,omitempty"`
-	ShareClassFIGI              string         `json:"share_class_figi,omitempty"`
-	ShareClassSharesOutstanding int64          `json:"share_class_shares_outstanding,omitempty"`
-	SICCode                     string         `json:"sic_code,omitempty"`
-	SICDescription              string         `json:"sic_description,omitempty"`
-	Ticker                      string         `json:"ticker,omitempty"`
-	TickerRoot                  string         `json:"ticker_root,omitempty"`
-	TickerSuffix                string         `json:"ticker_suffix,omitempty"`
-	TotalEmployees              int32          `json:"total_employees,omitempty"`
-	Type                        string         `json:"type,omitempty"`
-	WeightedSharesOutstanding   int64          `json:"weighted_shares_outstanding,omitempty"`
-}
-
-// CompanyAddress contains information on the physical address of a company.
-type CompanyAddress struct {
-	Address1   string `json:"address1,omitempty"`
-	Address2   string `json:"address2,omitempty"` // todo: add this to the spec
-	City       string `json:"city,omitempty"`
-	PostalCode string `json:"postal_code,omitempty"`
-	State      string `json:"state,omitempty"`
-}
-
-// Branding contains information related to a company's brand.
-type Branding struct {
-	LogoURL string `json:"logo_url,omitempty"`
-	IconURL string `json:"icon_url,omitempty"`
+	Active  bool `json:"active"`
+	Address struct {
+		Address1   string `json:"address1,omitempty"`
+		Address2   string `json:"address2,omitempty"` // todo: add this to the spec
+		City       string `json:"city,omitempty"`
+		PostalCode string `json:"postal_code,omitempty"`
+		State      string `json:"state,omitempty"`
+	} `json:"address,omitempty"`
+	Branding struct {
+		LogoURL string `json:"logo_url,omitempty"`
+		IconURL string `json:"icon_url,omitempty"`
+	} `json:"branding,omitempty"`
+	CIK                         string  `json:"cik,omitempty"`
+	CompositeFIGI               string  `json:"composite_figi,omitempty"`
+	CurrencyName                string  `json:"currency_name,omitempty"`
+	DelistedUTC                 Time    `json:"delisted_utc,omitempty"`
+	Description                 string  `json:"description,omitempty"`
+	HomepageURL                 string  `json:"homepage_url,omitempty"`
+	LastUpdatedUTC              Time    `json:"last_updated_utc,omitempty"`
+	ListDate                    Date    `json:"list_date,omitempty"`
+	Locale                      string  `json:"locale,omitempty"`
+	Market                      string  `json:"market,omitempty"`
+	MarketCap                   float64 `json:"market_cap,omitempty"`
+	Name                        string  `json:"name,omitempty"`
+	PhoneNumber                 string  `json:"phone_number,omitempty"`
+	PrimaryExchange             string  `json:"primary_exchange,omitempty"`
+	ShareClassFIGI              string  `json:"share_class_figi,omitempty"`
+	ShareClassSharesOutstanding int64   `json:"share_class_shares_outstanding,omitempty"`
+	SICCode                     string  `json:"sic_code,omitempty"`
+	SICDescription              string  `json:"sic_description,omitempty"`
+	Ticker                      string  `json:"ticker,omitempty"`
+	TickerRoot                  string  `json:"ticker_root,omitempty"`
+	TickerSuffix                string  `json:"ticker_suffix,omitempty"`
+	TotalEmployees              int32   `json:"total_employees,omitempty"`
+	Type                        string  `json:"type,omitempty"`
+	WeightedSharesOutstanding   int64   `json:"weighted_shares_outstanding,omitempty"`
 }
 
 // TickerNews contains information on a ticker news article.
 type TickerNews struct {
-	AMPURL       string    `json:"amp_url,omitempty"`
-	ArticleURL   string    `json:"article_url,omitempty"`
-	Author       string    `json:"author,omitempty"`
-	Description  string    `json:"description,omitempty"`
-	ID           string    `json:"id,omitempty"`
-	ImageURL     string    `json:"image_url,omitempty"`
-	Keywords     []string  `json:"keywords,omitempty"`
-	PublishedUTC Time      `json:"published_utc,omitempty"`
-	Publisher    Publisher `json:"publisher,omitempty"`
-	Tickers      []string  `json:"tickers,omitempty"`
-	Title        string    `json:"title,omitempty"`
-}
-
-// Publisher contains information on a new article publisher.
-type Publisher struct {
-	FaviconURL  string `json:"favicon_url,omitempty"`
-	HomepageURL string `json:"homepage_url,omitempty"`
-	LogoURL     string `json:"logo_url,omitempty"`
-	Name        string `json:"name,omitempty"`
+	AMPURL       string   `json:"amp_url,omitempty"`
+	ArticleURL   string   `json:"article_url,omitempty"`
+	Author       string   `json:"author,omitempty"`
+	Description  string   `json:"description,omitempty"`
+	ID           string   `json:"id,omitempty"`
+	ImageURL     string   `json:"image_url,omitempty"`
+	Keywords     []string `json:"keywords,omitempty"`
+	PublishedUTC Time     `json:"published_utc,omitempty"`
+	Publisher    struct {
+		FaviconURL  string `json:"favicon_url,omitempty"`
+		HomepageURL string `json:"homepage_url,omitempty"`
+		LogoURL     string `json:"logo_url,omitempty"`
+		Name        string `json:"name,omitempty"`
+	} `json:"publisher,omitempty"`
+	Tickers []string `json:"tickers,omitempty"`
+	Title   string   `json:"title,omitempty"`
 }
 
 // TickerType represents a type of ticker with a code that the API understands.
