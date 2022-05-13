@@ -114,5 +114,5 @@ type CryptoTrade struct {
 	Size       float64 `json:"size,omitempty"`
 	Exchange   int     `json:"exchange,omitempty"`
 	Conditions []int   `json:"conditions,omitempty"`
-	Timestamp  *Nanos  `json:"timestamp,omitempty"`
+	Timestamp  Nanos   `json:"timestamp,omitempty"`
 }
