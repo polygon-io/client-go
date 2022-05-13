@@ -9,7 +9,6 @@ import (
 	"github.com/polygon-io/client-go/rest/models"
 )
 
-// See README for more examples.
 func main() {
 	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
 
