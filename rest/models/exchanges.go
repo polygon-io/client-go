@@ -2,8 +2,11 @@ package models
 
 // GetExchangesParams is the set of parameters for the GetExchanges method.
 type GetExchangesParams struct {
-	AssetClass *AssetClass   `query:"asset_class,omitempty"`
-	Locale     *MarketLocale `query:"locale,omitempty"`
+	// Filter by asset class.
+	AssetClass *AssetClass `query:"asset_class,omitempty"`
+
+	// Filter by locale.
+	Locale *MarketLocale `query:"locale,omitempty"`
 }
 
 func (p GetExchangesParams) WithAssetClass(q AssetClass) *GetExchangesParams {

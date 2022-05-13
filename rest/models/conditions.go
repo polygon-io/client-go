@@ -2,14 +2,26 @@ package models
 
 // ListConditionsParams is the set of parameters for the ListConditions method.
 type ListConditionsParams struct {
+	// Filter for conditions within a given asset class.
 	AssetClass *AssetClass `query:"asset_class,omitempty"`
-	DataType   *DataType   `query:"data_type,omitempty"`
-	ID         *int64      `query:"id,omitempty"`
-	SIP        *SIP        `query:"sip,omitempty"`
 
-	Sort  *Sort  `query:"sort"`
+	// Filter by data type.
+	DataType *DataType `query:"data_type,omitempty"`
+
+	// Filter for conditions with a given ID.
+	ID *int64 `query:"id,omitempty"`
+
+	// Filter by SIP. If the condition contains a mapping for that SIP, the condition will be returned.
+	SIP *SIP `query:"sip,omitempty"`
+
+	// Order results based on the sort field.
 	Order *Order `query:"order"`
-	Limit *int   `query:"limit"`
+
+	// Limit the number of results returned, default is 10 and max is 1000.
+	Limit *int `query:"limit"`
+
+	// Sort field used for ordering.
+	Sort *Sort `query:"sort"`
 }
 
 func (p ListConditionsParams) WithAssetClass(q AssetClass) *ListConditionsParams {
@@ -32,11 +44,6 @@ func (p ListConditionsParams) WithSIP(q SIP) *ListConditionsParams {
 	return &p
 }
 
-func (p ListConditionsParams) WithSort(q Sort) *ListConditionsParams {
-	p.Sort = &q
-	return &p
-}
-
 func (p ListConditionsParams) WithOrder(q Order) *ListConditionsParams {
 	p.Order = &q
 	return &p
@@ -44,6 +51,11 @@ func (p ListConditionsParams) WithOrder(q Order) *ListConditionsParams {
 
 func (p ListConditionsParams) WithLimit(q int) *ListConditionsParams {
 	p.Limit = &q
+	return &p
+}
+
+func (p ListConditionsParams) WithSort(q Sort) *ListConditionsParams {
+	p.Sort = &q
 	return &p
 }
 
@@ -55,15 +67,35 @@ type ListConditionsResponse struct {
 
 // Condition contains detailed information on a specified condition.
 type Condition struct {
-	Abbreviation string                     `json:"abbreviation,omitempty"`
-	AssetClass   string                     `json:"asset_class,omitempty"`
-	DataTypes    []string                   `json:"data_types,omitempty"`
-	Description  string                     `json:"description,omitempty"`
-	Exchange     int64                      `json:"exchange,omitempty"`
-	ID           int64                      `json:"id,omitempty"`
-	Legacy       bool                       `json:"legacy"`
-	Name         string                     `json:"name,omitempty"`
-	SIPMapping   map[string]string          `json:"sip_mapping,omitempty"`
-	Type         string                     `json:"type,omitempty"`
-	UpdateRules  map[string]map[string]bool `json:"update_rules,omitempty"`
+	Abbreviation string      `json:"abbreviation,omitempty"`
+	AssetClass   string      `json:"asset_class,omitempty"`
+	DataTypes    []string    `json:"data_types,omitempty"`
+	Description  string      `json:"description,omitempty"`
+	Exchange     int64       `json:"exchange,omitempty"`
+	ID           int64       `json:"id,omitempty"`
+	Legacy       bool        `json:"legacy"`
+	Name         string      `json:"name,omitempty"`
+	SIPMapping   SIPMapping  `json:"sip_mapping,omitempty"`
+	Type         string      `json:"type,omitempty"`
+	UpdateRules  UpdateRules `json:"update_rules,omitempty"`
+}
+
+// SIPMapping is a mapping to a symbol for each SIP that has this condition.
+type SIPMapping struct {
+	CTA  string `json:"CTA,omitempty"`
+	OPRA string `json:"OPRA,omitempty"`
+	UTP  string `json:"UTP,omitempty"`
+}
+
+// UpdateRules contains a list of aggregation rules.
+type UpdateRules struct {
+	Consolidated AggregationRules `json:"consolidated,omitempty"`
+	MarketCenter AggregationRules `json:"market_center,omitempty"`
+}
+
+// AggregationRules is a list of aggregation rules.
+type AggregationRules struct {
+	UpdatesHighLow   bool `json:"updates_high_low,omitempty"`
+	UpdatesOpenClose bool `json:"updates_open_close,omitempty"`
+	UpdatesVolume    bool `json:"updates_volume,omitempty"`
 }
