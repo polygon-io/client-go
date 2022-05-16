@@ -2,23 +2,32 @@ package models
 
 // ListSplitsParams is the set of parameters for the ListSplits method.
 type ListSplitsParams struct {
+	// Return the stock splits that contain this ticker.
 	TickerEQ  *string `query:"ticker"`
 	TickerLT  *string `query:"ticker.lt"`
 	TickerLTE *string `query:"ticker.lte"`
 	TickerGT  *string `query:"ticker.gt"`
 	TickerGTE *string `query:"ticker.gte"`
 
+	// Query by execution date with the format YYYY-MM-DD.
 	ExecutionDateEQ  *Date `query:"execution_date"`
 	ExecutionDateLT  *Date `query:"execution_date.lt"`
 	ExecutionDateLTE *Date `query:"execution_date.lte"`
 	ExecutionDateGT  *Date `query:"execution_date.gt"`
 	ExecutionDateGTE *Date `query:"execution_date.gte"`
 
+	// Query for reverse stock splits. A split ratio where split_from is greater than split_to represents a reverse
+	// split. By default this filter is not used.
 	ReverseSplit *bool `query:"reverse_split"`
 
-	Sort  *Sort  `query:"sort"`
+	// Order results based on the sort field.
 	Order *Order `query:"order"`
-	Limit *int   `query:"limit"`
+
+	// Limit the number of results returned, default is 10 and max is 1000.
+	Limit *int `query:"limit"`
+
+	// Sort field used for ordering.
+	Sort *Sort `query:"sort"`
 }
 
 func (p ListSplitsParams) WithTicker(c Comparator, q string) *ListSplitsParams {
@@ -56,11 +65,6 @@ func (p ListSplitsParams) WithReverseSplit(q bool) *ListSplitsParams {
 	return &p
 }
 
-func (p ListSplitsParams) WithSort(q Sort) *ListSplitsParams {
-	p.Sort = &q
-	return &p
-}
-
 func (p ListSplitsParams) WithOrder(q Order) *ListSplitsParams {
 	p.Order = &q
 	return &p
@@ -68,6 +72,11 @@ func (p ListSplitsParams) WithOrder(q Order) *ListSplitsParams {
 
 func (p ListSplitsParams) WithLimit(q int) *ListSplitsParams {
 	p.Limit = &q
+	return &p
+}
+
+func (p ListSplitsParams) WithSort(q Sort) *ListSplitsParams {
+	p.Sort = &q
 	return &p
 }
 
