@@ -32,7 +32,7 @@ type ListOptionsContractsParams struct {
 	UnderlyingTickerGTE *string `query:"underlying_ticker.GTE"`
 
 	// Specify the type of contract.
-	ContractType *string `query:"contract"`
+	ContractType *string `query:"contract_type"`
 
 	// Specify the expiration date.
 	ExpirationDateEQ  *Date `query:"expiration_date"`
@@ -73,6 +73,11 @@ func (p ListOptionsContractsParams) WithUnderlyingTicker(c Comparator, q string)
 	} else if c == GTE {
 		p.UnderlyingTickerGTE = &q
 	}
+	return &p
+}
+
+func (p ListOptionsContractsParams) WithContractType(q string) *ListOptionsContractsParams {
+	p.ContractType = &q
 	return &p
 }
 
