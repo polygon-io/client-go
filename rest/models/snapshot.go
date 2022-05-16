@@ -79,7 +79,7 @@ type GetCryptoFullBookSnapshotParams struct {
 // GetCryptoFullBookSnapshotResponse is the response returned by the GetCryptoFullBookSnapshot method.
 type GetCryptoFullBookSnapshotResponse struct {
 	BaseResponse
-	Data SnapshotTickerFullBook `json:"data,omitempty"`
+	Data FullBookSnapshot `json:"data,omitempty"`
 }
 
 // TickerSnapshot is a collection of data for a ticker including the current minute, day, and previous day's aggregate,
@@ -190,7 +190,7 @@ type UnderlyingAsset struct {
 	Timeframe         string  `json:"timeframe,omitempty"`
 }
 
-type SnapshotTickerFullBook struct {
+type FullBookSnapshot struct {
 	AskCount float64          `json:"askCount,omitempty"`
 	Asks     []OrderBookQuote `json:"asks,omitempty"`
 	BidCount float64          `json:"bidCount,omitempty"`
