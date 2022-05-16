@@ -36,8 +36,13 @@ test:
 	@echo Running tests
 	@go test -race -v ./...
 
+## Run the REST example
+rest-example:
+	@echo Running the REST example
+	@go run rest/example/main.go
+
 ## Run the WebSocket example
-example:
+ws-example:
 	@echo Running the WebSocket example
 	@go run websocket/example/main.go
 
