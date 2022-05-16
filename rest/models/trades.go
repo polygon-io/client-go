@@ -2,17 +2,24 @@ package models
 
 // ListTradesParams is the set of parameters for the ListTrades method.
 type ListTradesParams struct {
+	// The ticker symbol to get trades for.
 	Ticker string `validate:"required" path:"ticker"`
 
+	// Query by trade timestamp. Either a date with the format YYYY-MM-DD or a nanosecond timestamp.
 	TimestampEQ  *Nanos `query:"timestamp"`
 	TimestampLT  *Nanos `query:"timestamp.lt"`
 	TimestampLTE *Nanos `query:"timestamp.lte"`
 	TimestampGT  *Nanos `query:"timestamp.gt"`
 	TimestampGTE *Nanos `query:"timestamp.gte"`
 
-	Sort  *Sort  `query:"sort"`
+	// Order results based on the sort field.
 	Order *Order `query:"order"`
-	Limit *int   `query:"limit"`
+
+	// Limit the number of results returned, default is 10 and max is 50000.
+	Limit *int `query:"limit"`
+
+	// Sort field used for ordering.
+	Sort *Sort `query:"sort"`
 }
 
 func (p ListTradesParams) WithTimestamp(c Comparator, q Nanos) *ListTradesParams {
@@ -30,11 +37,6 @@ func (p ListTradesParams) WithTimestamp(c Comparator, q Nanos) *ListTradesParams
 	return &p
 }
 
-func (p ListTradesParams) WithSort(q Sort) *ListTradesParams {
-	p.Sort = &q
-	return &p
-}
-
 func (p ListTradesParams) WithOrder(q Order) *ListTradesParams {
 	p.Order = &q
 	return &p
@@ -42,6 +44,11 @@ func (p ListTradesParams) WithOrder(q Order) *ListTradesParams {
 
 func (p ListTradesParams) WithLimit(q int) *ListTradesParams {
 	p.Limit = &q
+	return &p
+}
+
+func (p ListTradesParams) WithSort(q Sort) *ListTradesParams {
+	p.Sort = &q
 	return &p
 }
 
@@ -53,6 +60,7 @@ type ListTradesResponse struct {
 
 // GetLastTradeParams is the set of parameters for GetLastTrade method.
 type GetLastTradeParams struct {
+	// The ticker symbol of the stock/equity.
 	Ticker string `validate:"required" path:"ticker"`
 }
 
@@ -64,8 +72,11 @@ type GetLastTradeResponse struct {
 
 // GetLastCryptoTradeParams is the set of parameters for the GetLastCryptoTrade method.
 type GetLastCryptoTradeParams struct {
+	// The "from" symbol of the pair.
 	From string `validate:"required" path:"from"`
-	To   string `validate:"required" path:"to"`
+
+	// The "to" symbol of the pair.
+	To string `validate:"required" path:"to"`
 }
 
 // GetLastCryptoTradeResponse is the response returned by the GetLastCryptoTrade method.
@@ -110,9 +121,9 @@ type LastTrade struct {
 
 // CryptoTrade is a trade for a crypto pair.
 type CryptoTrade struct {
+	Conditions []int   `json:"conditions,omitempty"`
+	Exchange   int     `json:"exchange,omitempty"`
 	Price      float64 `json:"price,omitempty"`
 	Size       float64 `json:"size,omitempty"`
-	Exchange   int     `json:"exchange,omitempty"`
-	Conditions []int   `json:"conditions,omitempty"`
 	Timestamp  Nanos   `json:"timestamp,omitempty"`
 }

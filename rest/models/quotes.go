@@ -2,17 +2,24 @@ package models
 
 // ListQuotesParams is the set of parameters for the ListQuotes method.
 type ListQuotesParams struct {
+	// The ticker symbol to get quotes for.
 	Ticker string `validate:"required" path:"ticker"`
 
+	// Query by timestamp. Either a date with the format YYYY-MM-DD or a nanosecond timestamp.
 	TimestampEQ  *Nanos `query:"timestamp"`
 	TimestampLT  *Nanos `query:"timestamp.lt"`
 	TimestampLTE *Nanos `query:"timestamp.lte"`
 	TimestampGT  *Nanos `query:"timestamp.gt"`
 	TimestampGTE *Nanos `query:"timestamp.gte"`
 
+	// Order results based on the sort field.
 	Order *Order `query:"order"`
-	Limit *int   `query:"limit"`
-	Sort  *Sort  `query:"sort"`
+
+	// Limit the number of results returned, default is 10 and max is 50000.
+	Limit *int `query:"limit"`
+
+	// Sort field used for ordering.
+	Sort *Sort `query:"sort"`
 }
 
 func (p ListQuotesParams) WithTimestamp(c Comparator, q Nanos) *ListQuotesParams {
@@ -30,11 +37,6 @@ func (p ListQuotesParams) WithTimestamp(c Comparator, q Nanos) *ListQuotesParams
 	return &p
 }
 
-func (p ListQuotesParams) WithSort(q Sort) *ListQuotesParams {
-	p.Sort = &q
-	return &p
-}
-
 func (p ListQuotesParams) WithOrder(q Order) *ListQuotesParams {
 	p.Order = &q
 	return &p
@@ -42,6 +44,11 @@ func (p ListQuotesParams) WithOrder(q Order) *ListQuotesParams {
 
 func (p ListQuotesParams) WithLimit(q int) *ListQuotesParams {
 	p.Limit = &q
+	return &p
+}
+
+func (p ListQuotesParams) WithSort(q Sort) *ListQuotesParams {
+	p.Sort = &q
 	return &p
 }
 
@@ -53,6 +60,7 @@ type ListQuotesResponse struct {
 
 // GetLastQuoteParams is the set of parameters for the GetLastQuote method.
 type GetLastQuoteParams struct {
+	// The ticker symbol of the stock/equity.
 	Ticker string `validate:"required" path:"ticker"`
 }
 
@@ -64,8 +72,11 @@ type GetLastQuoteResponse struct {
 
 // GetLastForexQuoteParams is the set of parameters for the GetLastForexQuote method.
 type GetLastForexQuoteParams struct {
+	// The "from" symbol of the pair.
 	From string `validate:"required" path:"from"`
-	To   string `validate:"required" path:"to"`
+
+	// The "to" symbol of the pair.
+	To string `validate:"required" path:"to"`
 }
 
 // GetLastForexQuoteResponse is the response returned by the GetLastForexQuote method.
@@ -111,19 +122,19 @@ type Quote struct {
 // LastQuote is the most recent NBBO for a ticker symbol.
 type LastQuote struct {
 	Ticker               string  `json:"T,omitempty"`
-	AskExchange          int     `json:"X,omitempty"`
-	AskPrice             float64 `json:"P,omitempty"`
-	AskSize              float64 `json:"S,omitempty"`
-	BidExchange          int     `json:"x,omitempty"`
-	BidPrice             float64 `json:"p,omitempty"`
-	BidSize              float64 `json:"s,omitempty"`
-	Conditions           []int32 `json:"c,omitempty"`
-	Indicators           []int32 `json:"i,omitempty"`
-	ParticipantTimestamp Nanos   `json:"y,omitempty"`
+	TrfTimestamp         Nanos   `json:"f,omitempty"`
 	SequenceNumber       Nanos   `json:"q,omitempty"`
 	SipTimestamp         Nanos   `json:"t,omitempty"`
+	ParticipantTimestamp Nanos   `json:"y,omitempty"`
+	AskPrice             float64 `json:"P,omitempty"`
+	AskSize              float64 `json:"S,omitempty"`
+	AskExchange          int     `json:"X,omitempty"`
+	Conditions           []int32 `json:"c,omitempty"`
+	Indicators           []int32 `json:"i,omitempty"`
+	BidPrice             float64 `json:"p,omitempty"`
+	BidSize              float64 `json:"s,omitempty"`
+	BidExchange          int     `json:"x,omitempty"`
 	Tape                 int32   `json:"z,omitempty"`
-	TrfTimestamp         Nanos   `json:"f,omitempty"`
 }
 
 // ForexQuote is a BBO for a forex currency pair.
