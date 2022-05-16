@@ -25,6 +25,10 @@ const (
 	ListConditionsPath = "/v3/reference/conditions"
 
 	GetExchangesPath = "/v3/reference/exchanges"
+
+	GetOptionsContractPath = "/v3/reference/options/contracts/{options_ticker}"
+
+	ListOptionsContractsPath = "/v3/reference/options/contracts"
 )
 
 // ReferenceClient defines a REST client for the Polygon reference API.
@@ -154,4 +158,20 @@ func (c *ReferenceClient) GetExchanges(ctx context.Context, params *models.GetEx
 	res := &models.GetExchangesResponse{}
 	err := c.Call(ctx, http.MethodGet, GetExchangesPath, params, res, options...)
 	return res, err
+}
+
+// GetOptionsContract retrieves a historical options contract.
+func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models.GetOptionsContractParams, options ...models.RequestOption) (*models.GetOptionsContractResponse, error) {
+	res := &models.GetOptionsContractResponse{}
+	err := c.Call(ctx, http.MethodGet, GetOptionsContractPath, params, res, options...)
+	return res, err
+}
+
+// ListOptionsContracts lists historical options contracts.
+func (c *ReferenceClient) ListOptionsContracts(ctx context.Context, params *models.ListOptionsContractsParams, options ...models.RequestOption) *iter.Iter[models.OptionsContract] {
+	return iter.NewIter(ctx, ListOptionsContractsPath, params, func(uri string) (iter.ListResponse, []models.OptionsContract, error) {
+		res := &models.ListOptionsContractsResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
 }
