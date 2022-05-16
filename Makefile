@@ -7,7 +7,7 @@ YELLOW := $(shell tput -Txterm setaf 3)
 WHITE  := $(shell tput -Txterm setaf 7)
 RESET  := $(shell tput -Txterm sgr0)
 
-.PHONY: help fmt lint test example test-coverage display-coverage
+.PHONY: help fmt lint test rest-example ws-example test-coverage display-coverage release
 
 ## Show help
 help:
