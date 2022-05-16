@@ -515,3 +515,37 @@ func TestGetExchanges(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, &expect, res)
 }
+
+func TestGetOptionsContract(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := `{
+	"results": {
+		"cfi": "OCASPS",
+		"contract_type": "call",
+		"exercise_style": "american",
+		"expiration_date": "2024-01-19",
+		"primary_exchange": "BATO",
+		"shares_per_contract": 100,
+		"strike_price": 2.5,
+		"ticker": "O:EVRI240119C00002500",
+		"underlying_ticker": "EVRI"
+	},
+	"status": "OK",
+	"request_id": "52fccf652441fc4d4fd35e2d0d2dd1f2"
+}`
+
+	registerResponder("https://api.polygon.io/v3/reference/options/contracts/O:EVRI240119C00002500", expectedResponse)
+	res, err := c.GetOptionsContract(context.Background(), models.GetOptionsContractParams{
+		OptionsTicker: "O:EVRI240119C00002500",
+	}.WithDate(models.Date(time.Date(2022, 5, 16, 0, 0, 0, 0, time.Local))))
+	assert.Nil(t, err)
+
+	var expect models.GetOptionsContractResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
+	assert.Nil(t, err)
+	assert.Equal(t, &expect, res)
+}
