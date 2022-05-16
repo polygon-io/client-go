@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	expectedAggsResponseURL = "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&explain=false&limit=1&sort=desc"
+	expectedAggsResponseURL = "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
 	expectedAggsResponse    = `{
 	"status": "OK",
 	"request_id": "6a7e466379af0a71039d60cc78e72282",
@@ -58,10 +58,10 @@ func TestGetAggs(t *testing.T) {
 	res, err := c.GetAggs(context.Background(), models.GetAggsParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
-		Resolution: "day",
+		Timespan:   "day",
 		From:       models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
 		To:         models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC)),
-	}.WithOrder(models.Desc).WithLimit(1).WithAdjusted(true).WithExplain(false))
+	}.WithOrder(models.Desc).WithLimit(1).WithAdjusted(true))
 	assert.Nil(t, err)
 
 	var expect models.GetAggsResponse
@@ -80,10 +80,10 @@ func TestGetAggsWithQueryParam(t *testing.T) {
 	res, err := c.GetAggs(context.Background(), models.GetAggsParams{
 		Ticker:     "AAPL",
 		Multiplier: 1,
-		Resolution: "day",
+		Timespan:   "day",
 		From:       models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
 		To:         models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC)),
-	}.WithOrder(models.Desc).WithLimit(1).WithAdjusted(true), models.QueryParam("explain", "false"))
+	}.WithOrder(models.Desc).WithLimit(1), models.QueryParam("adjusted", "true"))
 	assert.Nil(t, err)
 
 	var expect models.GetAggsResponse

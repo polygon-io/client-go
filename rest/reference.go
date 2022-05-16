@@ -32,8 +32,9 @@ type ReferenceClient struct {
 	client.Client
 }
 
-// ListTickers retrieves reference tickers.
-// For more details see https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker.
+// ListTickers retrieves reference tickers. For more details see
+// https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker.
+//
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListTickers(context.TODO(), params, opts...)
 //   for iter.Next() {
@@ -50,16 +51,16 @@ func (c *ReferenceClient) ListTickers(ctx context.Context, params *models.ListTi
 	})
 }
 
-// GetTickerDetails retrieves details for a specified ticker.
-// For more details see https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker.
+// GetTickerDetails retrieves details for a specified ticker. For more details see
+// https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker.
 func (c *ReferenceClient) GetTickerDetails(ctx context.Context, params *models.GetTickerDetailsParams, options ...models.RequestOption) (*models.GetTickerDetailsResponse, error) {
 	res := &models.GetTickerDetailsResponse{}
 	err := c.Call(ctx, http.MethodGet, GetTickerDetailsPath, params, res, options...)
 	return res, err
 }
 
-// ListTickerNews retrieves news articles for a specified ticker.
-// For more details see https://polygon.io/docs/stocks/get_v2_reference_news.
+// ListTickerNews retrieves news articles for a specified ticker. For more details see
+// https://polygon.io/docs/stocks/get_v2_reference_news.
 func (c *ReferenceClient) ListTickerNews(ctx context.Context, params *models.ListTickerNewsParams, options ...models.RequestOption) *iter.Iter[models.TickerNews] {
 	return iter.NewIter(ctx, ListTickerNewsPath, params, func(uri string) (iter.ListResponse, []models.TickerNews, error) {
 		res := &models.ListTickerNewsResponse{}
@@ -68,32 +69,32 @@ func (c *ReferenceClient) ListTickerNews(ctx context.Context, params *models.Lis
 	})
 }
 
-// GetTickerTypes retrieves all the possible ticker types that can be queried.
-// For more details see https://polygon.io/docs/stocks/get_v3_reference_tickers_types.
+// GetTickerTypes retrieves all the possible ticker types that can be queried. For more details see
+// https://polygon.io/docs/stocks/get_v3_reference_tickers_types.
 func (c *ReferenceClient) GetTickerTypes(ctx context.Context, params *models.GetTickerTypesParams, options ...models.RequestOption) (*models.GetTickerTypesResponse, error) {
 	res := &models.GetTickerTypesResponse{}
 	err := c.Call(ctx, http.MethodGet, GetTickerTypesPath, params, res, options...)
 	return res, err
 }
 
-// GetMarketHolidays retrieves upcoming market holidays and their open/close times.
-// For more details see https://polygon.io/docs/stocks/get_v1_marketstatus_upcoming.
+// GetMarketHolidays retrieves upcoming market holidays and their open/close times. For more details see
+// https://polygon.io/docs/stocks/get_v1_marketstatus_upcoming.
 func (c *ReferenceClient) GetMarketHolidays(ctx context.Context, options ...models.RequestOption) (*models.GetMarketHolidaysResponse, error) {
 	res := &models.GetMarketHolidaysResponse{}
 	err := c.CallURL(ctx, http.MethodGet, GetMarketHolidaysPath, res, options...)
 	return res, err
 }
 
-// GetMarketStatus retrieves the current trading status of the exchanges and overall financial markets.
-// For more details see https://polygon.io/docs/stocks/get_v1_marketstatus_now.
+// GetMarketStatus retrieves the current trading status of the exchanges and overall financial markets. For more details
+// see https://polygon.io/docs/stocks/get_v1_marketstatus_now.
 func (c *ReferenceClient) GetMarketStatus(ctx context.Context, options ...models.RequestOption) (*models.GetMarketStatusResponse, error) {
 	res := &models.GetMarketStatusResponse{}
 	err := c.CallURL(ctx, http.MethodGet, GetMarketStatusPath, res, options...)
 	return res, err
 }
 
-// ListSplits retrieves reference splits.
-// For more details see https://polygon.io/docs/stocks/get_v3_reference_splits.
+// ListSplits retrieves reference splits. For more details see https://polygon.io/docs/stocks/get_v3_reference_splits.
+//
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListSplits(context.TODO(), params, opts...)
 //   for iter.Next() {
@@ -110,8 +111,9 @@ func (c *ReferenceClient) ListSplits(ctx context.Context, params *models.ListSpl
 	})
 }
 
-// ListDividends retrieves reference dividends.
-// For more details see https://polygon.io/docs/stocks/get_v3_reference_dividends.
+// ListDividends retrieves reference dividends. For more details see
+// https://polygon.io/docs/stocks/get_v3_reference_dividends.
+//
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListDividends(context.TODO(), params, opts...)
 //   for iter.Next() {
@@ -128,8 +130,9 @@ func (c *ReferenceClient) ListDividends(ctx context.Context, params *models.List
 	})
 }
 
-// ListConditions retrieves reference conditions.
-// For more details see https://polygon.io/docs/stocks/get_v3_reference_conditions.
+// ListConditions retrieves reference conditions. For more details see
+// https://polygon.io/docs/stocks/get_v3_reference_conditions.
+//
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListConditions(context.TODO(), params, opts...)
 //   for iter.Next() {

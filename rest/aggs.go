@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	GetAggsPath              = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{resolution}/{from}/{to}"
+	GetAggsPath              = "/v2/aggs/ticker/{ticker}/range/{multiplier}/{timespan}/{from}/{to}"
 	GetGroupedDailyAggsPath  = "/v2/aggs/grouped/locale/{locale}/market/{marketType}/{date}"
 	GetDailyOpenCloseAggPath = "/v1/open-close/{ticker}/{date}"
 	GetPreviousCloseAggPath  = "/v2/aggs/ticker/{ticker}/prev"

@@ -23,17 +23,17 @@ const (
 	Global MarketLocale = "global"
 )
 
-// Resolution is the size of the time window.
-type Resolution string
+// Timespan is the size of the time window.
+type Timespan string
 
 const (
-	Minute  Resolution = "minute"
-	Hour    Resolution = "hour"
-	Day     Resolution = "day"
-	Week    Resolution = "week"
-	Month   Resolution = "month"
-	Quarter Resolution = "quarter"
-	Year    Resolution = "year"
+	Minute  Timespan = "minute"
+	Hour    Timespan = "hour"
+	Day     Timespan = "day"
+	Week    Timespan = "week"
+	Month   Timespan = "month"
+	Quarter Timespan = "quarter"
+	Year    Timespan = "year"
 )
 
 // Sort is a query param type that specifies how the results should be sorted.
@@ -59,8 +59,8 @@ const (
 	Timestamp          Sort = "timestamp"
 )
 
-// Order the results. asc will return results in ascending order (oldest at the top),
-// desc will return results in descending order (newest at the top).
+// Order the results. asc will return results in ascending order (oldest at the top), desc will return results in
+// descending order (newest at the top).
 type Order string
 
 const (

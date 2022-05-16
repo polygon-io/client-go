@@ -2,9 +2,13 @@ package models
 
 // GetAllTickersSnapshotParams is the set of parameters for the GetAllTickersSnapshot method.
 type GetAllTickersSnapshotParams struct {
-	Locale     MarketLocale `validate:"required" path:"locale"`
-	MarketType MarketType   `validate:"required" path:"marketType"`
+	// The locale of the market.
+	Locale MarketLocale `validate:"required" path:"locale"`
 
+	// The type of market to query.
+	MarketType MarketType `validate:"required" path:"marketType"`
+
+	// A comma separated list of tickers to get snapshots for.
 	Tickers *string `query:"tickers"`
 }
 
@@ -21,9 +25,14 @@ type GetAllTickersSnapshotResponse struct {
 
 // GetTickerSnapshotParams is the set of parameters for the GetTickerSnapshot method.
 type GetTickerSnapshotParams struct {
-	Locale     MarketLocale `validate:"required" path:"locale"`
-	MarketType MarketType   `validate:"required" path:"marketType"`
-	Ticker     string       `validate:"required" path:"ticker"`
+	// The locale of the market.
+	Locale MarketLocale `validate:"required" path:"locale"`
+
+	// The type of market to query.
+	MarketType MarketType `validate:"required" path:"marketType"`
+
+	// The ticker symbol of the stock/equity.
+	Ticker string `validate:"required" path:"ticker"`
 }
 
 // GetTickerSnapshotResponse is the response returned by the GetTickerSnapshot method.
@@ -34,9 +43,14 @@ type GetTickerSnapshotResponse struct {
 
 // GetGainersLosersSnapshotParams is the set of parameters for the GetGainersLosersSnapshot method.
 type GetGainersLosersSnapshotParams struct {
-	Locale     MarketLocale `validate:"required" path:"locale"`
-	MarketType MarketType   `validate:"required" path:"marketType"`
-	Direction  Direction    `validate:"required" path:"direction"`
+	// The locale of the market.
+	Locale MarketLocale `validate:"required" path:"locale"`
+
+	// The type of market to query.
+	MarketType MarketType `validate:"required" path:"marketType"`
+
+	// The direction of the snapshot results to return.
+	Direction Direction `validate:"required" path:"direction"`
 }
 
 // GetGainersLosersSnapshotResponse is the response returned by the GetGainersLosersSnapshot method.
@@ -68,7 +82,8 @@ type GetCryptoFullBookSnapshotResponse struct {
 	Data SnapshotTickerFullBook `json:"data,omitempty"`
 }
 
-// TickerSnapshot is a collection of data for a ticker including the current minute, day, and previous day's aggregate, as well as the last trade and quote.
+// TickerSnapshot is a collection of data for a ticker including the current minute, day, and previous day's aggregate,
+// as well as the last trade and quote.
 type TickerSnapshot struct {
 	Day              DaySnapshot       `json:"day,omitempty"`
 	LastQuote        LastQuoteSnapshot `json:"lastQuote,omitempty"`

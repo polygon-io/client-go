@@ -2,16 +2,38 @@ package models
 
 // GetAggsParams is the set of parameters for the GetAggs method.
 type GetAggsParams struct {
-	Ticker     string     `validate:"required" path:"ticker"`
-	Multiplier int        `validate:"required" path:"multiplier"`
-	Resolution Resolution `validate:"required" path:"resolution"`
-	From       Millis     `validate:"required" path:"from"`
-	To         Millis     `validate:"required" path:"to"`
+	// The ticker symbol of the stock/equity.
+	Ticker string `validate:"required" path:"ticker"`
 
-	Order    *Order `query:"sort"`
-	Limit    *int   `query:"limit"`
-	Adjusted *bool  `query:"adjusted"`
-	Explain  *bool  `query:"explain"`
+	// The size of the timespan multiplier.
+	Multiplier int `validate:"required" path:"multiplier"`
+
+	// The size of the time window.
+	Timespan Timespan `validate:"required" path:"timespan"`
+
+	// The start of the aggregate time window.
+	From Millis `validate:"required" path:"from"`
+
+	// The end of the aggregate time window.
+	To Millis `validate:"required" path:"to"`
+
+	// Whether or not the results are adjusted for splits. By default, results are adjusted. Set this to false to get
+	// results that are NOT adjusted for splits.
+	Adjusted *bool `query:"adjusted"`
+
+	// Order the results by timestamp. asc will return results in ascending order (oldest at the top), desc will return
+	// results in descending order (newest at the top).
+	Order *Order `query:"sort"`
+
+	// Limits the number of base aggregates queried to create the aggregate results. Max 50000 and Default 5000. Read
+	// more about how limit is used to calculate aggregate results in our article on Aggregate Data API Improvements:
+	// https://polygon.io/blog/aggs-api-updates/.
+	Limit *int `query:"limit"`
+}
+
+func (p GetAggsParams) WithAdjusted(q bool) *GetAggsParams {
+	p.Adjusted = &q
+	return &p
 }
 
 func (p GetAggsParams) WithOrder(q Order) *GetAggsParams {
@@ -21,16 +43,6 @@ func (p GetAggsParams) WithOrder(q Order) *GetAggsParams {
 
 func (p GetAggsParams) WithLimit(q int) *GetAggsParams {
 	p.Limit = &q
-	return &p
-}
-
-func (p GetAggsParams) WithAdjusted(q bool) *GetAggsParams {
-	p.Adjusted = &q
-	return &p
-}
-
-func (p GetAggsParams) WithExplain(q bool) *GetAggsParams {
-	p.Explain = &q
 	return &p
 }
 
@@ -46,10 +58,17 @@ type GetAggsResponse struct {
 
 // GetGroupedDailyAggsParams is the set of parameters for the GetGroupedDailyAggs method.
 type GetGroupedDailyAggsParams struct {
-	Locale     MarketLocale `validate:"required" path:"locale"`
-	MarketType MarketType   `validate:"required" path:"marketType"`
-	Date       Date         `validate:"required" path:"date"`
+	// The locale of the market.
+	Locale MarketLocale `validate:"required" path:"locale"`
 
+	// The type of market to query.
+	MarketType MarketType `validate:"required" path:"marketType"`
+
+	// The beginning date for the aggregate window.
+	Date Date `validate:"required" path:"date"`
+
+	// Whether or not the results are adjusted for splits. By default, results are adjusted. Set this to false to get
+	// results that are NOT adjusted for splits.
 	Adjusted *bool `query:"adjusted"`
 }
 
@@ -70,9 +89,14 @@ type GetGroupedDailyAggsResponse struct {
 
 // GetDailyOpenCloseAggParams is the set of parameters for the GetDailyOpenCloseAgg method.
 type GetDailyOpenCloseAggParams struct {
+	// The ticker symbol of the stock/equity.
 	Ticker string `validate:"required" path:"ticker"`
-	Date   Date   `validate:"required" path:"date"`
 
+	// The date of the requested open/close in the format YYYY-MM-DD.
+	Date Date `validate:"required" path:"date"`
+
+	// Whether or not the results are adjusted for splits. By default, results are adjusted. Set this to false to get
+	// results that are NOT adjusted for splits.
 	Adjusted *bool `query:"adjusted"`
 }
 
@@ -97,8 +121,11 @@ type GetDailyOpenCloseAggResponse struct {
 
 // GetPreviousCloseAggParams is the set of parameters for the GetPreviousCloseAgg method.
 type GetPreviousCloseAggParams struct {
+	// The ticker symbol of the stock/equity.
 	Ticker string `validate:"required" path:"ticker"`
 
+	// Whether or not the results are adjusted for splits. By default, results are adjusted. Set this to false to get
+	// results that are NOT adjusted for splits.
 	Adjusted *bool `query:"adjusted"`
 }
 
@@ -119,22 +146,13 @@ type GetPreviousCloseAggResponse struct {
 
 // Agg is an aggregation of all the activity on a specified ticker between the start and end timestamps.
 type Agg struct {
-	Ticker            string  `json:"T,omitempty"`
-	Volume            float64 `json:"v,omitempty"`
-	VWAP              float64 `json:"vw,omitempty"`
-	AggregateVWAP     float64 `json:"a,omitempty"`
-	Open              float64 `json:"o,omitempty"`
-	Close             float64 `json:"c,omitempty"`
-	High              float64 `json:"h,omitempty"`
-	Low               float64 `json:"l,omitempty"`
-	Timestamp         Millis  `json:"t,omitempty"`
-	Transactions      int64   `json:"n,omitempty"`
-	Market            string  `json:"m,omitempty"`
-	Exchange          int32   `json:"x,omitempty"`
-	Locale            string  `json:"g,omitempty"`
-	OfficialOpenPrice float64 `json:"op,omitempty"`
-	AverageSize       float64 `json:"z,omitempty"`
-	AccumulatedVolume float64 `json:"av,omitempty"`
-	StartTimestamp    Millis  `json:"s,omitempty"`
-	EndTimestamp      Millis  `json:"e,omitempty"`
+	Ticker       string  `json:"T,omitempty"`
+	Close        float64 `json:"c,omitempty"`
+	High         float64 `json:"h,omitempty"`
+	Low          float64 `json:"l,omitempty"`
+	Transactions int64   `json:"n,omitempty"`
+	Open         float64 `json:"o,omitempty"`
+	Timestamp    Millis  `json:"t,omitempty"`
+	Volume       float64 `json:"v,omitempty"`
+	VWAP         float64 `json:"vw,omitempty"`
 }

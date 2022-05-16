@@ -20,8 +20,9 @@ type TradesClient struct {
 	client.Client
 }
 
-// ListTrades retrieves trades for a specified ticker.
-// For more details see https://polygon.io/docs/stocks/get_v3_trades__stockticker.
+// ListTrades retrieves trades for a specified ticker. For more details see
+// https://polygon.io/docs/stocks/get_v3_trades__stockticker.
+//
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListTrades(context.TODO(), params, opts...)
 //   for iter.Next() {
@@ -38,16 +39,16 @@ func (c *TradesClient) ListTrades(ctx context.Context, params *models.ListTrades
 	})
 }
 
-// GetLastTrade retrieves the last trade for a specified ticker.
-// For more details see https://polygon.io/docs/stocks/get_v2_last_trade__stocksticker.
+// GetLastTrade retrieves the last trade for a specified ticker. For more details see
+// https://polygon.io/docs/stocks/get_v2_last_trade__stocksticker.
 func (c *TradesClient) GetLastTrade(ctx context.Context, params *models.GetLastTradeParams, options ...models.RequestOption) (*models.GetLastTradeResponse, error) {
 	res := &models.GetLastTradeResponse{}
 	err := c.Call(ctx, http.MethodGet, GetLastTradePath, params, res, options...)
 	return res, err
 }
 
-// GetLastCryptoTrade retrieves the last trade for a crypto pair.
-// For more details see https://polygon.io/docs/crypto/get_v1_last_crypto__from___to.
+// GetLastCryptoTrade retrieves the last trade for a crypto pair. For more details see
+// https://polygon.io/docs/crypto/get_v1_last_crypto__from___to.
 func (c *TradesClient) GetLastCryptoTrade(ctx context.Context, params *models.GetLastCryptoTradeParams, options ...models.RequestOption) (*models.GetLastCryptoTradeResponse, error) {
 	res := &models.GetLastCryptoTradeResponse{}
 	err := c.Call(ctx, http.MethodGet, GetLastCryptoTradePath, params, res, options...)
