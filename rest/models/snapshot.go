@@ -96,6 +96,7 @@ type TickerSnapshot struct {
 	Updated          Nanos             `json:"updated,omitempty"`
 }
 
+// DaySnapshot is the most recent day agg for a ticker.
 type DaySnapshot struct {
 	Close                 float64 `json:"c,omitempty"`
 	High                  float64 `json:"h,omitempty"`
@@ -105,6 +106,7 @@ type DaySnapshot struct {
 	VolumeWeightedAverage float64 `json:"vw,omitempty"`
 }
 
+// LastQuoteSnapshot is the most recent quote for a ticker.
 type LastQuoteSnapshot struct {
 	AskPrice  float64 `json:"P,omitempty"`
 	BidPrice  float64 `json:"p,omitempty"`
@@ -113,6 +115,7 @@ type LastQuoteSnapshot struct {
 	Timestamp Nanos   `json:"t,omitempty"`
 }
 
+// LastQuoteSnapshot is the most recent trade for a ticker.
 type LastTradeSnapshot struct {
 	Conditions []int   `json:"c,omitempty"`
 	TradeID    string  `json:"i,omitempty"`
@@ -122,6 +125,7 @@ type LastTradeSnapshot struct {
 	ExchangeID int     `json:"x,omitempty"`
 }
 
+// DaySnapshot is the most recent minute agg for a ticker.
 type MinuteSnapshot struct {
 	AccumulatedVolume     int     `json:"av,omitempty"`
 	Close                 float64 `json:"c,omitempty"`
@@ -132,6 +136,8 @@ type MinuteSnapshot struct {
 	VolumeWeightedAverage float64 `json:"vw,omitempty"`
 }
 
+// OptionContractSnapshot is a collection of data for an option contract ticker including the current day aggregate and
+// the most recent quote.
 type OptionContractSnapshot struct {
 	BreakEvenPrice    float64                         `json:"break_even_price,omitempty"`
 	Day               DayOptionContractSnapshot       `json:"day,omitempty"`
@@ -143,6 +149,7 @@ type OptionContractSnapshot struct {
 	UnderlyingAsset   UnderlyingAsset                 `json:"underlying_asset,omitempty"`
 }
 
+// DayOptionContractSnapshot contains the most recent day agg for an option contract.
 type DayOptionContractSnapshot struct {
 	Change        float64 `json:"change,omitempty"`
 	ChangePercent float64 `json:"change_percent,omitempty"`
@@ -156,6 +163,7 @@ type DayOptionContractSnapshot struct {
 	VWAP          float64 `json:"vwap,omitempty"`
 }
 
+// OptionDetails contains more detailed information about an option contract.
 type OptionDetails struct {
 	ContractType      string  `json:"contract_type,omitempty"`
 	ExerciseStyle     string  `json:"exercise_style,omitempty"`
@@ -165,6 +173,7 @@ type OptionDetails struct {
 	Ticker            string  `json:"ticker,omitempty"`
 }
 
+// Greeks contains the delta, gamma, vega, and theta of an option contract.
 type Greeks struct {
 	Delta float64 `json:"delta,omitempty"`
 	Gamma float64 `json:"gamma,omitempty"`
@@ -172,6 +181,7 @@ type Greeks struct {
 	Vega  float64 `json:"vega,omitempty"`
 }
 
+// LastQuoteOptionContractSnapshot contains the most recent quote of an option contract.
 type LastQuoteOptionContractSnapshot struct {
 	Ask         float64 `json:"ask,omitempty"`
 	AskSize     float64 `json:"ask_size,omitempty"`
@@ -182,6 +192,7 @@ type LastQuoteOptionContractSnapshot struct {
 	Timeframe   string  `json:"timeframe,omitempty"`
 }
 
+// UnderlyingAsset contains information on the underlying stock for this options contract.
 type UnderlyingAsset struct {
 	ChangeToBreakEven float64 `json:"change_to_break_even,omitempty"`
 	LastUpdated       int64   `json:"last_updated,omitempty"`
@@ -190,6 +201,7 @@ type UnderlyingAsset struct {
 	Timeframe         string  `json:"timeframe,omitempty"`
 }
 
+// FullBookSnapshot is the level 2 book of a single crypto ticker.
 type FullBookSnapshot struct {
 	AskCount float64          `json:"askCount,omitempty"`
 	Asks     []OrderBookQuote `json:"asks,omitempty"`
@@ -200,6 +212,7 @@ type FullBookSnapshot struct {
 	Updated  Nanos            `json:"updated,omitempty"`
 }
 
+// OrderBookQuote contains quote information for a crypto ticker.
 type OrderBookQuote struct {
 	Price            float64            `json:"p,omitempty"`
 	ExchangeToShares map[string]float64 `json:"x,omitempty"`
