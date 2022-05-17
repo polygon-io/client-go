@@ -2,7 +2,6 @@ package models_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 	"time"
 
@@ -63,11 +62,8 @@ func TestUnmarshalTime(t *testing.T) {
 			var res Response
 			err := json.Unmarshal(tc.input, &res)
 			assert.Nil(t, err)
-
 			expect := time.Time(tc.expect.Time).String()
 			actual := time.Time(res.Time).String()
-			fmt.Println(expect)
-			fmt.Println(actual)
 			if expect != actual {
 				t.Errorf("%v: expected { %v } got { %v }", desc, expect, actual)
 			}
