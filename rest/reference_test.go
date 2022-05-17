@@ -515,3 +515,106 @@ func TestGetExchanges(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, &expect, res)
 }
+
+func TestGetOptionsContract(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := `{
+	"results": {
+		"cfi": "OCASPS",
+		"contract_type": "call",
+		"exercise_style": "american",
+		"expiration_date": "2024-01-19",
+		"primary_exchange": "BATO",
+		"shares_per_contract": 100,
+		"strike_price": 2.5,
+		"ticker": "O:EVRI240119C00002500",
+		"underlying_ticker": "EVRI"
+	},
+	"status": "OK",
+	"request_id": "52fccf652441fc4d4fd35e2d0d2dd1f2"
+}`
+
+	registerResponder("https://api.polygon.io/v3/reference/options/contracts/O:EVRI240119C00002500", expectedResponse)
+	res, err := c.GetOptionsContract(context.Background(), models.GetOptionsContractParams{
+		Ticker: "O:EVRI240119C00002500",
+	}.WithAsOf(models.Date(time.Date(2022, 5, 16, 0, 0, 0, 0, time.Local))))
+	assert.Nil(t, err)
+
+	var expect models.GetOptionsContractResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
+	assert.Nil(t, err)
+	assert.Equal(t, &expect, res)
+}
+
+func TestListOptionsContracts(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	contract1 := `{
+	"cfi": "OCASPS",
+	"contract_type": "call",
+	"exercise_style": "american",
+	"expiration_date": "2022-05-20",
+	"primary_exchange": "BATO",
+	"shares_per_contract": 100,
+	"strike_price": 65,
+	"ticker": "O:A220520C00065000",
+	"underlying_ticker": "A"
+}`
+
+	contract2 := `{
+	"cfi": "OCASPS",
+	"contract_type": "call",
+	"exercise_style": "american",
+	"expiration_date": "2022-05-20",
+	"primary_exchange": "BATO",
+	"shares_per_contract": 100,
+	"strike_price": 70,
+	"ticker": "O:A220520C00070000",
+	"underlying_ticker": "A"
+}`
+
+	expectedResponse := `{
+	"status": "OK",
+	"request_id": "975d5e1aacc6c147c94934b016b8d1a7",
+	"next_url": "https://api.polygon.io/v3/reference/options/contracts?cursor=YXA9JTdCJTIySUQlMjIlM0ElMjIyNzI2MTY3OTUxMjgzOTI1NTI5JTIyJTJDJTIyU3RhcnREYXRlVXRjJTIyJTNBJTdCJTIyVGltZSUyMiUzQSUyMjIwMjEtMDktMjFUMDAlM0EwMCUzQTAwWiUyMiUyQyUyMlZhbGlkJTIyJTNBdHJ1ZSU3RCUyQyUyMkVuZERhdGVVdGMlMjIlM0ElN0IlMjJUaW1lJTIyJTNBJTIyMDAwMS0wMS0wMVQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyVmFsaWQlMjIlM0FmYWxzZSU3RCUyQyUyMnVuZGVybHlpbmdfdGlja2VyJTIyJTNBJTIyQSUyMiUyQyUyMnRpY2tlciUyMiUzQSUyMk8lM0FBMjIwNTIwQzAwMTEwMDAwJTIyJTJDJTIyZXhwaXJhdGlvbl9kYXRlJTIyJTNBJTIyMjAyMi0wNS0yMFQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyc3RyaWtlX3ByaWNlJTIyJTNBMTEwJTJDJTIyY2ZpJTIyJTNBJTIyT0NBU1BTJTIyJTJDJTIyY29udHJhY3RfdHlwZSUyMiUzQSUyMmNhbGwlMjIlMkMlMjJleGVyY2lzZV9zdHlsZSUyMiUzQSUyMmFtZXJpY2FuJTIyJTJDJTIycHJpbWFyeV9leGNoYW5nZSUyMiUzQSU3QiUyMlN0cmluZyUyMiUzQSUyMkJBVE8lMjIlMkMlMjJWYWxpZCUyMiUzQXRydWUlN0QlMkMlMjJzaGFyZXNfcGVyX2NvbnRyYWN0JTIyJTNBMTAwJTJDJTIyYWRkaXRpb25hbF91bmRlcmx5aW5ncyUyMiUzQSUyMm51bGwlMjIlN0QmYXM9JmNvbnRyYWN0X3R5cGU9Y2FsbCZsaW1pdD0xMCZzb3J0PXRpY2tlcg",
+	"results": [
+` + indent(true, contract1, "\t\t") + `,
+` + indent(true, contract2, "\t\t") + `
+	]
+}`
+
+	registerResponder("https://api.polygon.io/v3/reference/options/contracts?contract_type=call", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/reference/options/contracts?cursor=YXA9JTdCJTIySUQlMjIlM0ElMjIyNzI2MTY3OTUxMjgzOTI1NTI5JTIyJTJDJTIyU3RhcnREYXRlVXRjJTIyJTNBJTdCJTIyVGltZSUyMiUzQSUyMjIwMjEtMDktMjFUMDAlM0EwMCUzQTAwWiUyMiUyQyUyMlZhbGlkJTIyJTNBdHJ1ZSU3RCUyQyUyMkVuZERhdGVVdGMlMjIlM0ElN0IlMjJUaW1lJTIyJTNBJTIyMDAwMS0wMS0wMVQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyVmFsaWQlMjIlM0FmYWxzZSU3RCUyQyUyMnVuZGVybHlpbmdfdGlja2VyJTIyJTNBJTIyQSUyMiUyQyUyMnRpY2tlciUyMiUzQSUyMk8lM0FBMjIwNTIwQzAwMTEwMDAwJTIyJTJDJTIyZXhwaXJhdGlvbl9kYXRlJTIyJTNBJTIyMjAyMi0wNS0yMFQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyc3RyaWtlX3ByaWNlJTIyJTNBMTEwJTJDJTIyY2ZpJTIyJTNBJTIyT0NBU1BTJTIyJTJDJTIyY29udHJhY3RfdHlwZSUyMiUzQSUyMmNhbGwlMjIlMkMlMjJleGVyY2lzZV9zdHlsZSUyMiUzQSUyMmFtZXJpY2FuJTIyJTJDJTIycHJpbWFyeV9leGNoYW5nZSUyMiUzQSU3QiUyMlN0cmluZyUyMiUzQSUyMkJBVE8lMjIlMkMlMjJWYWxpZCUyMiUzQXRydWUlN0QlMkMlMjJzaGFyZXNfcGVyX2NvbnRyYWN0JTIyJTNBMTAwJTJDJTIyYWRkaXRpb25hbF91bmRlcmx5aW5ncyUyMiUzQSUyMm51bGwlMjIlN0QmYXM9JmNvbnRyYWN0X3R5cGU9Y2FsbCZsaW1pdD0xMCZzb3J0PXRpY2tlcg", "{}")
+	iter := c.ListOptionsContracts(context.Background(), models.ListOptionsContractsParams{}.WithContractType("call"))
+
+	// iter creation
+	assert.Nil(t, iter.Err())
+	assert.NotNil(t, iter.Item())
+
+	// first item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	var expect1 models.OptionsContract
+	err := json.Unmarshal([]byte(contract1), &expect1)
+	assert.Nil(t, err)
+	assert.Equal(t, expect1, iter.Item())
+
+	// second item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	var expect2 models.OptionsContract
+	err = json.Unmarshal([]byte(contract2), &expect2)
+	assert.Nil(t, err)
+	assert.Equal(t, expect2, iter.Item())
+
+	// end of list
+	assert.False(t, iter.Next())
+	assert.Nil(t, iter.Err())
+}
