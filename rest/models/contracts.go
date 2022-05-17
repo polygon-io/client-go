@@ -9,7 +9,7 @@ type GetOptionsContractParams struct {
 	AsOf *Date `query:"as_of"`
 }
 
-func (p GetOptionsContractParams) WithDate(q Date) *GetOptionsContractParams {
+func (p GetOptionsContractParams) WithAsOf(q Date) *GetOptionsContractParams {
 	p.AsOf = &q
 	return &p
 }

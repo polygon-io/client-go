@@ -541,7 +541,7 @@ func TestGetOptionsContract(t *testing.T) {
 	registerResponder("https://api.polygon.io/v3/reference/options/contracts/O:EVRI240119C00002500", expectedResponse)
 	res, err := c.GetOptionsContract(context.Background(), models.GetOptionsContractParams{
 		OptionsTicker: "O:EVRI240119C00002500",
-	}.WithDate(models.Date(time.Date(2022, 5, 16, 0, 0, 0, 0, time.Local))))
+	}.WithAsOf(models.Date(time.Date(2022, 5, 16, 0, 0, 0, 0, time.Local))))
 	assert.Nil(t, err)
 
 	var expect models.GetOptionsContractResponse
