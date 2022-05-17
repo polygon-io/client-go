@@ -20,8 +20,9 @@ func TestUnmarshalTime(t *testing.T) {
 	expect4, _ := time.Parse("2006-01-02T15:04:05.000-0700", "2022-05-10T22:30:37.546-0800")
 
 	tests := map[string]struct {
-		input  []byte
-		expect Response
+		input  []byte   // input
+		expect Response // expected output
+		err    error    // expected error
 	}{
 		"2006-01-02T15:04:05Z": {
 			input: []byte(`{
@@ -55,13 +56,20 @@ func TestUnmarshalTime(t *testing.T) {
 				Time: models.Time(expect4),
 			},
 		},
+		"unexpected format": {
+			input: []byte(`{
+				"time": "2022-10T22:3"
+			}`),
+			err: &time.ParseError{Layout: "2006-01-02T15:04:05Z", Value: "2022-10T22:3", LayoutElem: "-", ValueElem: "T22:3", Message: ""},
+		},
 	}
 
 	for desc, tc := range tests {
 		t.Run(desc, func(t *testing.T) {
 			var res Response
 			err := json.Unmarshal(tc.input, &res)
-			assert.Nil(t, err)
+			assert.Equal(t, tc.err, err)
+
 			expect := time.Time(tc.expect.Time).String()
 			actual := time.Time(res.Time).String()
 			if expect != actual {
