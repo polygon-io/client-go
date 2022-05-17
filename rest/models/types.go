@@ -169,6 +169,12 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 
 	// attempt with a different format
 	if parsedTime, err := time.Parse("2006-01-02T15:04:05Z", unquoteData); err != nil {
+		*t = Time(parsedTime)
+		return nil
+	}
+
+	// attempt with yet another format
+	if parsedTime, err := time.Parse("2006-01-02T15:04:05-04:00", unquoteData); err != nil {
 		return err
 	} else {
 		*t = Time(parsedTime)
