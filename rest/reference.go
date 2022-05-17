@@ -170,6 +170,15 @@ func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models
 
 // ListOptionsContracts lists historical options contracts. For more details see
 // https://polygon.io/docs/options/get_v3_reference_options_contracts
+//
+// This method returns an iterator that should be used to access the results via this pattern:
+//   iter, err := c.ListConditions(context.TODO(), params, opts...)
+//   for iter.Next() {
+//       log.Print(iter.Item()) // do something with the current value
+//   }
+//   if iter.Err() != nil {
+//       return err
+//   }
 func (c *ReferenceClient) ListOptionsContracts(ctx context.Context, params *models.ListOptionsContractsParams, options ...models.RequestOption) *iter.Iter[models.OptionsContract] {
 	return iter.NewIter(ctx, ListOptionsContractsPath, params, func(uri string) (iter.ListResponse, []models.OptionsContract, error) {
 		res := &models.ListOptionsContractsResponse{}

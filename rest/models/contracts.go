@@ -17,8 +17,6 @@ func (p GetOptionsContractParams) WithAsOf(q Date) *GetOptionsContractParams {
 // GetOptionsContractResponse is the response returned by the GetOptionsContract method.
 type GetOptionsContractResponse struct {
 	BaseResponse
-
-	// Options Contract results.
 	Results OptionsContract `json:"results,omitempty"`
 }
 
@@ -133,8 +131,6 @@ func (p ListOptionsContractsParams) WithLimit(q int) *ListOptionsContractsParams
 
 type ListOptionsContractsResponse struct {
 	BaseResponse
-
-	// Options Contracts results.
 	Results []OptionsContract `json:"results,omitempty"`
 }
 
