@@ -162,19 +162,25 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 	}
 
 	// attempt to parse time
-	if parsedTime, err := time.Parse("2006-01-02T15:04:05.000Z", unquoteData); err == nil {
+	if parsedTime, err := time.Parse("2006-01-02T15:04:05.000-0700", unquoteData); err == nil {
+		*t = Time(parsedTime)
+		return nil
+	}
+
+	// attempt to parse time again
+	if parsedTime, err := time.Parse("2006-01-02T15:04:05-07:00", unquoteData); err == nil {
 		*t = Time(parsedTime)
 		return nil
 	}
 
 	// attempt with a different format
-	if parsedTime, err := time.Parse("2006-01-02T15:04:05Z", unquoteData); err != nil {
+	if parsedTime, err := time.Parse("2006-01-02T15:04:05.000Z", unquoteData); err == nil {
 		*t = Time(parsedTime)
 		return nil
 	}
 
 	// attempt with yet another format
-	if parsedTime, err := time.Parse("2006-01-02T15:04:05-04:00", unquoteData); err != nil {
+	if parsedTime, err := time.Parse("2006-01-02T15:04:05Z", unquoteData); err != nil {
 		return err
 	} else {
 		*t = Time(parsedTime)
