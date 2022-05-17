@@ -314,7 +314,7 @@ func TestGetMarketStatus(t *testing.T) {
 		"otc": "closed"
 	},
 	"market": "extended-hours",
-	"serverTime": "2020-11-10T22:37:37.000Z"
+	"serverTime": "2022-05-17T10:26:06-04:00"
 }`
 
 	registerResponder("https://api.polygon.io/v1/marketstatus/now", expectedResponse)
