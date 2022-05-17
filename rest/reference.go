@@ -26,8 +26,7 @@ const (
 
 	GetExchangesPath = "/v3/reference/exchanges"
 
-	GetOptionsContractPath = "/v3/reference/options/contracts/{options_ticker}"
-
+	GetOptionsContractPath   = "/v3/reference/options/contracts/{options_ticker}"
 	ListOptionsContractsPath = "/v3/reference/options/contracts"
 )
 
@@ -153,21 +152,24 @@ func (c *ReferenceClient) ListConditions(ctx context.Context, params *models.Lis
 	})
 }
 
-// GetExchanges lists all exchanges that Polygon knows about.
+// GetExchanges lists all exchanges that Polygon knows about. For more details see
+// https://polygon.io/docs/stocks/get_v3_reference_exchanges
 func (c *ReferenceClient) GetExchanges(ctx context.Context, params *models.GetExchangesParams, options ...models.RequestOption) (*models.GetExchangesResponse, error) {
 	res := &models.GetExchangesResponse{}
 	err := c.Call(ctx, http.MethodGet, GetExchangesPath, params, res, options...)
 	return res, err
 }
 
-// GetOptionsContract retrieves a historical options contract.
+// GetOptionsContract retrieves a historical options contract. For more details see
+// https://polygon.io/docs/options/get_v3_reference_options_contracts__options_ticker
 func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models.GetOptionsContractParams, options ...models.RequestOption) (*models.GetOptionsContractResponse, error) {
 	res := &models.GetOptionsContractResponse{}
 	err := c.Call(ctx, http.MethodGet, GetOptionsContractPath, params, res, options...)
 	return res, err
 }
 
-// ListOptionsContracts lists historical options contracts.
+// ListOptionsContracts lists historical options contracts. For more details see
+// https://polygon.io/docs/options/get_v3_reference_options_contracts
 func (c *ReferenceClient) ListOptionsContracts(ctx context.Context, params *models.ListOptionsContractsParams, options ...models.RequestOption) *iter.Iter[models.OptionsContract] {
 	return iter.NewIter(ctx, ListOptionsContractsPath, params, func(uri string) (iter.ListResponse, []models.OptionsContract, error) {
 		res := &models.ListOptionsContractsResponse{}
