@@ -39,6 +39,9 @@ type ListOptionsContractsParams struct {
 	ExpirationDateGT  *Date `query:"expiration_date.GT"`
 	ExpirationDateGTE *Date `query:"expiration_date.GTE"`
 
+	// Specify a point in time for contracts as of this date with format YYYY-MM-DD.
+	AsOf *Date `query:"as_of"`
+
 	// Specify the strike price.
 	StrikePriceEQ  *float64 `query:"strike_price"`
 	StrikePriceLT  *float64 `query:"strike_price.lt"`
@@ -91,6 +94,11 @@ func (p ListOptionsContractsParams) WithExpirationDate(c Comparator, q Date) *Li
 	} else if c == GTE {
 		p.ExpirationDateGTE = &q
 	}
+	return &p
+}
+
+func (p ListOptionsContractsParams) WithAsOf(q Date) *ListOptionsContractsParams {
+	p.AsOf = &q
 	return &p
 }
 
