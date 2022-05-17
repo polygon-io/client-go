@@ -26,7 +26,7 @@ const (
 
 	GetExchangesPath = "/v3/reference/exchanges"
 
-	GetOptionsContractPath   = "/v3/reference/options/contracts/{options_ticker}"
+	GetOptionsContractPath   = "/v3/reference/options/contracts/{ticker}"
 	ListOptionsContractsPath = "/v3/reference/options/contracts"
 )
 
@@ -153,7 +153,7 @@ func (c *ReferenceClient) ListConditions(ctx context.Context, params *models.Lis
 }
 
 // GetExchanges lists all exchanges that Polygon knows about. For more details see
-// https://polygon.io/docs/stocks/get_v3_reference_exchanges
+// https://polygon.io/docs/stocks/get_v3_reference_exchanges.
 func (c *ReferenceClient) GetExchanges(ctx context.Context, params *models.GetExchangesParams, options ...models.RequestOption) (*models.GetExchangesResponse, error) {
 	res := &models.GetExchangesResponse{}
 	err := c.Call(ctx, http.MethodGet, GetExchangesPath, params, res, options...)
@@ -161,7 +161,7 @@ func (c *ReferenceClient) GetExchanges(ctx context.Context, params *models.GetEx
 }
 
 // GetOptionsContract retrieves a historical options contract. For more details see
-// https://polygon.io/docs/options/get_v3_reference_options_contracts__options_ticker
+// https://polygon.io/docs/options/get_v3_reference_options_contracts__options_ticker.
 func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models.GetOptionsContractParams, options ...models.RequestOption) (*models.GetOptionsContractResponse, error) {
 	res := &models.GetOptionsContractResponse{}
 	err := c.Call(ctx, http.MethodGet, GetOptionsContractPath, params, res, options...)
@@ -169,7 +169,7 @@ func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models
 }
 
 // ListOptionsContracts lists historical options contracts. For more details see
-// https://polygon.io/docs/options/get_v3_reference_options_contracts
+// https://polygon.io/docs/options/get_v3_reference_options_contracts.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //   iter, err := c.ListConditions(context.TODO(), params, opts...)

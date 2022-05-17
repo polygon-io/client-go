@@ -3,7 +3,7 @@ package models
 // GetOptionsContract is the set of parameters for the GetOptionsContract method.
 type GetOptionsContractParams struct {
 	// Return the contract that contains this options ticker.
-	Ticker string `validate:"required" path:"options_ticker"`
+	Ticker string `validate:"required" path:"ticker"`
 
 	// Specify a point in time for the contract as of this date.
 	AsOf *Date `query:"as_of"`
