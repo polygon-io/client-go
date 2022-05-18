@@ -47,7 +47,7 @@ func (subs subscriptions) delete(topic Topic, tickers ...string) {
 	}
 }
 
-// builds a subscription message for a given topic
+// getSub builds a subscription message for a given topic.
 func getSub(action models.Action, topic Topic, tickers ...string) (json.RawMessage, error) {
 	if len(tickers) == 0 {
 		tickers = []string{"*"}

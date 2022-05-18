@@ -89,29 +89,29 @@ func TestListResource(t *testing.T) {
 		},
 	})
 
-	iter := c.ListResource(context.Background(), &ListResourceParams{
+	it := c.ListResource(context.Background(), &ListResourceParams{
 		Ticker: "ticker1",
 	})
 
 	// verify the first page
-	assert.Nil(t, iter.Err())
-	assert.NotNil(t, iter.Item())
+	assert.Nil(t, it.Err())
+	assert.NotNil(t, it.Item())
 	// verify the first and second quotes
-	assert.True(t, iter.Next())
-	assert.Nil(t, iter.Err())
-	assert.Equal(t, resource1, iter.Item())
+	assert.True(t, it.Next())
+	assert.Nil(t, it.Err())
+	assert.Equal(t, resource1, it.Item())
 
 	// verify the second page
-	assert.True(t, iter.Next())
-	assert.Nil(t, iter.Err())
-	assert.Equal(t, resource2, iter.Item())
-	assert.True(t, iter.Next())
-	assert.Nil(t, iter.Err())
-	assert.Equal(t, resource3, iter.Item())
+	assert.True(t, it.Next())
+	assert.Nil(t, it.Err())
+	assert.Equal(t, resource2, it.Item())
+	assert.True(t, it.Next())
+	assert.Nil(t, it.Err())
+	assert.Equal(t, resource3, it.Item())
 
 	// verify the third page (end of list)
-	assert.False(t, iter.Next()) // this should be false since the third page has no results
-	assert.Nil(t, iter.Err())
+	assert.False(t, it.Next()) // this should be false since the third page has no results
+	assert.Nil(t, it.Err())
 }
 
 func TestListResourceError(t *testing.T) {
@@ -133,19 +133,19 @@ func TestListResourceError(t *testing.T) {
 		BaseResponse: baseRes,
 	})
 
-	iter := c.ListResource(context.Background(), &ListResourceParams{
+	it := c.ListResource(context.Background(), &ListResourceParams{
 		Ticker: "ticker1",
 	})
 
-	// iter.Next() should return false and the error should not be nil
-	assert.NotNil(t, iter.Err())
-	assert.False(t, iter.Next())
-	assert.NotNil(t, iter.Err())
-	assert.Equal(t, expectedErr.Error(), iter.Err().Error())
+	// it.Next() should return false and the error should not be nil
+	assert.NotNil(t, it.Err())
+	assert.False(t, it.Next())
+	assert.NotNil(t, it.Err())
+	assert.Equal(t, expectedErr.Error(), it.Err().Error())
 
-	// subsequent calls to iter.Next() should be false, item should be not nil, page should be an empty response
-	assert.False(t, iter.Next())
-	assert.NotNil(t, iter.Item())
+	// subsequent calls to it.Next() should be false, item should be not nil, page should be an empty response
+	assert.False(t, it.Next())
+	assert.NotNil(t, it.Item())
 }
 
 func TestListResourceEncodeError(t *testing.T) {
@@ -154,16 +154,16 @@ func TestListResourceEncodeError(t *testing.T) {
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	iter := c.ListResource(context.Background(), nil)
+	it := c.ListResource(context.Background(), nil)
 
-	// iter.Next() should return false and the error should not be nil
-	assert.NotNil(t, iter.Err())
-	assert.False(t, iter.Next())
-	assert.NotNil(t, iter.Err())
+	// it.Next() should return false and the error should not be nil
+	assert.NotNil(t, it.Err())
+	assert.False(t, it.Next())
+	assert.NotNil(t, it.Err())
 
-	// subsequent calls to iter.Next() should be false, item should be not nil, page should be an empty response
-	assert.False(t, iter.Next())
-	assert.NotNil(t, iter.Item())
+	// subsequent calls to it.Next() should be false, item should be not nil, page should be an empty response
+	assert.False(t, it.Next())
+	assert.NotNil(t, it.Item())
 }
 
 func registerResponder(status int, url string, res ListResourceResponse) {

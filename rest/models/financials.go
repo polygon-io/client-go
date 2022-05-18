@@ -70,9 +70,10 @@ func (p ListStockFinancialsParams) WithCIK(q string) *ListStockFinancialsParams 
 }
 
 func (p ListStockFinancialsParams) WithCompanyName(c NameComparator, q string) *ListStockFinancialsParams {
-	if c == Full {
+	switch c {
+	case Full:
 		p.CompanyNameFull = &q
-	} else if c == Search {
+	case Search:
 		p.CompanyNameSearch = &q
 	}
 	return &p
@@ -84,30 +85,32 @@ func (p ListStockFinancialsParams) WithSIC(q string) *ListStockFinancialsParams 
 }
 
 func (p ListStockFinancialsParams) WithFilingDate(c Comparator, q Date) *ListStockFinancialsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.FilingDateEQ = &q
-	} else if c == LT {
+	case LT:
 		p.FilingDateLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.FilingDateLTE = &q
-	} else if c == GT {
+	case GT:
 		p.FilingDateGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.FilingDateGTE = &q
 	}
 	return &p
 }
 
 func (p ListStockFinancialsParams) WithPeriodOfReportDate(c Comparator, q Date) *ListStockFinancialsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.PeriodOfReportDateEQ = &q
-	} else if c == LT {
+	case LT:
 		p.PeriodOfReportDateLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.PeriodOfReportDateLTE = &q
-	} else if c == GT {
+	case GT:
 		p.PeriodOfReportDateGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.PeriodOfReportDateGTE = &q
 	}
 	return &p

@@ -63,15 +63,16 @@ type ListOptionsContractsParams struct {
 }
 
 func (p ListOptionsContractsParams) WithUnderlyingTicker(c Comparator, q string) *ListOptionsContractsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.UnderlyingTickerEQ = &q
-	} else if c == LT {
+	case LT:
 		p.UnderlyingTickerLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.UnderlyingTickerLTE = &q
-	} else if c == GT {
+	case GT:
 		p.UnderlyingTickerGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.UnderlyingTickerGTE = &q
 	}
 	return &p
@@ -83,15 +84,16 @@ func (p ListOptionsContractsParams) WithContractType(q string) *ListOptionsContr
 }
 
 func (p ListOptionsContractsParams) WithExpirationDate(c Comparator, q Date) *ListOptionsContractsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.ExpirationDateEQ = &q
-	} else if c == LT {
+	case LT:
 		p.ExpirationDateLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.ExpirationDateLTE = &q
-	} else if c == GT {
+	case GT:
 		p.ExpirationDateGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.ExpirationDateGTE = &q
 	}
 	return &p
@@ -103,15 +105,16 @@ func (p ListOptionsContractsParams) WithAsOf(q Date) *ListOptionsContractsParams
 }
 
 func (p ListOptionsContractsParams) WithStrikePrice(c Comparator, q float64) *ListOptionsContractsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.StrikePriceEQ = &q
-	} else if c == LT {
+	case LT:
 		p.StrikePriceLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.StrikePriceLTE = &q
-	} else if c == GT {
+	case GT:
 		p.StrikePriceGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.StrikePriceGTE = &q
 	}
 	return &p
