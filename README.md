@@ -166,9 +166,9 @@ See the [full example](./websocket/example/main.go) for more details on how to u
 
 ## Release planning
 
-This client will attempt to follow the release cadence of our API. When endpoints are deprecated and newer versions are added, the client will maintain two methods in a backwards compatible way (e.g. `GetTrades` and `GetTradesV4(...)`). When deprecated endpoints are removed from the API, we'll rename the versioned method (e.g. `GetTradesV4(...)` -> `GetTrades(...)`), remove the old method, and release a new major version of the client. The goal is to give users ample time to upgrade to newer versions of our API before we bump the major version of the client, and in general, we'll try to bundle breaking changes like this to avoid frequent major version bumps.
+This client will attempt to follow the release cadence of our API. When endpoints are deprecated and newer versions are added, the client will maintain two methods in a backwards compatible way (e.g. `ListTrades` and `ListTradesV4(...)`). When deprecated endpoints are removed from the API, we'll rename the versioned method (e.g. `ListTradesV4(...)` -> `ListTrades(...)`), remove the old method, and release a new major version of the client. The goal is to give users ample time to upgrade to newer versions of our API _before_ we bump the major version of the client, and in general, we'll try to bundle breaking changes like this to avoid frequent major version bumps.
 
-One exception to this is our VX API. Methods that fall under the VX client are considered experimental and may be modified or deprecated as needed. We'll call out any breaking changes to VX endpoints in our release notes to hopefully make using them easier.
+One exception to this is our VX API. Methods that fall under the VX client are considered experimental and may be modified or deprecated as needed. We'll call out any breaking changes to VX endpoints in our release notes to make using them easier.
 
 ## Contributing
 
