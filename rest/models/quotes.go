@@ -23,15 +23,16 @@ type ListQuotesParams struct {
 }
 
 func (p ListQuotesParams) WithTimestamp(c Comparator, q Nanos) *ListQuotesParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.TimestampEQ = &q
-	} else if c == LT {
+	case LT:
 		p.TimestampLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.TimestampLTE = &q
-	} else if c == GT {
+	case GT:
 		p.TimestampGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.TimestampGTE = &q
 	}
 	return &p

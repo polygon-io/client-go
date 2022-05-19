@@ -31,30 +31,32 @@ type ListSplitsParams struct {
 }
 
 func (p ListSplitsParams) WithTicker(c Comparator, q string) *ListSplitsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.TickerEQ = &q
-	} else if c == LT {
+	case LT:
 		p.TickerLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.TickerLTE = &q
-	} else if c == GT {
+	case GT:
 		p.TickerGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.TickerGTE = &q
 	}
 	return &p
 }
 
 func (p ListSplitsParams) WithExecutionDate(c Comparator, q Date) *ListSplitsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.ExecutionDateEQ = &q
-	} else if c == LT {
+	case LT:
 		p.ExecutionDateLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.ExecutionDateLTE = &q
-	} else if c == GT {
+	case GT:
 		p.ExecutionDateGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.ExecutionDateGTE = &q
 	}
 	return &p

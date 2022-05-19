@@ -64,45 +64,48 @@ type ListDividendsParams struct {
 }
 
 func (p ListDividendsParams) WithTicker(c Comparator, q string) *ListDividendsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.TickerEQ = &q
-	} else if c == LT {
+	case LT:
 		p.TickerLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.TickerLTE = &q
-	} else if c == GT {
+	case GT:
 		p.TickerGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.TickerGTE = &q
 	}
 	return &p
 }
 
 func (p ListDividendsParams) WithExDividendDate(c Comparator, q Date) *ListDividendsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.ExDividendDateEQ = &q
-	} else if c == LT {
+	case LT:
 		p.ExDividendDateLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.ExDividendDateLTE = &q
-	} else if c == GT {
+	case GT:
 		p.ExDividendDateGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.ExDividendDateGTE = &q
 	}
 	return &p
 }
 
 func (p ListDividendsParams) WithDeclarationDate(c Comparator, q Date) *ListDividendsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.DeclarationDateEQ = &q
-	} else if c == LT {
+	case LT:
 		p.DeclarationDateLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.DeclarationDateLTE = &q
-	} else if c == GT {
+	case GT:
 		p.DeclarationDateGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.DeclarationDateGTE = &q
 	}
 	return &p
@@ -114,15 +117,16 @@ func (p ListDividendsParams) WithFrequency(q Frequency) *ListDividendsParams {
 }
 
 func (p ListDividendsParams) WithCashAmount(c Comparator, q float64) *ListDividendsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.CashAmountEQ = &q
-	} else if c == LT {
+	case LT:
 		p.CashAmountLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.CashAmountLTE = &q
-	} else if c == GT {
+	case GT:
 		p.CashAmountGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.CashAmountGTE = &q
 	}
 	return &p

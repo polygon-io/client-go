@@ -173,8 +173,8 @@ func (c *Client) Close() {
 	c.close(false)
 }
 
-func newConn(url string) (*websocket.Conn, error) {
-	conn, res, err := websocket.DefaultDialer.Dial(url, nil)
+func newConn(uri string) (*websocket.Conn, error) {
+	conn, res, err := websocket.DefaultDialer.Dial(uri, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to dial server: %w", err)
 	} else if res.StatusCode != 101 {
@@ -279,7 +279,7 @@ func (c *Client) close(reconnect bool) {
 	}
 
 	if c.conn != nil {
-		c.conn.Close()
+		_ = c.conn.Close()
 		c.conn = nil
 	}
 }

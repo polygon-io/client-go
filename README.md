@@ -123,7 +123,8 @@ defer c.Close() // the user of this client must close it
 
 // connect to the server
 if err := c.Connect(); err != nil {
-    log.Fatal(err)
+    log.Error(err)
+    return
 }
 ```
 

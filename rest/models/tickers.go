@@ -51,15 +51,16 @@ type ListTickersParams struct {
 }
 
 func (p ListTickersParams) WithTicker(c Comparator, q string) *ListTickersParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.TickerEQ = &q
-	} else if c == LT {
+	case LT:
 		p.TickerLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.TickerLTE = &q
-	} else if c == GT {
+	case GT:
 		p.TickerGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.TickerGTE = &q
 	}
 	return &p
@@ -186,30 +187,32 @@ type ListTickerNewsParams struct {
 }
 
 func (p ListTickerNewsParams) WithTicker(c Comparator, q string) *ListTickerNewsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.TickerEQ = &q
-	} else if c == LT {
+	case LT:
 		p.TickerLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.TickerLTE = &q
-	} else if c == GT {
+	case GT:
 		p.TickerGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.TickerGTE = &q
 	}
 	return &p
 }
 
 func (p ListTickerNewsParams) WithPublishedUTC(c Comparator, q Millis) *ListTickerNewsParams {
-	if c == EQ {
+	switch c {
+	case EQ:
 		p.PublishedUtcEQ = &q
-	} else if c == LT {
+	case LT:
 		p.PublishedUtcLT = &q
-	} else if c == LTE {
+	case LTE:
 		p.PublishedUtcLTE = &q
-	} else if c == GT {
+	case GT:
 		p.PublishedUtcGT = &q
-	} else if c == GTE {
+	case GTE:
 		p.PublishedUtcGTE = &q
 	}
 	return &p
