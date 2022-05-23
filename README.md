@@ -33,6 +33,13 @@ Next, create a new client with your [API key](https://polygon.io/dashboard/signu
 c := polygon.New("YOUR_API_KEY")
 ```
 
+Or create a client with a custom HTTP client implementation.
+
+```golang
+hc := http.Client{} // some custom HTTP client
+c := polygon.NewWithClient("YOUR_API_KEY", hc)
+```
+
 ### Using the client
 
 After creating the client, making calls to the Polygon API is simple.

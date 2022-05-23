@@ -2,6 +2,8 @@
 package polygon
 
 import (
+	"net/http"
+
 	"github.com/polygon-io/client-go/rest/client"
 )
 
@@ -18,7 +20,22 @@ type Client struct {
 
 // New creates a client for the Polygon REST API.
 func New(apiKey string) *Client {
-	c := client.New(apiKey)
+	return newClient(apiKey, nil)
+}
+
+// NewWithClient creates a client for the Polygon REST API using a custom HTTP client.
+func NewWithClient(apiKey string, hc *http.Client) *Client {
+	return newClient(apiKey, hc)
+}
+
+func newClient(apiKey string, hc *http.Client) *Client {
+	var c client.Client
+	if hc == nil {
+		c = client.New(apiKey)
+	} else {
+		c = client.NewWithClient(apiKey, hc)
+	}
+
 	return &Client{
 		Client:          c,
 		AggsClient:      AggsClient{Client: c},
