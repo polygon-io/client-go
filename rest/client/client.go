@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -26,7 +27,22 @@ type Client struct {
 
 // New returns a new client with the specified API key and default settings.
 func New(apiKey string) Client {
-	c := resty.New()
+	return newClient(apiKey, nil)
+}
+
+// NewWithClient returns a new client with the specified API key and a custom HTTP client.
+func NewWithClient(apiKey string, hc *http.Client) Client {
+	return newClient(apiKey, hc)
+}
+
+func newClient(apiKey string, hc *http.Client) Client {
+	var c *resty.Client
+	if hc == nil {
+		c = resty.New()
+	} else {
+		c = resty.NewWithClient(hc)
+	}
+
 	c.SetBaseURL(APIURL)
 	c.SetAuthToken(apiKey)
 	c.SetRetryCount(DefaultRetryCount)
