@@ -4,7 +4,7 @@
 <!-- todo: figure out a way to show all build statuses -->
 <!-- todo: consider moving some stuff into separate readmes -->
 
-[![Build][build-img]][build]
+[![docs][doc-img]][doc] [![Build][build-img]][build]
 
 The official Go client library for the [Polygon](https://polygon.io/) REST and WebSocket API.
 
@@ -181,6 +181,8 @@ For now, we're generally not accepting pull requests from outside contributors b
 
 -------------------------------------------------------------------------------
 
+[doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go
+[doc]: https://pkg.go.dev/github.com/polygon-io/client-go
 [rest-doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go/rest
 [rest-doc]: https://pkg.go.dev/github.com/polygon-io/client-go/rest
 [ws-doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go/websocket
