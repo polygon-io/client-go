@@ -10,9 +10,7 @@ The official Go client library for the [Polygon](https://polygon.io/) REST and W
 
 `go get github.com/polygon-io/client-go`
 
-This client is still in pre-release. The public interface is relatively stable at this point but is still liable to change slightly until we release v1. It also makes use of Go generics and thus requires Go 1.18.
-
-See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API.
+This client makes use of Go generics and thus requires Go 1.18. See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API.
 
 ## REST API Client
 
