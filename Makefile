@@ -36,6 +36,16 @@ test:
 	@echo Running tests
 	@go test -race -v ./...
 
+## Update the REST API spec
+rest-spec:
+	@echo Updating the REST API spec
+	@curl https://api.polygon.io/specs/rest.json > .polygon/rest.json
+
+## Update the WebSocket API spec
+ws-spec:
+	@echo Updating the WebSocket API spec
+	@curl https://api.polygon.io/specs/websocket.json > .polygon/websocket.json
+
 ## Run the REST example
 rest-example:
 	@echo Running the REST example
