@@ -11,10 +11,10 @@ type GetAggsParams struct {
 	// The size of the time window.
 	Timespan Timespan `validate:"required" path:"timespan"`
 
-	// The start of the aggregate time window.
+	// The start of the aggregate time window. Either a date with the format YYYY-MM-DD or a millisecond timestamp.
 	From Millis `validate:"required" path:"from"`
 
-	// The end of the aggregate time window.
+	// The end of the aggregate time window. Either a date with the format YYYY-MM-DD or a millisecond timestamp.
 	To Millis `validate:"required" path:"to"`
 
 	// Whether or not the results are adjusted for splits. By default, results are adjusted. Set this to false to get
