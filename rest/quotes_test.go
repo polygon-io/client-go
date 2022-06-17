@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"testing"
-	"time"
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
@@ -60,11 +59,10 @@ func TestListQuotes(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp=1626912000000000000", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp.gte=1626912000000000000&timestamp.lt=1626998400000000000", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/quotes/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
 	iter := c.ListQuotes(context.Background(), models.ListQuotesParams{Ticker: "AAPL"}.
-		WithTimestamp(models.EQ, models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
-		WithSort(models.Timestamp).WithOrder(models.Asc).WithLimit(2))
+		WithDay(2021, 7, 22).WithSort(models.Timestamp).WithOrder(models.Asc).WithLimit(2))
 
 	// iter creation
 	assert.Nil(t, iter.Err())

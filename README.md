@@ -78,6 +78,22 @@ if iter.Err() != nil {
 }
 ```
 
+We also provide a builder method to make it easier to retrieve all trades and quotes for a specific day.
+
+```golang
+params := models.ListQuotesParams{Ticker: "AAPL"}.
+    WithDay(2021, 7, 22). // get all quotes for July 22, 2021
+    WithOrder(models.Asc)
+iter := c.ListQuotes(context.Background(), params)
+
+for iter.Next() {
+    log.Print(iter.Item())
+}
+if iter.Err() != nil {
+    log.Fatal(iter.Err())
+}
+```
+
 ### Request options
 
 Advanced users may want to add additional headers or query params to a given request.
