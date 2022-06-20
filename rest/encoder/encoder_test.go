@@ -103,13 +103,33 @@ func TestEncodeNanos(t *testing.T) {
 		NanosQ *models.Nanos `query:"nanos"`
 	}
 
+	pnanos := models.Nanos(time.Date(2021, 7, 22, 10, 0, 0, 0, time.UTC))
+	params := Params{
+		Nanos:  pnanos,
+		NanosQ: &pnanos,
+	}
+
+	expected := "/v1/1626948000000000000?nanos=1626948000000000000"
+	actual, err := encoder.New().EncodeParams(testPath, params)
+	assert.Nil(t, err)
+	assert.Equal(t, expected, actual)
+}
+
+func TestEncodeDayNanos(t *testing.T) {
+	testPath := "/v1/{nanos}"
+
+	type Params struct {
+		Nanos  models.Nanos  `validate:"required" path:"nanos"`
+		NanosQ *models.Nanos `query:"nanos"`
+	}
+
 	pnanos := models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))
 	params := Params{
 		Nanos:  pnanos,
 		NanosQ: &pnanos,
 	}
 
-	expected := "/v1/1626912000000000000?nanos=1626912000000000000"
+	expected := "/v1/2021-07-22?nanos=2021-07-22"
 	actual, err := encoder.New().EncodeParams(testPath, params)
 	assert.Nil(t, err)
 	assert.Equal(t, expected, actual)
