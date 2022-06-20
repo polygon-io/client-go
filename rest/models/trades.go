@@ -1,12 +1,14 @@
 package models
 
+import "time"
+
 // ListTradesParams is the set of parameters for the ListTrades method.
 type ListTradesParams struct {
 	// The ticker symbol to get trades for.
 	Ticker string `validate:"required" path:"ticker"`
 
-	// Query by trade timestamp. To query for a specific day instead of a nanosecond timestamp, set this field
-	// via this pattern: WithTimestamp(models.EQ, models.Nanos(time.Date(2006, 1, 2, 0, 0, 0, 0, time.UTC))).
+	// Query by timestamp. To query for a specific day instead of a nanosecond timestamp,
+	// set it via this pattern: params.WithDay(2006, 1, 2) // January 2, 2006.
 	TimestampEQ  *Nanos `query:"timestamp"`
 	TimestampLT  *Nanos `query:"timestamp.lt"`
 	TimestampLTE *Nanos `query:"timestamp.lte"`
@@ -36,6 +38,12 @@ func (p ListTradesParams) WithTimestamp(c Comparator, q Nanos) *ListTradesParams
 	case GTE:
 		p.TimestampGTE = &q
 	}
+	return &p
+}
+
+func (p ListTradesParams) WithDay(year int, month time.Month, day int) *ListTradesParams {
+	d := Nanos(time.Date(year, month, day, 0, 0, 0, 0, time.UTC))
+	p.TimestampEQ = &d
 	return &p
 }
 
