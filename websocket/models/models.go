@@ -41,6 +41,7 @@ type EquityAgg struct {
 	AverageSize       float64 `json:"z,omitempty"`
 	StartTimestamp    int64   `json:"s,omitempty"`
 	EndTimestamp      int64   `json:"e,omitempty"`
+	OTC               bool    `json:"otc,omitempty"`
 }
 
 // CurrencyAgg is an aggregate for either forex currency pairs or crypto pairs.
