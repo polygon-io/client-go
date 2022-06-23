@@ -80,6 +80,11 @@ func (p GetGroupedDailyAggsParams) WithAdjusted(q bool) *GetGroupedDailyAggsPara
 	return &p
 }
 
+func (p GetGroupedDailyAggsParams) WithIncludeOTC(q bool) *GetGroupedDailyAggsParams {
+	p.IncludeOTC = &q
+	return &p
+}
+
 // GetGroupedDailyAggsResponse is the response returned by the GetGroupedDailyAggs method.
 type GetGroupedDailyAggsResponse struct {
 	BaseResponse
