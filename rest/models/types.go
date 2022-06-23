@@ -84,6 +84,7 @@ const (
 	AssetOptions AssetClass = "options"
 	AssetCrypto  AssetClass = "crypto"
 	AssetFx      AssetClass = "fx"
+	AssetOTC     AssetClass = "otc"
 )
 
 // DataType is the type of data.

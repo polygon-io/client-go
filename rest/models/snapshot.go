@@ -10,6 +10,9 @@ type GetAllTickersSnapshotParams struct {
 
 	// A comma separated list of tickers to get snapshots for.
 	Tickers *string `query:"tickers"`
+
+	// Include OTC securities in the response. Default is false (don't include OTC securities).
+	IncludeOTC *bool `query:"include_otc"`
 }
 
 func (p GetAllTickersSnapshotParams) WithTickers(q string) *GetAllTickersSnapshotParams {
@@ -104,6 +107,7 @@ type DaySnapshot struct {
 	Open                  float64 `json:"o,omitempty"`
 	Volume                float64 `json:"v,omitempty"`
 	VolumeWeightedAverage float64 `json:"vw,omitempty"`
+	OTC                   bool    `json:"otc,omitempty"`
 }
 
 // LastQuoteSnapshot is the most recent quote for a ticker.
@@ -134,6 +138,7 @@ type MinuteSnapshot struct {
 	Open                  float64 `json:"o,omitempty"`
 	Volume                float64 `json:"v,omitempty"`
 	VolumeWeightedAverage float64 `json:"vw,omitempty"`
+	OTC                   bool    `json:"otc,omitempty"`
 }
 
 // OptionContractSnapshot is a collection of data for an option contract ticker including the current day aggregate and

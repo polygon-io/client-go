@@ -70,6 +70,9 @@ type GetGroupedDailyAggsParams struct {
 	// Whether or not the results are adjusted for splits. By default, results are adjusted. Set this to false to get
 	// results that are NOT adjusted for splits.
 	Adjusted *bool `query:"adjusted"`
+
+	// Include OTC securities in the response. Default is false (don't include OTC securities).
+	IncludeOTC *bool `query:"include_otc"`
 }
 
 func (p GetGroupedDailyAggsParams) WithAdjusted(q bool) *GetGroupedDailyAggsParams {
@@ -117,6 +120,7 @@ type GetDailyOpenCloseAggResponse struct {
 	Volume     float64 `json:"volume,omitempty"`
 	AfterHours float64 `json:"afterHours,omitempty"`
 	PreMarket  float64 `json:"preMarket,omitempty"`
+	OTC        bool    `json:"otc,omitempty"`
 }
 
 // GetPreviousCloseAggParams is the set of parameters for the GetPreviousCloseAgg method.
@@ -155,4 +159,5 @@ type Agg struct {
 	Timestamp    Millis  `json:"t,omitempty"`
 	Volume       float64 `json:"v,omitempty"`
 	VWAP         float64 `json:"vw,omitempty"`
+	OTC          bool    `json:"otc,omitempty"`
 }
