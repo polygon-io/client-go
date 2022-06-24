@@ -60,7 +60,7 @@ func TestListQuotes(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp=1626912000000000000", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp=2021-07-22", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/quotes/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
 	iter := c.ListQuotes(context.Background(), models.ListQuotesParams{Ticker: "AAPL"}.
 		WithTimestamp(models.EQ, models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).

@@ -1,11 +1,14 @@
 package models
 
+import "time"
+
 // ListQuotesParams is the set of parameters for the ListQuotes method.
 type ListQuotesParams struct {
 	// The ticker symbol to get quotes for.
 	Ticker string `validate:"required" path:"ticker"`
 
-	// Query by timestamp. Either a date with the format YYYY-MM-DD or a nanosecond timestamp.
+	// Query by timestamp. To query for a specific day instead of a nanosecond timestamp,
+	// set it via this pattern: params.WithDay(2006, 1, 2) // January 2, 2006.
 	TimestampEQ  *Nanos `query:"timestamp"`
 	TimestampLT  *Nanos `query:"timestamp.lt"`
 	TimestampLTE *Nanos `query:"timestamp.lte"`
@@ -35,6 +38,12 @@ func (p ListQuotesParams) WithTimestamp(c Comparator, q Nanos) *ListQuotesParams
 	case GTE:
 		p.TimestampGTE = &q
 	}
+	return &p
+}
+
+func (p ListQuotesParams) WithDay(year int, month time.Month, day int) *ListQuotesParams {
+	d := Nanos(time.Date(year, month, day, 0, 0, 0, 0, time.UTC))
+	p.TimestampEQ = &d
 	return &p
 }
 

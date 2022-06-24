@@ -96,8 +96,20 @@ func newEncoder(tag string) *form.Encoder {
 		return []string{fmt.Sprint(time.Time(x.(models.Millis)).UnixMilli())}, nil
 	}, models.Millis{})
 	e.RegisterCustomTypeFunc(func(x any) ([]string, error) {
+		if isDay(time.Time(x.(models.Nanos))) {
+			// endpoints that have nanosecond timestamp query parameters are expected to
+			// also work with date strings if a user wants all data from a specific day
+			return []string{fmt.Sprint(time.Time(x.(models.Nanos)).Format("2006-01-02"))}, nil
+		}
 		return []string{fmt.Sprint(time.Time(x.(models.Nanos)).UnixNano())}, nil
 	}, models.Nanos{})
 
 	return e
+}
+
+func isDay(t time.Time) bool {
+	if t.Hour() != 0 || t.Minute() != 0 || t.Second() != 0 || t.Nanosecond() != 0 {
+		return false
+	}
+	return true
 }
