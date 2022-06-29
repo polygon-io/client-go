@@ -276,6 +276,9 @@ type Ticker struct {
 	CIK                         string         `json:"cik,omitempty"`
 	CompositeFIGI               string         `json:"composite_figi,omitempty"`
 	CurrencyName                string         `json:"currency_name,omitempty"`
+	CurrencySymbol              string         `json:"currency_symbol,omitempty"`
+	BaseCurrencyName            string         `json:"base_currency_name,omitempty"`
+	BaseCurrencySymbol          string         `json:"base_currency_symbol,omitempty"`
 	DelistedUTC                 Time           `json:"delisted_utc,omitempty"`
 	Description                 string         `json:"description,omitempty"`
 	HomepageURL                 string         `json:"homepage_url,omitempty"`
