@@ -59,6 +59,14 @@ type GetGainersLosersSnapshotParams struct {
 
 	// The direction of the snapshot results to return.
 	Direction Direction `validate:"required" path:"direction"`
+
+	// Include OTC securities in the response. Default is false (don't include OTC securities).
+	IncludeOTC *bool `query:"include_otc"`
+}
+
+func (p GetGainersLosersSnapshotParams) WithIncludeOTC(q bool) *GetGainersLosersSnapshotParams {
+	p.IncludeOTC = &q
+	return &p
 }
 
 // GetGainersLosersSnapshotResponse is the response returned by the GetGainersLosersSnapshot method.
