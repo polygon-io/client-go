@@ -26,8 +26,8 @@ type ListOptionsContractsParams struct {
 	UnderlyingTickerEQ  *string `query:"underlying_ticker"`
 	UnderlyingTickerLT  *string `query:"underlying_ticker.lt"`
 	UnderlyingTickerLTE *string `query:"underlying_ticker.lte"`
-	UnderlyingTickerGT  *string `query:"underlying_ticker.GT"`
-	UnderlyingTickerGTE *string `query:"underlying_ticker.GTE"`
+	UnderlyingTickerGT  *string `query:"underlying_ticker.gt"`
+	UnderlyingTickerGTE *string `query:"underlying_ticker.gte"`
 
 	// Specify the type of contract.
 	ContractType *string `query:"contract_type"`
@@ -36,8 +36,8 @@ type ListOptionsContractsParams struct {
 	ExpirationDateEQ  *Date `query:"expiration_date"`
 	ExpirationDateLT  *Date `query:"expiration_date.lt"`
 	ExpirationDateLTE *Date `query:"expiration_date.lte"`
-	ExpirationDateGT  *Date `query:"expiration_date.GT"`
-	ExpirationDateGTE *Date `query:"expiration_date.GTE"`
+	ExpirationDateGT  *Date `query:"expiration_date.gt"`
+	ExpirationDateGTE *Date `query:"expiration_date.gte"`
 
 	// Specify a point in time for contracts as of this date with format YYYY-MM-DD.
 	AsOf *Date `query:"as_of"`
@@ -46,8 +46,8 @@ type ListOptionsContractsParams struct {
 	StrikePriceEQ  *float64 `query:"strike_price"`
 	StrikePriceLT  *float64 `query:"strike_price.lt"`
 	StrikePriceLTE *float64 `query:"strike_price.lte"`
-	StrikePriceGT  *float64 `query:"strike_price.GT"`
-	StrikePriceGTE *float64 `query:"strike_price.GTE"`
+	StrikePriceGT  *float64 `query:"strike_price.gt"`
+	StrikePriceGTE *float64 `query:"strike_price.gte"`
 
 	// Specify whether to query for expired contracts.
 	Expired *bool `query:"expired"`
