@@ -180,41 +180,35 @@ type EquityQuote struct {
 	Symbol string `json:"sym,omitempty"`
 
 	// The bid exchange ID.
-
 	BidExchangeID int32 `json:"bx,omitempty"`
 
 	// The bid price.
-
 	BidPrice float64 `json:"bp,omitempty"`
 
 	// The bid size. This represents the number of round lot orders at the given bid price. The normal round lot size is
 	// 100 shares. A bid size of 2 means there are 200 shares for purchase at the given bid price.
-
 	BidSize int32 `json:"bs,omitempty"`
 
 	// The ask exchange ID.
-
 	AskExchangeID int32 `json:"ax,omitempty"`
 
 	// The ask price.
-
 	AskPrice float64 `json:"ap,omitempty"`
 
 	// The ask size. This represents the number of round lot orders at the given ask price. The normal round lot size is
 	// 100 shares. An ask size of 2 means there are 200 shares available to purchase at the given ask price.
-
 	AskSize int32 `json:"as,omitempty"`
 
 	// The condition.
-
 	Condition int32 `json:"c,omitempty"`
 
-	// The Timestamp in Unix MS.
+	// The indicators. For more information, see our glossary: https://polygon.io/glossary/us/stocks/conditions-indicators.
+	Indicators []int32 `json:"i,omitempty"`
 
+	// The Timestamp in Unix MS.
 	Timestamp int64 `json:"t,omitempty"`
 
 	// The tape. (1 = NYSE, 2 = AMEX, 3 = Nasdaq).
-
 	Tape int32 `json:"z,omitempty"`
 
 	// The sequence number represents the sequence in which message events happened. These are increasing and unique per
