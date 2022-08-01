@@ -49,6 +49,7 @@ const (
 	Nasdaq       Feed = "wss://nasdaqfeed.polygon.io"
 	PolyFeed     Feed = "wss://polyfeed.polygon.io"
 	PolyFeedPlus Feed = "wss://polyfeedplus.polygon.io"
+	StarterFeed  Feed = "wss://starterfeed.polygon.io"
 )
 
 // Market is the type of market (e.g. Stocks, Crypto) used to connect to the server.
