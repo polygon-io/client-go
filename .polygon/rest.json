@@ -7635,7 +7635,7 @@
     },
     "/v2/aggs/ticker/{cryptoTicker}/range/{multiplier}/{timespan}/{from}/{to}": {
       "get": {
-        "description": "Get aggregate bars for a cryptocurrency pair over a given date range in custom time window sizes.\n\u003cbr /\u003e\n\u003cbr /\u003e\nFor example, if timespan = ‘minute’ and multiplier = ‘5’ then 5-minute bars will be returned.\n",
+        "description": "Get aggregate bars for a cryptocurrency pair over a given date range in custom time window sizes.\n\u003cbr /\u003e\n\u003cbr /\u003e\nFor example, if timespan = 'minute' and multiplier = '5' then 5-minute bars will be returned.\n",
         "parameters": [
           {
             "description": "The ticker symbol of the currency pair.",
@@ -8038,7 +8038,7 @@
     },
     "/v2/aggs/ticker/{forexTicker}/range/{multiplier}/{timespan}/{from}/{to}": {
       "get": {
-        "description": "Get aggregate bars for a forex pair over a given date range in custom time window sizes.\n\u003cbr /\u003e\n\u003cbr /\u003e\nFor example, if timespan = ‘minute’ and multiplier = ‘5’ then 5-minute bars will be returned.\n",
+        "description": "Get aggregate bars for a forex pair over a given date range in custom time window sizes.\n\u003cbr /\u003e\n\u003cbr /\u003e\nFor example, if timespan = 'minute' and multiplier = '5' then 5-minute bars will be returned.\n",
         "parameters": [
           {
             "description": "The ticker symbol of the currency pair.",
@@ -8427,7 +8427,7 @@
     },
     "/v2/aggs/ticker/{optionsTicker}/range/{multiplier}/{timespan}/{from}/{to}": {
       "get": {
-        "description": "Get aggregate bars for an option contract over a given date range in custom time window sizes.\n\u003cbr /\u003e\n\u003cbr /\u003e\nFor example, if timespan = ‘minute’ and multiplier = ‘5’ then 5-minute bars will be returned.\n",
+        "description": "Get aggregate bars for an option contract over a given date range in custom time window sizes.\n\u003cbr /\u003e\n\u003cbr /\u003e\nFor example, if timespan = 'minute' and multiplier = '5' then 5-minute bars will be returned.\n",
         "parameters": [
           {
             "description": "The ticker symbol of the options contract.",
@@ -8826,7 +8826,7 @@
     },
     "/v2/aggs/ticker/{stocksTicker}/range/{multiplier}/{timespan}/{from}/{to}": {
       "get": {
-        "description": "Get aggregate bars for a stock over a given date range in custom time window sizes.\n\u003cbr /\u003e\n\u003cbr /\u003e\nFor example, if timespan = ‘minute’ and multiplier = ‘5’ then 5-minute bars will be returned.\n",
+        "description": "Get aggregate bars for a stock over a given date range in custom time window sizes.\n\u003cbr /\u003e\n\u003cbr /\u003e\nFor example, if timespan = 'minute' and multiplier = '5' then 5-minute bars will be returned.\n",
         "parameters": [
           {
             "description": "The ticker symbol of the stock/equity.",
@@ -9939,7 +9939,7 @@
     },
     "/v2/snapshot/locale/global/markets/crypto/tickers": {
       "get": {
-        "description": "Get the current minute, day, and previous day’s aggregate, as well as the last trade and quote for all traded cryptocurrency symbols.\n\u003cbr /\u003e\n\u003cbr /\u003e\nNote: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges. This can happen as early as 4am EST.\n",
+        "description": "Get the current minute, day, and previous day's aggregate, as well as the last trade and quote for all traded cryptocurrency symbols.\n\u003cbr /\u003e\n\u003cbr /\u003e\nNote: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges. This can happen as early as 4am EST.\n",
         "parameters": [
           {
             "description": "A comma separated list of tickers to get snapshots for.",
@@ -10236,7 +10236,7 @@
     },
     "/v2/snapshot/locale/global/markets/crypto/tickers/{ticker}": {
       "get": {
-        "description": "Get the current minute, day, and previous day’s aggregate, as well as the last trade and quote for a single traded cryptocurrency symbol.\n\u003cbr /\u003e\n\u003cbr /\u003e\nNote: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges.\n",
+        "description": "Get the current minute, day, and previous day's aggregate, as well as the last trade and quote for a single traded cryptocurrency symbol.\n\u003cbr /\u003e\n\u003cbr /\u003e\nNote: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges.\n",
         "parameters": [
           {
             "description": "Ticker of the snapshot",
@@ -10997,7 +10997,7 @@
     },
     "/v2/snapshot/locale/global/markets/forex/tickers": {
       "get": {
-        "description": "Get the current minute, day, and previous day’s aggregate, as well as the last trade and quote for all traded forex symbols.\n\u003cbr /\u003e\n\u003cbr /\u003e\nNote: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges. This can happen as early as 4am EST.\n",
+        "description": "Get the current minute, day, and previous day's aggregate, as well as the last trade and quote for all traded forex symbols.\n\u003cbr /\u003e\n\u003cbr /\u003e\nNote: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges. This can happen as early as 4am EST.\n",
         "parameters": [
           {
             "description": "A comma separated list of tickers to get snapshots for.",
@@ -11254,7 +11254,7 @@
     },
     "/v2/snapshot/locale/global/markets/forex/tickers/{ticker}": {
       "get": {
-        "description": "Get the current minute, day, and previous day’s aggregate, as well as the last trade and quote for a single traded currency symbol.\n\u003cbr /\u003e\n\u003cbr /\u003e\nNote: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges.\n",
+        "description": "Get the current minute, day, and previous day's aggregate, as well as the last trade and quote for a single traded currency symbol.\n\u003cbr /\u003e\n\u003cbr /\u003e\nNote: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges.\n",
         "parameters": [
           {
             "description": "The forex ticker.",
