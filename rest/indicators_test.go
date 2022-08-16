@@ -101,14 +101,14 @@ func TestGetSMAWithQueryParams(t *testing.T) {
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
-	registerResponder("https://api.polygon.io/v1/indicators/sma/AAPL?adjusted=false&multiplier=3&order=asc&series_type=open&timespan=week&timestamp.gte=1041397200000&timestamp.lte=1658721600000&window=6", expectedGetSMAResponseNoAggsNoNextURL)
+	registerResponder("https://api.polygon.io/v1/indicators/sma/AAPL?adjusted=false&multiplier=3&order=asc&series_type=open&timespan=week&timestamp.gte=1041379200000&timestamp.lte=1658707200000&window=6", expectedGetSMAResponseNoAggsNoNextURL)
 
 	res, err := c.GetSMA(context.Background(), models.GetSMAParams{
 		Ticker: "AAPL",
 	}.WithOrder(models.Asc).
 		WithAdjusted(false).
-		WithTimestamp(models.GTE, models.Millis(time.Date(2003, 1, 1, 0, 0, 0, 0, time.Local))).
-		WithTimestamp(models.LTE, models.Millis(time.Date(2022, 7, 25, 0, 0, 0, 0, time.Local))).
+		WithTimestamp(models.GTE, models.Millis(time.Date(2003, 1, 1, 0, 0, 0, 0, time.UTC))).
+		WithTimestamp(models.LTE, models.Millis(time.Date(2022, 7, 25, 0, 0, 0, 0, time.UTC))).
 		WithMultiplier(3).
 		WithTimespan(models.Week).
 		WithSeriesType(models.Open).
@@ -157,13 +157,13 @@ func TestGetEMA(t *testing.T) {
 		}
 	}`
 
-	registerResponder("https://api.polygon.io/v1/indicators/ema/X:BTC-USD?order=desc&timestamp.gte=1041397200000&window=10", expectedEMAResponse)
+	registerResponder("https://api.polygon.io/v1/indicators/ema/X:BTC-USD?order=desc&timestamp.gte=1041379200000&window=10", expectedEMAResponse)
 
 	res, err := c.GetEMA(context.Background(), models.GetEMAParams{
 		Ticker: "X:BTC-USD",
 	}.WithWindow(10).
 		WithOrder(models.Desc).
-		WithTimestamp(models.GTE, models.Millis(time.Date(2003, 1, 1, 0, 0, 0, 0, time.Local))))
+		WithTimestamp(models.GTE, models.Millis(time.Date(2003, 1, 1, 0, 0, 0, 0, time.UTC))))
 
 	assert.Nil(t, err)
 
@@ -190,13 +190,13 @@ func TestGetRSI(t *testing.T) {
 		}
 	}`
 
-	registerResponder("https://api.polygon.io/v1/indicators/rsi/O:SPY241220P00720000?order=desc&timestamp.gte=1041397200000&window=10", expectedRSIResponse)
+	registerResponder("https://api.polygon.io/v1/indicators/rsi/O:SPY241220P00720000?order=desc&timestamp.gte=1041379200000&window=10", expectedRSIResponse)
 
 	res, err := c.GetRSI(context.Background(), models.GetRSIParams{
 		Ticker: "O:SPY241220P00720000",
 	}.WithWindow(10).
 		WithOrder(models.Desc).
-		WithTimestamp(models.GTE, models.Millis(time.Date(2003, 1, 1, 0, 0, 0, 0, time.Local))))
+		WithTimestamp(models.GTE, models.Millis(time.Date(2003, 1, 1, 0, 0, 0, 0, time.UTC))))
 
 	assert.Nil(t, err)
 
@@ -236,7 +236,7 @@ func TestGetMACD(t *testing.T) {
 		}
 	}`
 
-	registerResponder("https://api.polygon.io/v1/indicators/macd/AAPL?long_window=26&order=desc&short_window=12&signal_window=9&timestamp.lte=1041397200000", expectedMACDResponse)
+	registerResponder("https://api.polygon.io/v1/indicators/macd/AAPL?long_window=26&order=desc&short_window=12&signal_window=9&timestamp.lte=1041379200000", expectedMACDResponse)
 
 	res, err := c.GetMACD(context.Background(), models.GetMACDParams{
 		Ticker: "AAPL",
@@ -244,7 +244,7 @@ func TestGetMACD(t *testing.T) {
 		WithLongWindow(26).
 		WithSignalWindow(9).
 		WithOrder(models.Desc).
-		WithTimestamp(models.LTE, models.Millis(time.Date(2003, 1, 1, 0, 0, 0, 0, time.Local))))
+		WithTimestamp(models.LTE, models.Millis(time.Date(2003, 1, 1, 0, 0, 0, 0, time.UTC))))
 
 	assert.Nil(t, err)
 
