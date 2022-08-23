@@ -25,13 +25,14 @@ type QuotesClient struct {
 // https://polygon.io/docs/stocks/get_v3_quotes__stockticker.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
-//   iter, err := c.ListQuotes(context.TODO(), params, opts...)
-//   for iter.Next() {
-//       log.Print(iter.Item()) // do something with the current value
-//   }
-//   if iter.Err() != nil {
-//       return err
-//   }
+//
+//	iter, err := c.ListQuotes(context.TODO(), params, opts...)
+//	for iter.Next() {
+//	    log.Print(iter.Item()) // do something with the current value
+//	}
+//	if iter.Err() != nil {
+//	    return err
+//	}
 func (c *QuotesClient) ListQuotes(ctx context.Context, params *models.ListQuotesParams, options ...models.RequestOption) *iter.Iter[models.Quote] {
 	return iter.NewIter(ctx, ListQuotesPath, params, func(uri string) (iter.ListResponse, []models.Quote, error) {
 		res := &models.ListQuotesResponse{}
