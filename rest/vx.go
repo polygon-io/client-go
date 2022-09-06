@@ -24,13 +24,14 @@ type VXClient struct {
 // Note: this method utilizes an experimental API and could experience breaking changes or deprecation.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
-//   iter, err := c.ListStockFinancials(context.TODO(), params, opts...)
-//   for iter.Next() {
-//       log.Print(iter.Item()) // do something with the current value
-//   }
-//   if iter.Err() != nil {
-//       return err
-//   }
+//
+//	iter, err := c.ListStockFinancials(context.TODO(), params, opts...)
+//	for iter.Next() {
+//	    log.Print(iter.Item()) // do something with the current value
+//	}
+//	if iter.Err() != nil {
+//	    return err
+//	}
 func (c *VXClient) ListStockFinancials(ctx context.Context, params *models.ListStockFinancialsParams, options ...models.RequestOption) *iter.Iter[models.StockFinancial] {
 	return iter.NewIter(ctx, ListFinancialsPath, params, func(uri string) (iter.ListResponse, []models.StockFinancial, error) {
 		res := &models.ListStockFinancialsResponse{}
