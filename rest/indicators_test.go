@@ -101,7 +101,7 @@ func TestGetSMAWithQueryParams(t *testing.T) {
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
-	registerResponder("https://api.polygon.io/v1/indicators/sma/AAPL?adjusted=false&multiplier=3&order=asc&series_type=open&timespan=week&timestamp.gte=1041379200000&timestamp.lte=1658707200000&window=6", expectedGetSMAResponseNoAggsNoNextURL)
+	registerResponder("https://api.polygon.io/v1/indicators/sma/AAPL?adjusted=false&order=asc&series_type=open&timespan=week&timestamp.gte=1041379200000&timestamp.lte=1658707200000&window=6", expectedGetSMAResponseNoAggsNoNextURL)
 
 	res, err := c.GetSMA(context.Background(), models.GetSMAParams{
 		Ticker: "AAPL",
@@ -109,7 +109,6 @@ func TestGetSMAWithQueryParams(t *testing.T) {
 		WithAdjusted(false).
 		WithTimestamp(models.GTE, models.Millis(time.Date(2003, 1, 1, 0, 0, 0, 0, time.UTC))).
 		WithTimestamp(models.LTE, models.Millis(time.Date(2022, 7, 25, 0, 0, 0, 0, time.UTC))).
-		WithMultiplier(3).
 		WithTimespan(models.Week).
 		WithSeriesType(models.Open).
 		WithWindow(6))

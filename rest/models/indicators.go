@@ -5,9 +5,6 @@ type GetSMAParams struct {
 	// The ticker symbol of the stock/equity.
 	Ticker string `validate:"required" path:"ticker"`
 
-	// The size of the timespan multiplier for the underlying aggregates.
-	Multiplier *int `query:"multiplier"`
-
 	// The size of the timespan of the underlying aggregates.
 	Timespan *Timespan `query:"timespan"`
 
@@ -67,11 +64,6 @@ func (p GetSMAParams) WithTimestamp(c Comparator, q Millis) *GetSMAParams {
 	return &p
 }
 
-func (p GetSMAParams) WithMultiplier(q int) *GetSMAParams {
-	p.Multiplier = &q
-	return &p
-}
-
 func (p GetSMAParams) WithTimespan(q Timespan) *GetSMAParams {
 	p.Timespan = &q
 	return &p
@@ -91,9 +83,6 @@ func (p GetSMAParams) WithWindow(q int) *GetSMAParams {
 type GetEMAParams struct {
 	// The ticker symbol of the stock/equity.
 	Ticker string `validate:"required" path:"ticker"`
-
-	// The size of the timespan multiplier for the underlying aggregates.
-	Multiplier *int `query:"multiplier"`
 
 	// The size of the timespan of the underlying aggregates.
 	Timespan *Timespan `query:"timespan"`
@@ -154,11 +143,6 @@ func (p GetEMAParams) WithTimestamp(c Comparator, q Millis) *GetEMAParams {
 	return &p
 }
 
-func (p GetEMAParams) WithMultiplier(q int) *GetEMAParams {
-	p.Multiplier = &q
-	return &p
-}
-
 func (p GetEMAParams) WithTimespan(q Timespan) *GetEMAParams {
 	p.Timespan = &q
 	return &p
@@ -178,9 +162,6 @@ func (p GetEMAParams) WithWindow(q int) *GetEMAParams {
 type GetRSIParams struct {
 	// The ticker symbol of the stock/equity.
 	Ticker string `validate:"required" path:"ticker"`
-
-	// The size of the timespan multiplier for the underlying aggregates.
-	Multiplier *int `query:"multiplier"`
 
 	// The size of the timespan of the underlying aggregates.
 	Timespan *Timespan `query:"timespan"`
@@ -241,11 +222,6 @@ func (p GetRSIParams) WithTimestamp(c Comparator, q Millis) *GetRSIParams {
 	return &p
 }
 
-func (p GetRSIParams) WithMultiplier(q int) *GetRSIParams {
-	p.Multiplier = &q
-	return &p
-}
-
 func (p GetRSIParams) WithTimespan(q Timespan) *GetRSIParams {
 	p.Timespan = &q
 	return &p
@@ -265,9 +241,6 @@ func (p GetRSIParams) WithWindow(q int) *GetRSIParams {
 type GetMACDParams struct {
 	// The ticker symbol of the stock/equity.
 	Ticker string `validate:"required" path:"ticker"`
-
-	// The size of the timespan multiplier for the underlying aggregates.
-	Multiplier *int `query:"multiplier"`
 
 	// The size of the timespan of the underlying aggregates.
 	Timespan *Timespan `query:"timespan"`
@@ -316,11 +289,6 @@ func (p GetMACDParams) WithTimestamp(c Comparator, q Millis) *GetMACDParams {
 	case GTE:
 		p.TimestampGTE = &q
 	}
-	return &p
-}
-
-func (p GetMACDParams) WithMultiplier(q int) *GetMACDParams {
-	p.Multiplier = &q
 	return &p
 }
 

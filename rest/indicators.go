@@ -21,8 +21,8 @@ type IndicatorsClient struct {
 }
 
 // GetSMA retrieves simple moving average data over the given time range with the specified parameters.
-// For example, if timespan = 'day' and multiplier = '5', and window = '10', a 10-period simple moving average
-// will be calculated using 5-day aggregates for each period.
+// For example, if timespan = 'day' and window = '10', a 10-period simple moving average
+// will be calculated using day aggregates for each period.
 // For more details see https://polygon.io/docs/stocks/get_v1_indicators_sma__stockticker.
 func (ic *IndicatorsClient) GetSMA(ctx context.Context, params *models.GetSMAParams, opts ...models.RequestOption) (*models.GetSMAResponse, error) {
 	res := &models.GetSMAResponse{}
@@ -31,8 +31,8 @@ func (ic *IndicatorsClient) GetSMA(ctx context.Context, params *models.GetSMAPar
 }
 
 // GetEMA retrieves exponential moving average data over the given time range with the specified parameters.
-// For example, if timespan = 'day' and multiplier = '5', and window = '10', a 10-period exponential moving average
-// will be calculated using 5-day aggregates for each period.
+// For example, if timespan = 'day' and window = '10', a 10-period exponential moving average
+// will be calculated using day aggregates for each period.
 // For more details see https://polygon.io/docs/stocks/get_v1_indicators_ema__stockticker.
 func (ic *IndicatorsClient) GetEMA(ctx context.Context, params *models.GetEMAParams, opts ...models.RequestOption) (*models.GetEMAResponse, error) {
 	res := &models.GetEMAResponse{}
@@ -41,7 +41,7 @@ func (ic *IndicatorsClient) GetEMA(ctx context.Context, params *models.GetEMAPar
 }
 
 // GetMACD retrieves moving average convergence divergence data over the given time range with the specified parameters.
-// For example, if timespan = 'day' and multiplier = '1', short_window = '12', long_window = '26' and signal_window = '9',
+// For example, if timespan = 'day', short_window = '12', long_window = '26' and signal_window = '9',
 // the MACD will be calculated by taking the difference between a 26-period EMA and a 12-period EMA. The signal line values
 // will be calculated by taking the 9-day ema of the difference, and the histogram values will be calculated by taking
 // the difference between the MACD values and the signal line.
@@ -53,8 +53,8 @@ func (ic *IndicatorsClient) GetMACD(ctx context.Context, params *models.GetMACDP
 }
 
 // GetRSI retrieves relative strength index data over the given time range with the specified parameters.
-// For example, if timespan = 'day' and multiplier = '5', and window = '10', a 10-period relative strength index
-// will be calculated using 5-day aggregates for each period.
+// For example, if timespan = 'day' and window = '10', a 10-period relative strength index
+// will be calculated using day aggregates for each period.
 // For more details see https://polygon.io/docs/stocks/get_v1_indicators_rsi__stockticker.
 func (ic *IndicatorsClient) GetRSI(ctx context.Context, params *models.GetRSIParams, opts ...models.RequestOption) (*models.GetRSIResponse, error) {
 	res := &models.GetRSIResponse{}
