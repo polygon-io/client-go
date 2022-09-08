@@ -68,6 +68,15 @@ const (
 	Desc Order = "desc"
 )
 
+type SeriesType string
+
+const (
+	High  SeriesType = "high"
+	Open  SeriesType = "open"
+	Low   SeriesType = "low"
+	Close SeriesType = "close"
+)
+
 // Direction is the direction of the snapshot results to return.
 type Direction string
 

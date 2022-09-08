@@ -15,6 +15,7 @@ type Client struct {
 	ReferenceClient
 	TradesClient
 	SnapshotClient
+	IndicatorsClient
 	VX VXClient
 }
 
@@ -37,12 +38,13 @@ func newClient(apiKey string, hc *http.Client) *Client {
 	}
 
 	return &Client{
-		Client:          c,
-		AggsClient:      AggsClient{Client: c},
-		QuotesClient:    QuotesClient{Client: c},
-		ReferenceClient: ReferenceClient{Client: c},
-		TradesClient:    TradesClient{Client: c},
-		SnapshotClient:  SnapshotClient{Client: c},
-		VX:              VXClient{Client: c},
+		Client:           c,
+		IndicatorsClient: IndicatorsClient{Client: c},
+		AggsClient:       AggsClient{Client: c},
+		QuotesClient:     QuotesClient{Client: c},
+		ReferenceClient:  ReferenceClient{Client: c},
+		TradesClient:     TradesClient{Client: c},
+		SnapshotClient:   SnapshotClient{Client: c},
+		VX:               VXClient{Client: c},
 	}
 }

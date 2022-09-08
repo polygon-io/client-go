@@ -21,7 +21,7 @@ type SnapshotClient struct {
 	client.Client
 }
 
-// GetAllTickersSnapshot gets the current minute, day, and previous day’s aggregate, as well as the last trade and quote
+// GetAllTickersSnapshot gets the current minute, day, and previous day's aggregate, as well as the last trade and quote
 // for all symbols of a specified market type.
 //
 // Note: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges. This can happen
@@ -34,7 +34,7 @@ func (ac *SnapshotClient) GetAllTickersSnapshot(ctx context.Context, params *mod
 	return res, err
 }
 
-// GetTickerSnapshot gets the current minute, day, and previous day’s aggregate, as well as the last trade and quote for
+// GetTickerSnapshot gets the current minute, day, and previous day's aggregate, as well as the last trade and quote for
 // a single traded symbol of a specified market type.
 //
 // Note: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges. This can happen

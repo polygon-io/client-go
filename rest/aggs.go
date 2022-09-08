@@ -21,7 +21,7 @@ type AggsClient struct {
 }
 
 // GetAggs retrieves aggregate bars for a specified ticker over a given date range in custom time window sizes.
-// For example, if timespan = ‘minute’ and multiplier = ‘5’ then 5-minute bars will be returned.
+// For example, if timespan = 'minute' and multiplier = '5' then 5-minute bars will be returned.
 // For more details see https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to.
 func (ac *AggsClient) GetAggs(ctx context.Context, params *models.GetAggsParams, opts ...models.RequestOption) (*models.GetAggsResponse, error) {
 	res := &models.GetAggsResponse{}
