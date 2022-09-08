@@ -39,7 +39,7 @@ test:
 ## Update the REST API spec
 rest-spec:
 	@echo Updating the REST API spec
-	@curl https://api.polygon.io/specs/rest.json > .polygon/rest.json
+	@go run .polygon/rest.go https://api.polygon.io/openapi
 
 ## Update the WebSocket API spec
 ws-spec:
