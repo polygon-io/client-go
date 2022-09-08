@@ -403,11 +403,11 @@ func (c *Client) handleStatus(msg json.RawMessage) error {
 		// this is a fatal error so need to close the connection
 		return errors.New("authentication failed: closing connection")
 	case "success":
-		c.log.Debugf("received a successful status message: %v", cm.Message)
+		c.log.Debugf("received a successful status message: %v", sanitize(cm.Message))
 	case "error":
-		c.log.Errorf("received an error status message: %v", cm.Message)
+		c.log.Errorf("received an error status message: %v", sanitize(cm.Message))
 	default:
-		c.log.Infof("unknown status message '%v': %v", cm.Status, cm.Message)
+		c.log.Infof("unknown status message '%v': %v", sanitize(cm.Status), sanitize(cm.Message))
 	}
 
 	return nil
@@ -505,6 +505,10 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 		}
 		c.output <- out
 	default:
-		c.log.Infof("unknown message type '%v'", eventType)
+		c.log.Infof("unknown message type '%s'", sanitize(eventType))
 	}
+}
+
+func sanitize(s string) string {
+	return strings.Replace(s, "\n", "", -1)
 }
