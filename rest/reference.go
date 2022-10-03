@@ -187,7 +187,7 @@ func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
-//	iter := c.ListConditions(context.TODO(), params, opts...)
+//	iter := c.ListOptionsContracts(context.TODO(), params, opts...)
 //	for iter.Next() {
 //		log.Print(iter.Item()) // do something with the current value
 //	}
