@@ -25,12 +25,9 @@ type TradesClient struct {
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
-//	iter, err := c.ListTrades(context.TODO(), params, opts...)
-//	if err != nil {
-//		return err
-//	}
+//	iter := c.ListTrades(context.TODO(), params, opts...)
 //	for iter.Next() {
-//	    log.Print(iter.Item()) // do something with the current value
+//		log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
 //		return iter.Err()

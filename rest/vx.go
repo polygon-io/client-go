@@ -25,10 +25,7 @@ type VXClient struct {
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
-//	iter, err := c.ListStockFinancials(context.TODO(), params, opts...)
-//	if err != nil {
-//		return err
-//	}
+//	iter := c.ListStockFinancials(context.TODO(), params, opts...)
 //	for iter.Next() {
 //	    log.Print(iter.Item()) // do something with the current value
 //	}

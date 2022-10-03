@@ -104,10 +104,7 @@ func (c *ReferenceClient) GetMarketStatus(ctx context.Context, options ...models
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
-//	iter, err := c.ListSplits(context.TODO(), params, opts...)
-//	if err != nil {
-//		return err
-//	 }
+//	iter := c.ListSplits(context.TODO(), params, opts...)
 //	for iter.Next() {
 //		log.Print(iter.Item()) // do something with the current value
 //	}
@@ -127,10 +124,7 @@ func (c *ReferenceClient) ListSplits(ctx context.Context, params *models.ListSpl
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
-//	iter, err := c.ListDividends(context.TODO(), params, opts...)
-//	if err != nil {
-//		return err
-//	}
+//	iter := c.ListDividends(context.TODO(), params, opts...)
 //	for iter.Next() {
 //		log.Print(iter.Item()) // do something with the current value
 //	}
@@ -150,10 +144,7 @@ func (c *ReferenceClient) ListDividends(ctx context.Context, params *models.List
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
-//	iter, err := c.ListConditions(context.TODO(), params, opts...)
-//	if err != nil {
-//		return err
-//	}
+//	iter := c.ListConditions(context.TODO(), params, opts...)
 //	for iter.Next() {
 //		log.Print(iter.Item()) // do something with the current value
 //	}
@@ -189,10 +180,7 @@ func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
-//	iter, err := c.ListConditions(context.TODO(), params, opts...)
-//	if err != nil {
-//		return err
-//	}
+//	iter := c.ListConditions(context.TODO(), params, opts...)
 //	for iter.Next() {
 //		log.Print(iter.Item()) // do something with the current value
 //	}
