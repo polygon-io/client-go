@@ -26,11 +26,14 @@ type TradesClient struct {
 // This method returns an iterator that should be used to access the results via this pattern:
 //
 //	iter, err := c.ListTrades(context.TODO(), params, opts...)
+//	if err != nil {
+//		return err
+//	}
 //	for iter.Next() {
 //	    log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
-//	    return err
+//		return iter.Err()
 //	}
 func (c *TradesClient) ListTrades(ctx context.Context, params *models.ListTradesParams, options ...models.RequestOption) *iter.Iter[models.Trade] {
 	return iter.NewIter(ctx, ListTradesPath, params, func(uri string) (iter.ListResponse, []models.Trade, error) {

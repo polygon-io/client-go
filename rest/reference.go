@@ -41,11 +41,14 @@ type ReferenceClient struct {
 // This method returns an iterator that should be used to access the results via this pattern:
 //
 //	iter, err := c.ListTickers(context.TODO(), params, opts...)
+//	if err != nil {
+//		return err
+//	}
 //	for iter.Next() {
-//	    log.Print(iter.Item()) // do something with the current value
+//		log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
-//	    return err
+//		return iter.Err()
 //	}
 func (c *ReferenceClient) ListTickers(ctx context.Context, params *models.ListTickersParams, options ...models.RequestOption) *iter.Iter[models.Ticker] {
 	return iter.NewIter(ctx, ListTickersPath, params, func(uri string) (iter.ListResponse, []models.Ticker, error) {
@@ -102,11 +105,14 @@ func (c *ReferenceClient) GetMarketStatus(ctx context.Context, options ...models
 // This method returns an iterator that should be used to access the results via this pattern:
 //
 //	iter, err := c.ListSplits(context.TODO(), params, opts...)
+//	if err != nil {
+//		return err
+//	 }
 //	for iter.Next() {
-//	    log.Print(iter.Item()) // do something with the current value
+//		log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
-//	    return err
+//		return iter.Err()
 //	}
 func (c *ReferenceClient) ListSplits(ctx context.Context, params *models.ListSplitsParams, options ...models.RequestOption) *iter.Iter[models.Split] {
 	return iter.NewIter(ctx, ListSplitsPath, params, func(uri string) (iter.ListResponse, []models.Split, error) {
@@ -122,11 +128,14 @@ func (c *ReferenceClient) ListSplits(ctx context.Context, params *models.ListSpl
 // This method returns an iterator that should be used to access the results via this pattern:
 //
 //	iter, err := c.ListDividends(context.TODO(), params, opts...)
+//	if err != nil {
+//		return err
+//	}
 //	for iter.Next() {
-//	    log.Print(iter.Item()) // do something with the current value
+//		log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
-//	    return err
+//		return iter.Err()
 //	}
 func (c *ReferenceClient) ListDividends(ctx context.Context, params *models.ListDividendsParams, options ...models.RequestOption) *iter.Iter[models.Dividend] {
 	return iter.NewIter(ctx, ListDividendsPath, params, func(uri string) (iter.ListResponse, []models.Dividend, error) {
@@ -142,11 +151,14 @@ func (c *ReferenceClient) ListDividends(ctx context.Context, params *models.List
 // This method returns an iterator that should be used to access the results via this pattern:
 //
 //	iter, err := c.ListConditions(context.TODO(), params, opts...)
+//	if err != nil {
+//		return err
+//	}
 //	for iter.Next() {
-//	    log.Print(iter.Item()) // do something with the current value
+//		log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
-//	    return err
+//		return iter.Err()
 //	}
 func (c *ReferenceClient) ListConditions(ctx context.Context, params *models.ListConditionsParams, options ...models.RequestOption) *iter.Iter[models.Condition] {
 	return iter.NewIter(ctx, ListConditionsPath, params, func(uri string) (iter.ListResponse, []models.Condition, error) {
@@ -178,11 +190,14 @@ func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models
 // This method returns an iterator that should be used to access the results via this pattern:
 //
 //	iter, err := c.ListConditions(context.TODO(), params, opts...)
+//	if err != nil {
+//		return err
+//	}
 //	for iter.Next() {
-//	    log.Print(iter.Item()) // do something with the current value
+//		log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
-//	    return err
+//		return iter.Err()
 //	}
 func (c *ReferenceClient) ListOptionsContracts(ctx context.Context, params *models.ListOptionsContractsParams, options ...models.RequestOption) *iter.Iter[models.OptionsContract] {
 	return iter.NewIter(ctx, ListOptionsContractsPath, params, func(uri string) (iter.ListResponse, []models.OptionsContract, error) {
