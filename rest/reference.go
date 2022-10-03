@@ -40,12 +40,9 @@ type ReferenceClient struct {
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
-//	iter, err := c.ListTickers(context.TODO(), params, opts...)
-//	if err != nil {
-//		return err
-//	}
+//	iter := c.ListTickers(context.TODO(), params, opts...)
 //	for iter.Next() {
-//		log.Print(iter.Item()) // do something with the current value
+//	    log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
 //		return iter.Err()
@@ -68,6 +65,16 @@ func (c *ReferenceClient) GetTickerDetails(ctx context.Context, params *models.G
 
 // ListTickerNews retrieves news articles for a specified ticker. For more details see
 // https://polygon.io/docs/stocks/get_v2_reference_news.
+//
+// This method returns an iterator that should be used to access the results via this pattern:
+//
+//	iter := c.ListTickerNews(context.TODO(), params, opts...)
+//	for iter.Next() {
+//	    log.Print(iter.Item()) // do something with the current value
+//	}
+//	if iter.Err() != nil {
+//		return iter.Err()
+//	}
 func (c *ReferenceClient) ListTickerNews(ctx context.Context, params *models.ListTickerNewsParams, options ...models.RequestOption) *iter.Iter[models.TickerNews] {
 	return iter.NewIter(ctx, ListTickerNewsPath, params, func(uri string) (iter.ListResponse, []models.TickerNews, error) {
 		res := &models.ListTickerNewsResponse{}
