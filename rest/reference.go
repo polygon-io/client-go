@@ -42,7 +42,7 @@ type ReferenceClient struct {
 //
 //	iter := c.ListTickers(context.TODO(), params, opts...)
 //	for iter.Next() {
-//	    log.Print(iter.Item()) // do something with the current value
+//		log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
 //		return iter.Err()
@@ -70,7 +70,7 @@ func (c *ReferenceClient) GetTickerDetails(ctx context.Context, params *models.G
 //
 //	iter := c.ListTickerNews(context.TODO(), params, opts...)
 //	for iter.Next() {
-//	    log.Print(iter.Item()) // do something with the current value
+//		log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
 //		return iter.Err()

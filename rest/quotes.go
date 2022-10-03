@@ -31,7 +31,7 @@ type QuotesClient struct {
 //		log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
-//	    return iter.Err()
+//		return iter.Err()
 //	}
 func (c *QuotesClient) ListQuotes(ctx context.Context, params *models.ListQuotesParams, options ...models.RequestOption) *iter.Iter[models.Quote] {
 	return iter.NewIter(ctx, ListQuotesPath, params, func(uri string) (iter.ListResponse, []models.Quote, error) {

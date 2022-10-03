@@ -27,10 +27,10 @@ type VXClient struct {
 //
 //	iter := c.ListStockFinancials(context.TODO(), params, opts...)
 //	for iter.Next() {
-//	    log.Print(iter.Item()) // do something with the current value
+//		log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
-//	    return iter.Err()
+//		return iter.Err()
 //	}
 func (c *VXClient) ListStockFinancials(ctx context.Context, params *models.ListStockFinancialsParams, options ...models.RequestOption) *iter.Iter[models.StockFinancial] {
 	return iter.NewIter(ctx, ListFinancialsPath, params, func(uri string) (iter.ListResponse, []models.StockFinancial, error) {
