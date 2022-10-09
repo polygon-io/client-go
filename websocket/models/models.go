@@ -147,7 +147,7 @@ type CryptoTrade struct {
 	EventType
 
 	// The crypto pair.
-	Symbol string `json:"sym,omitempty"`
+	Pair string `json:"pair,omitempty"`
 
 	// The crypto exchange ID.
 	Exchange int32 `json:"x,omitempty"`
