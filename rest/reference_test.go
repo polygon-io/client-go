@@ -335,7 +335,7 @@ func TestListSplits(t *testing.T) {
 
 	split := `{
 	"execution_date": "2020-08-31",
-	"split_from": 1,
+	"split_from": 1.0,
 	"split_to": 4,
 	"ticker": "AAPL"
 }`
