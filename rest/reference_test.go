@@ -43,11 +43,11 @@ func TestListTickers(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/reference/tickers?active=true&cik=5&cusip=10&date=2021-07-22&exchange=4&limit=2&market=stocks&order=asc&sort=ticker&type=CS", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/reference/tickers?active=true&cik=5&cusip=10&date=2021-07-22&exchange=XNAS&limit=2&market=stocks&order=asc&sort=ticker&type=CS", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
 	iter := c.ListTickers(context.Background(), models.ListTickersParams{}.
 		WithType("CS").WithMarket(models.AssetStocks).
-		WithExchange(4).WithCUSIP(10).WithCIK(5).
+		WithExchange("XNAS").WithCUSIP(10).WithCIK(5).
 		WithDate(models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).WithActive(true).
 		WithSort(models.TickerSymbol).WithOrder(models.Asc).WithLimit(2))
 
