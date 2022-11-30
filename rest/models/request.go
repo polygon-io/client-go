@@ -51,22 +51,27 @@ func QueryParam(key, value string) RequestOption {
 
 // Headers required to use the Launchpad product.
 const (
+	// HeaderEdgeID is a required Launchpad header. It identifies the Edge User requesting data.
 	HeaderEdgeID = "X-Polygon-Edge-ID"
-	HeaderEdgeIPAddress = "X-Polygon-Edge-IP-Address "
+	// HeaderEdgeIPAddress is a required Launchpad header. It denotes the originating IP Address of the Edge User requesting data.
+	HeaderEdgeIPAddress = "X-Polygon-Edge-IP-Address"
+	// HeaderEdgeUserAgent is an optional Launchpad header. It denotes the originating UserAgent of the Edge User requesting data.
 	HeaderEdgeUserAgent = "X-Polygon-Edge-User-Agent"
 )
 
-// EdgeID sets the Launchpad required header denoting the Edge User's ID.
-func EdgeID(id string) RequestOption {
-	return Header(HeaderEdgeID, id)
+// RequiredEdgeHeaders sets the required headers for the Launchpad product.
+func RequiredEdgeHeaders(edgeID, edgeIPAddress string) RequestOption {
+	return func(o *RequestOptions) {
+		if o.Headers == nil {
+			o.Headers = make(http.Header)
+		}
+
+		o.Headers.Add(HeaderEdgeID, edgeID)
+		o.Headers.Add(HeaderEdgeIPAddress, edgeIPAddress)
+	}
 }
 
-// EdgeIPAddress sets the Launchpad required header denoting the Edge User's IP Address.
-func EdgeIPAddress(ip string) RequestOption {
-	return Header(HeaderEdgeIPAddress, ip)
-}
-
-// EdgeUserAgent sets the Launchpad required header denoting the Edge User's UserAgent.
+// EdgeUserAgent sets the Launchpad optional header denoting the Edge User's UserAgent.
 func EdgeUserAgent(userAgent string) RequestOption {
 	return Header(HeaderEdgeUserAgent, userAgent)
 }
