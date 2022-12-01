@@ -2,29 +2,15 @@ package main
 
 import (
 	"context"
-	"log"
-	"os"
-	"time"
-
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
+	"log"
+	"os"
 )
 
 func main() {
-	// By default, the common use case example will run.
-	// If you want to run the Launchpad example then from the root dir run `POLYGON_API_KEY=... go run rest/example/main.go launchpad`
-	exampleToRun := "common"
-	if len(os.Args) > 1 && os.Args[1] == "launchpad" {
-		exampleToRun = "launchpad"
-	}
-
-	switch exampleToRun {
-	case "common":
-		getAllTickersSnapshot()
-		listTrades()
-	case "launchpad":
-		getAggregateBarsLaunchpad()
-	}
+	getAllTickersSnapshot()
+	listTrades()
 }
 
 func getAllTickersSnapshot() {
@@ -56,25 +42,4 @@ func listTrades() {
 	if iter.Err() != nil {
 		log.Fatal(iter.Err())
 	}
-}
-
-func getAggregateBarsLaunchpad() {
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
-
-	params3 := &models.GetAggsParams{
-		Ticker:     "CORN",
-		Multiplier: 1,
-		Timespan:   models.Day,
-		From:       models.Millis(time.Now().AddDate(0, 0, -7)),
-		To:         models.Millis(time.Now()),
-	}
-
-	res, err := c.GetAggs(context.Background(), params3,
-		models.RequiredEdgeHeaders("EDGE_USER_ID", "EDGE_USER_IP_ADDRESS"),
-		models.EdgeUserAgent("EDGE_USER_AGENT"),
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Print(res) // do something with the result
 }
