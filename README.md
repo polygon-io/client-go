@@ -117,7 +117,7 @@ log.Print(res) // do something with the result
 
 #### Launchpad usage
 
-Users of the Launchpad project will need to pass in certain headers in order to make API requests.
+Users of the Launchpad product will need to pass in certain headers in order to make API requests.
 
 ```golang
 params := &models.GetGroupedDailyAggsParams{
@@ -146,7 +146,7 @@ params := &models.GetGroupedDailyAggsParams{
 
 res, err := c.GetGroupedDailyAggs(context.Background(), params,
     models.RequiredEdgeHeaders("EDGE_USER_ID", "EDGE_USER_IP_ADDRESS"),
-    models.EdgeUserAgent("EDGE_USER_USER_AGENT"),
+    models.EdgeUserAgent("EDGE_USER_AGENT"),
 )
 if err != nil {
     log.Fatal(err)
