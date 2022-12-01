@@ -11,9 +11,20 @@ import (
 )
 
 func main() {
-	getAllTickersSnapshot()
-	listTrades()
-	getAggregateBarsLaunchpad()
+	// By default, the common use case example will run.
+	// If you want to run the Launchpad example then from the root dir run `POLYGON_API_KEY=... go run rest/example/main.go launchpad`
+	exampleToRun := "common"
+	if len(os.Args) > 1 && os.Args[1] == "launchpad" {
+		exampleToRun = "launchpad"
+	}
+
+	switch exampleToRun {
+	case "common":
+		getAllTickersSnapshot()
+		listTrades()
+	case "launchpad":
+		getAggregateBarsLaunchpad()
+	}
 }
 
 func getAllTickersSnapshot() {
@@ -60,7 +71,7 @@ func getAggregateBarsLaunchpad() {
 
 	res, err := c.GetAggs(context.Background(), params3,
 		models.RequiredEdgeHeaders("EDGE_USER_ID", "EDGE_USER_IP_ADDRESS"),
-		models.EdgeUserAgent("EDGE_USER_USER_AGENT"),
+		models.EdgeUserAgent("EDGE_USER_AGENT"),
 	)
 	if err != nil {
 		log.Fatal(err)
