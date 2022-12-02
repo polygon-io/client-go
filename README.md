@@ -115,7 +115,7 @@ if err != nil {
 log.Print(res) // do something with the result
 ```
 
-#### Launchpad usage
+#### Launchpad Usage
 
 Users of the Launchpad product will need to pass in certain headers in order to make API requests.
 Example can be found [here](./rest/example/launchpad).
