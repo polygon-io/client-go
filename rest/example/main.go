@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
 	"log"
 	"os"
+
+	polygon "github.com/polygon-io/client-go/rest"
+	"github.com/polygon-io/client-go/rest/models"
 )
 
 func main() {
