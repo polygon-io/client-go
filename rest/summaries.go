@@ -17,7 +17,7 @@ type SummariesClient struct {
 	client.Client
 }
 
-// GetSummaries retrieves summaries for the ticker list with the given params
+// GetSummaries retrieves summaries for the ticker list with the given params.
 // For more details see https://polygon.io/docs/stocks/get_v1_summaries.
 func (ic *SummariesClient) GetSummaries(ctx context.Context, params *models.GetSummaryParams, opts ...models.RequestOption) (*models.GetSummaryResponse, error) {
 	res := &models.GetSummaryResponse{}
