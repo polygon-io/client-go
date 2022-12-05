@@ -20,7 +20,7 @@ type GetSummaryResponse struct {
 type SummaryResult struct {
 	Price        float64  `json:"price,omitempty"`
 	Name         string   `json:"name,omitempty"`
-	Ticker       *string  `json:"ticker,omitempty"`
+	Ticker       string   `json:"ticker,omitempty"`
 	Branding     Branding `json:"branding,omitempty"`
 	MarketStatus string   `json:"market_status,omitempty"`
 	Type         string   `json:"type,omitempty"`
