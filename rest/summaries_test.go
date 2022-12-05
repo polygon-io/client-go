@@ -117,7 +117,7 @@ func TestGetSummary(t *testing.T) {
 		],
 		"status": "OK"
 	   }`
-	expectedGetSummaryUrl := "https://api.polygon.io/v1/summaries?ticker.any_of=NCLH%2CO:NCLH221014C00005000%2CC:EURUSD%2CX:BTCUSD%2CAPx"
+	expectedGetSummaryUrl := "https://api.polygon.io/v1/summaries?ticker.any_of=NCLH%2CO%3ANCLH221014C00005000%2CC%3AEURUSD%2CX%3ABTCUSD%2CAPx"
 	registerResponder(expectedGetSummaryUrl, expectedSummaryResponse)
 	tickerAnyOf := []string{"NCLH", "O:NCLH221014C00005000", "C:EURUSD", "X:BTCUSD", "APx"}
 
