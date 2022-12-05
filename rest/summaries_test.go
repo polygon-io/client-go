@@ -117,11 +117,11 @@ func TestGetSummary(t *testing.T) {
 		],
 		"status": "OK"
 	   }`
-	expectedGetSummaryUrl := "https://api.polygon.io/v1/summaries/?ticker.anyOf=NCLH,O:NCLH221014C00005000,C:EURUSD,X:BTCUSD,APx"
+	expectedGetSummaryUrl := "https://api.polygon.io/v1/summaries?ticker.any_of=NCLH%2CO:NCLH221014C00005000%2CC:EURUSD%2CX:BTCUSD%2CAPx"
 	registerResponder(expectedGetSummaryUrl, expectedSummaryResponse)
-	tickerAnyOf := "NCLH,O:NCLH221014C00005000,C:EURUSD,X:BTCUSD,APx"
+	tickerAnyOf := []string{"NCLH", "O:NCLH221014C00005000", "C:EURUSD", "X:BTCUSD", "APx"}
 
-	res, err := c.GetSummaries(context.Background(), models.GetSummaryParams{}.WithTickerAnyOf(tickerAnyOf))
+	res, err := c.GetSummaries(context.Background(), models.GetSummaryParams{}.WithTickerAnyOf(tickerAnyOf...))
 	assert.Nil(t, err)
 
 	var expect models.GetSummaryResponse

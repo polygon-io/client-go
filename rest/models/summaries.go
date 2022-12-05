@@ -1,13 +1,17 @@
 package models
 
-import "github.com/polygon-io/ptime"
+import (
+	"github.com/polygon-io/ptime"
+	"strings"
+)
 
 type GetSummaryParams struct {
 	// The ticker list to get summaries for
-	TickerAnyOf *string `query:"ticker.anyOf"`
+	TickerAnyOf *string `query:"ticker.any_of"`
 }
 
-func (p GetSummaryParams) WithTickerAnyOf(q string) *GetSummaryParams {
+func (p GetSummaryParams) WithTickerAnyOf(tickers ...string) *GetSummaryParams {
+	q := strings.Join(tickers, ",")
 	p.TickerAnyOf = &q
 	return &p
 }
