@@ -121,7 +121,7 @@ func TestGetSummary(t *testing.T) {
 	registerResponder(expectedGetSummaryUrl, expectedSummaryResponse)
 	tickerAnyOf := "NCLH,O:NCLH221014C00005000,C:EURUSD,X:BTCUSD,APx"
 
-	res, err := c.GetSummaries(context.Background(), &models.GetSummaryParams{}.WithTickerAnyOf(tickerAnyOf))
+	res, err := c.GetSummaries(context.Background(), models.GetSummaryParams{}.WithTickerAnyOf(tickerAnyOf))
 	assert.Nil(t, err)
 
 	var expect models.GetSummaryResponse
