@@ -26,7 +26,7 @@ type SummaryResult struct {
 	MarketStatus string   `json:"market_status,omitempty"`
 	Type         string   `json:"type,omitempty"`
 	Session      Session  `json:"session,omitempty"`
-	Options      Option   `json:"options,omitempty"`
+	Options      Options  `json:"options,omitempty"`
 	Message      string   `json:"message,omitempty"`
 	Error        string   `json:"error,omitempty"`
 }
@@ -47,7 +47,7 @@ type Session struct {
 }
 
 //easyjson:json
-type Option struct {
+type Options struct {
 	ContractType      string  `json:"contract_type,omitempty"`
 	ExerciseStyle     string  `json:"exercise_style,omitempty"`
 	ExpirationDate    Date    `json:"expiration_date,omitempty"`
