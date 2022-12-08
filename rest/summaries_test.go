@@ -47,7 +47,7 @@ func TestGetSummary(t *testing.T) {
 		 {
 		  "market_status": "closed",
 		  "name": "NCLH $5 Call",
-		  "option": {
+		  "options": {
 		   "contract_type": "call",
 		   "exercise_style": "american",
 		   "expiration_date": "2022-10-14",

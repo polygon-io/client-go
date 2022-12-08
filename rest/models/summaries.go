@@ -26,7 +26,9 @@ type SummaryResult struct {
 	MarketStatus string   `json:"market_status,omitempty"`
 	Type         string   `json:"type,omitempty"`
 	Session      Session  `json:"session,omitempty"`
-	Option       Option   `json:"option,omitempty"`
+	Option       Option   `json:"options,omitempty"`
+	Message      string   `json:"message,omitempty"`
+	Error        string   `json:"error,omitempty"`
 }
 
 type Session struct {
