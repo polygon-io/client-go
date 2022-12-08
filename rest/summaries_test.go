@@ -42,7 +42,7 @@ func TestGetSummary(t *testing.T) {
 		   "volume": 37
 		  },
 		  "ticker": "NCLH",
-		  "type": "stock"
+		  "type": "stocks"
 		 },
 		 {
 		  "market_status": "closed",
@@ -71,7 +71,7 @@ func TestGetSummary(t *testing.T) {
 		   "volume": 67
 		  },
 		  "ticker": "O:NCLH221014C00005000",
-		  "type": "option"
+		  "type": "options"
 		 },
 		 {
 		  "market_status": "open",
@@ -87,7 +87,7 @@ func TestGetSummary(t *testing.T) {
 		   "previous_close": 0.98001
 		  },
 		  "ticker": "C:EURUSD",
-		  "type": "forex"
+		  "type": "fx"
 		 },
 		 {
 		  "branding": {
