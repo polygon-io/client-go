@@ -115,6 +115,11 @@ if err != nil {
 log.Print(res) // do something with the result
 ```
 
+#### Launchpad Usage
+
+Users of the Launchpad product will need to pass in certain headers in order to make API requests.
+Example can be found [here](./rest/example/launchpad).
+
 ## WebSocket Client
 
 [![ws-docs][ws-doc-img]][ws-doc]

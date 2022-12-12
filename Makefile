@@ -51,6 +51,11 @@ rest-example:
 	@echo Running the REST example
 	@go run rest/example/main.go
 
+## Run the REST example
+launchpad-example:
+	@echo Running the Launchpad example
+	@go run rest/example/launchpad/main.go
+
 ## Run the WebSocket example
 ws-example:
 	@echo Running the WebSocket example
