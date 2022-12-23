@@ -57,6 +57,8 @@ const (
 	LastUpdatedUTC     Sort = "last_updated_utc"
 	DelistedUTC        Sort = "delisted_utc"
 	Timestamp          Sort = "timestamp"
+	StrikePrice        Sort = "strike_price"
+	ExpirationDate     Sort = "expiration_date"
 )
 
 // Order the results. asc will return results in ascending order (oldest at the top), desc will return results in

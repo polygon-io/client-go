@@ -13,6 +13,7 @@ const (
 	GetTickerSnapshotPath         = "/v2/snapshot/locale/{locale}/markets/{marketType}/tickers/{ticker}"
 	GetGainersLosersSnapshotPath  = "/v2/snapshot/locale/{locale}/markets/{marketType}/{direction}"
 	GetOptionContractSnapshotPath = "/v3/snapshot/options/{underlyingAsset}/{optionContract}"
+	GetOptionsChainSnapshotPath   = "/v3/snapshot/options/{underlyingAsset}"
 	GetCryptoFullBookSnapshotPath = "/v2/snapshot/locale/global/markets/crypto/tickers/{ticker}/book"
 )
 
@@ -65,6 +66,12 @@ func (ac *SnapshotClient) GetGainersLosersSnapshot(ctx context.Context, params *
 // https://polygon.io/docs/options/get_v3_snapshot_options__underlyingasset___optioncontract.
 func (ac *SnapshotClient) GetOptionContractSnapshot(ctx context.Context, params *models.GetOptionContractSnapshotParams, opts ...models.RequestOption) (*models.GetOptionContractSnapshotResponse, error) {
 	res := &models.GetOptionContractSnapshotResponse{}
+	err := ac.Call(ctx, http.MethodGet, GetOptionContractSnapshotPath, params, res, opts...)
+	return res, err
+}
+
+func (ac *SnapshotClient) GetOptionsChainSnapshot(ctx context.Context, params *models.GetOptionsChainParams, opts ...models.RequestOption) (*models.GetOptionsChainSnapshotResponse, error) {
+	res := &models.GetOptionsChainSnapshotResponse{}
 	err := ac.Call(ctx, http.MethodGet, GetOptionContractSnapshotPath, params, res, opts...)
 	return res, err
 }

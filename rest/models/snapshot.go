@@ -69,6 +69,115 @@ func (p GetGainersLosersSnapshotParams) WithIncludeOTC(q bool) *GetGainersLosers
 	return &p
 }
 
+// GetOptionsChainParams to get the snapshot of an option contract for a stock equity
+type GetOptionsChainParams struct {
+	// The ticker for the option contract.
+	Ticker *string `validate:"required" path:"underlyingAsset"`
+
+	// The strike price of the option contract.
+	StrikePrice *string `query:"string_price"`
+
+	// The type of contract. Can be "put", "call", or in some rare cases, "other".
+	ContractType *string `query:"contract_type"`
+
+	// The contract's expiration date in YYYY-MM-DD format.
+	ExpirationDateEQ  *string `query:"expiration_date"`
+	ExpirationDateLT  *string `query:"expiration_date.lt"`
+	ExpirationDateLTE *string `query:"expiration_date.lte"`
+	ExpirationDateGT  *string `query:"expiration_date.gt"`
+	ExpirationDateGTE *string `query:"expiration_date.gte"`
+
+	Limit *int   `query:"Limit"`
+	Sort  *Sort  `query:"sort"`
+	Order *Order `query:"order"`
+}
+
+func NewGetOptionsChainParams(ticker string) *GetOptionsChainParams {
+	return &GetOptionsChainParams{Ticker: &ticker}
+}
+
+func (o *GetOptionsChainParams) WithTicker(ticker string) *GetOptionsChainParams {
+	o.Ticker = &ticker
+	return o
+}
+
+func (o *GetOptionsChainParams) WithStrikePrice(strikePrice string) *GetOptionsChainParams {
+	o.StrikePrice = &strikePrice
+	return o
+}
+
+func (o *GetOptionsChainParams) WithContractType(contractType string) *GetOptionsChainParams {
+	o.ContractType = &contractType
+	return o
+}
+
+// WithLimit sets number of results returned. Limit default is 10. Limit must fall in range of 0-1000.
+func (o *GetOptionsChainParams) WithLimit(limit int) *GetOptionsChainParams {
+	o.Limit = &limit
+	return o
+}
+
+// WithExpirationDate sets expiration_date query parameter.
+// comparator Comparator options include EQ, LT, LTE, GT, and GTE.
+// expirationDate should be in YYYY-MM-DD format
+func (o *GetOptionsChainParams) WithExpirationDate(comparator Comparator, expirationDate string) *GetOptionsChainParams {
+	switch comparator {
+	case EQ:
+		o.ExpirationDateEQ = &expirationDate
+	case LT:
+		o.ExpirationDateLT = &expirationDate
+	case LTE:
+		o.ExpirationDateLTE = &expirationDate
+	case GT:
+		o.ExpirationDateGT = &expirationDate
+	case GTE:
+		o.ExpirationDateGTE = &expirationDate
+	default:
+		o.ExpirationDateEQ = &expirationDate
+	}
+	return o
+}
+
+// WithOrder sets order of results based on the Sort field.
+func (o *GetOptionsChainParams) WithOrder(order Order) *GetOptionsChainParams {
+	switch order {
+	case Asc:
+		o.Order = &order
+	case Desc:
+		o.Order = &order
+	}
+	return o
+}
+
+// WithSort sets sort field. Sort expects to receive TickerSymbol, ExpirationDate, or StrikePrice as an argument.
+func (o *GetOptionsChainParams) WithSort(sort Sort) *GetOptionsChainParams {
+	switch sort {
+	case TickerSymbol:
+		o.Sort = &sort
+	case ExpirationDate:
+		o.Sort = &sort
+	case StrikePrice:
+		o.Sort = &sort
+	}
+	return o
+}
+
+type GetOptionsChainSnapshotResponse struct {
+	BaseResponse
+	Results []OptionsChain `json:"results,omitempty"`
+}
+
+type OptionsChain struct {
+	Day               DaySnapshot     `json:"day,omitempty"`
+	Details           OptionDetails   `json:"details,omitempty"`
+	Greeks            Greeks          `json:"greeks,omitempty"`
+	LastQuote         LastQuote       `json:"last_quote,omitempty"`
+	UnderlyingAsset   UnderlyingAsset `json:"underlying_asset,omitempty"`
+	ImpliedVolatility *float64        `json:"implied_volatility,omitempty"`
+	OpenInterest      *float64        `json:"open_interest,omitempty"`
+	BreakEvenPrice    *float64        `json:"break_even_price,omitempty"`
+}
+
 // GetGainersLosersSnapshotResponse is the response returned by the GetGainersLosersSnapshot method.
 type GetGainersLosersSnapshotResponse struct {
 	BaseResponse
