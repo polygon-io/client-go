@@ -261,6 +261,75 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 	assert.Equal(t, &expect, res)
 }
 
+func TestGetOptionsChainSnapshot(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := `{
+	  "results": [
+		{
+		  "break_even_price": 162.375,
+		  "day": {
+			"change": 0,
+			"change_percent": 0,
+			"close": 79.35,
+			"high": 79.35,
+			"last_updated": 1672434000000,
+			"low": 79.3,
+			"open": 79.3,
+			"previous_close": 79.35,
+			"volume": 22,
+			"vwap": 79.325
+		  },
+		  "details": {
+			"contract_type": "call",
+			"exercise_style": "american",
+			"expiration_date": "2023-01-06",
+			"shares_per_contract": 100,
+			"strike_price": 50,
+			"ticker": "O:AAPL230106C00050000"
+		  },
+		  "greeks": {},
+		  "last_quote": {
+			"ask": 75.05,
+			"ask_size": 48,
+			"bid": 74.85,
+			"bid_size": 43,
+			"last_updated": 1672775256862312000,
+			"midpoint": 112.375,
+			"timeframe": "DELAYED"
+		  },
+		  "open_interest": 5,
+		  "underlying_asset": {
+			"change_to_break_even": 37.435,
+			"last_updated": 1672775257417223400,
+			"price": 124.94,
+			"ticker": "AAPL",
+			"timeframe": "DELAYED"
+		  }
+		}
+	  ],
+	  "status": "OK",
+	  "request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+	  "next_url": "http://localhost:8080/v3/snapshot/options/AAPL?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+	}`
+
+	registerResponder("https://api.polygon.io/v3/snapshot/options/AAPL", expectedResponse)
+
+	chainParams := models.NewGetOptionsChainParams("AAPL").WithLimit(1)
+
+	res, err := c.GetOptionsChainSnapshot(context.Background(), chainParams)
+	assert.Nil(t, err)
+
+	var expect models.GetOptionsChainSnapshotResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
+
+	assert.Nil(t, err)
+	assert.Equal(t, &expect, res)
+}
+
 func TestGetCryptoFullBookSnapshot(t *testing.T) {
 	c := polygon.New("API_KEY")
 

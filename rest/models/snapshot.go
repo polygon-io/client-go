@@ -164,10 +164,10 @@ func (o *GetOptionsChainParams) WithSort(sort Sort) *GetOptionsChainParams {
 
 type GetOptionsChainSnapshotResponse struct {
 	BaseResponse
-	Results []OptionsChain `json:"results,omitempty"`
+	Results []OptionsChainSnapshot `json:"results,omitempty"`
 }
 
-type OptionsChain struct {
+type OptionsChainSnapshot struct {
 	Day               DaySnapshot     `json:"day,omitempty"`
 	Details           OptionDetails   `json:"details,omitempty"`
 	Greeks            Greeks          `json:"greeks,omitempty"`

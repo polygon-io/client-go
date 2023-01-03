@@ -72,7 +72,7 @@ func (ac *SnapshotClient) GetOptionContractSnapshot(ctx context.Context, params 
 
 func (ac *SnapshotClient) GetOptionsChainSnapshot(ctx context.Context, params *models.GetOptionsChainParams, opts ...models.RequestOption) (*models.GetOptionsChainSnapshotResponse, error) {
 	res := &models.GetOptionsChainSnapshotResponse{}
-	err := ac.Call(ctx, http.MethodGet, GetOptionContractSnapshotPath, params, res, opts...)
+	err := ac.Call(ctx, http.MethodGet, GetOptionsChainSnapshotPath, params, res, opts...)
 	return res, err
 }
 
