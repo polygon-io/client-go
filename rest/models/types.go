@@ -15,6 +15,14 @@ const (
 	Crypto MarketType = "crypto"
 )
 
+// ContractType is the type of contract.
+type ContractType string
+
+const (
+	ContractTypeCall ContractType = "call"
+	ContractTypePut  ContractType = "put"
+)
+
 // Locale is the market location.
 type MarketLocale string
 

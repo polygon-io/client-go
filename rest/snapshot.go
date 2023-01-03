@@ -70,6 +70,8 @@ func (ac *SnapshotClient) GetOptionContractSnapshot(ctx context.Context, params 
 	return res, err
 }
 
+// GetOptionsChainSnapshot gets the snapshot of all options contracts for an underlying ticker. For more details see
+// https://polygon.io/docs/options/get_v3_snapshot_options__underlyingasset
 func (ac *SnapshotClient) GetOptionsChainSnapshot(ctx context.Context, params *models.GetOptionsChainParams, opts ...models.RequestOption) (*models.GetOptionsChainSnapshotResponse, error) {
 	res := &models.GetOptionsChainSnapshotResponse{}
 	err := ac.Call(ctx, http.MethodGet, GetOptionsChainSnapshotPath, params, res, opts...)

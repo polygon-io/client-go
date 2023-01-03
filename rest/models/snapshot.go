@@ -69,7 +69,7 @@ func (p GetGainersLosersSnapshotParams) WithIncludeOTC(q bool) *GetGainersLosers
 	return &p
 }
 
-// GetOptionsChainParams to get the snapshot of an option contract for a stock equity
+// GetOptionsChainParams is a set of parameters for the GetOptionsChainSnapshot method.
 type GetOptionsChainParams struct {
 	// The ticker for the option contract.
 	Ticker *string `validate:"required" path:"underlyingAsset"`
@@ -78,7 +78,7 @@ type GetOptionsChainParams struct {
 	StrikePrice *string `query:"string_price"`
 
 	// The type of contract. Can be "put", "call", or in some rare cases, "other".
-	ContractType *string `query:"contract_type"`
+	ContractType *ContractType `query:"contract_type"`
 
 	// The contract's expiration date in YYYY-MM-DD format.
 	ExpirationDateEQ  *string `query:"expiration_date"`
@@ -92,21 +92,26 @@ type GetOptionsChainParams struct {
 	Order *Order `query:"order"`
 }
 
+// NewGetOptionsChainParams will return a pointer to GetOptionsChainParams.
 func NewGetOptionsChainParams(ticker string) *GetOptionsChainParams {
 	return &GetOptionsChainParams{Ticker: &ticker}
 }
 
+// WithTicker sets underlying ticker symbol to params
 func (o *GetOptionsChainParams) WithTicker(ticker string) *GetOptionsChainParams {
 	o.Ticker = &ticker
 	return o
 }
 
+// WithStrikePrice sets strike price to params. Strike Price is the price at which a put or call option can be exercised.
 func (o *GetOptionsChainParams) WithStrikePrice(strikePrice string) *GetOptionsChainParams {
 	o.StrikePrice = &strikePrice
 	return o
 }
 
-func (o *GetOptionsChainParams) WithContractType(contractType string) *GetOptionsChainParams {
+// WithContractType sets contract type to params.
+// contractType options include `call` and `put`.
+func (o *GetOptionsChainParams) WithContractType(contractType ContractType) *GetOptionsChainParams {
 	o.ContractType = &contractType
 	return o
 }
@@ -118,7 +123,7 @@ func (o *GetOptionsChainParams) WithLimit(limit int) *GetOptionsChainParams {
 }
 
 // WithExpirationDate sets expiration_date query parameter.
-// comparator Comparator options include EQ, LT, LTE, GT, and GTE.
+// comparator options include EQ, LT, LTE, GT, and GTE.
 // expirationDate should be in YYYY-MM-DD format
 func (o *GetOptionsChainParams) WithExpirationDate(comparator Comparator, expirationDate string) *GetOptionsChainParams {
 	switch comparator {
