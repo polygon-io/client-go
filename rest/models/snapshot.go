@@ -77,7 +77,7 @@ type GetOptionsChainParams struct {
 	// The strike price of the option contract.
 	StrikePrice *string `query:"string_price"`
 
-	// The type of contract. Can be "put", "call", or in some rare cases, "other".
+	// The type of contract. Can be ContractTypeCall, ContractTypePut, or in some rare cases, ContractTypeOther.
 	ContractType *ContractType `query:"contract_type"`
 
 	// The contract's expiration date in YYYY-MM-DD format.
@@ -110,7 +110,7 @@ func (o *GetOptionsChainParams) WithStrikePrice(strikePrice string) *GetOptionsC
 }
 
 // WithContractType sets contract type to params.
-// contractType options include `call` and `put`.
+// contractType options include ContractTypeCall and ContractTypePut.
 func (o *GetOptionsChainParams) WithContractType(contractType ContractType) *GetOptionsChainParams {
 	o.ContractType = &contractType
 	return o
