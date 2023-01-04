@@ -71,7 +71,7 @@ func (p GetGainersLosersSnapshotParams) WithIncludeOTC(q bool) *GetGainersLosers
 
 // ListOptionsChainParams is a set of parameters for the ListOptionsChainSnapshot method.
 type ListOptionsChainParams struct {
-	// The ticker for the option contract.
+	// The underlying ticker symbol of the option contract.
 	Ticker string `validate:"required" path:"underlyingAsset"`
 
 	// The strike price of the option contract.
@@ -87,8 +87,13 @@ type ListOptionsChainParams struct {
 	ExpirationDateGT  *Date `query:"expiration_date.gt"`
 	ExpirationDateGTE *Date `query:"expiration_date.gte"`
 
-	Limit *int   `query:"limit"`
-	Sort  *Sort  `query:"sort"`
+	// Limit the number of results returned, default is 10 and max is 1000.
+	Limit *int `query:"limit"`
+
+	// Sort field used for ordering.
+	Sort *Sort `query:"sort"`
+
+	// Order results based on the sort field.
 	Order *Order `query:"order"`
 }
 
