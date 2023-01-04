@@ -97,12 +97,6 @@ type ListOptionsChainParams struct {
 	Order *Order `query:"order"`
 }
 
-// WithUnderlyingAsset the underlying ticker symbol of the option contract.
-func (o ListOptionsChainParams) WithUnderlyingAsset(ticker string) *ListOptionsChainParams {
-	o.UnderlyingAsset = ticker
-	return &o
-}
-
 // WithStrikePrice sets strike price to params. Strike Price is the price at which a put or call option can be exercised.
 func (o ListOptionsChainParams) WithStrikePrice(strikePrice float64) *ListOptionsChainParams {
 	o.StrikePrice = &strikePrice
