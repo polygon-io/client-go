@@ -72,7 +72,7 @@ func (p GetGainersLosersSnapshotParams) WithIncludeOTC(q bool) *GetGainersLosers
 // ListOptionsChainParams is a set of parameters for the ListOptionsChainSnapshot method.
 type ListOptionsChainParams struct {
 	// The underlying ticker symbol of the option contract.
-	Ticker string `validate:"required" path:"underlyingAsset"`
+	UnderlyingAsset string `validate:"required" path:"underlyingAsset"`
 
 	// The strike price of the option contract.
 	StrikePrice *float64 `query:"string_price"`
@@ -99,7 +99,7 @@ type ListOptionsChainParams struct {
 
 // WithTicker sets underlying ticker symbol to params
 func (o ListOptionsChainParams) WithTicker(ticker string) *ListOptionsChainParams {
-	o.Ticker = ticker
+	o.UnderlyingAsset = ticker
 	return &o
 }
 

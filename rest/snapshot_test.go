@@ -404,7 +404,7 @@ func TestListOptionsChainSnapshot(t *testing.T) {
 	registerResponder("https://api.polygon.io/v3/snapshot/options/AAPL", expectedResponse)
 	registerResponder("https://api.polygon.io/v3/snapshot/options/AAPL?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
 
-	iter := c.ListOptionsChainSnapshot(context.Background(), &models.ListOptionsChainParams{Ticker: "AAPL"})
+	iter := c.ListOptionsChainSnapshot(context.Background(), &models.ListOptionsChainParams{UnderlyingAsset: "AAPL"})
 
 	// iter creation
 	assert.Nil(t, iter.Err())
