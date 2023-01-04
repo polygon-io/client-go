@@ -97,8 +97,8 @@ type ListOptionsChainParams struct {
 	Order *Order `query:"order"`
 }
 
-// WithTicker sets underlying ticker symbol to params
-func (o ListOptionsChainParams) WithTicker(ticker string) *ListOptionsChainParams {
+// WithUnderlyingAsset the underlying ticker symbol of the option contract.
+func (o ListOptionsChainParams) WithUnderlyingAsset(ticker string) *ListOptionsChainParams {
 	o.UnderlyingAsset = ticker
 	return &o
 }
