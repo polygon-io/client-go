@@ -19,9 +19,9 @@ const (
 type ContractType string
 
 const (
-	ContractTypeCall  ContractType = "call"
-	ContractTypePut   ContractType = "put"
-	ContractTypeOther ContractType = "other"
+	ContractCall  ContractType = "call"
+	ContractPut   ContractType = "put"
+	ContractOther ContractType = "other"
 )
 
 // Locale is the market location.

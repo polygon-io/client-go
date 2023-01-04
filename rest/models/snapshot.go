@@ -69,63 +69,58 @@ func (p GetGainersLosersSnapshotParams) WithIncludeOTC(q bool) *GetGainersLosers
 	return &p
 }
 
-// GetOptionsChainParams is a set of parameters for the GetOptionsChainSnapshot method.
-type GetOptionsChainParams struct {
+// ListOptionsChainParams is a set of parameters for the ListOptionsChainSnapshot method.
+type ListOptionsChainParams struct {
 	// The ticker for the option contract.
-	Ticker *string `validate:"required" path:"underlyingAsset"`
+	Ticker string `validate:"required" path:"underlyingAsset"`
 
 	// The strike price of the option contract.
-	StrikePrice *string `query:"string_price"`
+	StrikePrice *float64 `query:"string_price"`
 
-	// The type of contract. Can be ContractTypeCall, ContractTypePut, or in some rare cases, ContractTypeOther.
+	// The type of contract. Can be ContractCall, ContractPut, or in some rare cases, ContractOther.
 	ContractType *ContractType `query:"contract_type"`
 
 	// The contract's expiration date in YYYY-MM-DD format.
-	ExpirationDateEQ  *string `query:"expiration_date"`
-	ExpirationDateLT  *string `query:"expiration_date.lt"`
-	ExpirationDateLTE *string `query:"expiration_date.lte"`
-	ExpirationDateGT  *string `query:"expiration_date.gt"`
-	ExpirationDateGTE *string `query:"expiration_date.gte"`
+	ExpirationDateEQ  *Date `query:"expiration_date"`
+	ExpirationDateLT  *Date `query:"expiration_date.lt"`
+	ExpirationDateLTE *Date `query:"expiration_date.lte"`
+	ExpirationDateGT  *Date `query:"expiration_date.gt"`
+	ExpirationDateGTE *Date `query:"expiration_date.gte"`
 
-	Limit *int   `query:"Limit"`
+	Limit *int   `query:"limit"`
 	Sort  *Sort  `query:"sort"`
 	Order *Order `query:"order"`
 }
 
-// NewGetOptionsChainParams will return a pointer to GetOptionsChainParams.
-func NewGetOptionsChainParams(ticker string) *GetOptionsChainParams {
-	return &GetOptionsChainParams{Ticker: &ticker}
-}
-
 // WithTicker sets underlying ticker symbol to params
-func (o *GetOptionsChainParams) WithTicker(ticker string) *GetOptionsChainParams {
-	o.Ticker = &ticker
-	return o
+func (o ListOptionsChainParams) WithTicker(ticker string) *ListOptionsChainParams {
+	o.Ticker = ticker
+	return &o
 }
 
 // WithStrikePrice sets strike price to params. Strike Price is the price at which a put or call option can be exercised.
-func (o *GetOptionsChainParams) WithStrikePrice(strikePrice string) *GetOptionsChainParams {
+func (o ListOptionsChainParams) WithStrikePrice(strikePrice float64) *ListOptionsChainParams {
 	o.StrikePrice = &strikePrice
-	return o
+	return &o
 }
 
 // WithContractType sets contract type to params.
-// contractType options include ContractTypeCall and ContractTypePut.
-func (o *GetOptionsChainParams) WithContractType(contractType ContractType) *GetOptionsChainParams {
+// contractType options include ContractCall and ContractPut.
+func (o ListOptionsChainParams) WithContractType(contractType ContractType) *ListOptionsChainParams {
 	o.ContractType = &contractType
-	return o
+	return &o
 }
 
 // WithLimit sets number of results returned. Limit default is 10. Limit must fall in range of 0-1000.
-func (o *GetOptionsChainParams) WithLimit(limit int) *GetOptionsChainParams {
+func (o ListOptionsChainParams) WithLimit(limit int) *ListOptionsChainParams {
 	o.Limit = &limit
-	return o
+	return &o
 }
 
 // WithExpirationDate sets expiration_date query parameter.
 // comparator options include EQ, LT, LTE, GT, and GTE.
 // expirationDate should be in YYYY-MM-DD format
-func (o *GetOptionsChainParams) WithExpirationDate(comparator Comparator, expirationDate string) *GetOptionsChainParams {
+func (o ListOptionsChainParams) WithExpirationDate(comparator Comparator, expirationDate Date) *ListOptionsChainParams {
 	switch comparator {
 	case EQ:
 		o.ExpirationDateEQ = &expirationDate
@@ -140,22 +135,17 @@ func (o *GetOptionsChainParams) WithExpirationDate(comparator Comparator, expira
 	default:
 		o.ExpirationDateEQ = &expirationDate
 	}
-	return o
+	return &o
 }
 
 // WithOrder sets order of results based on the Sort field.
-func (o *GetOptionsChainParams) WithOrder(order Order) *GetOptionsChainParams {
-	switch order {
-	case Asc:
-		o.Order = &order
-	case Desc:
-		o.Order = &order
-	}
-	return o
+func (o ListOptionsChainParams) WithOrder(order Order) *ListOptionsChainParams {
+	o.Order = &order
+	return &o
 }
 
 // WithSort sets sort field. Sort expects to receive TickerSymbol, ExpirationDate, or StrikePrice as an argument.
-func (o *GetOptionsChainParams) WithSort(sort Sort) *GetOptionsChainParams {
+func (o ListOptionsChainParams) WithSort(sort Sort) *ListOptionsChainParams {
 	switch sort {
 	case TickerSymbol:
 		o.Sort = &sort
@@ -164,23 +154,12 @@ func (o *GetOptionsChainParams) WithSort(sort Sort) *GetOptionsChainParams {
 	case StrikePrice:
 		o.Sort = &sort
 	}
-	return o
+	return &o
 }
 
-type GetOptionsChainSnapshotResponse struct {
+type ListOptionsChainSnapshotResponse struct {
 	BaseResponse
-	Results []OptionsChainSnapshot `json:"results,omitempty"`
-}
-
-type OptionsChainSnapshot struct {
-	Day               DaySnapshot     `json:"day,omitempty"`
-	Details           OptionDetails   `json:"details,omitempty"`
-	Greeks            Greeks          `json:"greeks,omitempty"`
-	LastQuote         LastQuote       `json:"last_quote,omitempty"`
-	UnderlyingAsset   UnderlyingAsset `json:"underlying_asset,omitempty"`
-	ImpliedVolatility *float64        `json:"implied_volatility,omitempty"`
-	OpenInterest      *float64        `json:"open_interest,omitempty"`
-	BreakEvenPrice    *float64        `json:"break_even_price,omitempty"`
+	Results []OptionContractSnapshot `json:"results,omitempty"`
 }
 
 // GetGainersLosersSnapshotResponse is the response returned by the GetGainersLosersSnapshot method.
@@ -246,7 +225,7 @@ type LastQuoteSnapshot struct {
 	Timestamp Nanos   `json:"t,omitempty"`
 }
 
-// LastQuoteSnapshot is the most recent trade for a ticker.
+// LastTradeSnapshot is the most recent trade for a ticker.
 type LastTradeSnapshot struct {
 	Conditions []int   `json:"c,omitempty"`
 	TradeID    string  `json:"i,omitempty"`
@@ -256,7 +235,7 @@ type LastTradeSnapshot struct {
 	ExchangeID int     `json:"x,omitempty"`
 }
 
-// DaySnapshot is the most recent minute agg for a ticker.
+// MinuteSnapshot is the most recent minute agg for a ticker.
 type MinuteSnapshot struct {
 	AccumulatedVolume     int     `json:"av,omitempty"`
 	Close                 float64 `json:"c,omitempty"`
