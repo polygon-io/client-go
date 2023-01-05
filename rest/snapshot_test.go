@@ -3,12 +3,11 @@ package polygon_test
 import (
 	"context"
 	"encoding/json"
-	"testing"
-
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 var snapshot1 = `{
@@ -259,6 +258,185 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 	err = json.Unmarshal([]byte(expectedResponse), &expect)
 	assert.Nil(t, err)
 	assert.Equal(t, &expect, res)
+}
+
+func TestListOptionsChainSnapshot(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	chain1 := `{
+		"break_even_price": 162.375,
+		"day": {
+		"change": 0,
+			"change_percent": 0,
+			"close": 79.35,
+			"high": 79.35,
+			"last_updated": 1672434000000,
+			"low": 79.3,
+			"open": 79.3,
+			"previous_close": 79.35,
+			"volume": 22,
+			"vwap": 79.325
+		},
+		"details": {
+			"contract_type": "call",
+			"exercise_style": "american",
+			"expiration_date": "2023-01-06",
+			"shares_per_contract": 100,
+			"strike_price": 50,
+			"ticker": "O:AAPL230106C00050000"
+		},
+		"greeks": {},
+		"last_quote": {
+			"ask": 75.05,
+			"ask_size": 48,
+			"bid": 74.85,
+			"bid_size": 43,
+			"last_updated": 1672775256862312000,
+			"midpoint": 112.375,
+			"timeframe": "DELAYED"
+		},
+		"open_interest": 5,
+		"underlying_asset": {
+			"change_to_break_even": 37.435,
+			"last_updated": 1672775257417223400,
+			"price": 124.94,
+			"ticker": "AAPL",
+			"timeframe": "DELAYED"
+		}
+	}`
+	chain2 := `{
+		"break_even_price": 162.375,
+		"day": {
+		"change": 0,
+			"change_percent": 0,
+			"close": 79.35,
+			"high": 79.35,
+			"last_updated": 1672434000000,
+			"low": 79.3,
+			"open": 79.3,
+			"previous_close": 79.35,
+			"volume": 22,
+			"vwap": 79.325
+		},
+		"details": {
+			"contract_type": "call",
+			"exercise_style": "american",
+			"expiration_date": "2023-01-06",
+			"shares_per_contract": 100,
+			"strike_price": 50,
+			"ticker": "O:AAPL230106C00050000"
+		},
+		"greeks": {},
+		"last_quote": {
+			"ask": 75.05,
+			"ask_size": 48,
+			"bid": 74.85,
+			"bid_size": 43,
+			"last_updated": 1672775256862312000,
+			"midpoint": 112.375,
+			"timeframe": "DELAYED"
+		},
+		"open_interest": 5,
+		"underlying_asset": {
+			"change_to_break_even": 37.435,
+			"last_updated": 1672775257417223400,
+			"price": 124.94,
+			"ticker": "AAPL",
+			"timeframe": "DELAYED"
+		}
+	}`
+	chain3 := `{
+		"break_even_price": 162.375,
+		"day": {
+		"change": 0,
+			"change_percent": 0,
+			"close": 79.35,
+			"high": 79.35,
+			"last_updated": 1672434000000,
+			"low": 79.3,
+			"open": 79.3,
+			"previous_close": 79.35,
+			"volume": 22,
+			"vwap": 79.325
+		},
+		"details": {
+			"contract_type": "call",
+			"exercise_style": "american",
+			"expiration_date": "2023-01-06",
+			"shares_per_contract": 100,
+			"strike_price": 50,
+			"ticker": "O:AAPL230106C00050000"
+		},
+		"greeks": {},
+		"last_quote": {
+			"ask": 75.05,
+			"ask_size": 48,
+			"bid": 74.85,
+			"bid_size": 43,
+			"last_updated": 1672775256862312000,
+			"midpoint": 112.375,
+			"timeframe": "DELAYED"
+		},
+		"open_interest": 5,
+		"underlying_asset": {
+			"change_to_break_even": 37.435,
+			"last_updated": 1672775257417223400,
+			"price": 124.94,
+			"ticker": "AAPL",
+			"timeframe": "DELAYED"
+		}
+	}`
+
+	expectedResponse := `{
+	  "results": [
+		` + indent(true, chain1, "\t\t") + `,
+		` + indent(true, chain2, "\t\t") + `,
+		` + indent(true, chain3, "\t\t") + `
+	  ],
+	  "status": "OK",
+	  "request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+	  "next_url": "https://api.polygon.io/v3/snapshot/options/AAPL?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+	}`
+
+	registerResponder("https://api.polygon.io/v3/snapshot/options/AAPL", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/snapshot/options/AAPL?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
+
+	iter := c.ListOptionsChainSnapshot(context.Background(), &models.ListOptionsChainParams{UnderlyingAsset: "AAPL"})
+
+	// iter creation
+	assert.Nil(t, iter.Err())
+	assert.NotNil(t, iter.Item())
+
+	// first item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	var expect1 models.OptionContractSnapshot
+	err := json.Unmarshal([]byte(chain1), &expect1)
+	assert.Nil(t, err)
+	assert.Equal(t, expect1, iter.Item())
+
+	// second item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	var expect2 models.OptionContractSnapshot
+	err = json.Unmarshal([]byte(chain2), &expect2)
+	assert.Nil(t, err)
+	assert.Equal(t, expect2, iter.Item())
+
+	// third item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	var expect3 models.OptionContractSnapshot
+	err = json.Unmarshal([]byte(chain3), &expect3)
+	assert.Nil(t, err)
+	assert.Equal(t, expect3, iter.Item())
+
+	// end of list
+	assert.False(t, iter.Next())
+	assert.Nil(t, iter.Err())
 }
 
 func TestGetCryptoFullBookSnapshot(t *testing.T) {

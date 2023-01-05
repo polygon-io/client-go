@@ -69,6 +69,98 @@ func (p GetGainersLosersSnapshotParams) WithIncludeOTC(q bool) *GetGainersLosers
 	return &p
 }
 
+// ListOptionsChainParams is a set of parameters for the ListOptionsChainSnapshot method.
+type ListOptionsChainParams struct {
+	// The underlying ticker symbol of the option contract.
+	UnderlyingAsset string `validate:"required" path:"underlyingAsset"`
+
+	// The strike price of the option contract.
+	StrikePrice *float64 `query:"strike_price"`
+
+	// The type of contract. Can be ContractCall, ContractPut, or in some rare cases, ContractOther.
+	ContractType *ContractType `query:"contract_type"`
+
+	// The contract's expiration date in YYYY-MM-DD format.
+	ExpirationDateEQ  *Date `query:"expiration_date"`
+	ExpirationDateLT  *Date `query:"expiration_date.lt"`
+	ExpirationDateLTE *Date `query:"expiration_date.lte"`
+	ExpirationDateGT  *Date `query:"expiration_date.gt"`
+	ExpirationDateGTE *Date `query:"expiration_date.gte"`
+
+	// Limit the number of results returned, default is 10 and max is 1000.
+	Limit *int `query:"limit"`
+
+	// Sort field used for ordering.
+	Sort *Sort `query:"sort"`
+
+	// Order results based on the sort field.
+	Order *Order `query:"order"`
+}
+
+// WithStrikePrice sets strike price to params. Strike Price is the price at which a put or call option can be exercised.
+func (o ListOptionsChainParams) WithStrikePrice(strikePrice float64) *ListOptionsChainParams {
+	o.StrikePrice = &strikePrice
+	return &o
+}
+
+// WithContractType sets contract type to params.
+// contractType options include ContractCall and ContractPut.
+func (o ListOptionsChainParams) WithContractType(contractType ContractType) *ListOptionsChainParams {
+	o.ContractType = &contractType
+	return &o
+}
+
+// WithLimit sets number of results returned. Limit default is 10. Limit must fall in range of 0-1000.
+func (o ListOptionsChainParams) WithLimit(limit int) *ListOptionsChainParams {
+	o.Limit = &limit
+	return &o
+}
+
+// WithExpirationDate sets expiration_date query parameter.
+// comparator options include EQ, LT, LTE, GT, and GTE.
+// expirationDate should be in YYYY-MM-DD format
+func (o ListOptionsChainParams) WithExpirationDate(comparator Comparator, expirationDate Date) *ListOptionsChainParams {
+	switch comparator {
+	case EQ:
+		o.ExpirationDateEQ = &expirationDate
+	case LT:
+		o.ExpirationDateLT = &expirationDate
+	case LTE:
+		o.ExpirationDateLTE = &expirationDate
+	case GT:
+		o.ExpirationDateGT = &expirationDate
+	case GTE:
+		o.ExpirationDateGTE = &expirationDate
+	default:
+		o.ExpirationDateEQ = &expirationDate
+	}
+	return &o
+}
+
+// WithOrder sets order of results based on the Sort field.
+func (o ListOptionsChainParams) WithOrder(order Order) *ListOptionsChainParams {
+	o.Order = &order
+	return &o
+}
+
+// WithSort sets sort field. Sort expects to receive TickerSymbol, ExpirationDate, or StrikePrice as an argument.
+func (o ListOptionsChainParams) WithSort(sort Sort) *ListOptionsChainParams {
+	switch sort {
+	case TickerSymbol:
+		o.Sort = &sort
+	case ExpirationDate:
+		o.Sort = &sort
+	case StrikePrice:
+		o.Sort = &sort
+	}
+	return &o
+}
+
+type ListOptionsChainSnapshotResponse struct {
+	BaseResponse
+	Results []OptionContractSnapshot `json:"results,omitempty"`
+}
+
 // GetGainersLosersSnapshotResponse is the response returned by the GetGainersLosersSnapshot method.
 type GetGainersLosersSnapshotResponse struct {
 	BaseResponse
@@ -132,7 +224,7 @@ type LastQuoteSnapshot struct {
 	Timestamp Nanos   `json:"t,omitempty"`
 }
 
-// LastQuoteSnapshot is the most recent trade for a ticker.
+// LastTradeSnapshot is the most recent trade for a ticker.
 type LastTradeSnapshot struct {
 	Conditions []int   `json:"c,omitempty"`
 	TradeID    string  `json:"i,omitempty"`
@@ -142,7 +234,7 @@ type LastTradeSnapshot struct {
 	ExchangeID int     `json:"x,omitempty"`
 }
 
-// DaySnapshot is the most recent minute agg for a ticker.
+// MinuteSnapshot is the most recent minute agg for a ticker.
 type MinuteSnapshot struct {
 	AccumulatedVolume     int     `json:"av,omitempty"`
 	Close                 float64 `json:"c,omitempty"`

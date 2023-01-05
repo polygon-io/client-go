@@ -15,6 +15,15 @@ const (
 	Crypto MarketType = "crypto"
 )
 
+// ContractType is the type of contract.
+type ContractType string
+
+const (
+	ContractCall  ContractType = "call"
+	ContractPut   ContractType = "put"
+	ContractOther ContractType = "other"
+)
+
 // Locale is the market location.
 type MarketLocale string
 
@@ -57,6 +66,8 @@ const (
 	LastUpdatedUTC     Sort = "last_updated_utc"
 	DelistedUTC        Sort = "delisted_utc"
 	Timestamp          Sort = "timestamp"
+	StrikePrice        Sort = "strike_price"
+	ExpirationDate     Sort = "expiration_date"
 )
 
 // Order the results. asc will return results in ascending order (oldest at the top), desc will return results in

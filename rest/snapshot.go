@@ -2,6 +2,7 @@ package polygon
 
 import (
 	"context"
+	"github.com/polygon-io/client-go/rest/iter"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/client"
@@ -13,12 +14,33 @@ const (
 	GetTickerSnapshotPath         = "/v2/snapshot/locale/{locale}/markets/{marketType}/tickers/{ticker}"
 	GetGainersLosersSnapshotPath  = "/v2/snapshot/locale/{locale}/markets/{marketType}/{direction}"
 	GetOptionContractSnapshotPath = "/v3/snapshot/options/{underlyingAsset}/{optionContract}"
+	ListOptionsChainSnapshotPath  = "/v3/snapshot/options/{underlyingAsset}"
 	GetCryptoFullBookSnapshotPath = "/v2/snapshot/locale/global/markets/crypto/tickers/{ticker}/book"
 )
 
 // SnapshotClient defines a REST client for the Polygon snapshot API.
 type SnapshotClient struct {
 	client.Client
+}
+
+// ListOptionsChainSnapshot retrieves the snapshot of all options contracts for an underlying ticker. For more details see
+// https://polygon.io/docs/options/get_v3_snapshot_options__underlyingasset.
+//
+// This method returns an iterator that should be used to access the results via this pattern:
+//
+//	iter := c.ListOptionsChainSnapshot(context.TODO(), params, opts...)
+//	for iter.Next() {
+//		log.Print(iter.Item()) // do something with the current value
+//	}
+//	if iter.Err() != nil {
+//		return iter.Err()
+//	}
+func (ac *SnapshotClient) ListOptionsChainSnapshot(ctx context.Context, params *models.ListOptionsChainParams, options ...models.RequestOption) *iter.Iter[models.OptionContractSnapshot] {
+	return iter.NewIter(ctx, ListOptionsChainSnapshotPath, params, func(uri string) (iter.ListResponse, []models.OptionContractSnapshot, error) {
+		res := &models.ListOptionsChainSnapshotResponse{}
+		err := ac.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
 }
 
 // GetAllTickersSnapshot gets the current minute, day, and previous day's aggregate, as well as the last trade and quote
