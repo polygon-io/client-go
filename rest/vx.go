@@ -18,7 +18,7 @@ type VXClient struct {
 	client.Client
 }
 
-// Get historical financial data for a stock ticker. The financials data is extracted from XBRL from company SEC filings
+// ListStockFinancials retrieves historical financial data for a stock ticker. The financials data is extracted from XBRL from company SEC filings
 // using the methodology outlined here: http://xbrl.squarespace.com/understanding-sec-xbrl-financi/.
 //
 // Note: this method utilizes an experimental API and could experience breaking changes or deprecation.
