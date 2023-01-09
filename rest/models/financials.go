@@ -1,6 +1,6 @@
 package models
 
-// ListStockFinancialsParams is the set of parameters for the ListFinancials method.
+// ListStockFinancialsParams is the set of parameters for the ListStockFinancials method.
 type ListStockFinancialsParams struct {
 	// Query by company ticker.
 	Ticker *string `query:"ticker"`
