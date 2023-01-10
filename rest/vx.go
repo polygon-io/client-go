@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	ListFinancialsPath = "/vX/reference/financials"
+	ListFinancialsPath  = "/vX/reference/financials"
+	GetTickerEventsPath = "/vX/reference/tickers/{id}/events"
 )
 
 // VXClient defines a REST client for the Polygon VX (experimental) API.
@@ -38,4 +39,12 @@ func (c *VXClient) ListStockFinancials(ctx context.Context, params *models.ListS
 		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 		return res, res.Results, err
 	})
+}
+
+// GetTickerEvents retrieves a timeline of events for the entity associated with the given ticker, CUSIP, or Composite FIGI.
+// // For more details see https://polygon.io/docs/stocks/get_vx_reference_tickers__id__events.
+func (c *VXClient) GetTickerEvents(ctx context.Context, params *models.GetTickerEventsParams, options ...models.RequestOption) (*models.GetTickerEventsResponse, error) {
+	res := &models.GetTickerEventsResponse{}
+	err := c.Call(ctx, http.MethodGet, GetTickerEventsPath, params, res, options...)
+	return res, err
 }

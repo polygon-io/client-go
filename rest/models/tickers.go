@@ -1,5 +1,7 @@
 package models
 
+import "strings"
+
 // ListTickersParams is the set of parameters for the ListTickers method.
 type ListTickersParams struct {
 	// Specify a ticker symbol. Defaults to empty string which queries all tickers.
@@ -346,4 +348,47 @@ type TickerType struct {
 	Code        string `json:"code,omitempty"`
 	Description string `json:"description,omitempty"`
 	Locale      string `json:"locale,omitempty"`
+}
+
+// GetTickerEventsParams is the set of parameters for the GetTickerEvents method.
+type GetTickerEventsParams struct {
+	// ID Identifier of an asset. This can currently be a Ticker, CUSIP, or Composite FIGI.
+	// When given a ticker, we return events for the entity currently represented by that ticker.
+	// To find events for entities previously associated with a ticker, find the relevant identifier
+	// using the Ticker Details Endpoint (https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker).
+	ID string `validate:"required" path:"id"`
+
+	// A comma-separated list of the types of event to include. Currently, ticker_change is the only supported event_type. Leave blank to return all supported event_types.
+	Types *string `query:"types"`
+}
+
+func (p GetTickerEventsParams) WithTypes(types ...string) *GetTickerEventsParams {
+	q := strings.Join(types, ",")
+	p.Types = &q
+	return &p
+}
+
+// GetTickerEventsResponse is the response returned by the GetTickerEvents method.
+type GetTickerEventsResponse struct {
+	BaseResponse
+	Results []TickerEventResult `json:"results,omitempty"`
+}
+
+// TickerEventResult is the data for a ticker event.
+type TickerEventResult struct {
+	// Name is the company name.
+	Name   string        `json:"name"`
+	Events []TickerEvent `json:"events"`
+}
+
+// TickerEvent contains the data for the different type of ticker events that could occur.
+type TickerEvent struct {
+	Date         string             `json:"date"`
+	Type         string             `json:"type"`
+	TickerChange *TickerChangeEvent `json:"ticker_change,omitempty"`
+}
+
+// TickerChangeEvent represents the data relevant to a ticker_change typed event.
+type TickerChangeEvent struct {
+	Ticker string `json:"ticker"`
 }

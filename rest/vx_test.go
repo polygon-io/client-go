@@ -3,6 +3,7 @@ package polygon_test
 import (
 	"context"
 	"encoding/json"
+	"github.com/stretchr/testify/require"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -352,4 +353,54 @@ func TestListStockFinancials(t *testing.T) {
 	// end of list
 	assert.False(t, iter.Next())
 	assert.Nil(t, iter.Err())
+}
+
+
+func TestGetTickerEvents(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	events := `
+	{
+	  "events": [
+		{
+		  "date": "2022-06-09",
+		  "ticker_change": {
+			"ticker": "META"
+		  },
+		  "type": "ticker_change"
+		},
+		{
+		  "date": "2012-05-18",
+		  "ticker_change": {
+			"ticker": "FB"
+		  },
+		  "type": "ticker_change"
+		}
+	  ],
+	  "name": "Meta Platforms, Inc. Class A Common Stock"
+	}
+	`
+
+	expectedResponse := `{
+	"status": "OK",
+	"request_id":"874d62dbbce4b437bde7885d44a6be36",
+	"count":1,
+	"next_url":"https://api.polygon.io/vX/reference/financials?cursor=YXA9MjAyMjA0MDMmYXM9MDAwMDg5MTAxNC0yMi0wMDAwMjImaGFzX3hicmw9dHJ1ZSZsaW1pdD0xJnNvcnQ9cGVyaW9kX29mX3JlcG9ydF9kYXRlJnR5cGU9MTAtUQ",
+	"results": [
+` + indent(true, events, "\t\t") + `
+	]
+}`
+
+	registerResponder("https://api.polygon.io/vX/reference/tickers/META/events", expectedResponse)
+
+	res, err := c.VX.GetTickerEvents(context.Background(), &models.GetTickerEventsParams{ID: "META"})
+	require.NoError(t, err)
+
+	var expect models.GetTickerEventsResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
+	assert.Nil(t, err)
+	assert.Equal(t, &expect, res)
 }
