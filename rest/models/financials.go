@@ -52,7 +52,7 @@ type ListStockFinancialsParams struct {
 	// Order results based on the sort field.
 	Order *Order `query:"order"`
 
-	// Limit the number of results returned, default is 1 and max is 100.
+	// Limit the number of results returned, default is 10 and max is 100.
 	Limit *int `query:"limit"`
 
 	// Sort field used for ordering.
