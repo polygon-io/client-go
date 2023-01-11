@@ -355,7 +355,6 @@ func TestListStockFinancials(t *testing.T) {
 	assert.Nil(t, iter.Err())
 }
 
-
 func TestGetTickerEvents(t *testing.T) {
 	c := polygon.New("API_KEY")
 
