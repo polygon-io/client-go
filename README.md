@@ -4,7 +4,7 @@
 <!-- todo: figure out a way to show all build statuses -->
 <!-- todo: consider moving some stuff into separate readmes -->
 
-[![docs][doc-img]][doc] [![Build][build-img]][build]
+[![docs][doc-img]][doc] [![Build][build-img]][build] [![Go Report Card][report-card]][report-card]
 
 The official Go client library for the [Polygon](https://polygon.io/) REST and WebSocket API.
 
@@ -210,3 +210,5 @@ If you found a bug or have an idea for a new feature, please first discuss it wi
 [ws-doc]: https://pkg.go.dev/github.com/polygon-io/client-go/websocket
 [build-img]: https://github.com/polygon-io/client-go/actions/workflows/test.yml/badge.svg
 [build]: https://github.com/polygon-io/client-go/actions
+[report-card-img]: https://goreportcard.com/badge/github.com/polygon-io/client-go
+[report-card]: https://goreportcard.com/report/github.com/polygon-io/client-go
