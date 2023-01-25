@@ -4,7 +4,7 @@
 <!-- todo: figure out a way to show all build statuses -->
 <!-- todo: consider moving some stuff into separate readmes -->
 
-[![docs][doc-img]][doc] [![Build][build-img]][build] [![Go Report Card][report-card]][report-card]
+[![docs][doc-img]][doc] [![Build][build-img]][build] [![Go Report Card][report-card-img]][report-card]
 
 The official Go client library for the [Polygon](https://polygon.io/) REST and WebSocket API.
 
