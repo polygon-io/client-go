@@ -236,7 +236,7 @@ type LastTradeSnapshot struct {
 
 // MinuteSnapshot is the most recent minute agg for a ticker.
 type MinuteSnapshot struct {
-	AccumulatedVolume     int     `json:"av,omitempty"`
+	AccumulatedVolume     float64 `json:"av,omitempty"`
 	Close                 float64 `json:"c,omitempty"`
 	High                  float64 `json:"h,omitempty"`
 	Low                   float64 `json:"l,omitempty"`
