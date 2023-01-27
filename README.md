@@ -43,12 +43,11 @@ c := polygon.NewWithClient("YOUR_API_KEY", hc)
 After creating the client, making calls to the Polygon API is simple.
 
 ```golang
-params := models.GetAllTickersSnapshotParams{
-    Locale:     models.US,
-    MarketType: models.Stocks,
-}.WithTickers("AAPL,MSFT")
+params := models.GetTickerDetailsParams{
+    Ticker: "AAPL",
+}.WithDate(models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.Local)))
 
-res, err := c.GetAllTickersSnapshot(context.Background(), params)
+res, err := c.GetTickerDetails(context.Background(), params)
 if err != nil {
     log.Fatal(err)
 }
