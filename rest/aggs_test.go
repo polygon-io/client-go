@@ -15,38 +15,87 @@ import (
 )
 
 const (
-	expectedAggsResponseURL = "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
-	expectedAggsResponse    = `{
+	expectedAggsResponseURL = "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&limit=2&sort=desc"
+
+	agg1 = `{
+	"v": 135647456,
+	"vw": 74.6099,
+	"o": 74.06,
+	"c": 75.0875,
+	"h": 75.15,
+	"l": 73.7975,
+	"t": 1577941200000,
+	"n": 1
+}`
+
+	agg2 = `{
+	"v": 146535512,
+	"vw": 74.7026,
+	"o": 74.2875,
+	"c": 74.3575,
+	"h": 75.145,
+	"l": 74.125,
+	"t": 1578027600000,
+	"n": 1
+}`
+)
+
+var (
+	expectedAggsResponse = `{
 	"status": "OK",
 	"request_id": "6a7e466379af0a71039d60cc78e72282",
+	"next_url": "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?cursor=AGGSCURSOR",
 	"ticker": "AAPL",
 	"queryCount": 2,
 	"resultsCount": 2,
 	"adjusted": true,
 	"results": [
-		{
-			"v": 135647456,
-			"vw": 74.6099,
-			"o": 74.06,
-			"c": 75.0875,
-			"h": 75.15,
-			"l": 73.7975,
-			"t": 1577941200000,
-			"n": 1
-		},
-		{
-			"v": 146535512,
-			"vw": 74.7026,
-			"o": 74.2875,
-			"c": 74.3575,
-			"h": 75.145,
-			"l": 74.125,
-			"t": 1578027600000,
-			"n": 1
-		}
+` + indent(true, agg1, "\t\t") + `,
+` + indent(true, agg2, "\t\t") + `
 	]
 }`
 )
+
+func TestListAggs(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+	registerResponder(expectedAggsResponseURL, expectedAggsResponse)
+	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?cursor=AGGSCURSOR", "{}")
+
+	iter := c.ListAggs(context.Background(), models.ListAggsParams{
+		Ticker:     "AAPL",
+		Multiplier: 1,
+		Timespan:   "day",
+		From:       models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
+		To:         models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC)),
+	}.WithOrder(models.Desc).WithLimit(2).WithAdjusted(true))
+
+	// iter creation
+	assert.Nil(t, iter.Err())
+	assert.NotNil(t, iter.Item())
+
+	// first item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	var expect1 models.Agg
+	err := json.Unmarshal([]byte(agg1), &expect1)
+	assert.Nil(t, err)
+	assert.Equal(t, expect1, iter.Item())
+
+	// second item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	var expect2 models.Agg
+	err = json.Unmarshal([]byte(agg2), &expect2)
+	assert.Nil(t, err)
+	assert.Equal(t, expect2, iter.Item())
+
+	// end of list
+	assert.False(t, iter.Next())
+	assert.Nil(t, iter.Err())
+}
 
 func TestGetAggs(t *testing.T) {
 	c := polygon.New("API_KEY")
@@ -61,7 +110,7 @@ func TestGetAggs(t *testing.T) {
 		Timespan:   "day",
 		From:       models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
 		To:         models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC)),
-	}.WithOrder(models.Desc).WithLimit(1).WithAdjusted(true))
+	}.WithOrder(models.Desc).WithLimit(2).WithAdjusted(true))
 	assert.Nil(t, err)
 
 	var expect models.GetAggsResponse
@@ -83,7 +132,7 @@ func TestGetAggsWithQueryParam(t *testing.T) {
 		Timespan:   "day",
 		From:       models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC)),
 		To:         models.Millis(time.Date(2021, 8, 22, 0, 0, 0, 0, time.UTC)),
-	}.WithOrder(models.Desc).WithLimit(1), models.QueryParam("adjusted", "true"))
+	}.WithOrder(models.Desc).WithLimit(2), models.QueryParam("adjusted", "true"))
 	assert.Nil(t, err)
 
 	var expect models.GetAggsResponse

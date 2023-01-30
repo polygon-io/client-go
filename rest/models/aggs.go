@@ -1,5 +1,61 @@
 package models
 
+// ListAggsParams is the set of parameters for the ListAggs method.
+type ListAggsParams struct {
+	// The ticker symbol of the stock/equity.
+	Ticker string `validate:"required" path:"ticker"`
+
+	// The size of the timespan multiplier.
+	Multiplier int `validate:"required" path:"multiplier"`
+
+	// The size of the time window.
+	Timespan Timespan `validate:"required" path:"timespan"`
+
+	// The start of the aggregate time window. Either a date with the format YYYY-MM-DD or a millisecond timestamp.
+	From Millis `validate:"required" path:"from"`
+
+	// The end of the aggregate time window. Either a date with the format YYYY-MM-DD or a millisecond timestamp.
+	To Millis `validate:"required" path:"to"`
+
+	// Whether or not the results are adjusted for splits. By default, results are adjusted. Set this to false to get
+	// results that are NOT adjusted for splits.
+	Adjusted *bool `query:"adjusted"`
+
+	// Order the results by timestamp. asc will return results in ascending order (oldest at the top), desc will return
+	// results in descending order (newest at the top).
+	Order *Order `query:"sort"`
+
+	// Limits the number of base aggregates queried to create the aggregate results. Max 50000 and Default 5000. Read
+	// more about how limit is used to calculate aggregate results in our article on Aggregate Data API Improvements:
+	// https://polygon.io/blog/aggs-api-updates/.
+	Limit *int `query:"limit"`
+}
+
+func (p ListAggsParams) WithAdjusted(q bool) *ListAggsParams {
+	p.Adjusted = &q
+	return &p
+}
+
+func (p ListAggsParams) WithOrder(q Order) *ListAggsParams {
+	p.Order = &q
+	return &p
+}
+
+func (p ListAggsParams) WithLimit(q int) *ListAggsParams {
+	p.Limit = &q
+	return &p
+}
+
+// ListAggsResponse is the response returned by the ListAggs method.
+type ListAggsResponse struct {
+	BaseResponse
+	Ticker       string `json:"ticker,omitempty"`
+	QueryCount   int    `json:"queryCount,omitempty"`
+	ResultsCount int    `json:"resultsCount,omitempty"`
+	Adjusted     bool   `json:"adjusted"`
+	Results      []Agg  `json:"results,omitempty"`
+}
+
 // GetAggsParams is the set of parameters for the GetAggs method.
 type GetAggsParams struct {
 	// The ticker symbol of the stock/equity.

@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
 	"log"
 	"os"
 	"time"
+
+	polygon "github.com/polygon-io/client-go/rest"
+	"github.com/polygon-io/client-go/rest/models"
 )
 
 func main() {
@@ -16,7 +17,7 @@ func main() {
 func getAggregateBarsLaunchpad() {
 	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
 
-	params3 := &models.GetAggsParams{
+	params := &models.ListAggsParams{
 		Ticker:     "CORN",
 		Multiplier: 1,
 		Timespan:   models.Day,
@@ -24,12 +25,11 @@ func getAggregateBarsLaunchpad() {
 		To:         models.Millis(time.Now()),
 	}
 
-	res, err := c.GetAggs(context.Background(), params3,
-		models.RequiredEdgeHeaders("EDGE_USER_ID", "EDGE_USER_IP_ADDRESS"),
-		models.EdgeUserAgent("EDGE_USER_AGENT"),
-	)
-	if err != nil {
-		log.Fatal(err)
+	iter := c.ListAggs(context.TODO(), params)
+	for iter.Next() {
+		log.Print(iter.Item()) // do something with the current value
 	}
-	log.Print(res) // do something with the result
+	if iter.Err() != nil {
+		log.Fatal(iter.Err())
+	}
 }
