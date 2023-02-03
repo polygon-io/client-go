@@ -21,22 +21,22 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       - name: go-test
         run: |
           go test -v ./... -covermode=count -coverprofile=coverage.out
           go tool cover -func=coverage.out -o=coverage.out
-
       - name: go-coverage-badge  # Pass the `coverage.out` output to this action
         uses: tj-actions/coverage-badge-go@v2
         with:
           filename: coverage.out
-
       - name: verify-changed
         uses: tj-actions/verify-changed-files@v12
         id: verify-changed-files
         with:
           files: README.md
-
       - name: commit-changes
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         run: |
@@ -44,7 +44,6 @@ jobs:
           git config --local user.name "GitHub Action"
           git add README.md
           git commit -m "chore: Updated coverage badge."
-
       - name: push-changes
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         uses: ad-m/github-push-action@master
