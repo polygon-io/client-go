@@ -7,7 +7,7 @@ on:
       - master
   pull_request:
 permissions:
-  contents: read
+  contents: write
 jobs:
   test:
     strategy:
