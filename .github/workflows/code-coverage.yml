@@ -1,9 +1,8 @@
-name: Generate code coverage badge
-
+name: code_coverage
 on:
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   test:
