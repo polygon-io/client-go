@@ -1,4 +1,4 @@
-name: test
+name: code-coverage
 on:
   push:
     tags:
