@@ -304,7 +304,7 @@ type LastQuoteOptionContractSnapshot struct {
 }
 
 type LastTradeOptionContractSnapshot struct {
-	Timestamp  Nanos   `json:"ask,omitempty"`
+	Timestamp  Nanos   `json:"sip_timestamp,omitempty"`
 	Conditions []int32 `json:"conditions,omitempty"`
 	Price      float64 `json:"price,omitempty"`
 	Size       float64 `json:"size,omitempty"`
