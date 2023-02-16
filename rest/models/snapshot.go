@@ -255,6 +255,7 @@ type OptionContractSnapshot struct {
 	Greeks            Greeks                          `json:"greeks,omitempty"`
 	ImpliedVolatility float64                         `json:"implied_volatility,omitempty"`
 	LastQuote         LastQuoteOptionContractSnapshot `json:"last_quote,omitempty"`
+	LastTrade         LastTradeOptionContractSnapshot `json:"last_trade,omitempty"`
 	OpenInterest      float64                         `json:"open_interest,omitempty"`
 	UnderlyingAsset   UnderlyingAsset                 `json:"underlying_asset,omitempty"`
 }
@@ -300,6 +301,15 @@ type LastQuoteOptionContractSnapshot struct {
 	LastUpdated Nanos   `json:"last_updated,omitempty"`
 	Midpoint    float64 `json:"midpoint,omitempty"`
 	Timeframe   string  `json:"timeframe,omitempty"`
+}
+
+type LastTradeOptionContractSnapshot struct {
+	Timestamp  Nanos   `json:"sip_timestamp,omitempty"`
+	Conditions []int32 `json:"conditions,omitempty"`
+	Price      float64 `json:"price,omitempty"`
+	Size       float64 `json:"size,omitempty"`
+	Exchange   int32   `json:"exchange,omitempty"`
+	Timeframe  string  `json:"timeframe,omitempty"`
 }
 
 // UnderlyingAsset contains information on the underlying stock for this options contract.

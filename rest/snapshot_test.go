@@ -3,11 +3,12 @@ package polygon_test
 import (
 	"context"
 	"encoding/json"
+	"testing"
+
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 var snapshot1 = `{
@@ -236,6 +237,16 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 			"midpoint": 21.075,
 			"timeframe": "REAL-TIME"
 		},
+		"last_trade": {
+			"sip_timestamp": 1676573362154648300,
+			"conditions": [
+				209
+			],
+			"price": 110.9,
+			"size": 10,
+			"exchange": 308,
+			"timeframe": "REAL-TIME"
+		},
 		"open_interest": 8921,
 		"underlying_asset": {
 			"change_to_break_even": 23.123999999999995,
@@ -298,6 +309,16 @@ func TestListOptionsChainSnapshot(t *testing.T) {
 			"midpoint": 112.375,
 			"timeframe": "DELAYED"
 		},
+		"last_trade": {
+			"sip_timestamp": 1676573362154648300,
+			"conditions": [
+				209
+			],
+			"price": 110.9,
+			"size": 10,
+			"exchange": 308,
+			"timeframe": "REAL-TIME"
+		},
 		"open_interest": 5,
 		"underlying_asset": {
 			"change_to_break_even": 37.435,
@@ -339,6 +360,16 @@ func TestListOptionsChainSnapshot(t *testing.T) {
 			"midpoint": 112.375,
 			"timeframe": "DELAYED"
 		},
+		"last_trade": {
+			"sip_timestamp": 1676573362154648300,
+			"conditions": [
+				209
+			],
+			"price": 110.9,
+			"size": 10,
+			"exchange": 308,
+			"timeframe": "REAL-TIME"
+		},
 		"open_interest": 5,
 		"underlying_asset": {
 			"change_to_break_even": 37.435,
@@ -379,6 +410,16 @@ func TestListOptionsChainSnapshot(t *testing.T) {
 			"last_updated": 1672775256862312000,
 			"midpoint": 112.375,
 			"timeframe": "DELAYED"
+		},
+		"last_trade": {
+			"sip_timestamp": 1676573362154648300,
+			"conditions": [
+				209
+			],
+			"price": 110.9,
+			"size": 10,
+			"exchange": 308,
+			"timeframe": "REAL-TIME"
 		},
 		"open_interest": 5,
 		"underlying_asset": {
