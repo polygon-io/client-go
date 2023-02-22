@@ -161,11 +161,11 @@ type ListDividendsResponse struct {
 // Dividend contains detailed information on a specified stock dividend.
 type Dividend struct {
 	CashAmount      float64 `json:"cash_amount,omitempty"`
-	DeclarationDate string  `json:"declaration_date,omitempty"`
+	DeclarationDate Date    `json:"declaration_date,omitempty"`
 	DividendType    string  `json:"dividend_type,omitempty"`
 	ExDividendDate  string  `json:"ex_dividend_date,omitempty"`
 	Frequency       int64   `json:"frequency,omitempty"`
-	PayDate         string  `json:"pay_date,omitempty"`
-	RecordDate      string  `json:"record_date,omitempty"`
+	PayDate         Date    `json:"pay_date,omitempty"`
+	RecordDate      Date    `json:"record_date,omitempty"`
 	Ticker          string  `json:"ticker,omitempty"`
 }

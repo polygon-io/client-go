@@ -90,7 +90,7 @@ type ListSplitsResponse struct {
 
 // Split contains detailed information on a specified stock split.
 type Split struct {
-	ExecutionDate string  `json:"execution_date,omitempty"`
+	ExecutionDate Date    `json:"execution_date,omitempty"`
 	SplitFrom     float64 `json:"split_from,omitempty"`
 	SplitTo       float64 `json:"split_to,omitempty"`
 	Ticker        string  `json:"ticker,omitempty"`

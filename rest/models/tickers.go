@@ -383,7 +383,7 @@ type TickerEventResult struct {
 
 // TickerEvent contains the data for the different type of ticker events that could occur.
 type TickerEvent struct {
-	Date         string             `json:"date"`
+	Date         Date               `json:"date"`
 	Type         string             `json:"type"`
 	TickerChange *TickerChangeEvent `json:"ticker_change,omitempty"`
 }
