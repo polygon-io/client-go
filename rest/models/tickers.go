@@ -302,6 +302,7 @@ type Ticker struct {
 	TotalEmployees              int32          `json:"total_employees,omitempty"`
 	Type                        string         `json:"type,omitempty"`
 	WeightedSharesOutstanding   int64          `json:"weighted_shares_outstanding,omitempty"`
+	SourceFeed                  string         `json:"source_feed,omitempty"`
 }
 
 // CompanyAddress contains information on the physical address of a company.
