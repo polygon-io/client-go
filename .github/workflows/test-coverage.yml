@@ -40,4 +40,4 @@ jobs:
           git add README.md
           git commit -m "chore: Updated coverage badge."
           git fetch origin && git rebase origin/master
-          git push
+          git push --set-upstream origin $(git_current_branch)
