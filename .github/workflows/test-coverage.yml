@@ -39,6 +39,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add README.md
           git commit -m "chore: Updated coverage badge."
+          git fetch origin && git rebase origin/master
       - name: push-changes
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         uses: ad-m/github-push-action@master
