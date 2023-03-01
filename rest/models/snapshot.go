@@ -317,6 +317,7 @@ type UnderlyingAsset struct {
 	ChangeToBreakEven float64 `json:"change_to_break_even,omitempty"`
 	LastUpdated       int64   `json:"last_updated,omitempty"`
 	Price             float64 `json:"price,omitempty"`
+	Value             float64 `json:"value,omitempty"`
 	Ticker            string  `json:"ticker,omitempty"`
 	Timeframe         string  `json:"timeframe,omitempty"`
 }
