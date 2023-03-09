@@ -1,4 +1,4 @@
-// options - conditions
+// Options - Conditions
 // https://polygon.io/docs/options/get_v3_reference_conditions
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

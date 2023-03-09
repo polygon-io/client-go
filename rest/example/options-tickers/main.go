@@ -1,4 +1,4 @@
-// options - tickers
+// Options - Tickers
 // https://polygon.io/docs/options/get_v3_reference_tickers
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

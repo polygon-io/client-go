@@ -1,4 +1,4 @@
-// stocks - get last trade
+// Stocks - Last Trade
 // https://polygon.io/docs/stocks/get_v2_last_trade__stocksticker
 // https://github.com/polygon-io/client-go/blob/master/rest/trades.go
 package main

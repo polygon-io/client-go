@@ -1,4 +1,4 @@
-// stocks - Simple Moving Average (SMA)
+// Stocks - Simple Moving Average (SMA)
 // https://polygon.io/docs/stocks/get_v1_indicators_sma__stockticker
 // https://github.com/polygon-io/client-go/blob/master/rest/indicators.go
 package main

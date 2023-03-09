@@ -1,4 +1,4 @@
-// options - Moving Average Convergence/Divergence (MACD)
+// Options - Moving Average Convergence/Divergence (MACD)
 // https://polygon.io/docs/options/get_v1_indicators_macd__optionsticker
 // https://github.com/polygon-io/client-go/blob/master/rest/indicators.go
 package main

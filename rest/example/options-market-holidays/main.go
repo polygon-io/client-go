@@ -1,4 +1,4 @@
-// options - market holidays
+// Options - Market Holidays
 // https://polygon.io/docs/options/get_v1_marketstatus_upcoming
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

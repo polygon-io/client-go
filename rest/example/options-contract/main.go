@@ -1,4 +1,4 @@
-// options - options contract
+// Options - Options Contract
 // https://polygon.io/docs/options/get_v3_reference_options_contracts__options_ticker
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

@@ -1,4 +1,4 @@
-// stocks - ticker events
+// Stocks - Ticker Events
 // https://polygon.io/docs/stocks/get_vx_reference_tickers__id__events
 // https://github.com/polygon-io/client-go/blob/master/rest/vx.go
 package main

@@ -1,4 +1,4 @@
-// options - Quotes
+// Options - Quotes
 // https://polygon.io/docs/options/get_v3_quotes__optionsticker
 // https://github.com/polygon-io/client-go/blob/master/rest/quotes.go
 package main

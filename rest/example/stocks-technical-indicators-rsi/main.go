@@ -1,4 +1,4 @@
-// stocks - Relative Strength Index (RSI)
+// Stocks - Relative Strength Index (RSI)
 // https://polygon.io/docs/stocks/get_v1_indicators_rsi__stockticker
 // https://github.com/polygon-io/client-go/blob/master/rest/indicators.go
 package main

@@ -1,4 +1,4 @@
-// options - Relative Strength Index (RSI)
+// Options - Relative Strength Index (RSI)
 // https://polygon.io/docs/options/get_v1_indicators_rsi__optionsticker
 // https://github.com/polygon-io/client-go/blob/master/rest/indicators.go
 package main

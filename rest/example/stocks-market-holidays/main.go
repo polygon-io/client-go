@@ -1,4 +1,4 @@
-// stocks - market holidays
+// Stocks - Market Holidays
 // https://polygon.io/docs/stocks/get_v1_marketstatus_upcoming
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

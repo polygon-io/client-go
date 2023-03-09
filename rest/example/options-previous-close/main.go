@@ -1,4 +1,4 @@
-// options - Previous Close
+// Options - Previous Close
 // https://polygon.io/docs/options/get_v2_aggs_ticker__optionsticker__prev
 // https://github.com/polygon-io/client-go/blob/master/rest/aggs.go
 package main

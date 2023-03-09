@@ -1,4 +1,4 @@
-// options - get last trade
+// Options - Last Trade
 // https://polygon.io/docs/options/get_v2_last_trade__optionsticker
 // https://github.com/polygon-io/client-go/blob/master/rest/trades.go
 package main

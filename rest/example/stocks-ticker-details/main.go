@@ -1,4 +1,4 @@
-// stocks - ticker details v3
+// Stocks - Ticker Details v3
 // https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

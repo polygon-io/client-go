@@ -1,4 +1,4 @@
-// options - Trades
+// Options - Trades
 // https://polygon.io/docs/options/get_v3_trades__optionsticker
 // https://github.com/polygon-io/client-go/blob/master/rest/trades.go
 package main

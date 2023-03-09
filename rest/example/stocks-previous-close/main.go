@@ -1,4 +1,4 @@
-// stocks - Previous Close
+// Stocks - Previous Close
 // https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__prev
 // https://github.com/polygon-io/client-go/blob/master/rest/aggs.go
 package main

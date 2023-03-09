@@ -1,4 +1,4 @@
-// stocks - ticker types
+// Stocks - Ticker Types
 // https://polygon.io/docs/stocks/get_v3_reference_tickers_types
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

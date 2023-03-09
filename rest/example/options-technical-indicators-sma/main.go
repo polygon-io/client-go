@@ -1,4 +1,4 @@
-// options - Simple Moving Average (SMA)
+// Options - Simple Moving Average (SMA)
 // https://polygon.io/docs/options/get_v1_indicators_sma__optionsticker
 // https://github.com/polygon-io/client-go/blob/master/rest/indicators.go
 package main

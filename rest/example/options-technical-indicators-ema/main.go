@@ -1,4 +1,4 @@
-// options - Exponential Moving Average (EMA)
+// Options - Exponential Moving Average (EMA)
 // https://polygon.io/docs/options/get_v1_indicators_ema__optionsticker
 // https://github.com/polygon-io/client-go/blob/master/rest/indicators.go
 package main

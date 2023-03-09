@@ -1,4 +1,4 @@
-// stocks - exchanges
+// Stocks - Exchanges
 // https://polygon.io/docs/stocks/get_v3_reference_exchanges
 package main
 

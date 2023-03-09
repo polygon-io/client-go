@@ -1,4 +1,4 @@
-// stocks - Trades
+// Stocks - Trades
 // https://polygon.io/docs/stocks/get_v3_trades__stockticker
 // https://github.com/polygon-io/client-go/blob/master/rest/trades.go
 package main

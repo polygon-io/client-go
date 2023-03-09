@@ -1,4 +1,4 @@
-// stocks - Grouped Daily (Bars)
+// Stocks - Grouped Daily (Bars)
 // https://polygon.io/docs/stocks/get_v2_aggs_grouped_locale_us_market_stocks__date
 // https://github.com/polygon-io/client-go/blob/master/rest/aggs.go
 package main

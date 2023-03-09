@@ -1,4 +1,4 @@
-// stocks - dividends v3
+// Stocks - Dividends v3
 // https://polygon.io/docs/stocks/get_v3_reference_dividends
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

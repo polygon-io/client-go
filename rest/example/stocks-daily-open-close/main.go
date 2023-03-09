@@ -1,4 +1,4 @@
-// stocks - Daily Open/Close
+// Stocks - Daily Open/Close
 // https://polygon.io/docs/stocks/get_v1_open-close__stocksticker___date
 // https://github.com/polygon-io/client-go/blob/master/rest/aggs.go
 package main

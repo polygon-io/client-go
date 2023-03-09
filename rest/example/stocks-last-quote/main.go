@@ -1,5 +1,6 @@
-// stocks - get last nbbo quote
+// Stocks - Last Quote (NBBO)
 // https://polygon.io/docs/stocks/get_v2_last_nbbo__stocksticker
+// https://github.com/polygon-io/client-go/blob/master/rest/quotes.go
 package main
 
 import (

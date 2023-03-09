@@ -1,4 +1,4 @@
-// stocks - Exponential Moving Average (EMA)
+// Stocks - Exponential Moving Average (EMA)
 // https://polygon.io/docs/stocks/get_v1_indicators_ema__stockticker
 // https://github.com/polygon-io/client-go/blob/master/rest/indicators.go
 package main

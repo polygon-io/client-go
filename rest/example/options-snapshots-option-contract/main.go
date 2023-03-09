@@ -1,4 +1,4 @@
-// options - option contract
+// Options - Option Contract
 // https://polygon.io/docs/options/get_v3_snapshot_options__underlyingasset___optioncontract
 // https://github.com/polygon-io/client-go/blob/master/rest/snapshot.go
 package main

@@ -1,4 +1,4 @@
-// stocks - snapshot all tickers
+// Stocks - Snapshot All Tickers
 // https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks_tickers
 // https://github.com/polygon-io/client-go/blob/master/rest/snapshot.go
 package main

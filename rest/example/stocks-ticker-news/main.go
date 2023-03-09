@@ -1,4 +1,4 @@
-// stocks - ticker news
+// Stocks - Ticker News
 // https://polygon.io/docs/stocks/get_v2_reference_news
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

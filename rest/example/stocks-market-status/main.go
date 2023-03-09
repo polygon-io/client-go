@@ -1,4 +1,4 @@
-// stocks - market status
+// Stocks - Market Status
 // https://polygon.io/docs/stocks/get_v1_marketstatus_now
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

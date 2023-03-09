@@ -1,4 +1,4 @@
-// stocks - stock splits v3
+// Stocks - Stock Splits v3
 // https://polygon.io/docs/stocks/get_v3_reference_splits
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

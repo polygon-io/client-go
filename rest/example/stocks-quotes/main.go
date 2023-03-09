@@ -1,4 +1,4 @@
-// stocks - Quotes (NBBO)
+// Stocks - Quotes (NBBO)
 // https://polygon.io/docs/stocks/get_v3_quotes__stockticker
 // https://github.com/polygon-io/client-go/blob/master/rest/quotes.go
 package main

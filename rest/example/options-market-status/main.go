@@ -1,4 +1,4 @@
-// options - market status
+// Options - Market Status
 // https://polygon.io/docs/options/get_v1_marketstatus_now
 // https://github.com/polygon-io/client-go/blob/master/rest/reference.go
 package main

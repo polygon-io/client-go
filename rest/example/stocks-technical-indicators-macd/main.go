@@ -1,4 +1,4 @@
-// stocks - Moving Average Convergence/Divergence (MACD)
+// Stocks - Moving Average Convergence/Divergence (MACD)
 // https://polygon.io/docs/stocks/get_v1_indicators_macd__stockticker
 // https://github.com/polygon-io/client-go/blob/master/rest/indicators.go
 package main

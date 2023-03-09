@@ -1,4 +1,4 @@
-// stocks - snapshot gainers/losers
+// Stocks - Snapshot Gainers/Losers
 // https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks__direction
 // https://github.com/polygon-io/client-go/blob/master/rest/snapshot.go
 package main

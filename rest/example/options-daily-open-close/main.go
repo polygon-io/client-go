@@ -1,4 +1,4 @@
-// options - Daily Open/Close
+// Options - Daily Open/Close
 // https://polygon.io/docs/options/get_v1_open-close__optionsticker___date
 // https://github.com/polygon-io/client-go/blob/master/rest/aggs.go
 package main

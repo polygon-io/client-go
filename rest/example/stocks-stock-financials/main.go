@@ -1,4 +1,4 @@
-// stocks - stock financials vX
+// Stocks - Stock Financials vX
 // https://polygon.io/docs/stocks/get_vx_reference_financials
 // https://github.com/polygon-io/client-go/blob/master/rest/vx.go
 package main

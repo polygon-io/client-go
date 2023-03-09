@@ -1,4 +1,4 @@
-// options - options chain
+// Options - Options Chain
 // https://polygon.io/docs/options/get_v3_snapshot_options__underlyingasset
 // https://github.com/polygon-io/client-go/blob/master/rest/snapshot.go
 package main
