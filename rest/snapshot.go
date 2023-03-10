@@ -2,10 +2,10 @@ package polygon
 
 import (
 	"context"
-	"github.com/polygon-io/client-go/rest/iter"
 	"net/http"
 
 	"github.com/polygon-io/client-go/rest/client"
+	"github.com/polygon-io/client-go/rest/iter"
 	"github.com/polygon-io/client-go/rest/models"
 )
 
@@ -16,6 +16,7 @@ const (
 	GetOptionContractSnapshotPath = "/v3/snapshot/options/{underlyingAsset}/{optionContract}"
 	ListOptionsChainSnapshotPath  = "/v3/snapshot/options/{underlyingAsset}"
 	GetCryptoFullBookSnapshotPath = "/v2/snapshot/locale/global/markets/crypto/tickers/{ticker}/book"
+	GetIndicesSnapshotPath        = "/v3/snapshot/indices"
 )
 
 // SnapshotClient defines a REST client for the Polygon snapshot API.
@@ -101,5 +102,11 @@ func (ac *SnapshotClient) GetOptionContractSnapshot(ctx context.Context, params 
 func (ac *SnapshotClient) GetCryptoFullBookSnapshot(ctx context.Context, params *models.GetCryptoFullBookSnapshotParams, opts ...models.RequestOption) (*models.GetCryptoFullBookSnapshotResponse, error) {
 	res := &models.GetCryptoFullBookSnapshotResponse{}
 	err := ac.Call(ctx, http.MethodGet, GetCryptoFullBookSnapshotPath, params, res, opts...)
+	return res, err
+}
+
+func (ac *SnapshotClient) GetIndicesSnapshot(ctx context.Context, params *models.GetIndicesSnapshotParams, opts ...models.RequestOption) (*models.GetIndicesSnapshotResponse, error) {
+	res := &models.GetIndicesSnapshotResponse{}
+	err := ac.Call(ctx, http.MethodGet, GetIndicesSnapshotPath, params, res, opts...)
 	return res, err
 }

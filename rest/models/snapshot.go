@@ -1,5 +1,7 @@
 package models
 
+import "strings"
+
 // GetAllTickersSnapshotParams is the set of parameters for the GetAllTickersSnapshot method.
 type GetAllTickersSnapshotParams struct {
 	// The locale of the market.
@@ -190,6 +192,24 @@ type GetCryptoFullBookSnapshotResponse struct {
 	Data FullBookSnapshot `json:"data,omitempty"`
 }
 
+// GetIndicesSnapshotParams is the set of parameters for the GetIndicesSnapshot method.
+type GetIndicesSnapshotParams struct {
+	// The ticker list to get summaries for
+	TickerAnyOf *string `query:"ticker.any_of"`
+}
+
+func (p GetIndicesSnapshotParams) WithTickerAnyOf(tickers ...string) *GetIndicesSnapshotParams {
+	q := strings.Join(tickers, ",")
+	p.TickerAnyOf = &q
+	return &p
+}
+
+// GetIndicesSnapshotResponse is the response returned by the GetIndicesSnapshot method.
+type GetIndicesSnapshotResponse struct {
+	BaseResponse
+	Results []IndexSnapshot `json:"results,omitempty"`
+}
+
 // TickerSnapshot is a collection of data for a ticker including the current minute, day, and previous day's aggregate,
 // as well as the last trade and quote.
 type TickerSnapshot struct {
@@ -258,6 +278,26 @@ type OptionContractSnapshot struct {
 	LastTrade         LastTradeOptionContractSnapshot `json:"last_trade,omitempty"`
 	OpenInterest      float64                         `json:"open_interest,omitempty"`
 	UnderlyingAsset   UnderlyingAsset                 `json:"underlying_asset,omitempty"`
+}
+
+// IndexSnapshot is a collection of data for an index ticker including the current session information and the most recent value.
+type IndexSnapshot struct {
+	Value        float64      `json:"value,omitempty"`
+	Ticker       string       `json:"ticker,omitempty"`
+	Name         string       `json:"name,omitempty"`
+	Type         string       `json:"type,omitempty"`
+	MarketStatus string       `json:"market_status,omitempty"`
+	Session      IndexSession `json:"session,omitempty"`
+}
+
+type IndexSession struct {
+	Change        float64 `json:"change,omitempty"`
+	ChangePercent float64 `json:"change_percent,omitempty"`
+	Close         float64 `json:"close,omitempty"`
+	High          float64 `json:"high,omitempty"`
+	Low           float64 `json:"low,omitempty"`
+	Open          float64 `json:"open,omitempty"`
+	PreviousClose float64 `json:"previous_close,omitempty"`
 }
 
 // DayOptionContractSnapshot contains the most recent day agg for an option contract.
