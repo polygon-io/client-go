@@ -537,3 +537,62 @@ func TestGetCryptoFullBookSnapshot(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, &expect, res)
 }
+
+func TestGetIndicesSnapshot(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+	expectedIndicesSnapshotResponse := `{
+  "results": [
+    {
+      "value": 1326.17,
+      "name": "Dow Jones Americas Health Care Index",
+      "ticker": "I:A1HCR",
+      "market_status": "open",
+      "type": "indices",
+      "session": {
+        "change": 47.07,
+        "change_percent": 3.68,
+        "close": 1282.67,
+        "high": 1288.89,
+        "low": 1282.25,
+        "open": 1283.33,
+        "previous_close": 1279.1000000000001
+      }
+    },
+    {
+      "value": 3918.32,
+      "name": "Standard & Poor's 500",
+      "ticker": "I:SPX",
+      "market_status": "open",
+      "type": "indices",
+      "session": {
+        "change": 5.56,
+        "change_percent": 0.142,
+        "close": 3926.36,
+        "high": 3927.38,
+        "low": 3878.1,
+        "open": 3914.13,
+        "previous_close": 3912.76
+      }
+    }
+  ],
+  "status": "OK",
+  "request_id": "5ad18f153c5aa4a543cc10aeb9245622"
+}
+
+`
+
+	expectedGetIndicesSnapshotUrl := "https://api.polygon.io/v3/snapshot/indices?ticker.any_of=I%3AA1HCR%2CI%3ASPX"
+	registerResponder(expectedGetIndicesSnapshotUrl, expectedIndicesSnapshotResponse)
+	tickerAnyOf := []string{"I:A1HCR", "I:SPX"}
+
+	res, err := c.GetIndicesSnapshot(context.Background(), models.GetIndicesSnapshotParams{}.WithTickerAnyOf(tickerAnyOf...))
+	assert.Nil(t, err)
+
+	var expect models.GetIndicesSnapshotResponse
+	err = json.Unmarshal([]byte(expectedIndicesSnapshotResponse), &expect)
+	assert.Nil(t, err)
+	assert.Equal(t, &expect, res)
+}
