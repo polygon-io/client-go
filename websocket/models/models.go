@@ -360,3 +360,18 @@ type Level2Book struct {
 	// The timestamp that the tick was received by Polygon.
 	ReceivedTimestamp int64 `json:"r,omitempty"`
 }
+
+// IndexValue is value data for either indices.
+type IndexValue struct {
+	// The event type.
+	EventType
+
+	// The value.
+	Value float64 `json:"val"`
+
+	// The ticker symbol for the given index.
+	Ticker string `json:"T"`
+
+	// The Timestamp in Unix MS.
+	Timestamp int64 `json:"t,omitempty"`
+}
