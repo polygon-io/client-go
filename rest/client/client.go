@@ -7,12 +7,11 @@ import (
 	"time"
 
 	"github.com/go-resty/resty/v2"
-
 	"github.com/polygon-io/client-go/rest/encoder"
 	"github.com/polygon-io/client-go/rest/models"
 )
 
-const clientVersion = "v1.9.0"
+const clientVersion = "v1.11.0"
 
 const (
 	APIURL            = "https://api.polygon.io"
