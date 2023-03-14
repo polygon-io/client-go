@@ -24,8 +24,18 @@ func main() {
 	}
 	defer c.Close()
 
+	// aggregates
+	//_ = c.Subscribe(polygonws.StocksMinAggs, "*")
+	//_ = c.Subscribe(polygonws.StocksSecAggs, "*")
+
+	// trades
+	//_ = c.Subscribe(polygonws.StocksTrades, "*")
 	_ = c.Subscribe(polygonws.StocksTrades, "SPY")
-	_ = c.Subscribe(polygonws.StocksQuotes, "SPY")
+
+	// quotes
+	//_ = c.Subscribe(polygonws.StocksQuotes, "*")
+	_ = c.Subscribe(polygonws.StocksQuotes, "SPY")	
+
 	if err := c.Connect(); err != nil {
 		log.Error(err)
 		return
@@ -45,6 +55,8 @@ func main() {
 				return
 			}
 			switch out.(type) {
+			case models.EquityAgg:
+				log.WithFields(logrus.Fields{"aggregate": out}).Info()
 			case models.EquityTrade:
 				log.WithFields(logrus.Fields{"trade": out}).Info()
 			case models.EquityQuote:
