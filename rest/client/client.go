@@ -47,6 +47,7 @@ func newClient(apiKey string, hc *http.Client) Client {
 	c.SetRetryCount(DefaultRetryCount)
 	c.SetTimeout(10 * time.Second)
 	c.SetHeader("User-Agent", fmt.Sprintf("Polygon.io GoClient/%v", clientVersion))
+	c.SetHeader("Accept-Encoding", "gzip")
 
 	return Client{
 		HTTP:    c,
