@@ -78,3 +78,49 @@ func TestUnmarshalTime(t *testing.T) {
 		})
 	}
 }
+
+func TestTime_MarshalUnmarshal(t *testing.T) {
+	ti := models.Time(time.Date(2022, 2, 2, 0, 0, 0, 0, time.UTC))
+	data, err := json.Marshal(&ti)
+	assert.NoError(t, err)
+	assert.Equal(t, "\"2022-02-02T00:00:00.000Z\"", string(data))
+
+	var unmarshaled models.Time
+	err = json.Unmarshal(data, &unmarshaled)
+	assert.NoError(t, err)
+	assert.Equal(t, ti, unmarshaled)
+}
+
+func TestDate_MarshalUnmarshal(t *testing.T) {
+	date := models.Date(time.Date(2022, 2, 2, 0, 0, 0, 0, time.UTC))
+	data, err := json.Marshal(&date)
+	assert.NoError(t, err)
+	assert.Equal(t, "\"2022-02-02\"", string(data))
+
+	var unmarshaled models.Date
+	err = json.Unmarshal(data, &unmarshaled)
+	assert.NoError(t, err)
+	assert.Equal(t, date, unmarshaled)
+}
+
+func TestMillis_MarshalUnmarshal(t *testing.T) {
+	millis := models.Millis(time.Date(2022, 2, 2, 0, 0, 0, 0, time.UTC))
+	data, err := json.Marshal(&millis)
+	assert.NoError(t, err)
+
+	var unmarshaled models.Millis
+	err = json.Unmarshal(data, &unmarshaled)
+	assert.NoError(t, err)
+	assert.Equal(t, time.Time(millis).UnixMilli(), time.Time(unmarshaled).UnixMilli())
+}
+
+func TestNanos_MarshalUnmarshal(t *testing.T) {
+	nanos := models.Nanos(time.Now())
+	data, err := json.Marshal(&nanos)
+	assert.NoError(t, err)
+
+	var unmarshaled models.Nanos
+	err = json.Unmarshal(data, &unmarshaled)
+	assert.NoError(t, err)
+	assert.Equal(t, time.Time(nanos).UnixNano(), time.Time(unmarshaled).UnixNano())
+}
