@@ -68,6 +68,8 @@ const (
 	Timestamp          Sort = "timestamp"
 	StrikePrice        Sort = "strike_price"
 	ExpirationDate     Sort = "expiration_date"
+	FilingDate         Sort = "filing_date"
+	PeriodOfReportDate Sort = "period_of_report_date"
 )
 
 // Order the results. asc will return results in ascending order (oldest at the top), desc will return results in
