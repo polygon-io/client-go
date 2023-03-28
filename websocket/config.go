@@ -60,6 +60,7 @@ const (
 	Options Market = "options"
 	Forex   Market = "forex"
 	Crypto  Market = "crypto"
+	Indices Market = "indices"
 )
 
 func (m Market) supports(topic Topic) bool {
@@ -107,6 +108,9 @@ const (
 	CryptoQuotes  Topic = 73
 	CryptoL2Book  Topic = 74
 	cryptoMax     Topic = 75
+
+	IndexMinAggs Topic = 90
+	IndexValue   Topic = 91
 )
 
 func (t Topic) prefix() string {
@@ -143,6 +147,10 @@ func (t Topic) prefix() string {
 		return "XQ"
 	case CryptoL2Book:
 		return "XL2"
+	case IndexMinAggs:
+		return "AM"
+	case IndexValue:
+		return "V"
 	}
 	return ""
 }
