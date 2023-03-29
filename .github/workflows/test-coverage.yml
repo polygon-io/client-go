@@ -21,7 +21,9 @@ jobs:
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       - name: go-test
         run: |
-          go test -v ./... -covermode=count -coverprofile=coverage.out
+          go test -v ./... -covermode=count -coverprofile=coverage.out.temp
+          grep -v "/example" coverage.out.temp > coverage.out
+          rm coverage.out.temp
           go tool cover -func=coverage.out -o=coverage.out
       - name: go-coverage-badge  # Pass the `coverage.out` output to this action
         uses: tj-actions/coverage-badge-go@v2
