@@ -30,27 +30,27 @@ func TestListOptionsContractsParams(t *testing.T) {
 	limit := 100
 	ticker := "A"
 	expect := models.ListOptionsContractsParams{
-		ContractType:     &contractType,
-		UnderlyingTickerEQ: &ticker,
-		UnderlyingTickerLT: &ticker,
+		ContractType:        &contractType,
+		UnderlyingTickerEQ:  &ticker,
+		UnderlyingTickerLT:  &ticker,
 		UnderlyingTickerLTE: &ticker,
-		UnderlyingTickerGT: &ticker,
+		UnderlyingTickerGT:  &ticker,
 		UnderlyingTickerGTE: &ticker,
-		ExpirationDateEQ: &date,
-		ExpirationDateLT: &date,
-		ExpirationDateLTE: &date,
-		ExpirationDateGT: &date,
-		ExpirationDateGTE: &date,
-		StrikePriceEQ: &strike,
-		StrikePriceLT: &strike,
-		StrikePriceLTE: &strike,
-		StrikePriceGT: &strike,
-		StrikePriceGTE: &strike,
-		AsOf:             &date,
-		Expired:          &expired,
-		Sort:             &sort,
-		Order:            &order,
-		Limit:            &limit,
+		ExpirationDateEQ:    &date,
+		ExpirationDateLT:    &date,
+		ExpirationDateLTE:   &date,
+		ExpirationDateGT:    &date,
+		ExpirationDateGTE:   &date,
+		StrikePriceEQ:       &strike,
+		StrikePriceLT:       &strike,
+		StrikePriceLTE:      &strike,
+		StrikePriceGT:       &strike,
+		StrikePriceGTE:      &strike,
+		AsOf:                &date,
+		Expired:             &expired,
+		Sort:                &sort,
+		Order:               &order,
+		Limit:               &limit,
 	}
 	actual := models.ListOptionsContractsParams{}.
 		WithContractType(contractType).
@@ -74,6 +74,6 @@ func TestListOptionsContractsParams(t *testing.T) {
 		WithSort(sort).
 		WithOrder(order).
 		WithLimit(limit)
-	
+
 	checkParams(t, expect, *actual)
 }
