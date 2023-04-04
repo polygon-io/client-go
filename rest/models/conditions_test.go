@@ -24,6 +24,13 @@ func TestListConditionsParams(t *testing.T) {
 		Limit:      &limit,
 		Sort:       &sort,
 	}
-	actual := models.ListConditionsParams{}.WithAssetClass(assetClass).WithDataType(dataType).WithID(id).WithSIP(sip).WithOrder(order).WithLimit(limit).WithSort(sort)
+	actual := models.ListConditionsParams{}.
+		WithAssetClass(assetClass).
+		WithDataType(dataType).
+		WithID(id).
+		WithSIP(sip).
+		WithOrder(order).
+		WithLimit(limit).
+		WithSort(sort)
 	checkParams(t, expect, *actual)
 }
