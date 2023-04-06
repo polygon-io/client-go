@@ -253,6 +253,12 @@ func (m *Millis) MarshalJSON() ([]byte, error) {
 	return json.Marshal(time.Time(*m).UnixMilli())
 }
 
+// GoString implements fmt.GoStringer and formats m to be printed in Go source
+// code.
+func (m Millis) GoString() string {
+	return "Millis(" + time.Time(m).GoString() + ")"
+}
+
 // Nanos represents a Unix time in nanoseconds since January 1, 1970 UTC.
 type Nanos time.Time
 
