@@ -37,7 +37,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	os.WriteFile(".polygon/rest.json", out.Bytes(), 0644)
+	err = os.WriteFile(".polygon/rest.json", out.Bytes(), 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func isURL(uri string) bool {
