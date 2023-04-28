@@ -353,6 +353,11 @@ func (c *Client) process() (err error) {
 		case <-c.ptomb.Dying():
 			return nil
 		case data := <-c.rQueue:
+			if c.rawData {
+				c.output <- data
+				continue
+			}
+
 			var msgs []json.RawMessage
 			if err := json.Unmarshal(data, &msgs); err != nil {
 				c.log.Errorf("failed to process raw messages: %v", err)
@@ -414,11 +419,6 @@ func (c *Client) handleStatus(msg json.RawMessage) error {
 }
 
 func (c *Client) handleData(eventType string, msg json.RawMessage) {
-	if c.rawData {
-		c.output <- msg // push raw data to output channel
-		return
-	}
-
 	switch eventType {
 	case "A":
 		var out models.EquityAgg
