@@ -43,9 +43,10 @@ type Client struct {
 	wQueue chan json.RawMessage
 	subs   subscriptions
 
-	rawData bool
-	output  chan any
-	err     chan error
+	authenticated bool
+	rawData       bool
+	output        chan any
+	err           chan error
 
 	log Logger
 }
@@ -313,6 +314,7 @@ func (c *Client) write() error {
 	defer func() {
 		c.log.Debugf("write thread closed")
 		ticker.Stop()
+		c.authenticated = false
 		go c.reconnect()
 	}()
 
@@ -355,7 +357,9 @@ func (c *Client) process() (err error) {
 		case data := <-c.rQueue:
 			if c.rawData {
 				c.output <- data
-				continue
+				if c.authenticated {
+					continue
+				}
 			}
 
 			var msgs []json.RawMessage
@@ -385,7 +389,9 @@ func (c *Client) route(msgs []json.RawMessage) error {
 				return err
 			}
 		default:
-			c.handleData(ev.EventType, msg)
+			if !c.rawData {
+				c.handleData(ev.EventType, msg)
+			}
 		}
 	}
 
@@ -403,6 +409,7 @@ func (c *Client) handleStatus(msg json.RawMessage) error {
 	case "connected":
 		c.log.Debugf("connection successful")
 	case "auth_success":
+		c.authenticated = true
 		c.log.Debugf("authentication successful")
 	case "auth_failed":
 		// this is a fatal error so need to close the connection
