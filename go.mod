@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/cenkalti/backoff/v4 v4.2.0
 	github.com/go-playground/form/v4 v4.2.0
-	github.com/go-playground/validator/v10 v10.12.0
+	github.com/go-playground/validator/v10 v10.13.0
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/jarcoal/httpmock v1.3.0
@@ -19,7 +19,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/leodido/go-urn v1.2.2 // indirect
+	github.com/leodido/go-urn v1.2.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
 	golang.org/x/net v0.8.0 // indirect
