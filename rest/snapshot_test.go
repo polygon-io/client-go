@@ -4,11 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"testing"
+	"time"
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var snapshot1 = `{
@@ -595,4 +597,186 @@ func TestGetIndicesSnapshot(t *testing.T) {
 	err = json.Unmarshal([]byte(expectedIndicesSnapshotResponse), &expect)
 	assert.Nil(t, err)
 	assert.Equal(t, &expect, res)
+}
+
+func TestListAssetSnapshots(t *testing.T) {
+	c := polygon.New("API_KEY")
+	
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	assetSnapshot1 := `{
+		"market_status": "late_trading",
+		"name": "Apple Inc.",
+		"session": {
+			"change": -0.07,
+			"change_percent": -0.0403,
+			"close": 173.5,
+			"early_trading_change": 0,
+			"early_trading_change_percent": 0,
+			"high": 173.85,
+			"low": 172.11,
+			"open": 172.48,
+			"previous_close": 173.57,
+			"price": 173.5,
+			"volume": 50823329
+		},
+		"last_quote": {
+			"ask": 173.34,
+			"ask_size": 3,
+			"bid": 173.32,
+			"bid_size": 4,
+			"last_updated": 1683577209434314800,
+			"timeframe": "REAL-TIME"
+		},
+		"last_trade": {
+			"conditions": [
+				12,
+				22
+			],
+			"exchange": 4,
+			"id": "247862",
+			"last_updated": 1683577205678289200,
+			"price": 173.5,
+			"size": 31535,
+			"timeframe": "REAL-TIME"
+		},
+		"ticker": "AAPL",
+		"type": "stocks"
+		}`
+
+	assetSnapshot2 := `{
+		"market_status": "late_trading",
+		"name": "Meta Platforms, Inc. Class A Common Stock",
+		"session": {
+			"change": -0.04,
+			"change_percent": -0.0172,
+			"close": 233.27,
+			"early_trading_change": 0,
+			"early_trading_change_percent": 0,
+			"high": 235.62,
+			"low": 230.27,
+			"open": 231.415,
+			"previous_close": 232.78,
+			"price": 232.74,
+			"volume": 14940329
+		},
+		"last_quote": {
+			"ask": 232.83,
+			"ask_size": 1,
+			"bid": 232.73,
+			"bid_size": 1,
+			"last_updated": 1683577187244746200,
+			"timeframe": "REAL-TIME"
+		},
+		"last_trade": {
+			"conditions": [
+				12,
+				37
+			],
+			"exchange": 4,
+			"id": "57128",
+			"last_updated": 1683577202547284000,
+			"price": 232.74,
+			"size": 50,
+			"timeframe": "REAL-TIME"
+		},
+		"ticker": "META",
+		"type": "stocks"
+	}`
+
+	assetSnapshot3 := `{
+		"market_status": "late_trading",
+		"name": "Ford Motor Company",
+		"session": {
+			"change": 0.005,
+			"change_percent": 0.0417,
+			"close": 12.02,
+			"early_trading_change": 0,
+			"early_trading_change_percent": 0,
+			"high": 12.055,
+			"low": 11.85,
+			"open": 12.02,
+			"previous_close": 11.99,
+			"price": 11.995,
+			"volume": 49539926
+		},
+		"last_quote": {
+			"ask": 12,
+			"ask_size": 23,
+			"bid": 11.99,
+			"bid_size": 28,
+			"last_updated": 1683577084319878700,
+			"timeframe": "REAL-TIME"
+		},
+		"last_trade": {
+			"conditions": [
+				12,
+				37
+			],
+			"exchange": 4,
+			"id": "71697320268354",
+			"last_updated": 1683577186411804000,
+			"price": 11.995,
+			"size": 1,
+			"timeframe": "REAL-TIME"
+		},
+		"ticker": "F",
+		"type": "stocks"
+	}`
+
+	expectedResponse := `{
+	 "results": [
+		` + indent(true, assetSnapshot1, "\t\t") + `,
+		` + indent(true, assetSnapshot2, "\t\t") + `,
+		` + indent(true, assetSnapshot3, "\t\t") + `
+	 ],
+	 "status": "OK",
+	 "request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+	 "next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+	}`
+
+	registerResponder("https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CMETA%2CF", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/snapshot?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
+
+	iter := c.ListAssetSnapshots(
+		context.Background(),
+		models.ListAssetSnapshotsParams{}.
+			WithTickerAnyOf("AAPL,META,F").
+			WithTimestamp(models.EQ, models.Nanos(time.Date(2023, 05, 8, 0, 0, 0, 0, time.UTC))),
+	)
+
+	// iter creation
+	require.NoError(t, iter.Err())
+	require.NotNil(t, iter.Item())
+
+	assert := assert.New(t)
+
+	// first item
+	assert.True(iter.Next())
+	assert.Nil(iter.Err())
+	var expect1 models.AssetSnapshot
+	err := json.Unmarshal([]byte(assetSnapshot1), &expect1)
+	assert.Nil(err)
+	assert.Equal(expect1, iter.Item())
+
+	// second item
+	assert.True(iter.Next())
+	assert.Nil(iter.Err())
+	var expect2 models.AssetSnapshot
+	err = json.Unmarshal([]byte(assetSnapshot2), &expect2)
+	assert.Nil(err)
+	assert.Equal(expect2, iter.Item())
+
+	// third item
+	assert.True(iter.Next())
+	assert.Nil(iter.Err())
+	var expect3 models.AssetSnapshot
+	err = json.Unmarshal([]byte(assetSnapshot3), &expect3)
+	assert.Nil(err)
+	assert.Equal(expect3, iter.Item())
+
+	// end of list
+	assert.False(iter.Next())
+	assert.Nil(iter.Err())
 }

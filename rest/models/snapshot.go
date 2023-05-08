@@ -1,6 +1,8 @@
 package models
 
-import "strings"
+import (
+	"strings"
+)
 
 // GetAllTickersSnapshotParams is the set of parameters for the GetAllTickersSnapshot method.
 type GetAllTickersSnapshotParams struct {
@@ -377,4 +379,63 @@ type FullBookSnapshot struct {
 type OrderBookQuote struct {
 	Price            float64            `json:"p,omitempty"`
 	ExchangeToShares map[string]float64 `json:"x,omitempty"`
+}
+
+type ListAssetSnapshotsParams struct {
+	TickerAnyOf  *string `query:"ticker.any_of"`
+	Ticker       *string `query:"ticker"`
+	Type         *string `query:"type"`
+	TimestampLT  *Nanos  `query:"timestamp.lt"`
+	TimestampLTE *Nanos  `query:"timestamp.lte"`
+	TimestampGT  *Nanos  `query:"timestamp.gt"`
+	TimestampGTE *Nanos  `query:"timestamp.gte"`
+}
+
+func (p ListAssetSnapshotsParams) WithTickerAnyOf(q string) *ListAssetSnapshotsParams {
+	p.TickerAnyOf = &q
+	return &p
+}
+
+func (p ListAssetSnapshotsParams) WithTicker(q string) *ListAssetSnapshotsParams {
+	p.Ticker = &q
+	return &p
+}
+
+func (p ListAssetSnapshotsParams) WithType(q string) *ListAssetSnapshotsParams {
+	p.Type = &q
+	return &p
+}
+
+func (p ListAssetSnapshotsParams) WithTimestamp(c Comparator, q Nanos) *ListAssetSnapshotsParams {
+	switch c {
+	case LT:
+		p.TimestampLT = &q
+	case LTE:
+		p.TimestampLTE = &q
+	case GT:
+		p.TimestampGT = &q
+	case GTE:
+		p.TimestampGTE = &q
+	}
+	return &p
+}
+
+type ListAssetSnapshotsResponse struct {
+	BaseResponse
+	Status    string          `json:"status"`
+	RequestID string          `json:"request_id"`
+	NextURL   string          `json:"next_url,omitempty"`
+	Results   []AssetSnapshot `json:"results,omitempty"`
+}
+
+type AssetSnapshot struct {
+	MarketStatus string                 `json:"market_status"`
+	Name         string                 `json:"name"`
+	Session      map[string]interface{} `json:"session"`
+	Details      map[string]interface{} `json:"details,omitempty"`
+	LastQuote    map[string]interface{} `json:"last_quote,omitempty"`
+	LastTrade    map[string]interface{} `json:"last_trade,omitempty"`
+	Greeks       map[string]interface{} `json:"greeks,omitempty"`
+	Ticker       string                 `json:"ticker"`
+	Type         string                 `json:"type"`
 }

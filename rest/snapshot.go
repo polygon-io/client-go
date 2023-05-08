@@ -17,6 +17,7 @@ const (
 	ListOptionsChainSnapshotPath  = "/v3/snapshot/options/{underlyingAsset}"
 	GetCryptoFullBookSnapshotPath = "/v2/snapshot/locale/global/markets/crypto/tickers/{ticker}/book"
 	GetIndicesSnapshotPath        = "/v3/snapshot/indices"
+	ListAssetSnapshots            = "/v3/snapshot"
 )
 
 // SnapshotClient defines a REST client for the Polygon snapshot API.
@@ -109,4 +110,13 @@ func (ac *SnapshotClient) GetIndicesSnapshot(ctx context.Context, params *models
 	res := &models.GetIndicesSnapshotResponse{}
 	err := ac.Call(ctx, http.MethodGet, GetIndicesSnapshotPath, params, res, opts...)
 	return res, err
+}
+
+// TODO: Comment
+func (ac *SnapshotClient) ListAssetSnapshots(ctx context.Context, params *models.ListAssetSnapshotsParams, options ...models.RequestOption) *iter.Iter[models.AssetSnapshot] {
+	return iter.NewIter(ctx, ListAssetSnapshots, params, func(uri string) (iter.ListResponse, []models.AssetSnapshot, error) {
+		res := &models.ListAssetSnapshotsResponse{}
+		err := ac.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
 }
