@@ -112,7 +112,19 @@ func (ac *SnapshotClient) GetIndicesSnapshot(ctx context.Context, params *models
 	return res, err
 }
 
-// TODO: Comment
+// ListAssetSnapshots retrieves the snapshots for the specified tickers for the specified time. For more details see:
+// - https://staging.polygon.io/docs/stocks/get_v3_snapshot
+// - https://staging.polygon.io/docs/options/get_v3_snapshot
+//
+// This method returns an iterator that should be used to access the results via this pattern:
+//
+//	iter := c.ListAssetSnapshots(context, params, opts...)
+//	for iter.Next() {
+//		log.Print(iter.Item()) // do something with the current value
+//	}
+//	if iter.Err() != nil {
+//		return iter.Err()
+//	}
 func (ac *SnapshotClient) ListAssetSnapshots(ctx context.Context, params *models.ListAssetSnapshotsParams, options ...models.RequestOption) *iter.Iter[models.AssetSnapshot] {
 	return iter.NewIter(ctx, ListAssetSnapshots, params, func(uri string) (iter.ListResponse, []models.AssetSnapshot, error) {
 		res := &models.ListAssetSnapshotsResponse{}
