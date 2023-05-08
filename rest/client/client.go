@@ -76,7 +76,6 @@ func (c *Client) CallURL(ctx context.Context, method, uri string, response any, 
 	req.SetHeaderMultiValues(options.Headers)
 	req.SetResult(response).SetError(&models.ErrorResponse{})
 
-	fmt.Println("uri", uri)
 	res, err := req.Execute(method, uri)
 	if err != nil {
 		return fmt.Errorf("failed to execute request: %w", err)

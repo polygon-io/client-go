@@ -3,6 +3,7 @@ package polygon_test
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"testing"
 	"time"
 
@@ -601,11 +602,54 @@ func TestGetIndicesSnapshot(t *testing.T) {
 
 func TestListAssetSnapshots(t *testing.T) {
 	c := polygon.New("API_KEY")
-	
+
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	assetSnapshot1 := `{
+	expectedResponse := `{
+	 "results": [
+		` + indent(true, assetSnapshotsTestData[0], "\t\t") + `,
+		` + indent(true, assetSnapshotsTestData[1], "\t\t") + `,
+		` + indent(true, assetSnapshotsTestData[2], "\t\t") + `
+	 ],
+	 "status": "OK",
+	 "request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+	 "next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+	}`
+
+	registerResponder("https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CMETA%2CF", expectedResponse)
+	registerResponder("https://api.polygon.io/v3/snapshot?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
+
+	iter := c.ListAssetSnapshots(
+		context.Background(),
+		models.ListAssetSnapshotsParams{}.
+			WithTickerAnyOf("AAPL,META,F").
+			WithTimestamp(models.EQ, models.Nanos(time.Date(2023, 05, 8, 0, 0, 0, 0, time.UTC))),
+	)
+
+	// iter creation
+	require.NoError(t, iter.Err())
+	require.NotNil(t, iter.Item())
+
+	// correct values
+	var iterCount int
+	for iter.Next() {
+		var wantSnapshot models.AssetSnapshot
+		err := json.Unmarshal([]byte(assetSnapshotsTestData[iterCount]), &wantSnapshot)
+		require.Nil(t, err)
+
+		require.Nil(t, iter.Err())
+		assert.Equal(t, wantSnapshot, iter.Item())
+		iterCount++
+	}
+
+	assert.Equal(t, len(assetSnapshotsTestData), iterCount, fmt.Sprintf("expected %d iterators", len(assetSnapshotsTestData)))
+	assert.False(t, iter.Next())
+	assert.Nil(t, iter.Err())
+}
+
+var assetSnapshotsTestData = []string{
+	`{
 		"market_status": "late_trading",
 		"name": "Apple Inc.",
 		"session": {
@@ -643,9 +687,8 @@ func TestListAssetSnapshots(t *testing.T) {
 		},
 		"ticker": "AAPL",
 		"type": "stocks"
-		}`
-
-	assetSnapshot2 := `{
+	}`,
+	`{
 		"market_status": "late_trading",
 		"name": "Meta Platforms, Inc. Class A Common Stock",
 		"session": {
@@ -683,9 +726,8 @@ func TestListAssetSnapshots(t *testing.T) {
 		},
 		"ticker": "META",
 		"type": "stocks"
-	}`
-
-	assetSnapshot3 := `{
+	}`,
+	`{
 		"market_status": "late_trading",
 		"name": "Ford Motor Company",
 		"session": {
@@ -723,60 +765,5 @@ func TestListAssetSnapshots(t *testing.T) {
 		},
 		"ticker": "F",
 		"type": "stocks"
-	}`
-
-	expectedResponse := `{
-	 "results": [
-		` + indent(true, assetSnapshot1, "\t\t") + `,
-		` + indent(true, assetSnapshot2, "\t\t") + `,
-		` + indent(true, assetSnapshot3, "\t\t") + `
-	 ],
-	 "status": "OK",
-	 "request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
-	 "next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
-	}`
-
-	registerResponder("https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CMETA%2CF", expectedResponse)
-	registerResponder("https://api.polygon.io/v3/snapshot?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
-
-	iter := c.ListAssetSnapshots(
-		context.Background(),
-		models.ListAssetSnapshotsParams{}.
-			WithTickerAnyOf("AAPL,META,F").
-			WithTimestamp(models.EQ, models.Nanos(time.Date(2023, 05, 8, 0, 0, 0, 0, time.UTC))),
-	)
-
-	// iter creation
-	require.NoError(t, iter.Err())
-	require.NotNil(t, iter.Item())
-
-	assert := assert.New(t)
-
-	// first item
-	assert.True(iter.Next())
-	assert.Nil(iter.Err())
-	var expect1 models.AssetSnapshot
-	err := json.Unmarshal([]byte(assetSnapshot1), &expect1)
-	assert.Nil(err)
-	assert.Equal(expect1, iter.Item())
-
-	// second item
-	assert.True(iter.Next())
-	assert.Nil(iter.Err())
-	var expect2 models.AssetSnapshot
-	err = json.Unmarshal([]byte(assetSnapshot2), &expect2)
-	assert.Nil(err)
-	assert.Equal(expect2, iter.Item())
-
-	// third item
-	assert.True(iter.Next())
-	assert.Nil(iter.Err())
-	var expect3 models.AssetSnapshot
-	err = json.Unmarshal([]byte(assetSnapshot3), &expect3)
-	assert.Nil(err)
-	assert.Equal(expect3, iter.Item())
-
-	// end of list
-	assert.False(iter.Next())
-	assert.Nil(iter.Err())
+	}`,
 }
