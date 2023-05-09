@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 
@@ -24,9 +22,7 @@ func main() {
 
 	// do something with the result
 	for iter.Next() {
-		data, _ := json.MarshalIndent(iter.Item(), "", "    ")
-		fmt.Println(string(data))
-		//log.Println(iter.Item())
+		log.Println(iter.Item())
 	}
 	if iter.Err() != nil {
 		log.Fatal(iter.Err())

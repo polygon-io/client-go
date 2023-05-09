@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
@@ -618,13 +617,11 @@ func TestListAssetSnapshots(t *testing.T) {
 	}`
 
 	registerResponder("https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CMETA%2CF", expectedResponse)
-	registerResponder("https://api.polygon.io/v3/snapshot?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
+	registerResponder("https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
 
 	iter := c.ListAssetSnapshots(
 		context.Background(),
-		models.ListAssetSnapshotsParams{}.
-			WithTickerAnyOf("AAPL,META,F").
-			WithTimestamp(models.EQ, models.Nanos(time.Date(2023, 05, 8, 0, 0, 0, 0, time.UTC))),
+		models.ListAssetSnapshotsParams{}.WithTickerAnyOf("AAPL,META,F"),
 	)
 
 	// iter creation

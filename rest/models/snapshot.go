@@ -428,13 +428,19 @@ type ListAssetSnapshotsResponse struct {
 }
 
 type AssetSnapshot struct {
-	MarketStatus string                 `json:"market_status"`
-	Name         string                 `json:"name"`
-	Ticker       string                 `json:"ticker"`
-	Type         string                 `json:"type"`
-	Session      Session                `json:"session"`
-	LastQuote    LastQuoteAssetSnapshot `json:"last_quote,omitempty"`
-	LastTrade    LastTradeAssetSnapshot `json:"last_trade,omitempty"`
+	MarketStatus      string                 `json:"market_status"`
+	Name              string                 `json:"name"`
+	Ticker            string                 `json:"ticker"`
+	Type              string                 `json:"type"`
+	Session           Session                `json:"session"`
+	LastQuote         LastQuoteAssetSnapshot `json:"last_quote,omitempty"`
+	LastTrade         LastTradeAssetSnapshot `json:"last_trade,omitempty"`
+	BreakEvenPrice    float64                `json:"break_even_price"`
+	Details           OptionDetails          `json:"details"`
+	Greeks            Greeks                 `json:"greeks"`
+	ImpliedVolatility float64                `json:"implied_volatility"`
+	OpenInterest      float64                `json:"open_interest"`
+	UnderlyingAsset   UnderlyingAsset        `json:"underlying_asset"`
 }
 
 type LastQuoteAssetSnapshot struct {
@@ -444,6 +450,7 @@ type LastQuoteAssetSnapshot struct {
 	AskSize     int     `json:"ask_size"`
 	Bid         float64 `json:"bid"`
 	BidSize     int     `json:"bid_size"`
+	MidPoint    float64 `json:"midpoint"`
 }
 
 type LastTradeAssetSnapshot struct {
