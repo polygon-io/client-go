@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"log"
 	"os"
-	"time"
 
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
@@ -16,15 +17,16 @@ func main() {
 
 	// Set parameters
 	params := models.ListAssetSnapshotsParams{}.
-		WithTickerAnyOf("AAPL,META,F").
-		WithTimestamp(models.EQ, models.Nanos(time.Date(2023, 05, 8, 0, 0, 0, 0, time.UTC)))
+		WithTickerAnyOf("AAPL")
 
 	// Make request
 	iter := c.ListAssetSnapshots(context.Background(), params)
 
 	// do something with the result
 	for iter.Next() {
-		log.Println(iter.Item())
+		data, _ := json.MarshalIndent(iter.Item(), "", "    ")
+		fmt.Println(string(data))
+		//log.Println(iter.Item())
 	}
 	if iter.Err() != nil {
 		log.Fatal(iter.Err())

@@ -382,13 +382,15 @@ type OrderBookQuote struct {
 }
 
 type ListAssetSnapshotsParams struct {
-	TickerAnyOf  *string `query:"ticker.any_of"`
-	Ticker       *string `query:"ticker"`
-	Type         *string `query:"type"`
-	TimestampLT  *Nanos  `query:"timestamp.lt"`
-	TimestampLTE *Nanos  `query:"timestamp.lte"`
-	TimestampGT  *Nanos  `query:"timestamp.gt"`
-	TimestampGTE *Nanos  `query:"timestamp.gte"`
+	TickerAnyOf *string `query:"ticker.any_of"`
+	Ticker      *string `query:"ticker"`
+
+	TickerLT  *string `query:"ticker.lt"`
+	TickerLTE *string `query:"ticker.lte"`
+	TickerGT  *string `query:"ticker.gt"`
+	TickerGTE *string `query:"ticker.gte"`
+
+	Type *string `query:"type"`
 }
 
 func (p ListAssetSnapshotsParams) WithTickerAnyOf(q string) *ListAssetSnapshotsParams {
@@ -406,36 +408,50 @@ func (p ListAssetSnapshotsParams) WithType(q string) *ListAssetSnapshotsParams {
 	return &p
 }
 
-func (p ListAssetSnapshotsParams) WithTimestamp(c Comparator, q Nanos) *ListAssetSnapshotsParams {
+func (p ListAssetSnapshotsParams) WithTickersByComparison(c Comparator, q string) *ListAssetSnapshotsParams {
 	switch c {
 	case LT:
-		p.TimestampLT = &q
+		p.TickerLT = &q
 	case LTE:
-		p.TimestampLTE = &q
+		p.TickerLTE = &q
 	case GT:
-		p.TimestampGT = &q
+		p.TickerGT = &q
 	case GTE:
-		p.TimestampGTE = &q
+		p.TickerGTE = &q
 	}
 	return &p
 }
 
 type ListAssetSnapshotsResponse struct {
 	BaseResponse
-	Status    string          `json:"status"`
-	RequestID string          `json:"request_id"`
-	NextURL   string          `json:"next_url,omitempty"`
-	Results   []AssetSnapshot `json:"results,omitempty"`
+	Results []AssetSnapshot `json:"results,omitempty"`
 }
 
 type AssetSnapshot struct {
 	MarketStatus string                 `json:"market_status"`
 	Name         string                 `json:"name"`
-	Session      map[string]interface{} `json:"session"`
-	Details      map[string]interface{} `json:"details,omitempty"`
-	LastQuote    map[string]interface{} `json:"last_quote,omitempty"`
-	LastTrade    map[string]interface{} `json:"last_trade,omitempty"`
-	Greeks       map[string]interface{} `json:"greeks,omitempty"`
 	Ticker       string                 `json:"ticker"`
 	Type         string                 `json:"type"`
+	Session      Session                `json:"session"`
+	LastQuote    LastQuoteAssetSnapshot `json:"last_quote,omitempty"`
+	LastTrade    LastTradeAssetSnapshot `json:"last_trade,omitempty"`
+}
+
+type LastQuoteAssetSnapshot struct {
+	LastUpdated int64   `json:"last_updated"`
+	Timeframe   string  `json:"timeframe"`
+	Ask         float64 `json:"ask"`
+	AskSize     int     `json:"ask_size"`
+	Bid         float64 `json:"bid"`
+	BidSize     int     `json:"bid_size"`
+}
+
+type LastTradeAssetSnapshot struct {
+	LastUpdated int64   `json:"last_updated"`
+	Timeframe   string  `json:"timeframe"`
+	Id          string  `json:"id"`
+	Price       float64 `json:"price"`
+	Size        int     `json:"size"`
+	Exchange    int     `json:"exchange"`
+	Conditions  []int   `json:"conditions"`
 }
