@@ -14,8 +14,7 @@ func main() {
 	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
 
 	// Set parameters
-	params := models.ListAssetSnapshotsParams{}.
-		WithTickerAnyOf("AAPL,META,F")
+	params := models.ListAssetSnapshotsParams{}.WithTickerAnyOf("AAPL,META,F")
 
 	// Make request
 	iter := c.ListAssetSnapshots(context.Background(), params)

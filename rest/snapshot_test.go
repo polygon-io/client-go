@@ -631,7 +631,7 @@ func TestListAssetSnapshots(t *testing.T) {
 	// correct values
 	var iterCount int
 	for iter.Next() {
-		var wantSnapshot models.AssetSnapshot
+		var wantSnapshot models.SnapshotResponseModel
 		err := json.Unmarshal([]byte(assetSnapshotsTestData[iterCount]), &wantSnapshot)
 		require.Nil(t, err)
 
