@@ -2,6 +2,8 @@ package models
 
 import (
 	"strings"
+
+	"github.com/polygon-io/ptime"
 )
 
 // GetAllTickersSnapshotParams is the set of parameters for the GetAllTickersSnapshot method.
@@ -424,41 +426,53 @@ func (p ListAssetSnapshotsParams) WithTickersByComparison(c Comparator, q string
 
 type ListAssetSnapshotsResponse struct {
 	BaseResponse
-	Results []AssetSnapshot `json:"results,omitempty"`
+	Results []SnapshotResponseModel `json:"results,omitempty"`
 }
 
-type AssetSnapshot struct {
-	MarketStatus      string                 `json:"market_status"`
-	Name              string                 `json:"name"`
-	Ticker            string                 `json:"ticker"`
-	Type              string                 `json:"type"`
-	Session           Session                `json:"session"`
-	LastQuote         LastQuoteAssetSnapshot `json:"last_quote,omitempty"`
-	LastTrade         LastTradeAssetSnapshot `json:"last_trade,omitempty"`
-	BreakEvenPrice    float64                `json:"break_even_price"`
-	Details           OptionDetails          `json:"details"`
-	Greeks            Greeks                 `json:"greeks"`
-	ImpliedVolatility float64                `json:"implied_volatility"`
-	OpenInterest      float64                `json:"open_interest"`
-	UnderlyingAsset   UnderlyingAsset        `json:"underlying_asset"`
+type SnapshotResponseModel struct {
+	Name         string            `json:"name,omitempty"`
+	MarketStatus string            `json:"market_status,omitempty"`
+	Ticker       string            `json:"ticker,omitempty"`
+	Type         string            `json:"type,omitempty"`
+	LastQuote    SnapshotLastQuote `json:"last_quote,omitempty"`
+	LastTrade    SnapshotLastTrade `json:"last_trade,omitempty"`
+	Session      Session           `json:"session,omitempty"`
+
+	BreakEvenPrice      float64         `json:"break_even_price,omitempty"`
+	Details             DetailsV2       `json:"details,omitempty"`
+	Greeks              Greeks          `json:"greeks,omitempty"`
+	ImpliedVolatility   float64         `json:"implied_volatility,omitempty"`
+	Sofr                float64         `json:"sofr,omitempty"`
+	AnnualDividendsPaid float64         `json:"annual_dividends_paid,omitempty"`
+	OpenInterest        float64         `json:"open_interest,omitempty"`
+	UnderlyingAsset     UnderlyingAsset `json:"underlying_asset,omitempty"`
 }
 
-type LastQuoteAssetSnapshot struct {
-	LastUpdated int64   `json:"last_updated"`
-	Timeframe   string  `json:"timeframe"`
-	Ask         float64 `json:"ask"`
-	AskSize     int     `json:"ask_size"`
-	Bid         float64 `json:"bid"`
-	BidSize     int     `json:"bid_size"`
-	MidPoint    float64 `json:"midpoint"`
+type SnapshotLastQuote struct {
+	Ask         float64            `json:"ask,omitempty"`
+	AskSize     float64            `json:"ask_size,omitempty"`
+	Bid         float64            `json:"bid,omitempty"`
+	BidSize     float64            `json:"bid_size,omitempty"`
+	LastUpdated ptime.INanoseconds `json:"last_updated,omitempty"`
+	Midpoint    float64            `json:"midpoint,omitempty"`
+	Timeframe   string             `json:"timeframe,omitempty"`
 }
 
-type LastTradeAssetSnapshot struct {
-	LastUpdated int64   `json:"last_updated"`
-	Timeframe   string  `json:"timeframe"`
-	Id          string  `json:"id"`
-	Price       float64 `json:"price"`
-	Size        int     `json:"size"`
-	Exchange    int     `json:"exchange"`
-	Conditions  []int   `json:"conditions"`
+type SnapshotLastTrade struct {
+	Timestamp   int64              `json:"sip_timestamp,omitempty"`
+	Conditions  []int32            `json:"conditions,omitempty"`
+	Price       float64            `json:"price,omitempty"`
+	Size        uint32             `json:"size,omitempty"`
+	Exchange    int32              `json:"exchange,omitempty"`
+	Timeframe   string             `json:"timeframe,omitempty"`
+	ID          string             `json:"id,omitempty"`
+	LastUpdated ptime.INanoseconds `json:"last_updated,omitempty"`
+}
+
+type DetailsV2 struct {
+	ContractType      string                       `json:"contract_type,omitempty"`
+	ExerciseStyle     string                       `json:"exercise_style,omitempty"`
+	ExpirationDate    ptime.IDaysPolygonDateString `json:"expiration_date,omitempty"`
+	SharesPerContract float64                      `json:"shares_per_contract,omitempty"`
+	StrikePrice       float64                      `json:"strike_price,omitempty"`
 }

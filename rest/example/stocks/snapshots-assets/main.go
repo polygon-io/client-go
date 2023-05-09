@@ -15,7 +15,7 @@ func main() {
 
 	// Set parameters
 	params := models.ListAssetSnapshotsParams{}.
-		WithTickerAnyOf("AAPL")
+		WithTickerAnyOf("AAPL,META,F")
 
 	// Make request
 	iter := c.ListAssetSnapshots(context.Background(), params)

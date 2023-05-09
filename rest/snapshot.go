@@ -125,8 +125,8 @@ func (ac *SnapshotClient) GetIndicesSnapshot(ctx context.Context, params *models
 //	if iter.Err() != nil {
 //		return iter.Err()
 //	}
-func (ac *SnapshotClient) ListAssetSnapshots(ctx context.Context, params *models.ListAssetSnapshotsParams, options ...models.RequestOption) *iter.Iter[models.AssetSnapshot] {
-	return iter.NewIter(ctx, ListAssetSnapshots, params, func(uri string) (iter.ListResponse, []models.AssetSnapshot, error) {
+func (ac *SnapshotClient) ListAssetSnapshots(ctx context.Context, params *models.ListAssetSnapshotsParams, options ...models.RequestOption) *iter.Iter[models.SnapshotResponseModel] {
+	return iter.NewIter(ctx, ListAssetSnapshots, params, func(uri string) (iter.ListResponse, []models.SnapshotResponseModel, error) {
 		res := &models.ListAssetSnapshotsResponse{}
 		err := ac.CallURL(ctx, http.MethodGet, uri, res, options...)
 		return res, res.Results, err
