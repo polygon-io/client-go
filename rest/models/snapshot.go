@@ -2,8 +2,6 @@ package models
 
 import (
 	"strings"
-
-	"github.com/polygon-io/ptime"
 )
 
 // GetAllTickersSnapshotParams is the set of parameters for the GetAllTickersSnapshot method.
@@ -443,36 +441,36 @@ type SnapshotResponseModel struct {
 	Greeks              Greeks          `json:"greeks,omitempty"`
 	ImpliedVolatility   float64         `json:"implied_volatility,omitempty"`
 	Sofr                float64         `json:"sofr,omitempty"`
-	AnnualDividendsPaid float64         `json:"annual_dividends_paid,omitempty"`
+	AnnualDividendsPaid float64         `json:"annual_dividends_paid,"`
 	OpenInterest        float64         `json:"open_interest,omitempty"`
 	UnderlyingAsset     UnderlyingAsset `json:"underlying_asset,omitempty"`
 }
 
 type SnapshotLastQuote struct {
-	Ask         float64            `json:"ask,omitempty"`
-	AskSize     float64            `json:"ask_size,omitempty"`
-	Bid         float64            `json:"bid,omitempty"`
-	BidSize     float64            `json:"bid_size,omitempty"`
-	LastUpdated ptime.INanoseconds `json:"last_updated,omitempty"`
-	Midpoint    float64            `json:"midpoint,omitempty"`
-	Timeframe   string             `json:"timeframe,omitempty"`
+	Ask         float64 `json:"ask,omitempty"`
+	AskSize     float64 `json:"ask_size,omitempty"`
+	Bid         float64 `json:"bid,omitempty"`
+	BidSize     float64 `json:"bid_size,omitempty"`
+	LastUpdated int64   `json:"last_updated,omitempty"`
+	Midpoint    float64 `json:"midpoint,omitempty"`
+	Timeframe   string  `json:"timeframe,omitempty"`
 }
 
 type SnapshotLastTrade struct {
-	Timestamp   int64              `json:"sip_timestamp,omitempty"`
-	Conditions  []int32            `json:"conditions,omitempty"`
-	Price       float64            `json:"price,omitempty"`
-	Size        uint32             `json:"size,omitempty"`
-	Exchange    int32              `json:"exchange,omitempty"`
-	Timeframe   string             `json:"timeframe,omitempty"`
-	ID          string             `json:"id,omitempty"`
-	LastUpdated ptime.INanoseconds `json:"last_updated,omitempty"`
+	Timestamp   int64   `json:"sip_timestamp,omitempty"`
+	Conditions  []int32 `json:"conditions,omitempty"`
+	Price       float64 `json:"price,omitempty"`
+	Size        uint32  `json:"size,omitempty"`
+	Exchange    int32   `json:"exchange,omitempty"`
+	Timeframe   string  `json:"timeframe,omitempty"`
+	ID          string  `json:"id,omitempty"`
+	LastUpdated int64   `json:"last_updated,omitempty"`
 }
 
 type DetailsV2 struct {
-	ContractType      string                       `json:"contract_type,omitempty"`
-	ExerciseStyle     string                       `json:"exercise_style,omitempty"`
-	ExpirationDate    ptime.IDaysPolygonDateString `json:"expiration_date,omitempty"`
-	SharesPerContract float64                      `json:"shares_per_contract,omitempty"`
-	StrikePrice       float64                      `json:"strike_price,omitempty"`
+	ContractType      string  `json:"contract_type,omitempty"`
+	ExerciseStyle     string  `json:"exercise_style,omitempty"`
+	ExpirationDate    string  `json:"expiration_date,omitempty"`
+	SharesPerContract float64 `json:"shares_per_contract,omitempty"`
+	StrikePrice       float64 `json:"strike_price,omitempty"`
 }
