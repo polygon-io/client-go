@@ -691,7 +691,7 @@ func TestListAssetSnapshots(t *testing.T) {
 				iterCount++
 			}
 
-			assert.Equal(t, len(tc.testData), iterCount, fmt.Sprintf("expected %d iterators", len(tc.testData)))
+			assert.Equal(t, len(tc.testData), iterCount, fmt.Sprintf("expected %d results", len(tc.testData)))
 			assert.False(t, iter.Next())
 			assert.Nil(t, iter.Err())
 		})
@@ -918,9 +918,7 @@ var optionsSnapshotsTestData = []string{
 		  "price": 11.93,
 		  "ticker": "F",
 		  "timeframe": "REAL-TIME"
-		},
-		"error": "",
-		"message": ""
+		}
 	}`,
 }
 
