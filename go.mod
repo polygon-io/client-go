@@ -9,7 +9,6 @@ require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/jarcoal/httpmock v1.3.0
-	github.com/polygon-io/ptime v1.3.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/exp v0.0.0-20220414153411-bcd21879b8fd

@@ -605,47 +605,100 @@ func TestListAssetSnapshots(t *testing.T) {
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
-	expectedResponse := `{
-	 "results": [
-		` + indent(true, assetSnapshotsTestData[0], "\t\t") + `,
-		` + indent(true, assetSnapshotsTestData[1], "\t\t") + `,
-		` + indent(true, assetSnapshotsTestData[2], "\t\t") + `
-	 ],
-	 "status": "OK",
-	 "request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
-	 "next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
-	}`
-
-	registerResponder("https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CMETA%2CF", expectedResponse)
-	registerResponder("https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
-
-	iter := c.ListAssetSnapshots(
-		context.Background(),
-		models.ListAssetSnapshotsParams{}.WithTickerAnyOf("AAPL,META,F"),
-	)
-
-	// iter creation
-	require.NoError(t, iter.Err())
-	require.NotNil(t, iter.Item())
-
-	// correct values
-	var iterCount int
-	for iter.Next() {
-		var wantSnapshot models.SnapshotResponseModel
-		err := json.Unmarshal([]byte(assetSnapshotsTestData[iterCount]), &wantSnapshot)
-		require.Nil(t, err)
-
-		require.Nil(t, iter.Err())
-		assert.Equal(t, wantSnapshot, iter.Item())
-		iterCount++
+	tt := []struct {
+		name           string
+		haveParams     *models.ListAssetSnapshotsParams
+		haveRequestURL string
+		wantResponse   string
+		testData       []string
+		wantErr        bool
+	}{
+		{
+			name:           "Stock tickers",
+			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("AAPL,META,F"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CMETA%2CF",
+			wantResponse: `{
+				"results": [
+					` + indent(true, stockSnapshotsTestData[0], "\t\t") + `,
+					` + indent(true, stockSnapshotsTestData[1], "\t\t") + `,
+					` + indent(true, stockSnapshotsTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: stockSnapshotsTestData,
+			wantErr:  false,
+		},
+		{
+			name:           "Options tickers",
+			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("O:AAPL230512C00050000,O:META230512C00020000,O:F230512C00005000"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=O%3AAAPL230512C00050000%2CO%3AMETA230512C00020000%2CO%3AF230512C00005000",
+			wantResponse: `{
+				"results": [
+					` + indent(true, optionsSnapshotsTestData[0], "\t\t") + `,
+					` + indent(true, optionsSnapshotsTestData[1], "\t\t") + `,
+					` + indent(true, optionsSnapshotsTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: optionsSnapshotsTestData,
+		},
+		{
+			name:           "Partial success (200/OK with an error message in the body)",
+			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("AAPL,APx"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CAPx",
+			wantResponse: `{
+				"results": [
+					` + indent(true, partialSuccessWithStocksTestData[0], "\t\t") + `,
+					` + indent(true, partialSuccessWithStocksTestData[1], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: partialSuccessWithStocksTestData,
+			wantErr:  true,
+		},
 	}
 
-	assert.Equal(t, len(assetSnapshotsTestData), iterCount, fmt.Sprintf("expected %d iterators", len(assetSnapshotsTestData)))
-	assert.False(t, iter.Next())
-	assert.Nil(t, iter.Err())
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+
+			registerResponder(tc.haveRequestURL, tc.wantResponse)
+			registerResponder("https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
+
+			iter := c.ListAssetSnapshots(
+				context.Background(),
+				tc.haveParams,
+			)
+
+			// iter creation
+			require.NoError(t, iter.Err())
+			require.NotNil(t, iter.Item())
+
+			// correct values
+			var iterCount int
+			for iter.Next() {
+				var gotSnapshot models.SnapshotResponseModel
+				err := json.Unmarshal([]byte(tc.testData[iterCount]), &gotSnapshot)
+				require.Nil(t, err)
+
+				require.Nil(t, iter.Err())
+				assert.Equal(t, gotSnapshot, iter.Item())
+				iterCount++
+			}
+
+			assert.Equal(t, len(tc.testData), iterCount, fmt.Sprintf("expected %d iterators", len(tc.testData)))
+			assert.False(t, iter.Next())
+			assert.Nil(t, iter.Err())
+		})
+	}
 }
 
-var assetSnapshotsTestData = []string{
+var stockSnapshotsTestData = []string{
 	`{
 		"market_status": "late_trading",
 		"name": "Apple Inc.",
@@ -762,5 +815,158 @@ var assetSnapshotsTestData = []string{
 		},
 		"ticker": "F",
 		"type": "stocks"
+	}`,
+}
+
+var optionsSnapshotsTestData = []string{
+	`{
+		"name": "AAPL $50.00 call",
+		"market_status": "open",
+		"ticker": "O:AAPL230512C00050000",
+		"type": "options",
+		"last_quote": {
+		  "ask": 123.1,
+		  "ask_size": 90,
+		  "bid": 122.95,
+		  "bid_size": 90,
+		  "last_updated": 1683731850932649728,
+		  "midpoint": 123.025,
+		  "timeframe": "REAL-TIME"
+		},
+		"last_trade": {},
+		"session": {},
+		"break_even_price": 173.025,
+		"details": {
+		  "contract_type": "call",
+		  "exercise_style": "american",
+		  "expiration_date": "2023-05-12",
+		  "shares_per_contract": 100,
+		  "strike_price": 50
+		},
+		"greeks": {},
+		"underlying_asset": {
+		  "change_to_break_even": -0.11,
+		  "last_updated": 1683732072879546553,
+		  "price": 173.135,
+		  "ticker": "AAPL",
+		  "timeframe": "REAL-TIME"
+		},
+		"error": "",
+		"message": ""
+	}`,
+	`{
+		"name": "META $20.00 call",
+		"market_status": "open",
+		"ticker": "O:META230512C00020000",
+		"type": "options",
+		"last_quote": {},
+		"last_trade": {
+		  "sip_timestamp": 1682970890371000000,
+		  "conditions": [
+			209
+		  ],
+		  "price": 223.75,
+		  "size": 1,
+		  "exchange": 302,
+		  "timeframe": "REAL-TIME"
+		},
+		"session": {},
+		"details": {
+		  "contract_type": "call",
+		  "exercise_style": "american",
+		  "expiration_date": "2023-05-12",
+		  "shares_per_contract": 100,
+		  "strike_price": 20
+		},
+		"greeks": {},
+		"underlying_asset": {
+		  "last_updated": 1683731579449632715,
+		  "price": 232.37,
+		  "ticker": "META",
+		  "timeframe": "REAL-TIME"
+		},
+		"error": "",
+		"message": ""
+	}`,
+	`{
+		"name": "F $5.00 call",
+		"market_status": "open",
+		"ticker": "O:F230512C00005000",
+		"type": "options",
+		"last_quote": {},
+		"last_trade": {
+		  "sip_timestamp": 1683316735432000000,
+		  "conditions": [
+			232
+		  ],
+		  "price": 6.97,
+		  "size": 1,
+		  "exchange": 312,
+		  "timeframe": "REAL-TIME"
+		},
+		"session": {},
+		"details": {
+		  "contract_type": "call",
+		  "exercise_style": "american",
+		  "expiration_date": "2023-05-12",
+		  "shares_per_contract": 100,
+		  "strike_price": 5
+		},
+		"greeks": {},
+		"underlying_asset": {
+		  "last_updated": 1683732072773028096,
+		  "price": 11.93,
+		  "ticker": "F",
+		  "timeframe": "REAL-TIME"
+		},
+		"error": "",
+		"message": ""
+	}`,
+}
+
+var partialSuccessWithStocksTestData = []string{
+	`{
+		"market_status": "late_trading",
+		"name": "Apple Inc.",
+		"session": {
+			"change": -0.07,
+			"change_percent": -0.0403,
+			"close": 173.5,
+			"early_trading_change": 0,
+			"early_trading_change_percent": 0,
+			"high": 173.85,
+			"low": 172.11,
+			"open": 172.48,
+			"previous_close": 173.57,
+			"price": 173.5,
+			"volume": 50823329
+		},
+		"last_quote": {
+			"ask": 173.34,
+			"ask_size": 3,
+			"bid": 173.32,
+			"bid_size": 4,
+			"last_updated": 1683577209434314800,
+			"timeframe": "REAL-TIME"
+		},
+		"last_trade": {
+			"conditions": [
+				12,
+				22
+			],
+			"exchange": 4,
+			"id": "247862",
+			"last_updated": 1683577205678289200,
+			"price": 173.5,
+			"size": 31535,
+			"timeframe": "REAL-TIME"
+		},
+		"ticker": "AAPL",
+		"type": "stocks"
+	}`,
+	`{
+		"error": "NOT_ENTITLED",
+		"message": "Not entitled to this ticker.",
+		"ticker": "APy"
 	}`,
 }

@@ -436,14 +436,15 @@ type SnapshotResponseModel struct {
 	LastTrade    SnapshotLastTrade `json:"last_trade,omitempty"`
 	Session      Session           `json:"session,omitempty"`
 
-	BreakEvenPrice      float64         `json:"break_even_price,omitempty"`
-	Details             DetailsV2       `json:"details,omitempty"`
-	Greeks              Greeks          `json:"greeks,omitempty"`
-	ImpliedVolatility   float64         `json:"implied_volatility,omitempty"`
-	Sofr                float64         `json:"sofr,omitempty"`
-	AnnualDividendsPaid float64         `json:"annual_dividends_paid,"`
-	OpenInterest        float64         `json:"open_interest,omitempty"`
-	UnderlyingAsset     UnderlyingAsset `json:"underlying_asset,omitempty"`
+	BreakEvenPrice    float64         `json:"break_even_price,omitempty"`
+	Details           Details         `json:"details,omitempty"`
+	Greeks            Greeks          `json:"greeks,omitempty"`
+	ImpliedVolatility float64         `json:"implied_volatility,omitempty"`
+	OpenInterest      float64         `json:"open_interest,omitempty"`
+	UnderlyingAsset   UnderlyingAsset `json:"underlying_asset,omitempty"`
+
+	Error   string `json:"error"`
+	Message string `json:"message"`
 }
 
 type SnapshotLastQuote struct {
@@ -467,7 +468,7 @@ type SnapshotLastTrade struct {
 	LastUpdated int64   `json:"last_updated,omitempty"`
 }
 
-type DetailsV2 struct {
+type Details struct {
 	ContractType      string  `json:"contract_type,omitempty"`
 	ExerciseStyle     string  `json:"exercise_style,omitempty"`
 	ExpirationDate    string  `json:"expiration_date,omitempty"`
