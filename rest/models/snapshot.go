@@ -1,6 +1,8 @@
 package models
 
-import "strings"
+import (
+	"strings"
+)
 
 // GetAllTickersSnapshotParams is the set of parameters for the GetAllTickersSnapshot method.
 type GetAllTickersSnapshotParams struct {
@@ -377,4 +379,99 @@ type FullBookSnapshot struct {
 type OrderBookQuote struct {
 	Price            float64            `json:"p,omitempty"`
 	ExchangeToShares map[string]float64 `json:"x,omitempty"`
+}
+
+type ListAssetSnapshotsParams struct {
+	TickerAnyOf *string `query:"ticker.any_of"`
+	Ticker      *string `query:"ticker"`
+
+	TickerLT  *string `query:"ticker.lt"`
+	TickerLTE *string `query:"ticker.lte"`
+	TickerGT  *string `query:"ticker.gt"`
+	TickerGTE *string `query:"ticker.gte"`
+
+	Type *string `query:"type"`
+}
+
+func (p ListAssetSnapshotsParams) WithTickerAnyOf(q string) *ListAssetSnapshotsParams {
+	p.TickerAnyOf = &q
+	return &p
+}
+
+func (p ListAssetSnapshotsParams) WithTicker(q string) *ListAssetSnapshotsParams {
+	p.Ticker = &q
+	return &p
+}
+
+func (p ListAssetSnapshotsParams) WithType(q string) *ListAssetSnapshotsParams {
+	p.Type = &q
+	return &p
+}
+
+func (p ListAssetSnapshotsParams) WithTickersByComparison(c Comparator, q string) *ListAssetSnapshotsParams {
+	switch c {
+	case LT:
+		p.TickerLT = &q
+	case LTE:
+		p.TickerLTE = &q
+	case GT:
+		p.TickerGT = &q
+	case GTE:
+		p.TickerGTE = &q
+	}
+	return &p
+}
+
+type ListAssetSnapshotsResponse struct {
+	BaseResponse
+	Results []SnapshotResponseModel `json:"results,omitempty"`
+}
+
+type SnapshotResponseModel struct {
+	Name         string            `json:"name,omitempty"`
+	MarketStatus string            `json:"market_status,omitempty"`
+	Ticker       string            `json:"ticker,omitempty"`
+	Type         string            `json:"type,omitempty"`
+	LastQuote    SnapshotLastQuote `json:"last_quote,omitempty"`
+	LastTrade    SnapshotLastTrade `json:"last_trade,omitempty"`
+	Session      Session           `json:"session,omitempty"`
+
+	BreakEvenPrice    float64         `json:"break_even_price,omitempty"`
+	Details           Details         `json:"details,omitempty"`
+	Greeks            Greeks          `json:"greeks,omitempty"`
+	ImpliedVolatility float64         `json:"implied_volatility,omitempty"`
+	OpenInterest      float64         `json:"open_interest,omitempty"`
+	UnderlyingAsset   UnderlyingAsset `json:"underlying_asset,omitempty"`
+
+	Error   string `json:"error"`
+	Message string `json:"message"`
+}
+
+type SnapshotLastQuote struct {
+	Ask         float64 `json:"ask,omitempty"`
+	AskSize     float64 `json:"ask_size,omitempty"`
+	Bid         float64 `json:"bid,omitempty"`
+	BidSize     float64 `json:"bid_size,omitempty"`
+	LastUpdated int64   `json:"last_updated,omitempty"`
+	Midpoint    float64 `json:"midpoint,omitempty"`
+	Timeframe   string  `json:"timeframe,omitempty"`
+}
+
+type SnapshotLastTrade struct {
+	Timestamp   int64   `json:"sip_timestamp,omitempty"`
+	Conditions  []int32 `json:"conditions,omitempty"`
+	Price       float64 `json:"price,omitempty"`
+	Size        uint32  `json:"size,omitempty"`
+	Exchange    int32   `json:"exchange,omitempty"`
+	Timeframe   string  `json:"timeframe,omitempty"`
+	ID          string  `json:"id,omitempty"`
+	LastUpdated int64   `json:"last_updated,omitempty"`
+}
+
+type Details struct {
+	ContractType      string  `json:"contract_type,omitempty"`
+	ExerciseStyle     string  `json:"exercise_style,omitempty"`
+	ExpirationDate    string  `json:"expiration_date,omitempty"`
+	SharesPerContract float64 `json:"shares_per_contract,omitempty"`
+	StrikePrice       float64 `json:"strike_price,omitempty"`
 }
