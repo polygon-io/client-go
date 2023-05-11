@@ -82,6 +82,9 @@ func (c *Client) CallURL(ctx context.Context, method, uri string, response any, 
 	} else if res.IsError() {
 		errRes := res.Error().(*models.ErrorResponse)
 		errRes.StatusCode = res.StatusCode()
+		if errRes.RequestID == "" {
+			errRes.RequestID = res.Header().Get("X-Request-ID")
+		}
 		return errRes
 	}
 
