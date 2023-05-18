@@ -265,6 +265,8 @@ type MinuteSnapshot struct {
 	Open                  float64 `json:"o,omitempty"`
 	Volume                float64 `json:"v,omitempty"`
 	VolumeWeightedAverage float64 `json:"vw,omitempty"`
+	NumberOfTransactions  float64 `json:"n,omitempty"`
+	Timestamp             Millis  `json:"t,omitempty"`
 	OTC                   bool    `json:"otc,omitempty"`
 }
 
