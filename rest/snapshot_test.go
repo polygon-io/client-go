@@ -679,22 +679,6 @@ func TestListAssetSnapshots(t *testing.T) {
 			testData: forexSnapshotTestData,
 		},
 		{
-			name:           "Indices Snapshot",
-			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("I:A1HCR,I:SPX"),
-			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=C%3AUSDCAD%2CC%3AUSDEUR%2CC%3AUSDAUD",
-			wantResponse: `{
-				"results": [
-					` + indent(true, indicesSnapshotTestData[0], "\t\t") + `,
-					` + indent(true, indicesSnapshotTestData[1], "\t\t") + `,
-					` + indent(true, indicesSnapshotTestData[2], "\t\t") + `
-					],
-					"status": "OK",
-					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
-					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
-				}`,
-			testData: indicesSnapshotTestData,
-		},
-		{
 			name:           "Partial success (200/OK with an error message in the body)",
 			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("AAPL,APx"),
 			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CAPx",
@@ -1120,11 +1104,6 @@ var forexSnapshotTestData = []string{
 		  "bid": 1.51281,
 		  "exchange": 48
 		}
-	}`,
-}
-var indicesSnapshotTestData = []string{
-	`{
-		"TBD": "TBD"
 	}`,
 }
 
