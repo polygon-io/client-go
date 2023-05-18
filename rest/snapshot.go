@@ -25,6 +25,8 @@ type SnapshotClient struct {
 	client.Client
 }
 
+func unused() {}
+
 // ListOptionsChainSnapshot retrieves the snapshot of all options contracts for an underlying ticker. For more details see
 // https://polygon.io/docs/options/get_v3_snapshot_options__underlyingasset.
 //
