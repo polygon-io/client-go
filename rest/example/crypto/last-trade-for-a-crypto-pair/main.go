@@ -19,7 +19,7 @@ func main() {
 	// set params
 	params := &models.GetLastCryptoTradeParams{
 		From: "BTC",
-		To: "USD",
+		To:   "USD",
 	}
 
 	// make request

@@ -18,7 +18,7 @@ type ListTickersParams struct {
 	// Filter by market type. By default all markets are included.
 	Market *AssetClass `query:"market"`
 
-	// Specify the asset's primary exchange Market Identifier Code (MIC) according to ISO 10383. Defaults to empty 
+	// Specify the asset's primary exchange Market Identifier Code (MIC) according to ISO 10383. Defaults to empty
 	// string which queries all exchanges.
 	Exchange *string `query:"exchange"`
 

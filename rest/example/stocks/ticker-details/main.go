@@ -5,9 +5,9 @@ package main
 
 import (
 	"context"
-	"time"
 	"log"
 	"os"
+	"time"
 
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
@@ -20,7 +20,7 @@ func main() {
 
 	// set params
 	params := models.GetTickerDetailsParams{
-		Ticker:     "AAPL",
+		Ticker: "AAPL",
 	}.WithDate(models.Date(time.Date(2023, 3, 9, 0, 0, 0, 0, time.UTC)))
 
 	// make request
@@ -30,6 +30,6 @@ func main() {
 	}
 
 	// do something with the result
-	log.Print(res) 
+	log.Print(res)
 
 }

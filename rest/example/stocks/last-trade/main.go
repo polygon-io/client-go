@@ -19,7 +19,7 @@ func main() {
 
 	// set params
 	params := &models.GetLastTradeParams{
-		Ticker:     "AAPL",
+		Ticker: "AAPL",
 	}
 
 	// make request
@@ -29,6 +29,6 @@ func main() {
 	}
 
 	// do something with the result
-	log.Print(res) 
+	log.Print(res)
 
 }
