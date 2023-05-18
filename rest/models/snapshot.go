@@ -394,21 +394,26 @@ type ListUniversalSnapshotsParams struct {
 	Type *string `query:"type"`
 }
 
+// WithTickerAnyOf sets the ticker.any_of query param.
 func (p ListUniversalSnapshotsParams) WithTickerAnyOf(q string) *ListUniversalSnapshotsParams {
 	p.TickerAnyOf = &q
 	return &p
 }
 
+// WithTicker sets the ticker equality query param.
 func (p ListUniversalSnapshotsParams) WithTicker(q string) *ListUniversalSnapshotsParams {
 	p.Ticker = &q
 	return &p
 }
 
+// WithType sets the type query param.
 func (p ListUniversalSnapshotsParams) WithType(q string) *ListUniversalSnapshotsParams {
 	p.Type = &q
 	return &p
 }
 
+// WithTickersByComparison sets the ticker inequality query params.
+// Comparator options include EQ, LT, LTE, GT, and GTE.
 func (p ListUniversalSnapshotsParams) WithTickersByComparison(c Comparator, q string) *ListUniversalSnapshotsParams {
 	switch c {
 	case LT:

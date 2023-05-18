@@ -17,10 +17,10 @@ const (
 	ListOptionsChainSnapshotPath  = "/v3/snapshot/options/{underlyingAsset}"
 	GetCryptoFullBookSnapshotPath = "/v2/snapshot/locale/global/markets/crypto/tickers/{ticker}/book"
 	GetIndicesSnapshotPath        = "/v3/snapshot/indices"
-	ListUniversalSnapshots        = "/v3/snapshot"
+	ListUniversalSnapshotsPath    = "/v3/snapshot"
 
 	// Deprecated: Please use UniversalSnapshot types instead of AssetSnapshot types.
-	ListAssetSnapshots = ListUniversalSnapshots
+	ListAssetSnapshots = ListUniversalSnapshotsPath
 )
 
 // SnapshotClient defines a REST client for the Polygon snapshot API.
@@ -134,7 +134,7 @@ func (ac *SnapshotClient) ListAssetSnapshots(ctx context.Context, params *models
 //		return iter.Err()
 //	}
 func (ac *SnapshotClient) ListUniversalSnapshots(ctx context.Context, params *models.ListUniversalSnapshotsParams, options ...models.RequestOption) *iter.Iter[models.SnapshotResponseModel] {
-	return iter.NewIter(ctx, ListUniversalSnapshots, params, func(uri string) (iter.ListResponse, []models.SnapshotResponseModel, error) {
+	return iter.NewIter(ctx, ListUniversalSnapshotsPath, params, func(uri string) (iter.ListResponse, []models.SnapshotResponseModel, error) {
 		res := &models.ListUniversalSnapshotsResponse{}
 		err := ac.CallURL(ctx, http.MethodGet, uri, res, options...)
 		return res, res.Results, err
