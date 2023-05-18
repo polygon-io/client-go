@@ -381,6 +381,7 @@ type OrderBookQuote struct {
 	ExchangeToShares map[string]float64 `json:"x,omitempty"`
 }
 
+// ListUniversalSnapshotsParams is a set of parameters for the ListUniversalSnapshots method.
 type ListUniversalSnapshotsParams struct {
 	TickerAnyOf *string `query:"ticker.any_of"`
 	Ticker      *string `query:"ticker"`
@@ -422,11 +423,13 @@ func (p ListUniversalSnapshotsParams) WithTickersByComparison(c Comparator, q st
 	return &p
 }
 
+// ListUniversalSnapshotsResponse is the response returned by the ListUniversalSnapshots method.
 type ListUniversalSnapshotsResponse struct {
 	BaseResponse
 	Results []SnapshotResponseModel `json:"results,omitempty"`
 }
 
+// SnapshotResponseModel contains all the information that might come back in a SnapshotResponse.
 type SnapshotResponseModel struct {
 	Name         string            `json:"name,omitempty"`
 	MarketStatus string            `json:"market_status,omitempty"`
@@ -447,6 +450,7 @@ type SnapshotResponseModel struct {
 	Message string `json:"message"`
 }
 
+// SnapshotLastQuote contains all the information that might come back in the last_quote attribute of a SnapshotResponse.
 type SnapshotLastQuote struct {
 	Ask         float64 `json:"ask,omitempty"`
 	AskSize     float64 `json:"ask_size,omitempty"`
@@ -457,6 +461,7 @@ type SnapshotLastQuote struct {
 	Timeframe   string  `json:"timeframe,omitempty"`
 }
 
+// SnapshotLastTrade contains all the information that might come back in the last_trade attribute of a SnapshotResponse.
 type SnapshotLastTrade struct {
 	Timestamp   int64   `json:"sip_timestamp,omitempty"`
 	Conditions  []int32 `json:"conditions,omitempty"`
@@ -468,6 +473,7 @@ type SnapshotLastTrade struct {
 	LastUpdated int64   `json:"last_updated,omitempty"`
 }
 
+// Details contains all the information that might come back in the details attribute of a SnapshotResponse.
 type Details struct {
 	ContractType      string  `json:"contract_type,omitempty"`
 	ExerciseStyle     string  `json:"exercise_style,omitempty"`

@@ -1,6 +1,6 @@
 package models
 
-//Deprecated: Please use UniversalSnapshot types instead of AssetSnapshot types.
+// Deprecated: Please use UniversalSnapshot types instead of AssetSnapshot types.
 type ListAssetSnapshotsParams ListUniversalSnapshotsParams
 
 func (p ListAssetSnapshotsParams) WithTickerAnyOf(q string) *ListAssetSnapshotsParams {
@@ -32,5 +32,5 @@ func (p ListAssetSnapshotsParams) WithTickersByComparison(c Comparator, q string
 	return &p
 }
 
-//Deprecated: Please use UniversalSnapshot types instead of AssetSnapshot types.
+// Deprecated: Please use UniversalSnapshot types instead of AssetSnapshot types.
 type ListAssetSnapshotsResponse ListUniversalSnapshotsResponse

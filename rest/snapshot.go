@@ -19,7 +19,7 @@ const (
 	GetIndicesSnapshotPath        = "/v3/snapshot/indices"
 	ListUniversalSnapshots        = "/v3/snapshot"
 
-	//Deprecated: Please use UniversalSnapshot types instead of AssetSnapshot types.
+	// Deprecated: Please use UniversalSnapshot types instead of AssetSnapshot types.
 	ListAssetSnapshots = ListUniversalSnapshots
 )
 
