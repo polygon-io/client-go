@@ -19,7 +19,7 @@ func main() {
 	// set params
 	params := &models.GetRealTimeCurrencyConversionParams{
 		From: "AUD",
-		To: "USD",
+		To:   "USD",
 	}
 
 	// make request

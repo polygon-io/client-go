@@ -19,7 +19,7 @@ func main() {
 	// set params
 	params := &models.GetLastForexQuoteParams{
 		From: "AUD",
-		To: "USD",
+		To:   "USD",
 	}
 
 	// make request

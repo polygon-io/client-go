@@ -5,9 +5,9 @@ package main
 
 import (
 	"context"
-	"time"
 	"log"
 	"os"
+	"time"
 
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
@@ -31,5 +31,5 @@ func main() {
 	}
 
 	// do something with the result
-	log.Print(res) 
+	log.Print(res)
 }

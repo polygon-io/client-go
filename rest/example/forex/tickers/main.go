@@ -29,7 +29,7 @@ func main() {
 
 	// do something with the result
 	for iter.Next() {
-		log.Print(iter.Item()) 
+		log.Print(iter.Item())
 	}
 	if iter.Err() != nil {
 		log.Fatal(iter.Err())

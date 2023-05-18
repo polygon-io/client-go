@@ -29,5 +29,5 @@ func main() {
 	}
 
 	// do something with the result
-	log.Print(res) 
+	log.Print(res)
 }

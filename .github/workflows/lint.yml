@@ -25,3 +25,7 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.52
+      - name: gofmt
+        run: |
+          go fmt ./...
+          git diff --exit-code
