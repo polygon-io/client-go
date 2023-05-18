@@ -381,7 +381,7 @@ type OrderBookQuote struct {
 	ExchangeToShares map[string]float64 `json:"x,omitempty"`
 }
 
-type ListAssetSnapshotsParams struct {
+type ListUniversalSnapshotsParams struct {
 	TickerAnyOf *string `query:"ticker.any_of"`
 	Ticker      *string `query:"ticker"`
 
@@ -393,22 +393,22 @@ type ListAssetSnapshotsParams struct {
 	Type *string `query:"type"`
 }
 
-func (p ListAssetSnapshotsParams) WithTickerAnyOf(q string) *ListAssetSnapshotsParams {
+func (p ListUniversalSnapshotsParams) WithTickerAnyOf(q string) *ListUniversalSnapshotsParams {
 	p.TickerAnyOf = &q
 	return &p
 }
 
-func (p ListAssetSnapshotsParams) WithTicker(q string) *ListAssetSnapshotsParams {
+func (p ListUniversalSnapshotsParams) WithTicker(q string) *ListUniversalSnapshotsParams {
 	p.Ticker = &q
 	return &p
 }
 
-func (p ListAssetSnapshotsParams) WithType(q string) *ListAssetSnapshotsParams {
+func (p ListUniversalSnapshotsParams) WithType(q string) *ListUniversalSnapshotsParams {
 	p.Type = &q
 	return &p
 }
 
-func (p ListAssetSnapshotsParams) WithTickersByComparison(c Comparator, q string) *ListAssetSnapshotsParams {
+func (p ListUniversalSnapshotsParams) WithTickersByComparison(c Comparator, q string) *ListUniversalSnapshotsParams {
 	switch c {
 	case LT:
 		p.TickerLT = &q
@@ -422,7 +422,7 @@ func (p ListAssetSnapshotsParams) WithTickersByComparison(c Comparator, q string
 	return &p
 }
 
-type ListAssetSnapshotsResponse struct {
+type ListUniversalSnapshotsResponse struct {
 	BaseResponse
 	Results []SnapshotResponseModel `json:"results,omitempty"`
 }
