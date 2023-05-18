@@ -614,7 +614,7 @@ func TestListAssetSnapshots(t *testing.T) {
 		wantErr        bool
 	}{
 		{
-			name:           "Stock tickers",
+			name:           "Stock Snapshot",
 			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("AAPL,META,F"),
 			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CMETA%2CF",
 			wantResponse: `{
@@ -631,7 +631,7 @@ func TestListAssetSnapshots(t *testing.T) {
 			wantErr:  false,
 		},
 		{
-			name:           "Options tickers",
+			name:           "Options Snapshot",
 			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("O:AAPL230512C00050000,O:META230512C00020000,O:F230512C00005000"),
 			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=O%3AAAPL230512C00050000%2CO%3AMETA230512C00020000%2CO%3AF230512C00005000",
 			wantResponse: `{
@@ -645,6 +645,22 @@ func TestListAssetSnapshots(t *testing.T) {
 					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
 				}`,
 			testData: optionsSnapshotsTestData,
+		},
+		{
+			name:           "Crypto Snapshot",
+			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("X:BTCUSD,X:ETHUSD,X:FLOWUSD"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=X%3ABTCUSD%2CX%3AETHUSD%2CX%3AFLOWUSD",
+			wantResponse: `{
+				"results": [
+					` + indent(true, cryptoSnapshotsTestData[0], "\t\t") + `,
+					` + indent(true, cryptoSnapshotsTestData[1], "\t\t") + `,
+					` + indent(true, cryptoSnapshotsTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: cryptoSnapshotsTestData,
 		},
 		{
 			name:           "Partial success (200/OK with an error message in the body)",
@@ -675,11 +691,9 @@ func TestListAssetSnapshots(t *testing.T) {
 				tc.haveParams,
 			)
 
-			// iter creation
 			require.NoError(t, iter.Err())
 			require.NotNil(t, iter.Item())
 
-			// correct values
 			var iterCount int
 			for iter.Next() {
 				var gotSnapshot models.SnapshotResponseModel
@@ -920,6 +934,90 @@ var optionsSnapshotsTestData = []string{
 		  "timeframe": "REAL-TIME"
 		}
 	}`,
+}
+
+var cryptoSnapshotsTestData = []string{
+	`{
+		"market_status": "open",
+		"name": "Bitcoin - United States Dollar",
+		"ticker": "X:BTCUSD",
+		"type": "crypto",
+		"session": {
+		  "change": -181,
+		  "change_percent": -0.661,
+		  "close": 27236.1,
+		  "high": 27506,
+		  "low": 27010,
+		  "open": 27402.3,
+		  "volume": 10012.03414028,
+		  "previous_close": 27400.74,
+		  "price": 27220
+		},
+		"last_trade": {
+		  "participant_timestamp": 1684422449502000000,
+		  "timeframe": "REAL-TIME",
+		  "id": "285449387",
+		  "price": 27220,
+		  "exchange": 6,
+		  "conditions": [
+			1
+		  ]
+		}
+	  }`,
+	`{
+		"market_status": "open",
+		"name": "Ethereum - United States Dollar",
+		"ticker": "X:ETHUSD",
+		"type": "crypto",
+		"session": {
+		  "change": -5.53,
+		  "change_percent": -0.304,
+		  "close": 1817.14,
+		  "high": 1833.4,
+		  "low": 1802.26,
+		  "open": 1823.8,
+		  "volume": 47673.72258305,
+		  "previous_close": 1821.84,
+		  "price": 1816.31
+		},
+		"last_trade": {
+		  "participant_timestamp": 1684422449301037000,
+		  "timeframe": "REAL-TIME",
+		  "id": "451453400",
+		  "price": 1816.31,
+		  "exchange": 1,
+		  "conditions": [
+			1
+		  ]
+		}
+	  }`,
+	`{
+		"market_status": "open",
+		"name": "Flow - United States Dollar",
+		"ticker": "X:FLOWUSD",
+		"type": "crypto",
+		"session": {
+		  "change": -0.006,
+		  "change_percent": -0.759,
+		  "close": 0.784,
+		  "high": 0.793,
+		  "low": 0.779,
+		  "open": 0.791,
+		  "volume": 89094.52551417,
+		  "previous_close": 0.79,
+		  "price": 0.784
+		},
+		"last_trade": {
+		  "participant_timestamp": 1684422355917759000,
+		  "timeframe": "REAL-TIME",
+		  "id": "1224329",
+		  "price": 0.784,
+		  "exchange": 1,
+		  "conditions": [
+			1
+		  ]
+		}
+	  }`,
 }
 
 var partialSuccessWithStocksTestData = []string{

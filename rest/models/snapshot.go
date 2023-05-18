@@ -458,14 +458,15 @@ type SnapshotLastQuote struct {
 }
 
 type SnapshotLastTrade struct {
-	Timestamp   int64   `json:"sip_timestamp,omitempty"`
-	Conditions  []int32 `json:"conditions,omitempty"`
-	Price       float64 `json:"price,omitempty"`
-	Size        uint32  `json:"size,omitempty"`
-	Exchange    int32   `json:"exchange,omitempty"`
-	Timeframe   string  `json:"timeframe,omitempty"`
-	ID          string  `json:"id,omitempty"`
-	LastUpdated int64   `json:"last_updated,omitempty"`
+	Timestamp            int64   `json:"sip_timestamp,omitempty"`
+	ParticipantTimestamp int64   `json:"participant_timestamp,omitempty"`
+	Conditions           []int32 `json:"conditions,omitempty"`
+	Price                float64 `json:"price,omitempty"`
+	Size                 uint32  `json:"size,omitempty"`
+	Exchange             int32   `json:"exchange,omitempty"`
+	Timeframe            string  `json:"timeframe,omitempty"`
+	ID                   string  `json:"id,omitempty"`
+	LastUpdated          int64   `json:"last_updated,omitempty"`
 }
 
 type Details struct {
