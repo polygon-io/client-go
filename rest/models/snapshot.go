@@ -455,6 +455,7 @@ type SnapshotLastQuote struct {
 	LastUpdated int64   `json:"last_updated,omitempty"`
 	Midpoint    float64 `json:"midpoint,omitempty"`
 	Timeframe   string  `json:"timeframe,omitempty"`
+	Exchange    int64   `json:"exchange,omitempty"`
 }
 
 type SnapshotLastTrade struct {

@@ -663,6 +663,38 @@ func TestListAssetSnapshots(t *testing.T) {
 			testData: cryptoSnapshotsTestData,
 		},
 		{
+			name:           "Forex Snapshot",
+			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("C:USDCAD,C:USDEUR,C:USDAUD"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=C%3AUSDCAD%2CC%3AUSDEUR%2CC%3AUSDAUD",
+			wantResponse: `{
+				"results": [
+					` + indent(true, forexSnapshotTestData[0], "\t\t") + `,
+					` + indent(true, forexSnapshotTestData[1], "\t\t") + `,
+					` + indent(true, forexSnapshotTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: forexSnapshotTestData,
+		},
+		{
+			name:           "Indices Snapshot",
+			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("I:A1HCR,I:SPX"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=C%3AUSDCAD%2CC%3AUSDEUR%2CC%3AUSDAUD",
+			wantResponse: `{
+				"results": [
+					` + indent(true, indicesSnapshotTestData[0], "\t\t") + `,
+					` + indent(true, indicesSnapshotTestData[1], "\t\t") + `,
+					` + indent(true, indicesSnapshotTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: indicesSnapshotTestData,
+		},
+		{
 			name:           "Partial success (200/OK with an error message in the body)",
 			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("AAPL,APx"),
 			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CAPx",
@@ -1018,6 +1050,82 @@ var cryptoSnapshotsTestData = []string{
 		  ]
 		}
 	  }`,
+}
+var forexSnapshotTestData = []string{
+	`{
+		"market_status": "open",
+		"name": "United States dollar - Canadian dollar",
+		"ticker": "C:USDCAD",
+		"type": "fx",
+		"session": {
+		  "change": 0.00518,
+		  "change_percent": 0.385,
+		  "close": 1.35178,
+		  "high": 1.35244,
+		  "low": 1.34479,
+		  "open": 1.34667,
+		  "volume": 133712,
+		  "previous_close": 1.34667
+		},
+		"last_quote": {
+		  "last_updated": 1684431002000000000,
+		  "timeframe": "REAL-TIME",
+		  "ask": 1.35191,
+		  "bid": 1.35185,
+		  "exchange": 48
+		}
+	}`,
+	`{
+		"market_status": "open",
+		"name": "United States dollar - Euro",
+		"ticker": "C:USDEUR",
+		"type": "fx",
+		"session": {
+		  "change": 0.00612,
+		  "change_percent": 0.663,
+		  "close": 0.92877,
+		  "high": 0.92913,
+		  "low": 0.9215,
+		  "open": 0.92266,
+		  "volume": 58275,
+		  "previous_close": 0.92265
+		},
+		"last_quote": {
+		  "last_updated": 1684430998000000000,
+		  "timeframe": "REAL-TIME",
+		  "ask": 0.92883,
+		  "bid": 0.92877,
+		  "exchange": 48
+		}
+	}`,
+	`{
+		"market_status": "open",
+		"name": "United States dollar - Australian dollar",
+		"ticker": "C:USDAUD",
+		"type": "fx",
+		"session": {
+		  "change": 0.0104,
+		  "change_percent": 0.692,
+		  "close": 1.512722,
+		  "high": 1.51398,
+		  "low": 1.4965803,
+		  "open": 1.502449,
+		  "volume": 148378,
+		  "previous_close": 1.502449
+		},
+		"last_quote": {
+		  "last_updated": 1684431002000000000,
+		  "timeframe": "REAL-TIME",
+		  "ask": 1.51297,
+		  "bid": 1.51281,
+		  "exchange": 48
+		}
+	}`,
+}
+var indicesSnapshotTestData = []string{
+	`{
+		"TBD": "TBD"
+	}`,
 }
 
 var partialSuccessWithStocksTestData = []string{
