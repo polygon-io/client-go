@@ -14,11 +14,11 @@ func main() {
 	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
 
 	// Set parameters
-	params := models.ListAssetSnapshotsParams{}.
-		WithTickerAnyOf("X:BTCUSD,X:ETHUSD,X:FLOWUSD")
+	params := models.ListUniversalSnapshotsParams{}.
+		WithTickerAnyOf("C:USDCAD,C:USDEUR,C:USDAUD")
 
 	// Make request
-	iter := c.ListAssetSnapshots(context.Background(), params)
+	iter := c.ListUniversalSnapshots(context.Background(), params)
 
 	// do something with the result
 	for iter.Next() {
