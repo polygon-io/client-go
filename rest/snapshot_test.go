@@ -679,6 +679,22 @@ func TestListUniversalSnapshots(t *testing.T) {
 			testData: forexSnapshotTestData,
 		},
 		{
+			name:           "Indices Snapshot",
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("I:SPX,I:DJI,I:A1BSC"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=I%3ASPX%2CI%3ADJI%2CI%3AA1BSC",
+			wantResponse: `{
+				"results": [
+					` + indent(true, indicesSnapshotTestData[0], "\t\t") + `,
+					` + indent(true, indicesSnapshotTestData[1], "\t\t") + `,
+					` + indent(true, indicesSnapshotTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: indicesSnapshotTestData,
+		},
+		{
 			name:           "Partial success (200/OK with an error message in the body)",
 			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("AAPL,APx"),
 			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CAPx",
@@ -1035,6 +1051,7 @@ var cryptoSnapshotsTestData = []string{
 		}
 	  }`,
 }
+
 var forexSnapshotTestData = []string{
 	`{
 		"market_status": "open",
@@ -1103,6 +1120,63 @@ var forexSnapshotTestData = []string{
 		  "ask": 1.51297,
 		  "bid": 1.51281,
 		  "exchange": 48
+		}
+	}`,
+}
+
+var indicesSnapshotTestData = []string{
+	`{
+		"value": 4191.9800000000005,
+		"last_updated": 1684530171934000000,
+		"timeframe": "REAL-TIME",
+		"name": "Standard & Poor's 500",
+		"ticker": "I:SPX",
+		"market_status": "open",
+		"type": "indices",
+		"session": {
+			"change": -9.09,
+			"change_percent": -0.216,
+			"close": 4180.7,
+			"high": 4212.91,
+			"low": 4180.2,
+			"open": 4204.15,
+			"previous_close": 4201.07
+		}
+	}`,
+	`{
+		"value": 33426.63,
+		"last_updated": 1684530172103533800,
+		"timeframe": "REAL-TIME",
+		"name": "Dow Jones Industrial Average",
+		"ticker": "I:DJI",
+		"market_status": "closed",
+		"type": "indices",
+		"session": {
+			"change": -143,
+			"change_percent": -0.426,
+			"close": 33339.37,
+			"high": 33652.9,
+			"low": 33336.66,
+			"open": 33582.95,
+			"previous_close": 33569.5
+		}
+	}`,
+	`{
+		"value": 443.7,
+		"last_updated": 1684528800037231600,
+		"timeframe": "REAL-TIME",
+		"name": "Dow Jones Americas Basic Materials Index",
+		"ticker": "I:A1BSC",
+		"market_status": "closed",
+		"type": "indices",
+		"session": {
+			"change": -0.29,
+			"change_percent": -0.0653,
+			"close": 442.72,
+			"high": 445.92,
+			"low": 442.63,
+			"open": 443.7,
+			"previous_close": 443.99
 		}
 	}`,
 }
