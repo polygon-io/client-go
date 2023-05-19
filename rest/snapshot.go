@@ -17,7 +17,10 @@ const (
 	ListOptionsChainSnapshotPath  = "/v3/snapshot/options/{underlyingAsset}"
 	GetCryptoFullBookSnapshotPath = "/v2/snapshot/locale/global/markets/crypto/tickers/{ticker}/book"
 	GetIndicesSnapshotPath        = "/v3/snapshot/indices"
-	ListAssetSnapshots            = "/v3/snapshot"
+	ListUniversalSnapshotsPath    = "/v3/snapshot"
+
+	// Deprecated: Please use UniversalSnapshot types instead of AssetSnapshot types.
+	ListAssetSnapshots = ListUniversalSnapshotsPath
 )
 
 // SnapshotClient defines a REST client for the Polygon snapshot API.
@@ -112,22 +115,27 @@ func (ac *SnapshotClient) GetIndicesSnapshot(ctx context.Context, params *models
 	return res, err
 }
 
-// ListAssetSnapshots retrieves the snapshots for the specified tickers for the specified time. For more details see:
+// Deprecated: Please use UniversalSnapshot types instead of AssetSnapshot types.
+func (ac *SnapshotClient) ListAssetSnapshots(ctx context.Context, params *models.ListAssetSnapshotsParams, options ...models.RequestOption) *iter.Iter[models.SnapshotResponseModel] {
+	return ac.ListUniversalSnapshots(ctx, (*models.ListUniversalSnapshotsParams)(params), options...)
+}
+
+// ListUniversalSnapshots retrieves the snapshots for the specified tickers for the specified time. For more details see:
 // - https://staging.polygon.io/docs/stocks/get_v3_snapshot
 // - https://staging.polygon.io/docs/options/get_v3_snapshot
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
-//	iter := c.ListAssetSnapshots(context, params, opts...)
+//	iter := c.ListUniversalSnapshots(context, params, opts...)
 //	for iter.Next() {
 //		log.Print(iter.Item()) // do something with the current value
 //	}
 //	if iter.Err() != nil {
 //		return iter.Err()
 //	}
-func (ac *SnapshotClient) ListAssetSnapshots(ctx context.Context, params *models.ListAssetSnapshotsParams, options ...models.RequestOption) *iter.Iter[models.SnapshotResponseModel] {
-	return iter.NewIter(ctx, ListAssetSnapshots, params, func(uri string) (iter.ListResponse, []models.SnapshotResponseModel, error) {
-		res := &models.ListAssetSnapshotsResponse{}
+func (ac *SnapshotClient) ListUniversalSnapshots(ctx context.Context, params *models.ListUniversalSnapshotsParams, options ...models.RequestOption) *iter.Iter[models.SnapshotResponseModel] {
+	return iter.NewIter(ctx, ListUniversalSnapshotsPath, params, func(uri string) (iter.ListResponse, []models.SnapshotResponseModel, error) {
+		res := &models.ListUniversalSnapshotsResponse{}
 		err := ac.CallURL(ctx, http.MethodGet, uri, res, options...)
 		return res, res.Results, err
 	})
