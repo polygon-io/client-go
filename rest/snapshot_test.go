@@ -603,7 +603,7 @@ func TestGetIndicesSnapshot(t *testing.T) {
 	assert.Equal(t, &expect, res)
 }
 
-func TestListAssetSnapshots(t *testing.T) {
+func TestListUniversalSnapshots(t *testing.T) {
 	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
@@ -611,7 +611,7 @@ func TestListAssetSnapshots(t *testing.T) {
 
 	tt := []struct {
 		name           string
-		haveParams     *models.ListAssetSnapshotsParams
+		haveParams     *models.ListUniversalSnapshotsParams
 		haveRequestURL string
 		wantResponse   string
 		testData       []string
@@ -619,7 +619,7 @@ func TestListAssetSnapshots(t *testing.T) {
 	}{
 		{
 			name:           "Stock tickers",
-			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("AAPL,META,F"),
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("AAPL,META,F"),
 			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CMETA%2CF",
 			wantResponse: `{
 				"results": [
@@ -636,7 +636,7 @@ func TestListAssetSnapshots(t *testing.T) {
 		},
 		{
 			name:           "Options tickers",
-			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("O:AAPL230512C00050000,O:META230512C00020000,O:F230512C00005000"),
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("O:AAPL230512C00050000,O:META230512C00020000,O:F230512C00005000"),
 			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=O%3AAAPL230512C00050000%2CO%3AMETA230512C00020000%2CO%3AF230512C00005000",
 			wantResponse: `{
 				"results": [
@@ -652,7 +652,7 @@ func TestListAssetSnapshots(t *testing.T) {
 		},
 		{
 			name:           "Partial success (200/OK with an error message in the body)",
-			haveParams:     models.ListAssetSnapshotsParams{}.WithTickerAnyOf("AAPL,APx"),
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("AAPL,APx"),
 			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CAPx",
 			wantResponse: `{
 				"results": [
@@ -674,7 +674,7 @@ func TestListAssetSnapshots(t *testing.T) {
 			registerResponder(tc.haveRequestURL, tc.wantResponse)
 			registerResponder("https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
 
-			iter := c.ListAssetSnapshots(
+			iter := c.ListUniversalSnapshots(
 				context.Background(),
 				tc.haveParams,
 			)

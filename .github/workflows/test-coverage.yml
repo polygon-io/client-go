@@ -22,7 +22,7 @@ jobs:
       - name: go-test
         run: |
           go test -v ./... -covermode=count -coverprofile=coverage.out.temp
-          grep -v "/example" coverage.out.temp > coverage.out
+          grep -Ev '(/example|_deprecated.go)' coverage.out.temp > coverage.out
           rm coverage.out.temp
           go tool cover -func=coverage.out -o=coverage.out
       - name: go-coverage-badge  # Pass the `coverage.out` output to this action
