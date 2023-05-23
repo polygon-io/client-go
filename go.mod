@@ -9,8 +9,8 @@ require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/jarcoal/httpmock v1.3.0
-	github.com/sirupsen/logrus v1.9.0
-	github.com/stretchr/testify v1.8.2
+	github.com/sirupsen/logrus v1.9.2
+	github.com/stretchr/testify v1.8.3
 	golang.org/x/exp v0.0.0-20220414153411-bcd21879b8fd
 	gopkg.in/tomb.v2 v2.0.0-20161208151619-d5d1b5820637
 )
