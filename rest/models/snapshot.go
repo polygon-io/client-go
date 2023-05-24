@@ -251,7 +251,7 @@ type LastTradeSnapshot struct {
 	Conditions []int   `json:"c,omitempty"`
 	TradeID    string  `json:"i,omitempty"`
 	Price      float64 `json:"p,omitempty"`
-	Size       int     `json:"s,omitempty"`
+	Size       float64 `json:"s,omitempty"`
 	Timestamp  Nanos   `json:"t,omitempty"`
 	ExchangeID int     `json:"x,omitempty"`
 }
