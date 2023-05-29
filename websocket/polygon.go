@@ -166,7 +166,7 @@ func (c *Client) Error() <-chan error {
 	return c.err
 }
 
-// Close attempt to gracefully close the connection to the server.
+// Close attempts to gracefully close the connection to the server.
 func (c *Client) Close() {
 	c.mtx.Lock()
 	defer c.mtx.Unlock()
@@ -506,6 +506,13 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 		c.output <- out
 	case "V":
 		var out models.IndexValue
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+			return
+		}
+		c.output <- out
+	case "LV":
+		var out models.LaunchpadValue
 		if err := json.Unmarshal(msg, &out); err != nil {
 			c.log.Errorf("failed to unmarshal message: %v", err)
 			return

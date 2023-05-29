@@ -375,3 +375,17 @@ type IndexValue struct {
 	// The Timestamp in Unix MS.
 	Timestamp int64 `json:"t,omitempty"`
 }
+
+type LaunchpadValue struct {
+	// The event type.
+	EventType
+
+	// The value.
+	Value float64 `json:"val"`
+
+	// The ticker symbol for the given security
+	Ticker string `json:"sym"`
+
+	// The Timestamp in Unix MS.
+	Timestamp int64 `json:"s,omitempty"`
+}
