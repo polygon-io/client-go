@@ -92,9 +92,8 @@ const (
 	StocksImbalances       Topic = 15
 	StocksLULD             Topic = 16
 	StocksLaunchpadMinAggs Topic = 17
-	StocksLaunchpadSecAggs Topic = 18
-	StocksLaunchpadValue   Topic = 19
-	stocksMax              Topic = 20
+	StocksLaunchpadValue   Topic = 18
+	stocksMax              Topic = 19
 
 	optionsMin              Topic = 30
 	OptionsSecAggs          Topic = 31
@@ -102,9 +101,8 @@ const (
 	OptionsTrades           Topic = 33
 	OptionsQuotes           Topic = 34
 	OptionsLaunchpadMinAggs Topic = 35
-	OptionsLaunchpadSecAggs Topic = 36
-	OptionsLaunchpadValue   Topic = 37
-	optionsMax              Topic = 38
+	OptionsLaunchpadValue   Topic = 36
+	optionsMax              Topic = 37
 
 	forexMin              Topic = 50
 	ForexMinAggs          Topic = 51

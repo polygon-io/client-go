@@ -25,7 +25,6 @@ func main() {
 	defer c.Close()
 
 	err = c.Subscribe(polygonws.StocksLaunchpadMinAggs, "MSFT, META")
-	// err = c.Subscribe(polygonws.StocksLaunchpadSecAggs, "AAPL")
 	// err = c.Subscribe(polygonws.StocksLaunchpadValue, "*")
 	if err != nil {
 		log.Error(err)
