@@ -428,12 +428,22 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 		}
 		c.output <- out
 	case "AM":
-		var out models.EquityAgg
-		if err := json.Unmarshal(msg, &out); err != nil {
-			c.log.Errorf("failed to unmarshal message: %v", err)
-			return
+		switch c.market {
+		case Forex, Crypto:
+			var out models.CurrencyAgg
+			if err := json.Unmarshal(msg, &out); err != nil {
+				c.log.Errorf("failed to unmarshal message: %v", err)
+				return
+			}
+			c.output <- out
+		default:
+			var out models.EquityAgg
+			if err := json.Unmarshal(msg, &out); err != nil {
+				c.log.Errorf("failed to unmarshal message: %v", err)
+				return
+			}
+			c.output <- out
 		}
-		c.output <- out
 	case "CA":
 		var out models.CurrencyAgg
 		if err := json.Unmarshal(msg, &out); err != nil {

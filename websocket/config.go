@@ -120,10 +120,8 @@ const (
 	CryptoLaunchpadValue   Topic = 76
 	cryptoMax              Topic = 77
 
-	IndexMinAggs          Topic = 90
-	IndexValue            Topic = 91
-	IndexLaunchpadMinAggs Topic = 92
-	IndexLaunchpadValue   Topic = 93
+	IndexMinAggs Topic = 90
+	IndexValue   Topic = 91
 )
 
 func (t Topic) prefix() string {
@@ -142,8 +140,6 @@ func (t Topic) prefix() string {
 		return "LULD"
 	case StocksLaunchpadMinAggs:
 		return "AM"
-	case StocksLaunchpadSecAggs:
-		return "A"
 	case StocksLaunchpadValue:
 		return "LV"
 	case OptionsSecAggs:
@@ -156,8 +152,6 @@ func (t Topic) prefix() string {
 		return "Q"
 	case OptionsLaunchpadMinAggs:
 		return "AM"
-	case OptionsLaunchpadSecAggs:
-		return "A"
 	case OptionsLaunchpadValue:
 		return "LV"
 	case ForexMinAggs:
@@ -184,10 +178,6 @@ func (t Topic) prefix() string {
 		return "AM"
 	case IndexValue:
 		return "V"
-	case IndexLaunchpadMinAggs:
-		return "AM"
-	case IndexLaunchpadValue:
-		return "LV"
 	}
 	return ""
 }

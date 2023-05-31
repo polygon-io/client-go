@@ -16,7 +16,7 @@ func main() {
 	c, err := polygonws.New(polygonws.Config{
 		APIKey: os.Getenv("POLYGON_API_KEY"),
 		Feed:   polygonws.LaunchpadFeed,
-		Market: polygonws.Stocks,
+		Market: polygonws.Stocks, // Change the Market to match for the other examples
 		Log:    log,
 	})
 	if err != nil {
@@ -24,8 +24,15 @@ func main() {
 	}
 	defer c.Close()
 
-	err = c.Subscribe(polygonws.StocksLaunchpadMinAggs, "MSFT, META")
-	// err = c.Subscribe(polygonws.StocksLaunchpadValue, "*")
+	err = c.Subscribe(polygonws.StocksLaunchpadMinAggs, "*")
+	// _ = c.Subscribe(polygonws.StocksLaunchpadValue, "*")
+	// _ = c.Subscribe(polygonws.OptionsLaunchpadMinAggs, "O:A230616C00070000")
+	// _ = c.Subscribe(polygonws.OptionsLaunchpadValue, "O:A230616C00070000")
+	// _ = c.Subscribe(polygonws.ForexLaunchpadMinAggs, "*")
+	// _ = c.Subscribe(polygonws.ForexLaunchpadValue, "*")
+	// _ = c.Subscribe(polygonws.CryptoLaunchpadMinAggs, "*")
+	// _ = c.Subscribe(polygonws.CryptoLaunchpadValue, "*")
+
 	if err != nil {
 		log.Error(err)
 		return
@@ -49,13 +56,14 @@ func main() {
 			if !more {
 				return
 			}
+
 			switch out.(type) {
+			case models.CurrencyAgg:
+				log.WithFields(logrus.Fields{"currency aggregate": out}).Info()
 			case models.EquityAgg:
-				log.WithFields(logrus.Fields{"aggregate": out}).Info()
-			case models.EquityTrade:
-				log.WithFields(logrus.Fields{"trade": out}).Info()
-			case models.EquityQuote:
-				log.WithFields(logrus.Fields{"quote": out}).Info()
+				log.WithFields(logrus.Fields{"equity aggregate": out}).Info()
+			case models.LaunchpadValue:
+				log.WithFields(logrus.Fields{"value": out}).Info()
 			}
 		}
 	}
