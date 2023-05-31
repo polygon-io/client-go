@@ -47,7 +47,9 @@ var snapshot1 = `{
 		"l": 20.506,
 		"o": 20.506,
 		"v": 5000,
-		"vw": 20.5105
+		"vw": 20.5105,
+		"t": 1684428060000,
+		"n": 4
 	},
 	"prevDay": {
 		"c": 20.63,
@@ -82,7 +84,7 @@ var snapshot2 = `{
 	"lastTrade": {
 		"i": "23432",
 		"p": 313.1296,
-		"s": 100,
+		"s": 100.0,
 		"t": 1649083047682204000,
 		"x": 4
 	},
@@ -93,7 +95,9 @@ var snapshot2 = `{
 		"l": 312.66,
 		"o": 312.78,
 		"v": 54315,
-		"vw": 312.9441
+		"vw": 312.9441,
+		"t": 1684428060000,
+		"n": 4
 	},
 	"prevDay": {
 		"c": 309.42,
@@ -647,6 +651,54 @@ func TestListUniversalSnapshots(t *testing.T) {
 			testData: optionsSnapshotsTestData,
 		},
 		{
+			name:           "Crypto Snapshot",
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("X:BTCUSD,X:ETHUSD,X:FLOWUSD"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=X%3ABTCUSD%2CX%3AETHUSD%2CX%3AFLOWUSD",
+			wantResponse: `{
+				"results": [
+					` + indent(true, cryptoSnapshotsTestData[0], "\t\t") + `,
+					` + indent(true, cryptoSnapshotsTestData[1], "\t\t") + `,
+					` + indent(true, cryptoSnapshotsTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: cryptoSnapshotsTestData,
+		},
+		{
+			name:           "Forex Snapshot",
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("C:USDCAD,C:USDEUR,C:USDAUD"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=C%3AUSDCAD%2CC%3AUSDEUR%2CC%3AUSDAUD",
+			wantResponse: `{
+				"results": [
+					` + indent(true, forexSnapshotTestData[0], "\t\t") + `,
+					` + indent(true, forexSnapshotTestData[1], "\t\t") + `,
+					` + indent(true, forexSnapshotTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: forexSnapshotTestData,
+		},
+		{
+			name:           "Indices Snapshot",
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("I:SPX,I:DJI,I:A1BSC"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=I%3ASPX%2CI%3ADJI%2CI%3AA1BSC",
+			wantResponse: `{
+				"results": [
+					` + indent(true, indicesSnapshotTestData[0], "\t\t") + `,
+					` + indent(true, indicesSnapshotTestData[1], "\t\t") + `,
+					` + indent(true, indicesSnapshotTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: indicesSnapshotTestData,
+		},
+		{
 			name:           "Partial success (200/OK with an error message in the body)",
 			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("AAPL,APx"),
 			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CAPx",
@@ -675,11 +727,9 @@ func TestListUniversalSnapshots(t *testing.T) {
 				tc.haveParams,
 			)
 
-			// iter creation
 			require.NoError(t, iter.Err())
 			require.NotNil(t, iter.Item())
 
-			// correct values
 			var iterCount int
 			for iter.Next() {
 				var gotSnapshot models.SnapshotResponseModel
@@ -918,6 +968,219 @@ var optionsSnapshotsTestData = []string{
 		  "price": 11.93,
 		  "ticker": "F",
 		  "timeframe": "REAL-TIME"
+		}
+	}`,
+}
+
+var cryptoSnapshotsTestData = []string{
+	`{
+		"market_status": "open",
+		"name": "Bitcoin - United States Dollar",
+		"ticker": "X:BTCUSD",
+		"type": "crypto",
+		"session": {
+		  "change": -181,
+		  "change_percent": -0.661,
+		  "close": 27236.1,
+		  "high": 27506,
+		  "low": 27010,
+		  "open": 27402.3,
+		  "volume": 10012.03414028,
+		  "previous_close": 27400.74,
+		  "price": 27220
+		},
+		"last_trade": {
+		  "participant_timestamp": 1684422449502000000,
+		  "timeframe": "REAL-TIME",
+		  "id": "285449387",
+		  "price": 27220,
+		  "exchange": 6,
+		  "conditions": [
+			1
+		  ]
+		}
+	  }`,
+	`{
+		"market_status": "open",
+		"name": "Ethereum - United States Dollar",
+		"ticker": "X:ETHUSD",
+		"type": "crypto",
+		"session": {
+		  "change": -5.53,
+		  "change_percent": -0.304,
+		  "close": 1817.14,
+		  "high": 1833.4,
+		  "low": 1802.26,
+		  "open": 1823.8,
+		  "volume": 47673.72258305,
+		  "previous_close": 1821.84,
+		  "price": 1816.31
+		},
+		"last_trade": {
+		  "participant_timestamp": 1684422449301037000,
+		  "timeframe": "REAL-TIME",
+		  "id": "451453400",
+		  "price": 1816.31,
+		  "exchange": 1,
+		  "conditions": [
+			1
+		  ]
+		}
+	  }`,
+	`{
+		"market_status": "open",
+		"name": "Flow - United States Dollar",
+		"ticker": "X:FLOWUSD",
+		"type": "crypto",
+		"session": {
+		  "change": -0.006,
+		  "change_percent": -0.759,
+		  "close": 0.784,
+		  "high": 0.793,
+		  "low": 0.779,
+		  "open": 0.791,
+		  "volume": 89094.52551417,
+		  "previous_close": 0.79,
+		  "price": 0.784
+		},
+		"last_trade": {
+		  "participant_timestamp": 1684422355917759000,
+		  "timeframe": "REAL-TIME",
+		  "id": "1224329",
+		  "price": 0.784,
+		  "exchange": 1,
+		  "conditions": [
+			1
+		  ]
+		}
+	  }`,
+}
+
+var forexSnapshotTestData = []string{
+	`{
+		"market_status": "open",
+		"name": "United States dollar - Canadian dollar",
+		"ticker": "C:USDCAD",
+		"type": "fx",
+		"session": {
+		  "change": 0.00518,
+		  "change_percent": 0.385,
+		  "close": 1.35178,
+		  "high": 1.35244,
+		  "low": 1.34479,
+		  "open": 1.34667,
+		  "volume": 133712,
+		  "previous_close": 1.34667
+		},
+		"last_quote": {
+		  "last_updated": 1684431002000000000,
+		  "timeframe": "REAL-TIME",
+		  "ask": 1.35191,
+		  "bid": 1.35185,
+		  "exchange": 48
+		}
+	}`,
+	`{
+		"market_status": "open",
+		"name": "United States dollar - Euro",
+		"ticker": "C:USDEUR",
+		"type": "fx",
+		"session": {
+		  "change": 0.00612,
+		  "change_percent": 0.663,
+		  "close": 0.92877,
+		  "high": 0.92913,
+		  "low": 0.9215,
+		  "open": 0.92266,
+		  "volume": 58275,
+		  "previous_close": 0.92265
+		},
+		"last_quote": {
+		  "last_updated": 1684430998000000000,
+		  "timeframe": "REAL-TIME",
+		  "ask": 0.92883,
+		  "bid": 0.92877,
+		  "exchange": 48
+		}
+	}`,
+	`{
+		"market_status": "open",
+		"name": "United States dollar - Australian dollar",
+		"ticker": "C:USDAUD",
+		"type": "fx",
+		"session": {
+		  "change": 0.0104,
+		  "change_percent": 0.692,
+		  "close": 1.512722,
+		  "high": 1.51398,
+		  "low": 1.4965803,
+		  "open": 1.502449,
+		  "volume": 148378,
+		  "previous_close": 1.502449
+		},
+		"last_quote": {
+		  "last_updated": 1684431002000000000,
+		  "timeframe": "REAL-TIME",
+		  "ask": 1.51297,
+		  "bid": 1.51281,
+		  "exchange": 48
+		}
+	}`,
+}
+
+var indicesSnapshotTestData = []string{
+	`{
+		"value": 4191.9800000000005,
+		"last_updated": 1684530171934000000,
+		"timeframe": "REAL-TIME",
+		"name": "Standard & Poor's 500",
+		"ticker": "I:SPX",
+		"market_status": "open",
+		"type": "indices",
+		"session": {
+			"change": -9.09,
+			"change_percent": -0.216,
+			"close": 4180.7,
+			"high": 4212.91,
+			"low": 4180.2,
+			"open": 4204.15,
+			"previous_close": 4201.07
+		}
+	}`,
+	`{
+		"value": 33426.63,
+		"last_updated": 1684530172103533800,
+		"timeframe": "REAL-TIME",
+		"name": "Dow Jones Industrial Average",
+		"ticker": "I:DJI",
+		"market_status": "closed",
+		"type": "indices",
+		"session": {
+			"change": -143,
+			"change_percent": -0.426,
+			"close": 33339.37,
+			"high": 33652.9,
+			"low": 33336.66,
+			"open": 33582.95,
+			"previous_close": 33569.5
+		}
+	}`,
+	`{
+		"value": 443.7,
+		"last_updated": 1684528800037231600,
+		"timeframe": "REAL-TIME",
+		"name": "Dow Jones Americas Basic Materials Index",
+		"ticker": "I:A1BSC",
+		"market_status": "closed",
+		"type": "indices",
+		"session": {
+			"change": -0.29,
+			"change_percent": -0.0653,
+			"close": 442.72,
+			"high": 445.92,
+			"low": 442.63,
+			"open": 443.7,
+			"previous_close": 443.99
 		}
 	}`,
 }

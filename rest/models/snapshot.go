@@ -251,7 +251,7 @@ type LastTradeSnapshot struct {
 	Conditions []int   `json:"c,omitempty"`
 	TradeID    string  `json:"i,omitempty"`
 	Price      float64 `json:"p,omitempty"`
-	Size       int     `json:"s,omitempty"`
+	Size       float64 `json:"s,omitempty"`
 	Timestamp  Nanos   `json:"t,omitempty"`
 	ExchangeID int     `json:"x,omitempty"`
 }
@@ -265,6 +265,8 @@ type MinuteSnapshot struct {
 	Open                  float64 `json:"o,omitempty"`
 	Volume                float64 `json:"v,omitempty"`
 	VolumeWeightedAverage float64 `json:"vw,omitempty"`
+	NumberOfTransactions  float64 `json:"n,omitempty"`
+	Timestamp             Millis  `json:"t,omitempty"`
 	OTC                   bool    `json:"otc,omitempty"`
 }
 
@@ -436,23 +438,24 @@ type ListUniversalSnapshotsResponse struct {
 
 // SnapshotResponseModel contains all the information that might come back in a SnapshotResponse.
 type SnapshotResponseModel struct {
-	Name         string            `json:"name,omitempty"`
-	MarketStatus string            `json:"market_status,omitempty"`
-	Ticker       string            `json:"ticker,omitempty"`
-	Type         string            `json:"type,omitempty"`
-	LastQuote    SnapshotLastQuote `json:"last_quote,omitempty"`
-	LastTrade    SnapshotLastTrade `json:"last_trade,omitempty"`
-	Session      Session           `json:"session,omitempty"`
-
-	BreakEvenPrice    float64         `json:"break_even_price,omitempty"`
-	Details           Details         `json:"details,omitempty"`
-	Greeks            Greeks          `json:"greeks,omitempty"`
-	ImpliedVolatility float64         `json:"implied_volatility,omitempty"`
-	OpenInterest      float64         `json:"open_interest,omitempty"`
-	UnderlyingAsset   UnderlyingAsset `json:"underlying_asset,omitempty"`
-
-	Error   string `json:"error"`
-	Message string `json:"message"`
+	Name              string            `json:"name,omitempty"`
+	MarketStatus      string            `json:"market_status,omitempty"`
+	Ticker            string            `json:"ticker,omitempty"`
+	Type              string            `json:"type,omitempty"`
+	LastQuote         SnapshotLastQuote `json:"last_quote,omitempty"`
+	LastTrade         SnapshotLastTrade `json:"last_trade,omitempty"`
+	Session           Session           `json:"session,omitempty"`
+	BreakEvenPrice    float64           `json:"break_even_price,omitempty"`
+	Details           Details           `json:"details,omitempty"`
+	Greeks            Greeks            `json:"greeks,omitempty"`
+	ImpliedVolatility float64           `json:"implied_volatility,omitempty"`
+	OpenInterest      float64           `json:"open_interest,omitempty"`
+	UnderlyingAsset   UnderlyingAsset   `json:"underlying_asset,omitempty"`
+	Value             float64           `json:"value,omitempty"`
+	LastUpdated       int64             `json:"last_updated,omitempty"`
+	Timeframe         string            `json:"timeframe,omitempty"`
+	Error             string            `json:"error"`
+	Message           string            `json:"message"`
 }
 
 // SnapshotLastQuote contains all the information that might come back in the last_quote attribute of a SnapshotResponse.
@@ -464,18 +467,20 @@ type SnapshotLastQuote struct {
 	LastUpdated int64   `json:"last_updated,omitempty"`
 	Midpoint    float64 `json:"midpoint,omitempty"`
 	Timeframe   string  `json:"timeframe,omitempty"`
+	Exchange    int64   `json:"exchange,omitempty"`
 }
 
 // SnapshotLastTrade contains all the information that might come back in the last_trade attribute of a SnapshotResponse.
 type SnapshotLastTrade struct {
-	Timestamp   int64   `json:"sip_timestamp,omitempty"`
-	Conditions  []int32 `json:"conditions,omitempty"`
-	Price       float64 `json:"price,omitempty"`
-	Size        uint32  `json:"size,omitempty"`
-	Exchange    int32   `json:"exchange,omitempty"`
-	Timeframe   string  `json:"timeframe,omitempty"`
-	ID          string  `json:"id,omitempty"`
-	LastUpdated int64   `json:"last_updated,omitempty"`
+	Timestamp            int64   `json:"sip_timestamp,omitempty"`
+	ParticipantTimestamp int64   `json:"participant_timestamp,omitempty"`
+	Conditions           []int32 `json:"conditions,omitempty"`
+	Price                float64 `json:"price,omitempty"`
+	Size                 uint32  `json:"size,omitempty"`
+	Exchange             int32   `json:"exchange,omitempty"`
+	Timeframe            string  `json:"timeframe,omitempty"`
+	ID                   string  `json:"id,omitempty"`
+	LastUpdated          int64   `json:"last_updated,omitempty"`
 }
 
 // Details contains all the information that might come back in the details attribute of a SnapshotResponse.
