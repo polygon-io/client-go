@@ -16,7 +16,7 @@ func main() {
 	c, err := polygonws.New(polygonws.Config{
 		APIKey: os.Getenv("POLYGON_API_KEY"),
 		Feed:   polygonws.LaunchpadFeed,
-		Market: polygonws.Stocks, // Change the Market to match for the other examples
+		Market: polygonws.Stocks, // Change the Market to match when running other examples
 		Log:    log,
 	})
 	if err != nil {
