@@ -383,9 +383,9 @@ type LaunchpadValue struct {
 	// The value.
 	Value float64 `json:"val"`
 
-	// The ticker symbol for the given security
+	// The ticker symbol for the given security.
 	Ticker string `json:"sym"`
 
-	// The Timestamp in Unix MS.
+	// The Timestamp in nanoseconds.
 	Timestamp int64 `json:"t,omitempty"`
 }
