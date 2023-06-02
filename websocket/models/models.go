@@ -387,5 +387,5 @@ type LaunchpadValue struct {
 	Ticker string `json:"sym"`
 
 	// The Timestamp in Unix MS.
-	Timestamp int64 `json:"s,omitempty"`
+	Timestamp int64 `json:"t,omitempty"`
 }
