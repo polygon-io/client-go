@@ -14,9 +14,9 @@ func main() {
 	log.SetLevel(logrus.DebugLevel)
 	log.SetFormatter(&logrus.JSONFormatter{})
 	c, err := polygonws.New(polygonws.Config{
-		APIKey: os.Getenv("POLYGON_API_KEY"),
+		APIKey: "UYHEvxipOA61luOlcUhnscVpD2fBKngq",
 		Feed:   polygonws.LaunchpadFeed,
-		Market: polygonws.Stocks, // Change the Market to match when running other examples
+		Market: polygonws.Options, // Change the Market to match when running other examples
 		Log:    log,
 	})
 	if err != nil {
@@ -24,10 +24,10 @@ func main() {
 	}
 	defer c.Close()
 
-	err = c.Subscribe(polygonws.StocksLaunchpadMinAggs, "*")
+	//err = c.Subscribe(polygonws.CryptoLaunchpadMinAggs, "*")
 	// _ = c.Subscribe(polygonws.StocksLaunchpadValue, "*")
-	// _ = c.Subscribe(polygonws.OptionsLaunchpadMinAggs, "O:A230616C00070000")
-	// _ = c.Subscribe(polygonws.OptionsLaunchpadValue, "O:A230616C00070000")
+	_ = c.Subscribe(polygonws.OptionsLaunchpadMinAggs, "O:A230616C00070000")
+	//_ = c.Subscribe(polygonws.OptionsLaunchpadValue, "O:A230616C00070000")
 	// _ = c.Subscribe(polygonws.ForexLaunchpadMinAggs, "*")
 	// _ = c.Subscribe(polygonws.ForexLaunchpadValue, "*")
 	// _ = c.Subscribe(polygonws.CryptoLaunchpadMinAggs, "*")
