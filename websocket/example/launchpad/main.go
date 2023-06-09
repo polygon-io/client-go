@@ -14,7 +14,7 @@ func main() {
 	log.SetLevel(logrus.DebugLevel)
 	log.SetFormatter(&logrus.JSONFormatter{})
 	c, err := polygonws.New(polygonws.Config{
-		APIKey: "UYHEvxipOA61luOlcUhnscVpD2fBKngq",
+		APIKey: os.Getenv("POLYGON_API_KEY"),
 		Feed:   polygonws.LaunchpadFeed,
 		Market: polygonws.Options, // Change the Market to match when running other examples
 		Log:    log,
