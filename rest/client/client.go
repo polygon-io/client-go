@@ -76,7 +76,64 @@ func (c *Client) CallURL(ctx context.Context, method, uri string, response any, 
 	req.SetHeaderMultiValues(options.Headers)
 	req.SetResult(response).SetError(&models.ErrorResponse{})
 
+	// Enable Rusty connection traceinfo (before request)
+	if options.Trace {
+		req.EnableTrace()
+	}
+
 	res, err := req.Execute(method, uri)
+
+	// Explore request and response trace info
+	if options.Trace {
+
+		// Explore trace info
+		fmt.Println("Request Info:")
+		ti := res.Request.TraceInfo()
+		fmt.Println("  DNSLookup     :", ti.DNSLookup)
+		fmt.Println("  ConnTime      :", ti.ConnTime)
+		fmt.Println("  TCPConnTime   :", ti.TCPConnTime)
+		fmt.Println("  TLSHandshake  :", ti.TLSHandshake)
+		fmt.Println("  ServerTime    :", ti.ServerTime)
+		fmt.Println("  ResponseTime  :", ti.ResponseTime)
+		fmt.Println("  TotalTime     :", ti.TotalTime)
+		fmt.Println("  IsConnReused  :", ti.IsConnReused)
+		fmt.Println("  IsConnWasIdle :", ti.IsConnWasIdle)
+		fmt.Println("  ConnIdleTime  :", ti.ConnIdleTime)
+		fmt.Println("  RequestAttempt:", ti.RequestAttempt)
+		fmt.Println("  RemoteAddr    :", ti.RemoteAddr.String())
+		fmt.Println("  Request URL   :", method, uri)
+		fmt.Println()
+
+		fmt.Println("Request Headers:")
+		sanitizedHeaders := req.Header
+		for k := range sanitizedHeaders {
+			if k == "Authorization" {
+				sanitizedHeaders[k] = []string{"REDACTED"}
+			}
+		}
+		for k, v := range sanitizedHeaders {
+			fmt.Printf("  %v: %v\n", k, v)
+		}
+		fmt.Println()
+
+		// Explore response object
+		fmt.Println("Response Info:")
+		fmt.Println("  Error      :", err)
+		fmt.Println("  Status Code:", res.StatusCode())
+		fmt.Println("  Status     :", res.Status())
+		fmt.Println("  Proto      :", res.Proto())
+		fmt.Println("  Time       :", res.Time())
+		fmt.Println("  Received At:", res.ReceivedAt())
+		fmt.Println()
+
+		fmt.Println("Response Headers:")
+		for k, v := range res.Header() {
+			fmt.Printf("  %v: %v\n", k, v)
+		}
+		fmt.Println()
+
+	}
+
 	if err != nil {
 		return fmt.Errorf("failed to execute request: %w", err)
 	} else if res.IsError() {
@@ -86,18 +143,6 @@ func (c *Client) CallURL(ctx context.Context, method, uri string, response any, 
 			errRes.RequestID = res.Header().Get("X-Request-ID")
 		}
 		return errRes
-	}
-
-	if options.Trace {
-		fmt.Printf("Request URL: %s\n", uri)
-		sanitizedHeaders := req.Header
-		for k := range sanitizedHeaders {
-			if k == "Authorization" {
-				sanitizedHeaders[k] = []string{"REDACTED"}
-			}
-		}
-		fmt.Printf("Request Headers: %s\n", sanitizedHeaders)
-		fmt.Printf("Response Headers: %+v\n", res.Header())
 	}
 
 	return nil
