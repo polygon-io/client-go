@@ -20,8 +20,15 @@ type Config struct {
 	// client to reconnect indefinitely until the user closes it.
 	MaxRetries *uint64
 
-	// RawData is a flag indicating whether data should be returned as a raw JSON.
+	// RawData is a flag indicating whether data should be returned as a raw JSON or raw bytes. If BypassRawDataRouting is unset
+	// then the data will be returned as raw JSON, otherwise it will be raw bytes.
 	RawData bool
+
+	// BypassRawDataRouting is a flag that interacts with the RawData flag. If RawData flag is unset then this flag is ignored.
+	// If RawData is `true`, then this flag indicates whether the raw data should be parsed as json.RawMessage
+	// and routed via the client's internal logic (`BypassRawDataRouting=false`), or returned to the application code as []byte (`BypassRawDataRouting=true`).
+	// If this flag is `true`, it's up to the caller to handle all message types including auth and subscription responses.
+	BypassRawDataRouting bool
 
 	// Log is an optional logger. Any logger implementation can be used as long as it
 	// implements the basic Logger interface. Omitting this will disable client logging.
