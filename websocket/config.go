@@ -24,10 +24,10 @@ type Config struct {
 	// then the data will be returned as raw JSON, otherwise it will be raw bytes.
 	RawData bool
 
-	// BypassRawDataRouting is a flag that interacts with the RawData flag. If RawData flag is unset then this flag is ignore.
-	// If both this flag and RawData is set then this flag indicates whether the raw data should be parsed as raw JSON
-	// and routed via the client's internal logic.
-	// Enabling this flag means it us up to caller to handle all message types including auth and subscription responses.
+	// BypassRawDataRouting is a flag that interacts with the RawData flag. If RawData flag is unset then this flag is ignored.
+	// If RawData is `true`, then this flag indicates whether the raw data should be parsed as json.RawMessage
+	// and routed via the client's internal logic (`BypassRawDataRouting=false`), or returned to the application code as []byte (`BypassRawDataRouting=true`).
+	// If this flag is `true`, it's up to the caller to handle all message types including auth and subscription responses.
 	BypassRawDataRouting bool
 
 	// Log is an optional logger. Any logger implementation can be used as long as it
