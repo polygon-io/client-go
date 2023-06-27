@@ -16,7 +16,7 @@ func main() {
 	c, err := polygonws.New(polygonws.Config{
 		APIKey: os.Getenv("POLYGON_API_KEY"),
 		Feed:   polygonws.LaunchpadFeed,
-		Market: polygonws.Options, // Change the Market to match when running other examples
+		Market: polygonws.Stocks, // Change Market to match examples below (Stocks, Options, Forex, or Crypto)
 		Log:    log,
 	})
 	if err != nil {
@@ -24,14 +24,21 @@ func main() {
 	}
 	defer c.Close()
 
+	// Stocks - make sure you change "Market: polygonws.Stocks" above in the polygonws.Config
+	err = c.Subscribe(polygonws.StocksLaunchpadMinAggs, "*")
+	//err = c.Subscribe(polygonws.StocksLaunchpadValue, "*")
+
+	// Options - make sure you change "Market: polygonws.Options" above in the polygonws.Config
+	//err = c.Subscribe(polygonws.OptionsLaunchpadMinAggs, "O:A230616C00070000")
+	//err = c.Subscribe(polygonws.OptionsLaunchpadValue, "O:A230616C00070000")
+
+	// Forex - make sure you change "Market: polygonws.Forex" above in the polygonws.Config
+	//err = c.Subscribe(polygonws.ForexLaunchpadMinAggs, "*")
+	//err = c.Subscribe(polygonws.ForexLaunchpadValue, "*")
+
+	// Crypto - make sure you change "Market: polygonws.Crypto" above in the polygonws.Config
 	//err = c.Subscribe(polygonws.CryptoLaunchpadMinAggs, "*")
-	// _ = c.Subscribe(polygonws.StocksLaunchpadValue, "*")
-	_ = c.Subscribe(polygonws.OptionsLaunchpadMinAggs, "O:A230616C00070000")
-	//_ = c.Subscribe(polygonws.OptionsLaunchpadValue, "O:A230616C00070000")
-	// _ = c.Subscribe(polygonws.ForexLaunchpadMinAggs, "*")
-	// _ = c.Subscribe(polygonws.ForexLaunchpadValue, "*")
-	// _ = c.Subscribe(polygonws.CryptoLaunchpadMinAggs, "*")
-	// _ = c.Subscribe(polygonws.CryptoLaunchpadValue, "*")
+	//err = c.Subscribe(polygonws.CryptoLaunchpadValue, "*")
 
 	if err != nil {
 		log.Error(err)
