@@ -461,14 +461,14 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 			}
 			c.output <- out
 		}
-	case "CA":
+	case "CA", "CAS":
 		var out models.CurrencyAgg
 		if err := json.Unmarshal(msg, &out); err != nil {
 			c.log.Errorf("failed to unmarshal message: %v", err)
 			return
 		}
 		c.output <- out
-	case "XA":
+	case "XA", "XAS":
 		var out models.CurrencyAgg
 		if err := json.Unmarshal(msg, &out); err != nil {
 			c.log.Errorf("failed to unmarshal message: %v", err)
