@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/cenkalti/backoff/v4 v4.2.1
 	github.com/go-playground/form/v4 v4.2.0
-	github.com/go-playground/validator/v10 v10.14.1
+	github.com/go-playground/validator/v10 v10.15.0
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/jarcoal/httpmock v1.3.0
