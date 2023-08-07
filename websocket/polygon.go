@@ -43,9 +43,10 @@ type Client struct {
 	wQueue chan json.RawMessage
 	subs   subscriptions
 
-	rawData bool
-	output  chan any
-	err     chan error
+	rawData              bool
+	bypassRawDataRouting bool
+	output               chan any
+	err                  chan error
 
 	log Logger
 }
@@ -57,17 +58,18 @@ func New(config Config) (*Client, error) {
 	}
 
 	c := &Client{
-		apiKey:  config.APIKey,
-		feed:    config.Feed,
-		market:  config.Market,
-		backoff: backoff.NewExponentialBackOff(),
-		rQueue:  make(chan json.RawMessage, 10000),
-		wQueue:  make(chan json.RawMessage, 1000),
-		subs:    make(subscriptions),
-		rawData: config.RawData,
-		output:  make(chan any, 100000),
-		err:     make(chan error),
-		log:     config.Log,
+		apiKey:               config.APIKey,
+		feed:                 config.Feed,
+		market:               config.Market,
+		backoff:              backoff.NewExponentialBackOff(),
+		rQueue:               make(chan json.RawMessage, 10000),
+		wQueue:               make(chan json.RawMessage, 1000),
+		subs:                 make(subscriptions),
+		rawData:              config.RawData,
+		bypassRawDataRouting: config.BypassRawDataRouting,
+		output:               make(chan any, 100000),
+		err:                  make(chan error),
+		log:                  config.Log,
 	}
 
 	uri, err := url.Parse(string(c.feed))
@@ -353,6 +355,11 @@ func (c *Client) process() (err error) {
 		case <-c.ptomb.Dying():
 			return nil
 		case data := <-c.rQueue:
+			if c.rawData && c.bypassRawDataRouting {
+				c.output <- data // push raw bytes to output channel
+				continue
+			}
+
 			var msgs []json.RawMessage
 			if err := json.Unmarshal(data, &msgs); err != nil {
 				c.log.Errorf("failed to process raw messages: %v", err)
@@ -415,7 +422,7 @@ func (c *Client) handleStatus(msg json.RawMessage) error {
 
 func (c *Client) handleData(eventType string, msg json.RawMessage) {
 	if c.rawData {
-		c.output <- msg // push raw data to output channel
+		c.output <- msg // push raw JSON to output channel
 		return
 	}
 
@@ -454,14 +461,14 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 			}
 			c.output <- out
 		}
-	case "CA":
+	case "CA", "CAS":
 		var out models.CurrencyAgg
 		if err := json.Unmarshal(msg, &out); err != nil {
 			c.log.Errorf("failed to unmarshal message: %v", err)
 			return
 		}
 		c.output <- out
-	case "XA":
+	case "XA", "XAS":
 		var out models.CurrencyAgg
 		if err := json.Unmarshal(msg, &out); err != nil {
 			c.log.Errorf("failed to unmarshal message: %v", err)
