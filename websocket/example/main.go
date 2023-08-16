@@ -34,7 +34,7 @@ func main() {
 
 	// quotes
 	//_ = c.Subscribe(polygonws.StocksQuotes, "*")
-	_ = c.Subscribe(polygonws.StocksQuotes, "SPY")	
+	_ = c.Subscribe(polygonws.StocksQuotes, "SPY")
 
 	if err := c.Connect(); err != nil {
 		log.Error(err)

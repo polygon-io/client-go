@@ -346,10 +346,10 @@ type Level2Book struct {
 	Pair string `json:"pair,omitempty"`
 
 	// An array of bid prices with a maximum depth of 100.
-	BidPrices []float64 `json:"b,omitempty"`
+	BidPrices [][]float64 `json:"b,omitempty"`
 
 	// An array of ask prices with a maximum depth of 100.
-	AskPrices []float64 `json:"a,omitempty"`
+	AskPrices [][]float64 `json:"a,omitempty"`
 
 	// The Timestamp in Unix MS.
 	Timestamp int64 `json:"t,omitempty"`
@@ -373,5 +373,19 @@ type IndexValue struct {
 	Ticker string `json:"T"`
 
 	// The Timestamp in Unix MS.
+	Timestamp int64 `json:"t,omitempty"`
+}
+
+type LaunchpadValue struct {
+	// The event type.
+	EventType
+
+	// The value.
+	Value float64 `json:"val"`
+
+	// The ticker symbol for the given security.
+	Ticker string `json:"sym"`
+
+	// The Timestamp in nanoseconds.
 	Timestamp int64 `json:"t,omitempty"`
 }

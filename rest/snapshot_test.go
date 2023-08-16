@@ -3,12 +3,14 @@ package polygon_test
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
 	polygon "github.com/polygon-io/client-go/rest"
 	"github.com/polygon-io/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var snapshot1 = `{
@@ -45,7 +47,9 @@ var snapshot1 = `{
 		"l": 20.506,
 		"o": 20.506,
 		"v": 5000,
-		"vw": 20.5105
+		"vw": 20.5105,
+		"t": 1684428060000,
+		"n": 4
 	},
 	"prevDay": {
 		"c": 20.63,
@@ -80,7 +84,7 @@ var snapshot2 = `{
 	"lastTrade": {
 		"i": "23432",
 		"p": 313.1296,
-		"s": 100,
+		"s": 100.0,
 		"t": 1649083047682204000,
 		"x": 4
 	},
@@ -91,7 +95,9 @@ var snapshot2 = `{
 		"l": 312.66,
 		"o": 312.78,
 		"v": 54315,
-		"vw": 312.9441
+		"vw": 312.9441,
+		"t": 1684428060000,
+		"n": 4
 	},
 	"prevDay": {
 		"c": 309.42,
@@ -595,4 +601,633 @@ func TestGetIndicesSnapshot(t *testing.T) {
 	err = json.Unmarshal([]byte(expectedIndicesSnapshotResponse), &expect)
 	assert.Nil(t, err)
 	assert.Equal(t, &expect, res)
+}
+
+func TestListUniversalSnapshots(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	tt := []struct {
+		name           string
+		haveParams     *models.ListUniversalSnapshotsParams
+		haveRequestURL string
+		wantResponse   string
+		testData       []string
+		wantErr        bool
+	}{
+		{
+			name:           "Stock tickers",
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("AAPL,META,F"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CMETA%2CF",
+			wantResponse: `{
+				"results": [
+					` + indent(true, stockSnapshotsTestData[0], "\t\t") + `,
+					` + indent(true, stockSnapshotsTestData[1], "\t\t") + `,
+					` + indent(true, stockSnapshotsTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: stockSnapshotsTestData,
+			wantErr:  false,
+		},
+		{
+			name:           "Options tickers",
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("O:AAPL230512C00050000,O:META230512C00020000,O:F230512C00005000"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=O%3AAAPL230512C00050000%2CO%3AMETA230512C00020000%2CO%3AF230512C00005000",
+			wantResponse: `{
+				"results": [
+					` + indent(true, optionsSnapshotsTestData[0], "\t\t") + `,
+					` + indent(true, optionsSnapshotsTestData[1], "\t\t") + `,
+					` + indent(true, optionsSnapshotsTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: optionsSnapshotsTestData,
+		},
+		{
+			name:           "Crypto Snapshot",
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("X:BTCUSD,X:ETHUSD,X:FLOWUSD"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=X%3ABTCUSD%2CX%3AETHUSD%2CX%3AFLOWUSD",
+			wantResponse: `{
+				"results": [
+					` + indent(true, cryptoSnapshotsTestData[0], "\t\t") + `,
+					` + indent(true, cryptoSnapshotsTestData[1], "\t\t") + `,
+					` + indent(true, cryptoSnapshotsTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: cryptoSnapshotsTestData,
+		},
+		{
+			name:           "Forex Snapshot",
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("C:USDCAD,C:USDEUR,C:USDAUD"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=C%3AUSDCAD%2CC%3AUSDEUR%2CC%3AUSDAUD",
+			wantResponse: `{
+				"results": [
+					` + indent(true, forexSnapshotTestData[0], "\t\t") + `,
+					` + indent(true, forexSnapshotTestData[1], "\t\t") + `,
+					` + indent(true, forexSnapshotTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: forexSnapshotTestData,
+		},
+		{
+			name:           "Indices Snapshot",
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("I:SPX,I:DJI,I:A1BSC"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=I%3ASPX%2CI%3ADJI%2CI%3AA1BSC",
+			wantResponse: `{
+				"results": [
+					` + indent(true, indicesSnapshotTestData[0], "\t\t") + `,
+					` + indent(true, indicesSnapshotTestData[1], "\t\t") + `,
+					` + indent(true, indicesSnapshotTestData[2], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: indicesSnapshotTestData,
+		},
+		{
+			name:           "Partial success (200/OK with an error message in the body)",
+			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("AAPL,APx"),
+			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CAPx",
+			wantResponse: `{
+				"results": [
+					` + indent(true, partialSuccessWithStocksTestData[0], "\t\t") + `,
+					` + indent(true, partialSuccessWithStocksTestData[1], "\t\t") + `
+					],
+					"status": "OK",
+					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
+					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+				}`,
+			testData: partialSuccessWithStocksTestData,
+			wantErr:  true,
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+
+			registerResponder(tc.haveRequestURL, tc.wantResponse)
+			registerResponder("https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
+
+			iter := c.ListUniversalSnapshots(
+				context.Background(),
+				tc.haveParams,
+			)
+
+			require.NoError(t, iter.Err())
+			require.NotNil(t, iter.Item())
+
+			var iterCount int
+			for iter.Next() {
+				var gotSnapshot models.SnapshotResponseModel
+				err := json.Unmarshal([]byte(tc.testData[iterCount]), &gotSnapshot)
+				require.Nil(t, err)
+
+				require.Nil(t, iter.Err())
+				assert.Equal(t, gotSnapshot, iter.Item())
+				iterCount++
+			}
+
+			assert.Equal(t, len(tc.testData), iterCount, fmt.Sprintf("expected %d results", len(tc.testData)))
+			assert.False(t, iter.Next())
+			assert.Nil(t, iter.Err())
+		})
+	}
+}
+
+var stockSnapshotsTestData = []string{
+	`{
+		"market_status": "late_trading",
+		"name": "Apple Inc.",
+		"session": {
+			"change": -0.07,
+			"change_percent": -0.0403,
+			"close": 173.5,
+			"early_trading_change": 0,
+			"early_trading_change_percent": 0,
+			"high": 173.85,
+			"low": 172.11,
+			"open": 172.48,
+			"previous_close": 173.57,
+			"price": 173.5,
+			"volume": 50823329
+		},
+		"last_quote": {
+			"ask": 173.34,
+			"ask_size": 3,
+			"bid": 173.32,
+			"bid_size": 4,
+			"last_updated": 1683577209434314800,
+			"timeframe": "REAL-TIME"
+		},
+		"last_trade": {
+			"conditions": [
+				12,
+				22
+			],
+			"exchange": 4,
+			"id": "247862",
+			"last_updated": 1683577205678289200,
+			"price": 173.5,
+			"size": 31535,
+			"timeframe": "REAL-TIME"
+		},
+		"ticker": "AAPL",
+		"type": "stocks"
+	}`,
+	`{
+		"market_status": "late_trading",
+		"name": "Meta Platforms, Inc. Class A Common Stock",
+		"session": {
+			"change": -0.04,
+			"change_percent": -0.0172,
+			"close": 233.27,
+			"early_trading_change": 0,
+			"early_trading_change_percent": 0,
+			"high": 235.62,
+			"low": 230.27,
+			"open": 231.415,
+			"previous_close": 232.78,
+			"price": 232.74,
+			"volume": 14940329
+		},
+		"last_quote": {
+			"ask": 232.83,
+			"ask_size": 1,
+			"bid": 232.73,
+			"bid_size": 1,
+			"last_updated": 1683577187244746200,
+			"timeframe": "REAL-TIME"
+		},
+		"last_trade": {
+			"conditions": [
+				12,
+				37
+			],
+			"exchange": 4,
+			"id": "57128",
+			"last_updated": 1683577202547284000,
+			"price": 232.74,
+			"size": 50,
+			"timeframe": "REAL-TIME"
+		},
+		"ticker": "META",
+		"type": "stocks"
+	}`,
+	`{
+		"market_status": "late_trading",
+		"name": "Ford Motor Company",
+		"session": {
+			"change": 0.005,
+			"change_percent": 0.0417,
+			"close": 12.02,
+			"early_trading_change": 0,
+			"early_trading_change_percent": 0,
+			"high": 12.055,
+			"low": 11.85,
+			"open": 12.02,
+			"previous_close": 11.99,
+			"price": 11.995,
+			"volume": 49539926
+		},
+		"last_quote": {
+			"ask": 12,
+			"ask_size": 23,
+			"bid": 11.99,
+			"bid_size": 28,
+			"last_updated": 1683577084319878700,
+			"timeframe": "REAL-TIME"
+		},
+		"last_trade": {
+			"conditions": [
+				12,
+				37
+			],
+			"exchange": 4,
+			"id": "71697320268354",
+			"last_updated": 1683577186411804000,
+			"price": 11.995,
+			"size": 1,
+			"timeframe": "REAL-TIME"
+		},
+		"ticker": "F",
+		"type": "stocks"
+	}`,
+}
+
+var optionsSnapshotsTestData = []string{
+	`{
+		"name": "AAPL $50.00 call",
+		"market_status": "open",
+		"ticker": "O:AAPL230512C00050000",
+		"type": "options",
+		"last_quote": {
+		  "ask": 123.1,
+		  "ask_size": 90,
+		  "bid": 122.95,
+		  "bid_size": 90,
+		  "last_updated": 1683731850932649728,
+		  "midpoint": 123.025,
+		  "timeframe": "REAL-TIME"
+		},
+		"last_trade": {},
+		"session": {},
+		"break_even_price": 173.025,
+		"details": {
+		  "contract_type": "call",
+		  "exercise_style": "american",
+		  "expiration_date": "2023-05-12",
+		  "shares_per_contract": 100,
+		  "strike_price": 50
+		},
+		"greeks": {},
+		"underlying_asset": {
+		  "change_to_break_even": -0.11,
+		  "last_updated": 1683732072879546553,
+		  "price": 173.135,
+		  "ticker": "AAPL",
+		  "timeframe": "REAL-TIME"
+		},
+		"error": "",
+		"message": ""
+	}`,
+	`{
+		"name": "META $20.00 call",
+		"market_status": "open",
+		"ticker": "O:META230512C00020000",
+		"type": "options",
+		"last_quote": {},
+		"last_trade": {
+		  "sip_timestamp": 1682970890371000000,
+		  "conditions": [
+			209
+		  ],
+		  "price": 223.75,
+		  "size": 1,
+		  "exchange": 302,
+		  "timeframe": "REAL-TIME"
+		},
+		"session": {},
+		"details": {
+		  "contract_type": "call",
+		  "exercise_style": "american",
+		  "expiration_date": "2023-05-12",
+		  "shares_per_contract": 100,
+		  "strike_price": 20
+		},
+		"greeks": {},
+		"underlying_asset": {
+		  "last_updated": 1683731579449632715,
+		  "price": 232.37,
+		  "ticker": "META",
+		  "timeframe": "REAL-TIME"
+		},
+		"error": "",
+		"message": ""
+	}`,
+	`{
+		"name": "F $5.00 call",
+		"market_status": "open",
+		"ticker": "O:F230512C00005000",
+		"type": "options",
+		"last_quote": {},
+		"last_trade": {
+		  "sip_timestamp": 1683316735432000000,
+		  "conditions": [
+			232
+		  ],
+		  "price": 6.97,
+		  "size": 1,
+		  "exchange": 312,
+		  "timeframe": "REAL-TIME"
+		},
+		"session": {},
+		"details": {
+		  "contract_type": "call",
+		  "exercise_style": "american",
+		  "expiration_date": "2023-05-12",
+		  "shares_per_contract": 100,
+		  "strike_price": 5
+		},
+		"greeks": {},
+		"underlying_asset": {
+		  "last_updated": 1683732072773028096,
+		  "price": 11.93,
+		  "ticker": "F",
+		  "timeframe": "REAL-TIME"
+		}
+	}`,
+}
+
+var cryptoSnapshotsTestData = []string{
+	`{
+		"market_status": "open",
+		"name": "Bitcoin - United States Dollar",
+		"ticker": "X:BTCUSD",
+		"type": "crypto",
+		"session": {
+		  "change": -181,
+		  "change_percent": -0.661,
+		  "close": 27236.1,
+		  "high": 27506,
+		  "low": 27010,
+		  "open": 27402.3,
+		  "volume": 10012.03414028,
+		  "previous_close": 27400.74,
+		  "price": 27220
+		},
+		"last_trade": {
+		  "participant_timestamp": 1684422449502000000,
+		  "timeframe": "REAL-TIME",
+		  "id": "285449387",
+		  "price": 27220,
+		  "exchange": 6,
+		  "conditions": [
+			1
+		  ]
+		}
+	  }`,
+	`{
+		"market_status": "open",
+		"name": "Ethereum - United States Dollar",
+		"ticker": "X:ETHUSD",
+		"type": "crypto",
+		"session": {
+		  "change": -5.53,
+		  "change_percent": -0.304,
+		  "close": 1817.14,
+		  "high": 1833.4,
+		  "low": 1802.26,
+		  "open": 1823.8,
+		  "volume": 47673.72258305,
+		  "previous_close": 1821.84,
+		  "price": 1816.31
+		},
+		"last_trade": {
+		  "participant_timestamp": 1684422449301037000,
+		  "timeframe": "REAL-TIME",
+		  "id": "451453400",
+		  "price": 1816.31,
+		  "exchange": 1,
+		  "conditions": [
+			1
+		  ]
+		}
+	  }`,
+	`{
+		"market_status": "open",
+		"name": "Flow - United States Dollar",
+		"ticker": "X:FLOWUSD",
+		"type": "crypto",
+		"session": {
+		  "change": -0.006,
+		  "change_percent": -0.759,
+		  "close": 0.784,
+		  "high": 0.793,
+		  "low": 0.779,
+		  "open": 0.791,
+		  "volume": 89094.52551417,
+		  "previous_close": 0.79,
+		  "price": 0.784
+		},
+		"last_trade": {
+		  "participant_timestamp": 1684422355917759000,
+		  "timeframe": "REAL-TIME",
+		  "id": "1224329",
+		  "price": 0.784,
+		  "exchange": 1,
+		  "conditions": [
+			1
+		  ]
+		}
+	  }`,
+}
+
+var forexSnapshotTestData = []string{
+	`{
+		"market_status": "open",
+		"name": "United States dollar - Canadian dollar",
+		"ticker": "C:USDCAD",
+		"type": "fx",
+		"session": {
+		  "change": 0.00518,
+		  "change_percent": 0.385,
+		  "close": 1.35178,
+		  "high": 1.35244,
+		  "low": 1.34479,
+		  "open": 1.34667,
+		  "volume": 133712,
+		  "previous_close": 1.34667
+		},
+		"last_quote": {
+		  "last_updated": 1684431002000000000,
+		  "timeframe": "REAL-TIME",
+		  "ask": 1.35191,
+		  "bid": 1.35185,
+		  "exchange": 48
+		}
+	}`,
+	`{
+		"market_status": "open",
+		"name": "United States dollar - Euro",
+		"ticker": "C:USDEUR",
+		"type": "fx",
+		"session": {
+		  "change": 0.00612,
+		  "change_percent": 0.663,
+		  "close": 0.92877,
+		  "high": 0.92913,
+		  "low": 0.9215,
+		  "open": 0.92266,
+		  "volume": 58275,
+		  "previous_close": 0.92265
+		},
+		"last_quote": {
+		  "last_updated": 1684430998000000000,
+		  "timeframe": "REAL-TIME",
+		  "ask": 0.92883,
+		  "bid": 0.92877,
+		  "exchange": 48
+		}
+	}`,
+	`{
+		"market_status": "open",
+		"name": "United States dollar - Australian dollar",
+		"ticker": "C:USDAUD",
+		"type": "fx",
+		"session": {
+		  "change": 0.0104,
+		  "change_percent": 0.692,
+		  "close": 1.512722,
+		  "high": 1.51398,
+		  "low": 1.4965803,
+		  "open": 1.502449,
+		  "volume": 148378,
+		  "previous_close": 1.502449
+		},
+		"last_quote": {
+		  "last_updated": 1684431002000000000,
+		  "timeframe": "REAL-TIME",
+		  "ask": 1.51297,
+		  "bid": 1.51281,
+		  "exchange": 48
+		}
+	}`,
+}
+
+var indicesSnapshotTestData = []string{
+	`{
+		"value": 4191.9800000000005,
+		"last_updated": 1684530171934000000,
+		"timeframe": "REAL-TIME",
+		"name": "Standard & Poor's 500",
+		"ticker": "I:SPX",
+		"market_status": "open",
+		"type": "indices",
+		"session": {
+			"change": -9.09,
+			"change_percent": -0.216,
+			"close": 4180.7,
+			"high": 4212.91,
+			"low": 4180.2,
+			"open": 4204.15,
+			"previous_close": 4201.07
+		}
+	}`,
+	`{
+		"value": 33426.63,
+		"last_updated": 1684530172103533800,
+		"timeframe": "REAL-TIME",
+		"name": "Dow Jones Industrial Average",
+		"ticker": "I:DJI",
+		"market_status": "closed",
+		"type": "indices",
+		"session": {
+			"change": -143,
+			"change_percent": -0.426,
+			"close": 33339.37,
+			"high": 33652.9,
+			"low": 33336.66,
+			"open": 33582.95,
+			"previous_close": 33569.5
+		}
+	}`,
+	`{
+		"value": 443.7,
+		"last_updated": 1684528800037231600,
+		"timeframe": "REAL-TIME",
+		"name": "Dow Jones Americas Basic Materials Index",
+		"ticker": "I:A1BSC",
+		"market_status": "closed",
+		"type": "indices",
+		"session": {
+			"change": -0.29,
+			"change_percent": -0.0653,
+			"close": 442.72,
+			"high": 445.92,
+			"low": 442.63,
+			"open": 443.7,
+			"previous_close": 443.99
+		}
+	}`,
+}
+
+var partialSuccessWithStocksTestData = []string{
+	`{
+		"market_status": "late_trading",
+		"name": "Apple Inc.",
+		"session": {
+			"change": -0.07,
+			"change_percent": -0.0403,
+			"close": 173.5,
+			"early_trading_change": 0,
+			"early_trading_change_percent": 0,
+			"high": 173.85,
+			"low": 172.11,
+			"open": 172.48,
+			"previous_close": 173.57,
+			"price": 173.5,
+			"volume": 50823329
+		},
+		"last_quote": {
+			"ask": 173.34,
+			"ask_size": 3,
+			"bid": 173.32,
+			"bid_size": 4,
+			"last_updated": 1683577209434314800,
+			"timeframe": "REAL-TIME"
+		},
+		"last_trade": {
+			"conditions": [
+				12,
+				22
+			],
+			"exchange": 4,
+			"id": "247862",
+			"last_updated": 1683577205678289200,
+			"price": 173.5,
+			"size": 31535,
+			"timeframe": "REAL-TIME"
+		},
+		"ticker": "AAPL",
+		"type": "stocks"
+	}`,
+	`{
+		"error": "NOT_ENTITLED",
+		"message": "Not entitled to this ticker.",
+		"ticker": "APy"
+	}`,
 }

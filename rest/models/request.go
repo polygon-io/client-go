@@ -15,6 +15,9 @@ type RequestOptions struct {
 
 	// Query params to apply to the request
 	QueryParams url.Values
+
+	// Trace enables request tracing
+	Trace bool
 }
 
 // RequestOption changes the configuration of RequestOptions.
@@ -74,4 +77,11 @@ func RequiredEdgeHeaders(edgeID, edgeIPAddress string) RequestOption {
 // EdgeUserAgent sets the Launchpad optional header denoting the Edge User's UserAgent.
 func EdgeUserAgent(userAgent string) RequestOption {
 	return Header(HeaderEdgeUserAgent, userAgent)
+}
+
+// WithTrace enables or disables request tracing.
+func WithTrace(trace bool) RequestOption {
+	return func(o *RequestOptions) {
+		o.Trace = trace
+	}
 }
