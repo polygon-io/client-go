@@ -44,6 +44,7 @@ type Session struct {
 	Open                      float64 `json:"open,omitempty"`
 	PreviousClose             float64 `json:"previous_close,omitempty"`
 	Volume                    float64 `json:"volume,omitempty"`
+	Price                     float64 `json:"price,omitempty"`
 }
 
 //easyjson:json

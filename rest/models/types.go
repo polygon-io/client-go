@@ -36,6 +36,7 @@ const (
 type Timespan string
 
 const (
+	Second  Timespan = "second"
 	Minute  Timespan = "minute"
 	Hour    Timespan = "hour"
 	Day     Timespan = "day"

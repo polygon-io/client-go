@@ -20,8 +20,15 @@ type Config struct {
 	// client to reconnect indefinitely until the user closes it.
 	MaxRetries *uint64
 
-	// RawData is a flag indicating whether data should be returned as a raw JSON.
+	// RawData is a flag indicating whether data should be returned as a raw JSON or raw bytes. If BypassRawDataRouting is unset
+	// then the data will be returned as raw JSON, otherwise it will be raw bytes.
 	RawData bool
+
+	// BypassRawDataRouting is a flag that interacts with the RawData flag. If RawData flag is unset then this flag is ignored.
+	// If RawData is `true`, then this flag indicates whether the raw data should be parsed as json.RawMessage
+	// and routed via the client's internal logic (`BypassRawDataRouting=false`), or returned to the application code as []byte (`BypassRawDataRouting=true`).
+	// If this flag is `true`, it's up to the caller to handle all message types including auth and subscription responses.
+	BypassRawDataRouting bool
 
 	// Log is an optional logger. Any logger implementation can be used as long as it
 	// implements the basic Logger interface. Omitting this will disable client logging.
@@ -44,12 +51,13 @@ func (c *Config) validate() error {
 type Feed string
 
 const (
-	Delayed      Feed = "wss://delayed.polygon.io"
-	RealTime     Feed = "wss://socket.polygon.io"
-	Nasdaq       Feed = "wss://nasdaqfeed.polygon.io"
-	PolyFeed     Feed = "wss://polyfeed.polygon.io"
-	PolyFeedPlus Feed = "wss://polyfeedplus.polygon.io"
-	StarterFeed  Feed = "wss://starterfeed.polygon.io"
+	Delayed       Feed = "wss://delayed.polygon.io"
+	RealTime      Feed = "wss://socket.polygon.io"
+	Nasdaq        Feed = "wss://nasdaqfeed.polygon.io"
+	PolyFeed      Feed = "wss://polyfeed.polygon.io"
+	PolyFeedPlus  Feed = "wss://polyfeedplus.polygon.io"
+	StarterFeed   Feed = "wss://starterfeed.polygon.io"
+	LaunchpadFeed Feed = "wss://launchpad.polygon.io"
 )
 
 // Market is the type of market (e.g. Stocks, Crypto) used to connect to the server.
@@ -80,34 +88,44 @@ func (m Market) supports(topic Topic) bool {
 // Topic is the data type used to subscribe and retrieve data from the server.
 type Topic uint8
 
+// The launchpad topics should be used for any asset class when connecting to
+// the Launchpad feed
 const (
-	stocksMin        Topic = 10
-	StocksSecAggs    Topic = 11
-	StocksMinAggs    Topic = 12
-	StocksTrades     Topic = 13
-	StocksQuotes     Topic = 14
-	StocksImbalances Topic = 15
-	StocksLULD       Topic = 16
-	stocksMax        Topic = 17
+	stocksMin              Topic = 10
+	StocksSecAggs          Topic = 11
+	StocksMinAggs          Topic = 12
+	StocksTrades           Topic = 13
+	StocksQuotes           Topic = 14
+	StocksImbalances       Topic = 15
+	StocksLULD             Topic = 16
+	StocksLaunchpadMinAggs Topic = 17
+	StocksLaunchpadValue   Topic = 18
+	stocksMax              Topic = 19
 
-	optionsMin     Topic = 30
-	OptionsSecAggs Topic = 31
-	OptionsMinAggs Topic = 32
-	OptionsTrades  Topic = 33
-	OptionsQuotes  Topic = 34
-	optionsMax     Topic = 35
+	optionsMin              Topic = 30
+	OptionsSecAggs          Topic = 31
+	OptionsMinAggs          Topic = 32
+	OptionsTrades           Topic = 33
+	OptionsQuotes           Topic = 34
+	OptionsLaunchpadMinAggs Topic = 35
+	OptionsLaunchpadValue   Topic = 36
+	optionsMax              Topic = 37
 
-	forexMin     Topic = 50
-	ForexMinAggs Topic = 51
-	ForexQuotes  Topic = 52
-	forexMax     Topic = 53
+	forexMin              Topic = 50
+	ForexMinAggs          Topic = 51
+	ForexQuotes           Topic = 52
+	ForexLaunchpadMinAggs Topic = 53
+	ForexLaunchpadValue   Topic = 54
+	forexMax              Topic = 55
 
-	cryptoMin     Topic = 70
-	CryptoMinAggs Topic = 71
-	CryptoTrades  Topic = 72
-	CryptoQuotes  Topic = 73
-	CryptoL2Book  Topic = 74
-	cryptoMax     Topic = 75
+	cryptoMin              Topic = 70
+	CryptoMinAggs          Topic = 71
+	CryptoTrades           Topic = 72
+	CryptoQuotes           Topic = 73
+	CryptoL2Book           Topic = 74
+	CryptoLaunchpadMinAggs Topic = 75
+	CryptoLaunchpadValue   Topic = 76
+	cryptoMax              Topic = 77
 
 	IndexMinAggs Topic = 90
 	IndexValue   Topic = 91
@@ -127,6 +145,10 @@ func (t Topic) prefix() string {
 		return "NOI"
 	case StocksLULD:
 		return "LULD"
+	case StocksLaunchpadMinAggs:
+		return "AM"
+	case StocksLaunchpadValue:
+		return "LV"
 	case OptionsSecAggs:
 		return "A"
 	case OptionsMinAggs:
@@ -135,10 +157,18 @@ func (t Topic) prefix() string {
 		return "T"
 	case OptionsQuotes:
 		return "Q"
+	case OptionsLaunchpadMinAggs:
+		return "AM"
+	case OptionsLaunchpadValue:
+		return "LV"
 	case ForexMinAggs:
 		return "CA"
 	case ForexQuotes:
 		return "C"
+	case ForexLaunchpadMinAggs:
+		return "AM"
+	case ForexLaunchpadValue:
+		return "LV"
 	case CryptoMinAggs:
 		return "XA"
 	case CryptoTrades:
@@ -147,6 +177,10 @@ func (t Topic) prefix() string {
 		return "XQ"
 	case CryptoL2Book:
 		return "XL2"
+	case CryptoLaunchpadMinAggs:
+		return "AM"
+	case CryptoLaunchpadValue:
+		return "LV"
 	case IndexMinAggs:
 		return "AM"
 	case IndexValue:

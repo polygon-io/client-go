@@ -18,8 +18,8 @@ type ListTickersParams struct {
 	// Filter by market type. By default all markets are included.
 	Market *AssetClass `query:"market"`
 
-	// Specify the primary exchange of the asset in the ISO code format. Find more information about the ISO codes at
-	// the ISO org website. Defaults to empty string which queries all exchanges.
+	// Specify the asset's primary exchange Market Identifier Code (MIC) according to ISO 10383. Defaults to empty
+	// string which queries all exchanges.
 	Exchange *string `query:"exchange"`
 
 	// Specify the CUSIP code of the asset you want to search for. Find more information about CUSIP codes at their
