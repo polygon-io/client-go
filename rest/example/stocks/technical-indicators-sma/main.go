@@ -18,9 +18,9 @@ func main() {
 	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
 
 	// set params
-	params := &models.GetSMAParams{
+	params := models.GetSMAParams{
 		Ticker: "AAPL",
-	}
+	}.WithLimit(1000)
 
 	// make request
 	res, err := c.GetSMA(context.Background(), params)
