@@ -1,5 +1,5 @@
 # Polygon Go Client
-![Coverage](https://img.shields.io/badge/Coverage-45.9%25-yellow)
+![Coverage](https://img.shields.io/badge/Coverage-57.5%25-yellow)
 
 <!-- todo: add a codecov badge -->
 <!-- todo: figure out a way to show all build statuses -->
