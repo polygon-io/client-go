@@ -256,13 +256,13 @@ type CryptoQuote struct {
 	BidPrice float64 `json:"bp,omitempty"`
 
 	// The bid size.
-	BidSize int32 `json:"bs,omitempty"`
+	BidSize float64 `json:"bs,omitempty"`
 
 	// The ask price.
 	AskPrice float64 `json:"ap,omitempty"`
 
 	// The ask size.
-	AskSize int32 `json:"as,omitempty"`
+	AskSize float64 `json:"as,omitempty"`
 
 	// The Timestamp in Unix MS.
 	Timestamp int64 `json:"t,omitempty"`

@@ -29,6 +29,9 @@ type GetSMAParams struct {
 	// results in descending order (newest at the top).
 	Order *Order `query:"order"`
 
+	// Limit the number of results returned, default is 10 and max is 5000
+	Limit *int `query:"limit"`
+
 	// The size of the window over which the indicator will be calculated.
 	Window *int `query:"window"`
 }
@@ -40,6 +43,11 @@ func (p GetSMAParams) WithAdjusted(q bool) *GetSMAParams {
 
 func (p GetSMAParams) WithOrder(q Order) *GetSMAParams {
 	p.Order = &q
+	return &p
+}
+
+func (p GetSMAParams) WithLimit(q int) *GetSMAParams {
+	p.Limit = &q
 	return &p
 }
 
@@ -108,6 +116,9 @@ type GetEMAParams struct {
 	// results in descending order (newest at the top).
 	Order *Order `query:"order"`
 
+	// Limit the number of results returned, default is 10 and max is 5000
+	Limit *int `query:"limit"`
+
 	// The size of the window over which the indicator will be calculated.
 	Window *int `query:"window"`
 }
@@ -119,6 +130,11 @@ func (p GetEMAParams) WithAdjusted(q bool) *GetEMAParams {
 
 func (p GetEMAParams) WithOrder(q Order) *GetEMAParams {
 	p.Order = &q
+	return &p
+}
+
+func (p GetEMAParams) WithLimit(q int) *GetEMAParams {
+	p.Limit = &q
 	return &p
 }
 
@@ -187,6 +203,9 @@ type GetRSIParams struct {
 	// results in descending order (newest at the top).
 	Order *Order `query:"order"`
 
+	// Limit the number of results returned, default is 10 and max is 5000
+	Limit *int `query:"limit"`
+
 	// The size of the window over which the indicator will be calculated.
 	Window *int `query:"window"`
 }
@@ -198,6 +217,11 @@ func (p GetRSIParams) WithAdjusted(q bool) *GetRSIParams {
 
 func (p GetRSIParams) WithOrder(q Order) *GetRSIParams {
 	p.Order = &q
+	return &p
+}
+
+func (p GetRSIParams) WithLimit(q int) *GetRSIParams {
+	p.Limit = &q
 	return &p
 }
 
@@ -266,6 +290,9 @@ type GetMACDParams struct {
 	// results in descending order (newest at the top).
 	Order *Order `query:"order"`
 
+	// Limit the number of results returned, default is 10 and max is 5000
+	Limit *int `query:"limit"`
+
 	// The size of the window over which the indicator will be calculated.
 	ShortWindow *int `query:"short_window"`
 
@@ -309,6 +336,11 @@ func (p GetMACDParams) WithAdjusted(q bool) *GetMACDParams {
 
 func (p GetMACDParams) WithOrder(q Order) *GetMACDParams {
 	p.Order = &q
+	return &p
+}
+
+func (p GetMACDParams) WithLimit(q int) *GetMACDParams {
+	p.Limit = &q
 	return &p
 }
 
