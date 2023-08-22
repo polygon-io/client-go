@@ -124,7 +124,7 @@ type LastTrade struct {
 	ID                   string  `json:"i,omitempty"`
 	Price                float64 `json:"p,omitempty"`
 	TRF                  int32   `json:"r,omitempty"`
-	Size                 uint32  `json:"s,omitempty"`
+	Size                 float64 `json:"s,omitempty"`
 	Exchange             int32   `json:"x,omitempty"`
 	Tape                 int32   `json:"z,omitempty"`
 }
