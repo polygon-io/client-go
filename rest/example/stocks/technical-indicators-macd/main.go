@@ -23,7 +23,8 @@ func main() {
 	}.WithShortWindow(12).
 		WithLongWindow(26).
 		WithSignalWindow(9).
-		WithOrder(models.Desc)
+		WithOrder(models.Desc).
+		WithLimit(1000)
 
 	// make request
 	res, err := c.GetMACD(context.Background(), params)
