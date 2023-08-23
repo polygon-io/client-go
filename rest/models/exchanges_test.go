@@ -9,7 +9,6 @@ import (
 func TestGetExchangesParams(t *testing.T) {
 	assetClass := models.AssetStocks
 	locale := models.US
-
 	expect := models.GetExchangesParams{
 		AssetClass: &assetClass,
 		Locale:     &locale,
