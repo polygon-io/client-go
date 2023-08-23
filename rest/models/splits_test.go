@@ -14,7 +14,6 @@ func TestListSplitsParams(t *testing.T) {
 	sort := models.TickerSymbol
 	order := models.Asc
 	limit := 100
-
 	expect := models.ListSplitsParams{
 		TickerEQ:         &ticker,
 		TickerLT:         &ticker,
