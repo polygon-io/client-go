@@ -16,7 +16,6 @@ func TestGetSMAParams(t *testing.T) {
 	order := models.Asc
 	limit := 100
 	window := 5
-
 	expect := models.GetSMAParams{
 		Timespan:         &timespan,
 		TimestampEQ:      &timestamp,
