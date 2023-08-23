@@ -56,7 +56,6 @@ func TestGetEMAParams(t *testing.T) {
 	order := models.Asc
 	limit := 100
 	window := 5
-
 	expect := models.GetEMAParams{
 		Timespan:         &timespan,
 		TimestampEQ:      &timestamp,
@@ -97,7 +96,6 @@ func TestGetRSIParams(t *testing.T) {
 	order := models.Asc
 	limit := 100
 	window := 5
-
 	expect := models.GetRSIParams{
 		Timespan:         &timespan,
 		TimestampEQ:      &timestamp,
@@ -140,7 +138,6 @@ func TestGetMACDParams(t *testing.T) {
 	shortWindow := 12
 	longWindow := 26
 	signalWindow := 9
-
 	expect := models.GetMACDParams{
 		Timespan:         &timespan,
 		TimestampEQ:      &timestamp,
