@@ -16,7 +16,6 @@ func TestListDividendsParams(t *testing.T) {
 	order := models.Asc
 	limit := 100
 	sort := models.TickerSymbol
-
 	expect := models.ListDividendsParams{
 		TickerEQ:           &ticker,
 		TickerLT:           &ticker,
