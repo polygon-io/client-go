@@ -18,7 +18,7 @@ func TestListStockFinancialsParams(t *testing.T) {
 	order := models.Asc
 	limit := 100
 	sort := models.TickerSymbol
-	
+
 	expect := models.ListStockFinancialsParams{
 		Ticker:                &ticker,
 		CIK:                   &cik,
