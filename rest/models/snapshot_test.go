@@ -34,7 +34,6 @@ func TestListUniversalSnapshotsParams(t *testing.T) {
 	ticker := "A"
 	tickers := "AAPL,GOOL,TSLA"
 	snapshot := "stocks"
-
 	expect := models.ListUniversalSnapshotsParams{
 		TickerAnyOf: &tickers,
 		Ticker:      &ticker,
