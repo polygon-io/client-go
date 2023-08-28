@@ -135,6 +135,17 @@ func TestGetTickerSnapshotParams(t *testing.T) {
 	}
 }
 
+func TestGetGainersLosersSnapshotParamsOTC(t *testing.T) {
+	otc := false
+	expect := models.GetGainersLosersSnapshotParams{
+		IncludeOTC: &otc,
+	}
+	actual := models.GetGainersLosersSnapshotParams{}.
+		WithIncludeOTC(otc)
+
+	checkParams(t, expect, *actual)
+}
+
 func TestGetGainersLosersSnapshotParams(t *testing.T) {
 	tests := []struct {
 		name   string
