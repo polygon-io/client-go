@@ -248,6 +248,7 @@ func TestGetCryptoFullBookSnapshotParams(t *testing.T) {
 			want:   "Ticker is required",
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			errMsg := ""
