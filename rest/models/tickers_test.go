@@ -13,6 +13,7 @@ func TestListTickersParams(t *testing.T) {
 	assetMarket := models.AssetStocks
 	cik := 1650729
 	name := "Apple"
+	exchange := "XNAS"
 	date := models.Date(time.Date(2023, 3, 23, 0, 0, 0, 0, time.Local))
 	active := true
 	sort := models.TickerSymbol
@@ -27,6 +28,7 @@ func TestListTickersParams(t *testing.T) {
 		TickerGTE: &ticker,
 		Type:      &assetType,
 		Market:    &assetMarket,
+		Exchange:  &exchange,
 		CIK:       &cik,
 		Search:    &name,
 		Date:      &date,
@@ -43,6 +45,7 @@ func TestListTickersParams(t *testing.T) {
 		WithTicker(models.GTE, ticker).
 		WithType(assetType).
 		WithMarket(assetMarket).
+		WithExchange(exchange).
 		WithCIK(cik).
 		WithSearch(name).
 		WithDate(date).

@@ -55,6 +55,17 @@ func TestListUniversalSnapshotsParams(t *testing.T) {
 	checkParams(t, expect, *actual)
 }
 
+func TestGetGainersLosersSnapshotParamsOTC(t *testing.T) {
+	otc := false
+	expect := models.GetGainersLosersSnapshotParams{
+		IncludeOTC: &otc,
+	}
+	actual := models.GetGainersLosersSnapshotParams{}.
+		WithIncludeOTC(otc)
+
+	checkParams(t, expect, *actual)
+}
+
 func TestListOptionsChainParams(t *testing.T) {
 	date := models.Date(time.Date(2023, 3, 23, 0, 0, 0, 0, time.Local))
 	contractType := models.ContractCall
