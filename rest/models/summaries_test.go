@@ -8,7 +8,6 @@ import (
 
 func TestGetSummaryParams(t *testing.T) {
 	tickers := "AAPL,GOOL,TSLA"
-
 	expect := models.GetSummaryParams{
 		TickerAnyOf: &tickers,
 	}
