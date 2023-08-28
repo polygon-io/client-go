@@ -14,6 +14,7 @@ func TestGetAllTickersSnapshotParams(t *testing.T) {
 		Tickers:    &tickers,
 		IncludeOTC: &otc,
 	}
+
 	actual := models.GetAllTickersSnapshotParams{}.
 		WithTickers(tickers).
 		WithIncludeOTC(otc)
