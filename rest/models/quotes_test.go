@@ -9,7 +9,6 @@ import (
 
 func TestListQuotesParams(t *testing.T) {
 	timestamp := models.Nanos(time.Date(2023, 3, 23, 0, 0, 0, 0, time.UTC))
-	year, month, day := 2023, time.March, 23
 	order := models.Asc
 	limit := 100
 	sort := models.Timestamp
@@ -30,7 +29,6 @@ func TestListQuotesParams(t *testing.T) {
 		WithTimestamp(models.LTE, timestamp).
 		WithTimestamp(models.GT, timestamp).
 		WithTimestamp(models.GTE, timestamp).
-		WithDay(year, month, day).
 		WithOrder(order).
 		WithLimit(limit).
 		WithSort(sort)
