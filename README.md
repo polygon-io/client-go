@@ -120,6 +120,34 @@ log.Print(res) // do something with the result
 Users of the Launchpad product will need to pass in certain headers in order to make API requests.
 Example can be found [here](./rest/example/launchpad).
 
+### Debugging
+
+Sometimes you may find it useful to see the actual request and response details while working with the API. The client allows for this through its `models.WithTrace(true)` option.
+
+#### How to Enable Debug Mode
+
+You can activate the debug mode per request as follows by adding `models.WithTrace(true)` after the `params`:
+
+```go
+iter := c.ListAggs(context.Background(), params, models.WithTrace(true))
+```
+
+#### What Does Debug Mode Do?
+
+When debug mode is enabled, the client will print out useful debugging information for each API request. This includes: the request URL, the headers sent in the request, and the headers received in the response.
+
+#### Example Output
+
+For instance, if you made a request for `TSLA` data for the date `2023-08-01`, you would see debug output similar to the following:
+
+```
+Request URL: /v2/aggs/ticker/AAPL/range/1/day/1672531200000/1678320000000?adjusted=true&limit=50000&sort=desc
+Request Headers: map[Accept-Encoding:[gzip] Authorization:[REDACTED] User-Agent:[Polygon.io GoClient/v1.14.1]]
+Response Headers: map[Content-Encoding:[gzip] Content-Length:[1639] Content-Type:[application/json] Date:[Tue, 05 Sep 2023 23:25:00 GMT] Server:[nginx/1.19.2] Strict-Transport-Security:[max-age=15724800; includeSubDomains] Vary:[Accept-Encoding] X-Request-Id:[ba3d3e9f42622bd16d05dafe01200f72]]
+```
+
+This can be an invaluable tool for debugging issues or understanding how the client interacts with the API.
+
 ## WebSocket Client
 
 [![ws-docs][ws-doc-img]][ws-doc]
