@@ -125,6 +125,7 @@ func TestGetTickerTypesParams(t *testing.T) {
 
 func TestGetTickerEventsParams(t *testing.T) {
 	types := "ticker_change"
+
 	expect := models.GetTickerEventsParams{
 		Types: &types,
 	}
