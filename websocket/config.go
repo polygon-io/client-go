@@ -51,13 +51,19 @@ func (c *Config) validate() error {
 type Feed string
 
 const (
-	Delayed       Feed = "wss://delayed.polygon.io"
-	RealTime      Feed = "wss://socket.polygon.io"
-	Nasdaq        Feed = "wss://nasdaqfeed.polygon.io"
-	PolyFeed      Feed = "wss://polyfeed.polygon.io"
-	PolyFeedPlus  Feed = "wss://polyfeedplus.polygon.io"
-	StarterFeed   Feed = "wss://starterfeed.polygon.io"
-	LaunchpadFeed Feed = "wss://launchpad.polygon.io"
+	Delayed                        Feed = "wss://delayed.polygon.io"
+	RealTime                       Feed = "wss://socket.polygon.io"
+	Nasdaq                         Feed = "wss://nasdaqfeed.polygon.io"
+	PolyFeed                       Feed = "wss://polyfeed.polygon.io"
+	PolyFeedPlus                   Feed = "wss://polyfeedplus.polygon.io"
+	StarterFeed                    Feed = "wss://starterfeed.polygon.io"
+	LaunchpadFeed                  Feed = "wss://launchpad.polygon.io"
+	BusinessFeed                   Feed = "wss://business.polygon.io"
+	EdgxBusinessFeed               Feed = "wss://edgx-business.polygon.io"
+	DelayedBusinessFeed            Feed = "wss://delayed-business.polygon.io"
+	FullMarketBusinessFeed         Feed = "wss://fullmarket-business.polygon.io"
+	NasdaqfeedLastSaleBusinessFeed Feed = "wss://nasdaqfeed-last-sale-business.polygon.io"
+	NasdaqfeedBasicBusinessFeed    Feed = "wss://nasdaqfeed-basic-business.polygon.io"
 )
 
 // Market is the type of market (e.g. Stocks, Crypto) used to connect to the server.
@@ -112,23 +118,27 @@ const (
 	optionsMax              Topic = 37
 
 	forexMin              Topic = 50
-	ForexMinAggs          Topic = 51
-	ForexQuotes           Topic = 52
-	ForexLaunchpadMinAggs Topic = 53
-	ForexLaunchpadValue   Topic = 54
-	forexMax              Topic = 55
+	ForexSecAggs          Topic = 51
+	ForexMinAggs          Topic = 52
+	ForexQuotes           Topic = 53
+	ForexLaunchpadMinAggs Topic = 54
+	ForexLaunchpadValue   Topic = 55
+	forexMax              Topic = 56
 
 	cryptoMin              Topic = 70
-	CryptoMinAggs          Topic = 71
-	CryptoTrades           Topic = 72
-	CryptoQuotes           Topic = 73
-	CryptoL2Book           Topic = 74
-	CryptoLaunchpadMinAggs Topic = 75
-	CryptoLaunchpadValue   Topic = 76
-	cryptoMax              Topic = 77
+	CryptoSecAggs          Topic = 71
+	CryptoMinAggs          Topic = 72
+	CryptoTrades           Topic = 73
+	CryptoQuotes           Topic = 74
+	CryptoL2Book           Topic = 75
+	CryptoLaunchpadMinAggs Topic = 76
+	CryptoLaunchpadValue   Topic = 77
+	cryptoMax              Topic = 78
 
 	IndexMinAggs Topic = 90
 	IndexValue   Topic = 91
+
+	BusinuessFairMarketValue Topic = 100
 )
 
 func (t Topic) prefix() string {
@@ -161,6 +171,8 @@ func (t Topic) prefix() string {
 		return "AM"
 	case OptionsLaunchpadValue:
 		return "LV"
+	case ForexSecAggs:
+		return "CAS"
 	case ForexMinAggs:
 		return "CA"
 	case ForexQuotes:
@@ -169,6 +181,8 @@ func (t Topic) prefix() string {
 		return "AM"
 	case ForexLaunchpadValue:
 		return "LV"
+	case CryptoSecAggs:
+		return "XAS"
 	case CryptoMinAggs:
 		return "XA"
 	case CryptoTrades:
@@ -185,6 +199,8 @@ func (t Topic) prefix() string {
 		return "AM"
 	case IndexValue:
 		return "V"
+	case BusinuessFairMarketValue:
+		return "FMV"
 	}
 	return ""
 }
