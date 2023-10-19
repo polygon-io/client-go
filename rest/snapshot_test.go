@@ -534,8 +534,7 @@ func TestGetCryptoFullBookSnapshot(t *testing.T) {
 		],
 		"spread": -4849.17,
 		"ticker": "X:BTCUSD",
-		"updated": 1605295074162,
-		"fmv": 16001.56
+		"updated": 1605295074162
 	}
 }`
 

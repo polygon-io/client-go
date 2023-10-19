@@ -370,14 +370,13 @@ type UnderlyingAsset struct {
 
 // FullBookSnapshot is the level 2 book of a single crypto ticker.
 type FullBookSnapshot struct {
-	AskCount        float64          `json:"askCount,omitempty"`
-	Asks            []OrderBookQuote `json:"asks,omitempty"`
-	BidCount        float64          `json:"bidCount,omitempty"`
-	Bids            []OrderBookQuote `json:"bids,omitempty"`
-	Spread          float64          `json:"spread,omitempty"`
-	Ticker          string           `json:"ticker,omitempty"`
-	FairMarketValue float64          `json:"fmv,omitempty"`
-	Updated         Nanos            `json:"updated,omitempty"`
+	AskCount float64          `json:"askCount,omitempty"`
+	Asks     []OrderBookQuote `json:"asks,omitempty"`
+	BidCount float64          `json:"bidCount,omitempty"`
+	Bids     []OrderBookQuote `json:"bids,omitempty"`
+	Spread   float64          `json:"spread,omitempty"`
+	Ticker   string           `json:"ticker,omitempty"`
+	Updated  Nanos            `json:"updated,omitempty"`
 }
 
 // OrderBookQuote contains quote information for a crypto ticker.
