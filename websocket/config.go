@@ -66,8 +66,8 @@ const (
 	DelayedNasdaqBasicFeed            Feed = "wss://delayed-nasdaq-basic-business.polygon.io"
 	DelayedFullMarketBusinessFeed     Feed = "wss://delayed-fullmarket-business.polygon.io"
 	FullMarketBusinessFeed            Feed = "wss://fullmarket-business.polygon.io"
-	NasdaqfeedLastSaleBusinessFeed    Feed = "wss://nasdaq-last-sale-business.polygon.io"
-	NasdaqfeedBasicBusinessFeed       Feed = "wss://nasdaq-basic-business.polygon.io"
+	NasdaqLastSaleBusinessFeed        Feed = "wss://nasdaq-last-sale-business.polygon.io"
+	NasdaqBasicBusinessFeed           Feed = "wss://nasdaq-basic-business.polygon.io"
 )
 
 // Market is the type of market (e.g. Stocks, Crypto) used to connect to the server.
