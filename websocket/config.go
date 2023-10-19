@@ -51,19 +51,23 @@ func (c *Config) validate() error {
 type Feed string
 
 const (
-	Delayed                        Feed = "wss://delayed.polygon.io"
-	RealTime                       Feed = "wss://socket.polygon.io"
-	Nasdaq                         Feed = "wss://nasdaqfeed.polygon.io"
-	PolyFeed                       Feed = "wss://polyfeed.polygon.io"
-	PolyFeedPlus                   Feed = "wss://polyfeedplus.polygon.io"
-	StarterFeed                    Feed = "wss://starterfeed.polygon.io"
-	LaunchpadFeed                  Feed = "wss://launchpad.polygon.io"
-	BusinessFeed                   Feed = "wss://business.polygon.io"
-	EdgxBusinessFeed               Feed = "wss://edgx-business.polygon.io"
-	DelayedBusinessFeed            Feed = "wss://delayed-business.polygon.io"
-	FullMarketBusinessFeed         Feed = "wss://fullmarket-business.polygon.io"
-	NasdaqfeedLastSaleBusinessFeed Feed = "wss://nasdaqfeed-last-sale-business.polygon.io"
-	NasdaqfeedBasicBusinessFeed    Feed = "wss://nasdaqfeed-basic-business.polygon.io"
+	Delayed                           Feed = "wss://delayed.polygon.io"
+	RealTime                          Feed = "wss://socket.polygon.io"
+	Nasdaq                            Feed = "wss://nasdaqfeed.polygon.io"
+	PolyFeed                          Feed = "wss://polyfeed.polygon.io"
+	PolyFeedPlus                      Feed = "wss://polyfeedplus.polygon.io"
+	StarterFeed                       Feed = "wss://starterfeed.polygon.io"
+	LaunchpadFeed                     Feed = "wss://launchpad.polygon.io"
+	BusinessFeed                      Feed = "wss://business.polygon.io"
+	EdgxBusinessFeed                  Feed = "wss://edgx-business.polygon.io"
+	DelayedBusinessFeed               Feed = "wss://delayed-business.polygon.io"
+	DelayedEdgxBusinessFeed           Feed = "wss://delayed-edgx-business.polygon.io"
+	DelayedNasdaqLastSaleBusinessFeed Feed = "wss://delayed-nasdaq-last-sale-business.polygon.io"
+	DelayedNasdaqBasicFeed            Feed = "wss://delayed-nasdaq-basic-business.polygon.io"
+	DelayedFullMarketBusinessFeed     Feed = "wss://delayed-fullmarket-business.polygon.io"
+	FullMarketBusinessFeed            Feed = "wss://fullmarket-business.polygon.io"
+	NasdaqfeedLastSaleBusinessFeed    Feed = "wss://nasdaq-last-sale-business.polygon.io"
+	NasdaqfeedBasicBusinessFeed       Feed = "wss://nasdaq-basic-business.polygon.io"
 )
 
 // Market is the type of market (e.g. Stocks, Crypto) used to connect to the server.
