@@ -138,7 +138,7 @@ const (
 	IndexMinAggs Topic = 90
 	IndexValue   Topic = 91
 
-	BusinuessFairMarketValue Topic = 100
+	BusinessFairMarketValue Topic = 100
 )
 
 func (t Topic) prefix() string {
@@ -199,7 +199,7 @@ func (t Topic) prefix() string {
 		return "AM"
 	case IndexValue:
 		return "V"
-	case BusinuessFairMarketValue:
+	case BusinessFairMarketValue:
 		return "FMV"
 	}
 	return ""
