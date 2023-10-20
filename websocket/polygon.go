@@ -545,6 +545,12 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 			return
 		}
 		c.output <- out
+	case "FMV":
+		var out models.FairMarketValue
+		if err := json.Unmarshal(msg, &out); err != nil {
+			c.log.Errorf("failed to unmarshal message: %v", err)
+		}
+
 	default:
 		c.log.Infof("unknown message type '%s'", sanitize(eventType))
 	}
