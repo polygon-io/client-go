@@ -911,6 +911,11 @@
                 ],
                 "type": "object"
               },
+              "fmv": {
+                "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                "format": "double",
+                "type": "number"
+              },
               "lastTrade": {
                 "allOf": [
                   {
@@ -1223,6 +1228,11 @@
                     "vw"
                   ],
                   "type": "object"
+                },
+                "fmv": {
+                  "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                  "format": "double",
+                  "type": "number"
                 },
                 "lastTrade": {
                   "allOf": [
@@ -1987,6 +1997,11 @@
         ],
         "type": "object"
       },
+      "Fmv": {
+        "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+        "format": "double",
+        "type": "number"
+      },
       "ForexConversion": {
         "properties": {
           "converted": {
@@ -2393,6 +2408,11 @@
                 ],
                 "type": "object"
               },
+              "fmv": {
+                "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                "format": "double",
+                "type": "number"
+              },
               "lastQuote": {
                 "description": "The most recent quote for this ticker.",
                 "properties": {
@@ -2582,6 +2602,11 @@
                     "v"
                   ],
                   "type": "object"
+                },
+                "fmv": {
+                  "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                  "format": "double",
+                  "type": "number"
                 },
                 "lastQuote": {
                   "description": "The most recent quote for this ticker.",
@@ -3879,6 +3904,11 @@
                 ],
                 "type": "object"
               },
+              "fmv": {
+                "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                "format": "double",
+                "type": "number"
+              },
               "lastQuote": {
                 "description": "The most recent quote for this ticker.  This is only returned if your current plan includes quotes.",
                 "properties": {
@@ -4143,6 +4173,11 @@
                     "vw"
                   ],
                   "type": "object"
+                },
+                "fmv": {
+                  "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                  "format": "double",
+                  "type": "number"
                 },
                 "lastQuote": {
                   "description": "The most recent quote for this ticker.  This is only returned if your current plan includes quotes.",
@@ -5195,7 +5230,9 @@
                     "exchange": 48,
                     "timestamp": 1605555313000
                   },
+                  "request_id": "a73a29dbcab4613eeaf48583d3baacf0",
                   "status": "success",
+                  "symbol": "AUD/USD",
                   "to": "USD"
                 },
                 "schema": {
@@ -17771,7 +17808,8 @@
                     "r": 202,
                     "s": 25,
                     "t": 1617901342969834000,
-                    "x": 312
+                    "x": 312,
+                    "y": 1617901342969834000
                   },
                   "status": "OK"
                 },
@@ -18622,6 +18660,11 @@
                                 ],
                                 "type": "object"
                               },
+                              "fmv": {
+                                "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                                "format": "double",
+                                "type": "number"
+                              },
                               "lastTrade": {
                                 "allOf": [
                                   {
@@ -18982,6 +19025,11 @@
                                 "vw"
                               ],
                               "type": "object"
+                            },
+                            "fmv": {
+                              "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                              "format": "double",
+                              "type": "number"
                             },
                             "lastTrade": {
                               "allOf": [
@@ -19516,6 +19564,11 @@
                                 ],
                                 "type": "object"
                               },
+                              "fmv": {
+                                "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                                "format": "double",
+                                "type": "number"
+                              },
                               "lastTrade": {
                                 "allOf": [
                                   {
@@ -19856,6 +19909,11 @@
                                 ],
                                 "type": "object"
                               },
+                              "fmv": {
+                                "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                                "format": "double",
+                                "type": "number"
+                              },
                               "lastQuote": {
                                 "description": "The most recent quote for this ticker.",
                                 "properties": {
@@ -20173,6 +20231,11 @@
                               ],
                               "type": "object"
                             },
+                            "fmv": {
+                              "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                              "format": "double",
+                              "type": "number"
+                            },
                             "lastQuote": {
                               "description": "The most recent quote for this ticker.",
                               "properties": {
@@ -20480,6 +20543,11 @@
                                   "v"
                                 ],
                                 "type": "object"
+                              },
+                              "fmv": {
+                                "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                                "format": "double",
+                                "type": "number"
                               },
                               "lastQuote": {
                                 "description": "The most recent quote for this ticker.",
@@ -20827,6 +20895,11 @@
                                   "vw"
                                 ],
                                 "type": "object"
+                              },
+                              "fmv": {
+                                "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                                "format": "double",
+                                "type": "number"
                               },
                               "lastQuote": {
                                 "description": "The most recent quote for this ticker.  This is only returned if your current plan includes quotes.",
@@ -21234,6 +21307,11 @@
                               ],
                               "type": "object"
                             },
+                            "fmv": {
+                              "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                              "format": "double",
+                              "type": "number"
+                            },
                             "lastQuote": {
                               "description": "The most recent quote for this ticker.  This is only returned if your current plan includes quotes.",
                               "properties": {
@@ -21638,6 +21716,11 @@
                                   "vw"
                                 ],
                                 "type": "object"
+                              },
+                              "fmv": {
+                                "description": "Fair market value is only available on Business plans. It is our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security. For more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                                "format": "double",
+                                "type": "number"
                               },
                               "lastQuote": {
                                 "description": "The most recent quote for this ticker.  This is only returned if your current plan includes quotes.",
@@ -22637,17 +22720,17 @@
                   "request_id": "a47d1beb8c11b6ae897ab76cdbbf35a3",
                   "results": [
                     {
-                      "ask_exchange": "48,",
-                      "ask_price": "1.18565,",
-                      "bid_exchange": "48,",
-                      "bid_price": "1.18558,",
+                      "ask_exchange": 48,
+                      "ask_price": 1.18565,
+                      "bid_exchange": 48,
+                      "bid_price": 1.18558,
                       "participant_timestamp": 1625097600000000000
                     },
                     {
-                      "ask_exchange": "48,",
-                      "ask_price": "1.18565,",
-                      "bid_exchange": "48,",
-                      "bid_price": "1.18559,",
+                      "ask_exchange": 48,
+                      "ask_price": 1.18565,
+                      "bid_exchange": 48,
+                      "bid_price": 1.18559,
                       "participant_timestamp": 1625097600000000000
                     }
                   ],
@@ -26642,6 +26725,7 @@
                         "strike_price": 5,
                         "underlying_ticker": "NCLH"
                       },
+                      "fmv": 0.05,
                       "greeks": {
                         "delta": 0.5520187372272933,
                         "gamma": 0.00706756515659829,
@@ -26698,6 +26782,7 @@
                       }
                     },
                     {
+                      "fmv": 0.05,
                       "last_quote": {
                         "ask": 21.25,
                         "ask_exchange": 300,
@@ -26816,8 +26901,12 @@
                             "description": "The error while looking for this ticker.",
                             "type": "string"
                           },
+                          "fmv": {
+                            "description": "Fair market value is only available on Business plans. It's it our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security.\nFor more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                            "type": "number"
+                          },
                           "greeks": {
-                            "description": "The greeks for this contract. \nThere are certain circumstances where greeks will not be returned, such as options contracts that are deep in the money.\nSee this \u003ca href=\"https://polygon.io/blog/greeks-and-implied-volatility/#testing\"\nalt=\"link\"\u003earticle\u003c/a\u003e for more information.",
+                            "description": "The greeks for this contract.\nThere are certain circumstances where greeks will not be returned, such as options contracts that are deep in the money.\nSee this \u003ca href=\"https://polygon.io/blog/greeks-and-implied-volatility/#testing\"\nalt=\"link\"\u003earticle\u003c/a\u003e for more information.",
                             "properties": {
                               "delta": {
                                 "description": "The change in the option's price per $0.01 increment in the price of the underlying asset.",
@@ -27713,6 +27802,7 @@
                         "strike_price": 150,
                         "ticker": "O:AAPL211022C000150000"
                       },
+                      "fmv": 0.05,
                       "greeks": {
                         "delta": 1,
                         "gamma": 0,
@@ -27900,8 +27990,12 @@
                               "name": "Details"
                             }
                           },
+                          "fmv": {
+                            "description": "Fair market value is only available on Business plans. It's it our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security.\nFor more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                            "type": "number"
+                          },
                           "greeks": {
-                            "description": "The greeks for this contract. \nThere are certain circumstances where greeks will not be returned, such as options contracts that are deep in the money.\nSee this \u003ca href=\"https://polygon.io/blog/greeks-and-implied-volatility/#testing\"\nalt=\"link\"\u003earticle\u003c/a\u003e for more information.",
+                            "description": "The greeks for this contract.\nThere are certain circumstances where greeks will not be returned, such as options contracts that are deep in the money.\nSee this \u003ca href=\"https://polygon.io/blog/greeks-and-implied-volatility/#testing\"\nalt=\"link\"\u003earticle\u003c/a\u003e for more information.",
                             "properties": {
                               "delta": {
                                 "description": "The change in the option's price per $0.01 increment in the price of the underlying asset.",
@@ -28243,6 +28337,7 @@
                       "strike_price": 150,
                       "ticker": "O:AAPL230616C00150000"
                     },
+                    "fmv": 0.05,
                     "greeks": {
                       "delta": 0.5520187372272933,
                       "gamma": 0.00706756515659829,
@@ -28431,8 +28526,12 @@
                             "name": "Details"
                           }
                         },
+                        "fmv": {
+                          "description": "Fair market value is only available on Business plans. It's it our proprietary algorithm to generate a real-time, accurate, fair market value of a tradable security.\nFor more information, \u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://polygon.io/contact\"\u003econtact us\u003c/a\u003e.",
+                          "type": "number"
+                        },
                         "greeks": {
-                          "description": "The greeks for this contract. \nThere are certain circumstances where greeks will not be returned, such as options contracts that are deep in the money.\nSee this \u003ca href=\"https://polygon.io/blog/greeks-and-implied-volatility/#testing\"\nalt=\"link\"\u003earticle\u003c/a\u003e for more information.",
+                          "description": "The greeks for this contract.\nThere are certain circumstances where greeks will not be returned, such as options contracts that are deep in the money.\nSee this \u003ca href=\"https://polygon.io/blog/greeks-and-implied-volatility/#testing\"\nalt=\"link\"\u003earticle\u003c/a\u003e for more information.",
                           "properties": {
                             "delta": {
                               "description": "The change in the option's price per $0.01 increment in the price of the underlying asset.",
@@ -30030,7 +30129,7 @@
                           "financials": {
                             "properties": {
                               "balance_sheet": {
-                                "description": "Balance sheet.\nNote that the keys in this object can be any of the balance sheet concepts defined in \u003ca rel=\"noopener noreferrer nofollow\" target=\"_blank\" href=\"http://www.xbrlsite.com/2016/fac/v3/Documentation/FundamentalAccountingConceptsList.html\"\u003ethis table of fundamental accounting concepts\u003c/a\u003e but converted to `snake_case`.",
+                                "description": "Balance sheet.\nThe keys in this object can be any of the fields listed in the Balance Sheet section of the \u003ca target=\"_blank\" href=\"https://polygon.io/blog/financials-api-glossary-of-fields\"\u003efinancials API glossary of terms\u003c/a\u003e.",
                                 "properties": {
                                   "*": {
                                     "description": "An individual financial data point.",
@@ -30082,15 +30181,15 @@
                                 "type": "object"
                               },
                               "cash_flow_statement": {
-                                "description": "Cash flow statement.\nNote that the keys in this object can be any of the cash flow statement concepts defined in \u003ca rel=\"noopener noreferrer nofollow\" target=\"_blank\" href=\"http://www.xbrlsite.com/2016/fac/v3/Documentation/FundamentalAccountingConceptsList.html\"\u003ethis table of fundamental accounting concepts\u003c/a\u003e but converted to `snake_case`.\nSee the attributes of the objects within `balance_sheet` for more details.",
+                                "description": "Cash flow statement.\nThe keys in this object can be any of the fields listed in the Cash Flow Statement section of the \u003ca target=\"_blank\" href=\"https://polygon.io/blog/financials-api-glossary-of-fields\"\u003efinancials API glossary of terms\u003c/a\u003e.\nSee the attributes of the objects within `balance_sheet` for more details.",
                                 "type": "object"
                               },
                               "comprehensive_income": {
-                                "description": "Comprehensive income.\nNote that the keys in this object can be any of the comprehensive income statement concepts defined in \u003ca rel=\"noopener noreferrer nofollow\" target=\"_blank\" href=\"http://www.xbrlsite.com/2016/fac/v3/Documentation/FundamentalAccountingConceptsList.html\"\u003ethis table of fundamental accounting concepts\u003c/a\u003e but converted to `snake_case`.\nSee the attributes of the objects within `balance_sheet` for more details.",
+                                "description": "Comprehensive income.\nThe keys in this object can be any of the fields listed in the Comprehensive Income section of the \u003ca target=\"_blank\" href=\"https://polygon.io/blog/financials-api-glossary-of-fields\"\u003efinancials API glossary of terms\u003c/a\u003e.\nSee the attributes of the objects within `balance_sheet` for more details.",
                                 "type": "object"
                               },
                               "income_statement": {
-                                "description": "Income statement.\nNote that the keys in this object can be any of the income statement concepts defined in \u003ca rel=\"noopener noreferrer nofollow\" target=\"_blank\" href=\"http://www.xbrlsite.com/2016/fac/v3/Documentation/FundamentalAccountingConceptsList.html\"\u003ethis table of fundamental accounting concepts\u003c/a\u003e but converted to `snake_case`.\nSee the attributes of the objects within `balance_sheet` for more details.",
+                                "description": "Income statement.\nThe keys in this object can be any of the fields listed in the Income Statement section of the \u003ca target=\"_blank\" href=\"https://polygon.io/blog/financials-api-glossary-of-fields\"\u003efinancials API glossary of terms\u003c/a\u003e.\nSee the attributes of the objects within `balance_sheet` for more details.",
                                 "type": "object"
                               }
                             },
@@ -30875,6 +30974,11 @@
         {
           "paths": [
             "/v3/reference/tickers/types"
+          ]
+        },
+        {
+          "paths": [
+            "/vX/reference/tickers/taxonomies"
           ]
         },
         {
