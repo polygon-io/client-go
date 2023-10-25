@@ -389,3 +389,17 @@ type LaunchpadValue struct {
 	// The Timestamp in nanoseconds.
 	Timestamp int64 `json:"t,omitempty"`
 }
+
+type FairMarketValue struct {
+	// The event type.
+	EventType
+
+	// The value.
+	FMV float64 `json:"fmv"`
+
+	// The ticker symbol for the given security.
+	Ticker string `json:"sym"`
+
+	// The Timestamp in nanoseconds.
+	Timestamp int64 `json:"t,omitempty"`
+}

@@ -62,7 +62,8 @@ var snapshot1 = `{
 	"ticker": "BCAT",
 	"todaysChange": -0.124,
 	"todaysChangePerc": -0.601,
-	"updated": 1605192894630916600
+	"updated": 1605192894630916600,
+	"fmv": 20.506
 }`
 
 var snapshot2 = `{
@@ -110,7 +111,8 @@ var snapshot2 = `{
 	"ticker": "MSFT",
 	"todaysChange": 3.71,
 	"todaysChangePerc": 1.199,
-	"updated": 1649083047682204000
+	"updated": 1649083047682204000,
+	"fmv": 313.1296
 }`
 
 func TestListSnapshotAllTickers(t *testing.T) {
@@ -260,7 +262,8 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 			"price": 147.951,
 			"ticker": "AAPL",
 			"timeframe": "REAL-TIME"
-		}
+		},
+		"fmv": 21.075
 	}
 }`
 
@@ -332,7 +335,8 @@ func TestListOptionsChainSnapshot(t *testing.T) {
 			"price": 124.94,
 			"ticker": "AAPL",
 			"timeframe": "DELAYED"
-		}
+		},
+		"fmv": 75.06
 	}`
 	chain2 := `{
 		"break_even_price": 162.375,
@@ -383,7 +387,8 @@ func TestListOptionsChainSnapshot(t *testing.T) {
 			"price": 124.94,
 			"ticker": "AAPL",
 			"timeframe": "DELAYED"
-		}
+		},
+		"fmv": 75.06
 	}`
 	chain3 := `{
 		"break_even_price": 162.375,
@@ -434,7 +439,8 @@ func TestListOptionsChainSnapshot(t *testing.T) {
 			"price": 124.94,
 			"ticker": "AAPL",
 			"timeframe": "DELAYED"
-		}
+		},
+		"fmv": 75.06
 	}`
 
 	expectedResponse := `{
@@ -901,6 +907,7 @@ var optionsSnapshotsTestData = []string{
 		  "ticker": "AAPL",
 		  "timeframe": "REAL-TIME"
 		},
+		"fmv": 123.1,
 		"error": "",
 		"message": ""
 	}`,
@@ -935,6 +942,7 @@ var optionsSnapshotsTestData = []string{
 		  "ticker": "META",
 		  "timeframe": "REAL-TIME"
 		},
+		"fmv": 200.2,
 		"error": "",
 		"message": ""
 	}`,
@@ -968,7 +976,8 @@ var optionsSnapshotsTestData = []string{
 		  "price": 11.93,
 		  "ticker": "F",
 		  "timeframe": "REAL-TIME"
-		}
+		},
+		"fmv": 6.97
 	}`,
 }
 
@@ -998,7 +1007,8 @@ var cryptoSnapshotsTestData = []string{
 		  "conditions": [
 			1
 		  ]
-		}
+		},
+		"fmv": 27220.3
 	  }`,
 	`{
 		"market_status": "open",
@@ -1025,7 +1035,8 @@ var cryptoSnapshotsTestData = []string{
 		  "conditions": [
 			1
 		  ]
-		}
+		},
+		"fmv": 1816.31
 	  }`,
 	`{
 		"market_status": "open",
@@ -1052,7 +1063,8 @@ var cryptoSnapshotsTestData = []string{
 		  "conditions": [
 			1
 		  ]
-		}
+		},
+		"fmv": 0.784
 	  }`,
 }
 
@@ -1078,7 +1090,8 @@ var forexSnapshotTestData = []string{
 		  "ask": 1.35191,
 		  "bid": 1.35185,
 		  "exchange": 48
-		}
+		},
+		"fmv": 1.35185
 	}`,
 	`{
 		"market_status": "open",
@@ -1101,7 +1114,8 @@ var forexSnapshotTestData = []string{
 		  "ask": 0.92883,
 		  "bid": 0.92877,
 		  "exchange": 48
-		}
+		},
+		"fmv": 0.92877
 	}`,
 	`{
 		"market_status": "open",
@@ -1124,7 +1138,8 @@ var forexSnapshotTestData = []string{
 		  "ask": 1.51297,
 		  "bid": 1.51281,
 		  "exchange": 48
-		}
+		},
+		"fmv": 1.51281
 	}`,
 }
 
@@ -1223,7 +1238,8 @@ var partialSuccessWithStocksTestData = []string{
 			"timeframe": "REAL-TIME"
 		},
 		"ticker": "AAPL",
-		"type": "stocks"
+		"type": "stocks",
+		"fmv": 173.5
 	}`,
 	`{
 		"error": "NOT_ENTITLED",
