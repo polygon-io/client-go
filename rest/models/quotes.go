@@ -123,7 +123,7 @@ type Quote struct {
 	Conditions           []int32 `json:"conditions,omitempty"`
 	Indicators           []int32 `json:"indicators,omitempty"`
 	ParticipantTimestamp Nanos   `json:"participant_timestamp,omitempty"`
-	SequenceNumber       Nanos   `json:"sequence_number,omitempty"`
+	SequenceNumber       int64   `json:"sequence_number,omitempty"`
 	SipTimestamp         Nanos   `json:"sip_timestamp,omitempty"`
 	Tape                 int32   `json:"tape,omitempty"`
 	TrfTimestamp         Nanos   `json:"trf_timestamp,omitempty"`
@@ -133,7 +133,7 @@ type Quote struct {
 type LastQuote struct {
 	Ticker               string  `json:"T,omitempty"`
 	TrfTimestamp         Nanos   `json:"f,omitempty"`
-	SequenceNumber       Nanos   `json:"q,omitempty"`
+	SequenceNumber       int64   `json:"q,omitempty"`
 	SipTimestamp         Nanos   `json:"t,omitempty"`
 	ParticipantTimestamp Nanos   `json:"y,omitempty"`
 	AskPrice             float64 `json:"P,omitempty"`
