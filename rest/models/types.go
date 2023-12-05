@@ -250,8 +250,8 @@ func (m *Millis) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (m *Millis) MarshalJSON() ([]byte, error) {
-	return json.Marshal(time.Time(*m).UnixMilli())
+func (m Millis) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(m).UnixMilli())
 }
 
 // Nanos represents a Unix time in nanoseconds since January 1, 1970 UTC.
@@ -269,6 +269,6 @@ func (n *Nanos) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (n *Nanos) MarshalJSON() ([]byte, error) {
-	return json.Marshal(time.Time(*n).UnixNano())
+func (n Nanos) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(n).UnixNano())
 }
