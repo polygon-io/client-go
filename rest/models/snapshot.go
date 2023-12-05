@@ -224,6 +224,7 @@ type TickerSnapshot struct {
 	TodaysChange     float64           `json:"todaysChange,omitempty"`
 	TodaysChangePerc float64           `json:"todaysChangePerc,omitempty"`
 	Updated          Nanos             `json:"updated,omitempty"`
+	FairMarketValue  float64           `json:"fmv,omitempty"`
 }
 
 // DaySnapshot is the most recent day agg for a ticker.
@@ -282,6 +283,7 @@ type OptionContractSnapshot struct {
 	LastTrade         LastTradeOptionContractSnapshot `json:"last_trade,omitempty"`
 	OpenInterest      float64                         `json:"open_interest,omitempty"`
 	UnderlyingAsset   UnderlyingAsset                 `json:"underlying_asset,omitempty"`
+	FairMarketValue   float64                         `json:"fmv,omitempty"`
 }
 
 // IndexSnapshot is a collection of data for an index ticker including the current session information and the most recent value.
@@ -454,6 +456,7 @@ type SnapshotResponseModel struct {
 	Value             float64           `json:"value,omitempty"`
 	LastUpdated       int64             `json:"last_updated,omitempty"`
 	Timeframe         string            `json:"timeframe,omitempty"`
+	FairMarketValue   float64           `json:"fmv,omitempty"`
 	Error             string            `json:"error"`
 	Message           string            `json:"message"`
 }

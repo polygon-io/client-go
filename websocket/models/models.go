@@ -256,13 +256,13 @@ type CryptoQuote struct {
 	BidPrice float64 `json:"bp,omitempty"`
 
 	// The bid size.
-	BidSize int32 `json:"bs,omitempty"`
+	BidSize float64 `json:"bs,omitempty"`
 
 	// The ask price.
 	AskPrice float64 `json:"ap,omitempty"`
 
 	// The ask size.
-	AskSize int32 `json:"as,omitempty"`
+	AskSize float64 `json:"as,omitempty"`
 
 	// The Timestamp in Unix MS.
 	Timestamp int64 `json:"t,omitempty"`
@@ -382,6 +382,20 @@ type LaunchpadValue struct {
 
 	// The value.
 	Value float64 `json:"val"`
+
+	// The ticker symbol for the given security.
+	Ticker string `json:"sym"`
+
+	// The Timestamp in nanoseconds.
+	Timestamp int64 `json:"t,omitempty"`
+}
+
+type FairMarketValue struct {
+	// The event type.
+	EventType
+
+	// The value.
+	FMV float64 `json:"fmv"`
 
 	// The ticker symbol for the given security.
 	Ticker string `json:"sym"`
