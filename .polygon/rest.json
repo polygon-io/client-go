@@ -2,7 +2,7 @@
   "components": {
     "parameters": {
       "AggregateAdjusted": {
-        "description": "Whether or not the results are adjusted for splits.  By default, results are adjusted.\nSet this to false to get results that are NOT adjusted for  splits.\n",
+        "description": "Whether or not the results are adjusted for splits.  By default, results are adjusted.\nSet this to false to get results that are NOT adjusted for splits.\n",
         "example": true,
         "in": "query",
         "name": "adjusted",
