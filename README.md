@@ -7,11 +7,79 @@
 
 [![docs][doc-img]][doc] [![Build][build-img]][build] [![Go Report Card][report-card-img]][report-card]
 
-The official Go client library for the [Polygon](https://polygon.io/) REST and WebSocket API.
+The official Go client library for the [Polygon](https://polygon.io/) REST and WebSocket API. This client makes use of Go generics and thus requires Go 1.18. See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API.
 
-`go get github.com/polygon-io/client-go`
+## Getting Started
 
-This client makes use of Go generics and thus requires Go 1.18. See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API.
+This section guides you through setting up a simple project with polygon-io/client-go.
+
+First, make a new directory for your project and navigate into it:
+```bash
+mkdir myproject && cd myproject
+```
+
+Next, initialize a new module for dependency management. This creates a `go.mod` file to track your dependencies:
+```bash
+go mod init example
+```
+
+Then, create a `main.go` file. For quick start, you can find over 100+ [example code snippets](https://github.com/polygon-io/client-go/tree/master/rest/example) that demonstrate connecting to both the REST and WebSocket APIs. Here's an example that fetches the last trade for `AAPL`.
+
+```bash
+cat > main.go <<EOF
+// Stocks - Last Trade
+// https://polygon.io/docs/stocks/get_v2_last_trade__stocksticker
+// https://github.com/polygon-io/client-go/blob/master/rest/trades.go
+package main
+
+import (
+	"context"
+	"log"
+	"os"
+
+	polygon "github.com/polygon-io/client-go/rest"
+	"github.com/polygon-io/client-go/rest/models"
+)
+
+func main() {
+
+	// init client
+	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+
+	// set params
+	params := &models.GetLastTradeParams{
+		Ticker: "AAPL",
+	}
+
+	// make request
+	res, err := c.GetLastTrade(context.Background(), params)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// do something with the result
+	log.Print(res)
+
+}
+EOF
+```
+
+Please remember to set your Polygon API key, which you can find on the polygon.io dashboard, in the environment variable `POLYGON_API_KEY`. Or, as a less secure option, by hardcoding it in your code. But please note that hardcoding the API key can be risky if your code is shared or exposed. You can configure the environment variable by running:
+
+```
+export POLYGON_API_KEY="<your_api_key>"        <- mac/linux
+xset POLYGON_API_KEY "<your_api_key>"          <- windows
+```
+
+Then, run `go mod tidy` to automatically download and install the necessary dependencies. This command ensures your `go.mod` file reflects all dependencies used in your project:
+```bash
+go mod tidy
+```
+
+Finally, execute your application:
+```bash
+go run main.go
+```
 
 ## REST API Client
 
