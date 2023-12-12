@@ -139,8 +139,9 @@ const (
 	CryptoLaunchpadValue   Topic = 77
 	cryptoMax              Topic = 78
 
-	IndexMinAggs Topic = 90
-	IndexValue   Topic = 91
+	IndexSecAggs Topic = 90
+	IndexMinAggs Topic = 91
+	IndexValue   Topic = 92
 
 	BusinessFairMarketValue Topic = 100
 )
@@ -199,6 +200,8 @@ func (t Topic) prefix() string {
 		return "AM"
 	case CryptoLaunchpadValue:
 		return "LV"
+	case IndexSecAggs:
+		return "A"
 	case IndexMinAggs:
 		return "AM"
 	case IndexValue:
