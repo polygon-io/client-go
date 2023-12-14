@@ -6,7 +6,7 @@ require (
 	github.com/cenkalti/backoff/v4 v4.2.1
 	github.com/go-playground/form/v4 v4.2.1
 	github.com/go-playground/validator/v10 v10.16.0
-	github.com/go-resty/resty/v2 v2.10.0
+	github.com/go-resty/resty/v2 v2.9.1
 	github.com/gorilla/websocket v1.5.1
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/sirupsen/logrus v1.9.3
