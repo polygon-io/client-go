@@ -11,7 +11,7 @@ import (
 	"github.com/polygon-io/client-go/rest/models"
 )
 
-const clientVersion = "v1.16.0"
+const clientVersion = "v1.16.1"
 
 const (
 	APIURL            = "https://api.polygon.io"
