@@ -82,16 +82,21 @@ const (
 )
 
 func (m Market) supports(topic Topic) bool {
+	// FMV is supported for Stocks, Options, Forex, and Crypto but is not within the range
+	// so we need to make sure FMV is suppored if these markets are used.
+	isBusinessFairMarketValue := topic == BusinessFairMarketValue
+
 	switch m {
 	case Stocks:
-		return topic > stocksMin && topic < stocksMax
+		return isBusinessFairMarketValue || (topic > stocksMin && topic < stocksMax)
 	case Options:
-		return topic > optionsMin && topic < optionsMax
+		return isBusinessFairMarketValue || (topic > optionsMin && topic < optionsMax)
 	case Forex:
-		return topic > forexMin && topic < forexMax
+		return isBusinessFairMarketValue || (topic > forexMin && topic < forexMax)
 	case Crypto:
-		return topic > cryptoMin && topic < cryptoMax
+		return isBusinessFairMarketValue || (topic > cryptoMin && topic < cryptoMax)
 	}
+
 	return true // assume user knows what they're doing if they use some unknown market
 }
 
