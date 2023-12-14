@@ -17,14 +17,14 @@ jobs:
     name: golangci-lint
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v4
         with:
           go-version: ${{ matrix.go-version }}
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.52
+          version: v1.54
       - name: gofmt
         run: |
           go fmt ./...
