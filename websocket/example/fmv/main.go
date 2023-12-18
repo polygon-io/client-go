@@ -48,7 +48,8 @@ func main() {
 			switch out.(type) {
 			case models.FairMarketValue:
 				log.WithFields(logrus.Fields{"fmv": out}).Info()
-			default:
+
+				default:
 				log.WithFields(logrus.Fields{"unknown": out}).Info()
 			}
 		}
