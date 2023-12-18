@@ -550,6 +550,7 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 		if err := json.Unmarshal(msg, &out); err != nil {
 			c.log.Errorf("failed to unmarshal message: %v", err)
 		}
+		c.output <- out
 
 	default:
 		c.log.Infof("unknown message type '%s'", sanitize(eventType))
