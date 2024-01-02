@@ -30,7 +30,7 @@ jobs:
         with:
           filename: coverage.out
       - name: verify-changed
-        uses: tj-actions/verify-changed-files@v12
+        uses: tj-actions/verify-changed-files@v17
         id: verify-changed-files
         with:
           files: README.md
