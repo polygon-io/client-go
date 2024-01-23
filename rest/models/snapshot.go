@@ -79,7 +79,11 @@ type ListOptionsChainParams struct {
 	UnderlyingAsset string `validate:"required" path:"underlyingAsset"`
 
 	// The strike price of the option contract.
-	StrikePrice *float64 `query:"strike_price"`
+	StrikePrice    *float64 `query:"strike_price"`
+	StrikePriceLT  *float64 `query:"strike_price.lt"`
+	StrikePriceLTE *float64 `query:"strike_price.lte"`
+	StrikePriceGT  *float64 `query:"strike_price.gt"`
+	StrikePriceGTE *float64 `query:"strike_price.gte"`
 
 	// The type of contract. Can be ContractCall, ContractPut, or in some rare cases, ContractOther.
 	ContractType *ContractType `query:"contract_type"`
