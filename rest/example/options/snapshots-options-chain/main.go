@@ -19,8 +19,15 @@ func main() {
 
 	// set params
 	params := &models.ListOptionsChainParams{
-		UnderlyingAsset: "AAPL",
+	    UnderlyingAsset: "SPY",
+	    StrikePriceGTE:  new(float64),
+	    StrikePriceLTE:  new(float64),
+	    Limit:           new(int),
 	}
+
+	*params.StrikePriceGTE = 500.0
+	*params.StrikePriceLTE = 600.0
+	*params.Limit = 250
 
 	// make request
 	iter := c.ListOptionsChainSnapshot(context.Background(), params)
