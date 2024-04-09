@@ -19,10 +19,10 @@ func main() {
 
 	// set params
 	params := &models.ListOptionsChainParams{
-	    UnderlyingAsset: "SPY",
-	    StrikePriceGTE:  new(float64),
-	    StrikePriceLTE:  new(float64),
-	    Limit:           new(int),
+		UnderlyingAsset: "SPY",
+		StrikePriceGTE:  new(float64),
+		StrikePriceLTE:  new(float64),
+		Limit:           new(int),
 	}
 
 	*params.StrikePriceGTE = 500.0
