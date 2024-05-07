@@ -64,6 +64,10 @@ func TestListOptionsChainParams(t *testing.T) {
 	order := models.Asc
 	expect := models.ListOptionsChainParams{
 		StrikePrice:       &strikePrice,
+		StrikePriceLT:     &strikePrice,
+		StrikePriceLTE:    &strikePrice,
+		StrikePriceGT:     &strikePrice,
+		StrikePriceGTE:    &strikePrice,
 		ContractType:      &contractType,
 		ExpirationDateEQ:  &date,
 		ExpirationDateLT:  &date,
@@ -75,7 +79,11 @@ func TestListOptionsChainParams(t *testing.T) {
 		Order:             &order,
 	}
 	actual := models.ListOptionsChainParams{}.
-		WithStrikePrice(strikePrice).
+		WithStrikePrice(models.EQ, strikePrice).
+		WithStrikePrice(models.LT, strikePrice).
+		WithStrikePrice(models.LTE, strikePrice).
+		WithStrikePrice(models.GT, strikePrice).
+		WithStrikePrice(models.GTE, strikePrice).
 		WithContractType(contractType).
 		WithExpirationDate(models.EQ, date).
 		WithExpirationDate(models.LT, date).
