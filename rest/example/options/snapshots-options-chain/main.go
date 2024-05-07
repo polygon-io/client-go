@@ -25,7 +25,7 @@ func main() {
 		Limit:           new(int),
 	}.WithStrikePrice("gte", 500.00).WithStrikePrice("lte", 600.00).WithLimit(250)
 
-	// make request
+	// make the request
 	iter := c.ListOptionsChainSnapshot(context.Background(), params)
 
 	// do something with the result
