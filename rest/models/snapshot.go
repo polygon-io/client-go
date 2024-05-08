@@ -106,8 +106,23 @@ type ListOptionsChainParams struct {
 }
 
 // WithStrikePrice sets strike price to params. Strike Price is the price at which a put or call option can be exercised.
-func (o ListOptionsChainParams) WithStrikePrice(strikePrice float64) *ListOptionsChainParams {
-	o.StrikePrice = &strikePrice
+// comparator options include EQ, LT, LTE, GT, and GTE.
+// expirationDate should be in YYYY-MM-DD format
+func (o ListOptionsChainParams) WithStrikePrice(comparator Comparator, strikePrice float64) *ListOptionsChainParams {
+	switch comparator {
+	case EQ:
+		o.StrikePrice = &strikePrice
+	case LT:
+		o.StrikePriceLT = &strikePrice
+	case LTE:
+		o.StrikePriceLTE = &strikePrice
+	case GT:
+		o.StrikePriceGT = &strikePrice
+	case GTE:
+		o.StrikePriceGTE = &strikePrice
+	default:
+		o.StrikePrice = &strikePrice
+	}
 	return &o
 }
 

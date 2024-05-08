@@ -18,11 +18,14 @@ func main() {
 	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
 
 	// set params
-	params := &models.ListOptionsChainParams{
-		UnderlyingAsset: "AAPL",
-	}
+	params := models.ListOptionsChainParams{
+		UnderlyingAsset: "SPY",
+		StrikePriceGTE:  new(float64),
+		StrikePriceLTE:  new(float64),
+		Limit:           new(int),
+	}.WithStrikePrice("gte", 500.00).WithStrikePrice("lte", 600.00).WithLimit(250)
 
-	// make request
+	// make the request
 	iter := c.ListOptionsChainSnapshot(context.Background(), params)
 
 	// do something with the result
