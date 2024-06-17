@@ -1,5 +1,5 @@
 # Polygon Go Client
-![Coverage](https://img.shields.io/badge/Coverage-76.7%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-76.5%25-brightgreen)
 
 <!-- todo: add a codecov badge -->
 <!-- todo: figure out a way to show all build statuses -->
@@ -8,6 +8,7 @@
 [![docs][doc-img]][doc] [![Build][build-img]][build] [![Go Report Card][report-card-img]][report-card]
 
 The official Go client library for the [Polygon](https://polygon.io/) REST and WebSocket API. This client makes use of Go generics and thus requires Go 1.18. See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API.
+
 
 ## Getting Started
 
