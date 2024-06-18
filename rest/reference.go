@@ -10,10 +10,11 @@ import (
 )
 
 const (
-	ListTickersPath      = "/v3/reference/tickers"
-	GetTickerDetailsPath = "/v3/reference/tickers/{ticker}"
-	ListTickerNewsPath   = "/v2/reference/news"
-	GetTickerTypesPath   = "/v3/reference/tickers/types"
+	ListTickersPath               = "/v3/reference/tickers"
+	GetTickerDetailsPath          = "/v3/reference/tickers/{ticker}"
+	ListTickerNewsPath            = "/v2/reference/news"
+	GetTickerRelatedCompaniesPath = "/v1/related-companies/{ticker}"
+	GetTickerTypesPath            = "/v3/reference/tickers/types"
 
 	GetMarketHolidaysPath = "/v1/marketstatus/upcoming"
 	GetMarketStatusPath   = "/v1/marketstatus/now"
@@ -81,6 +82,14 @@ func (c *ReferenceClient) ListTickerNews(ctx context.Context, params *models.Lis
 		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 		return res, res.Results, err
 	})
+}
+
+// GetTickerRelatedCompanies gets a list of related tickers based on news and returns data. For more details see
+// https://polygon.io/docs/stocks/get_v1_related-companies__ticker.
+func (c *ReferenceClient) GetTickerRelatedCompanies(ctx context.Context, params *models.GetTickerRelatedCompaniesParams, options ...models.RequestOption) (*models.GetTickerRelatedCompaniesResponse, error) {
+	res := &models.GetTickerRelatedCompaniesResponse{}
+	err := c.Call(ctx, http.MethodGet, GetTickerRelatedCompaniesPath, params, res, options...)
+	return res, err
 }
 
 // GetTickerTypes retrieves all the possible ticker types that can be queried. For more details see

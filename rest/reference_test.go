@@ -212,6 +212,63 @@ func TestListTickerNews(t *testing.T) {
 	assert.Nil(t, iter.Err())
 }
 
+func TestGetTickerRelatedCompanies(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := `{
+    "request_id": "0f1dbb2f2781b7d043553bfa400fdfc5",
+    "results": [
+        {
+            "ticker": "MSFT"
+        },
+        {
+            "ticker": "GOOGL"
+        },
+        {
+            "ticker": "AMZN"
+        },
+        {
+            "ticker": "GOOG"
+        },
+        {
+            "ticker": "TSLA"
+        },
+        {
+            "ticker": "NVDA"
+        },
+        {
+            "ticker": "META"
+        },
+        {
+            "ticker": "NFLX"
+        },
+        {
+            "ticker": "DIS"
+        },
+        {
+            "ticker": "BRK.B"
+        }
+    ],
+    "status": "OK",
+    "ticker": "AAPL"
+}`
+
+	registerResponder("https://api.polygon.io/v1/related-companies/AAPL", expectedResponse)
+	params := models.GetTickerRelatedCompaniesParams{
+		Ticker: "AAPL",
+	}
+	res, err := c.GetTickerRelatedCompanies(context.Background(), &params)
+	assert.Nil(t, err)
+
+	var expect models.GetTickerRelatedCompaniesResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
+	assert.Nil(t, err)
+	assert.Equal(t, &expect, res)
+}
+
 func TestGetTickerTypes(t *testing.T) {
 	c := polygon.New("API_KEY")
 
