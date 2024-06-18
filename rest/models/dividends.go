@@ -111,7 +111,6 @@ func (p ListDividendsParams) WithDeclarationDate(c Comparator, q Date) *ListDivi
 	return &p
 }
 
-
 func (p ListDividendsParams) WithPayDate(c Comparator, q Date) *ListDividendsParams {
 	switch c {
 	case EQ:
