@@ -235,6 +235,20 @@ func (p ListTickerNewsParams) WithLimit(q int) *ListTickerNewsParams {
 	return &p
 }
 
+// GetTickerRelatedCompaniesParams is the set of parameters for the GetTickerRelatedCompanies method.
+type GetTickerRelatedCompaniesParams struct {
+	// The ticker symbol of the asset.
+	Ticker string `validate:"required" path:"ticker"`
+}
+
+// GetTickerDetailsResponse is the response returned by the GetTickerRelatedCompanies method.
+type GetTickerRelatedCompaniesResponse struct {
+	BaseResponse
+
+	// List if related tickers.
+	Results []RelatedCompany `json:"results,omitempty"`
+}
+
 // ListTickerNewsResponse is the response returned by the ListTickerNews method.
 type ListTickerNewsResponse struct {
 	BaseResponse
@@ -341,6 +355,11 @@ type Publisher struct {
 	HomepageURL string `json:"homepage_url,omitempty"`
 	LogoURL     string `json:"logo_url,omitempty"`
 	Name        string `json:"name,omitempty"`
+}
+
+// RelatedCompany represents a related ticker based on news or sec filings.
+type RelatedCompany struct {
+	Ticker string `json:"ticker,omitempty"`
 }
 
 // TickerType represents a type of ticker with a code that the API understands.
