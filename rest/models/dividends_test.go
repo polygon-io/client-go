@@ -32,6 +32,11 @@ func TestListDividendsParams(t *testing.T) {
 		DeclarationDateLTE: &date,
 		DeclarationDateGT:  &date,
 		DeclarationDateGTE: &date,
+		PayDateEQ:          &date,
+		PayDateLT:          &date,
+		PayDateLTE:         &date,
+		PayDateGT:          &date,
+		PayDateGTE:         &date,
 		CashAmountEQ:       &cash,
 		CashAmountLT:       &cash,
 		CashAmountLTE:      &cash,
@@ -59,6 +64,11 @@ func TestListDividendsParams(t *testing.T) {
 		WithDeclarationDate(models.LTE, date).
 		WithDeclarationDate(models.GT, date).
 		WithDeclarationDate(models.GTE, date).
+		WithPayDate(models.EQ, date).
+		WithPayDate(models.LT, date).
+		WithPayDate(models.LTE, date).
+		WithPayDate(models.GT, date).
+		WithPayDate(models.GTE, date).
 		WithCashAmount(models.EQ, cash).
 		WithCashAmount(models.LT, cash).
 		WithCashAmount(models.LTE, cash).

@@ -111,6 +111,22 @@ func (p ListDividendsParams) WithDeclarationDate(c Comparator, q Date) *ListDivi
 	return &p
 }
 
+func (p ListDividendsParams) WithPayDate(c Comparator, q Date) *ListDividendsParams {
+	switch c {
+	case EQ:
+		p.PayDateEQ = &q
+	case LT:
+		p.PayDateLT = &q
+	case LTE:
+		p.PayDateLTE = &q
+	case GT:
+		p.PayDateGT = &q
+	case GTE:
+		p.PayDateGTE = &q
+	}
+	return &p
+}
+
 func (p ListDividendsParams) WithFrequency(q Frequency) *ListDividendsParams {
 	p.Frequency = &q
 	return &p
