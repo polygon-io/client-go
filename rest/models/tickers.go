@@ -336,17 +336,25 @@ type Branding struct {
 
 // TickerNews contains information on a ticker news article.
 type TickerNews struct {
-	AMPURL       string    `json:"amp_url,omitempty"`
-	ArticleURL   string    `json:"article_url,omitempty"`
-	Author       string    `json:"author,omitempty"`
-	Description  string    `json:"description,omitempty"`
-	ID           string    `json:"id,omitempty"`
-	ImageURL     string    `json:"image_url,omitempty"`
-	Keywords     []string  `json:"keywords,omitempty"`
-	PublishedUTC Time      `json:"published_utc,omitempty"`
-	Publisher    Publisher `json:"publisher,omitempty"`
-	Tickers      []string  `json:"tickers,omitempty"`
-	Title        string    `json:"title,omitempty"`
+	AMPURL       string     `json:"amp_url,omitempty"`
+	ArticleURL   string     `json:"article_url,omitempty"`
+	Author       string     `json:"author,omitempty"`
+	Description  string     `json:"description,omitempty"`
+	ID           string     `json:"id,omitempty"`
+	ImageURL     string     `json:"image_url,omitempty"`
+	Insights     []Insights `json:"insights"`
+	Keywords     []string   `json:"keywords,omitempty"`
+	PublishedUTC Time       `json:"published_utc,omitempty"`
+	Publisher    Publisher  `json:"publisher,omitempty"`
+	Tickers      []string   `json:"tickers,omitempty"`
+	Title        string     `json:"title,omitempty"`
+}
+
+// Insights contains sentiment, reasoning, and the ticker symbol associated with the insight.
+type Insights struct {
+	Ticker             string `json:"ticker"`
+	Sentiment          string `json:"sentiment"`
+	SentimentReasoning string `json:"sentiment_reasoning"`
 }
 
 // Publisher contains information on a new article publisher.
