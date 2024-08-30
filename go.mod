@@ -11,7 +11,7 @@ require (
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
-	golang.org/x/exp v0.0.0-20220414153411-bcd21879b8fd
+	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948
 	gopkg.in/tomb.v2 v2.0.0-20161208151619-d5d1b5820637
 )
 
@@ -27,4 +27,8 @@ require (
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+)
+
+replace (
+	"github.com/polygon-io/client-go/websocket" => "/Users/kyle/go/src/github.com/polygon-io/client-go/websocket"
 )

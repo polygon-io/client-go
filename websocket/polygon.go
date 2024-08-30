@@ -48,7 +48,12 @@ type Client struct {
 	output               chan any
 	err                  chan error
 
-	log Logger
+	stats *ClientStats
+	log   Logger
+}
+
+func (c *Client) Stats() *ClientStats {
+	return c.stats
 }
 
 // New creates a client for the Polygon WebSocket API.
@@ -82,8 +87,13 @@ func New(config Config) (*Client, error) {
 	if config.MaxRetries != nil {
 		c.backoff = backoff.WithMaxRetries(c.backoff, *config.MaxRetries)
 	}
+	c.stats = NewClientStats()
 
 	return c, nil
+}
+
+func (c *Client) Reconnect() {
+	c.reconnect()
 }
 
 // Connect dials the WebSocket server and starts the read/write and process threads.
@@ -127,6 +137,7 @@ func (c *Client) Subscribe(topic Topic, tickers ...string) error {
 	}
 
 	c.subs.add(topic, tickers...)
+	c.stats.Increment(SubscriptionCount)
 	c.wQueue <- subscribe
 
 	return nil
@@ -243,8 +254,10 @@ func (c *Client) reconnect() {
 
 	c.log.Debugf("unexpected disconnect: reconnecting")
 	c.close(true)
+	c.stats.Increment(ReconnectCount)
 
 	notify := func(err error, _ time.Duration) {
+		c.stats.Increment(ReconnectCount)
 		c.log.Errorf(err.Error())
 	}
 	err := backoff.RetryNotify(c.connect(true), c.backoff, notify)
@@ -315,7 +328,7 @@ func (c *Client) write() error {
 	defer func() {
 		c.log.Debugf("write thread closed")
 		ticker.Stop()
-		go c.reconnect()
+		//go c.reconnect()
 	}()
 
 	for {
@@ -355,6 +368,7 @@ func (c *Client) process() (err error) {
 		case <-c.ptomb.Dying():
 			return nil
 		case data := <-c.rQueue:
+			c.stats.Increment(MessagesRecv)
 			if c.rawData && c.bypassRawDataRouting {
 				c.output <- data // push raw bytes to output channel
 				continue
