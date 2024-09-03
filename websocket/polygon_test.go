@@ -152,3 +152,32 @@ func TestConnectRetryFailure(t *testing.T) {
 	assert.NotNil(t, err)
 	c.Close()
 }
+
+func TestReconnectCallback(t *testing.T) {
+	s := httptest.NewServer(http.HandlerFunc(connect))
+	defer s.Close()
+
+	reconnectCallbackCount := 0
+	log := logrus.New()
+	log.SetLevel(logrus.DebugLevel)
+	u := "ws" + strings.TrimPrefix(s.URL, "http")
+	var retries uint64 = 0
+	c, err := New(Config{
+		APIKey:     "good",
+		Feed:       Feed(u),
+		Market:     Market(""),
+		Log:        log,
+		MaxRetries: &retries,
+		ReconnectCallback: func(err error) {
+			assert.Nil(t, err)
+			reconnectCallbackCount++
+		},
+	})
+	assert.NotNil(t, c)
+	assert.Nil(t, err)
+	err = c.Connect()
+	assert.Nil(t, err)
+	c.reconnect()
+	c.Close()
+	assert.Equal(t, 1, reconnectCallbackCount)
+}
