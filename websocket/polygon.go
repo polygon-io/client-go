@@ -48,7 +48,8 @@ type Client struct {
 	output               chan any
 	err                  chan error
 
-	log Logger
+	reconnectCallback func(error)
+	log               Logger
 }
 
 // New creates a client for the Polygon WebSocket API.
@@ -70,6 +71,7 @@ func New(config Config) (*Client, error) {
 		output:               make(chan any, 100000),
 		err:                  make(chan error),
 		log:                  config.Log,
+		reconnectCallback:    config.ReconnectCallback,
 	}
 
 	uri, err := url.Parse(string(c.feed))
@@ -246,6 +248,9 @@ func (c *Client) reconnect() {
 
 	notify := func(err error, _ time.Duration) {
 		c.log.Errorf(err.Error())
+		if c.reconnectCallback != nil {
+			c.reconnectCallback(err)
+		}
 	}
 	err := backoff.RetryNotify(c.connect(true), c.backoff, notify)
 	if err != nil {
@@ -253,6 +258,11 @@ func (c *Client) reconnect() {
 		c.log.Errorf(err.Error())
 		c.close(false)
 		c.err <- err
+	} else {
+		// Callback on success.
+		if c.reconnectCallback != nil {
+			c.reconnectCallback(nil)
+		}
 	}
 }
 

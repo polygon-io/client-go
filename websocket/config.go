@@ -30,6 +30,12 @@ type Config struct {
 	// If this flag is `true`, it's up to the caller to handle all message types including auth and subscription responses.
 	BypassRawDataRouting bool
 
+	// ReconnectCallback is a callback that is triggered on automatic reconnects by the websocket client.
+	// This can be useful for implementing additional logic around reconnect paths e.g. logging, metrics
+	// or managing the connection. The callback function takes as input an error type which will be non-nil
+	// if the reconnect attempt has failed and is being retried, and will be nil on reconnect success.
+	ReconnectCallback func(error)
+
 	// Log is an optional logger. Any logger implementation can be used as long as it
 	// implements the basic Logger interface. Omitting this will disable client logging.
 	Log Logger
