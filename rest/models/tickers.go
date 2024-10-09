@@ -495,13 +495,13 @@ const (
 // ListIPOsParams contains parameters for the ListIPOs method.
 type ListIPOsParams struct {
 	// Query parameters
-	Ticker        *string       `query:"ticker,omitempty"`
-	USCode        *string       `query:"us_code,omitempty"`
-	ISIN          *string       `query:"isin,omitempty"`
-	ListingDate   *string       `query:"listing_date,omitempty"`
-	Order         *Order        `query:"order,omitempty"`
-	Limit         *int          `query:"limit,omitempty"`
-	Sort          *IPOsSortField `query:"sort,omitempty"`
+	Ticker      *string        `query:"ticker,omitempty"`
+	USCode      *string        `query:"us_code,omitempty"`
+	ISIN        *string        `query:"isin,omitempty"`
+	ListingDate *string        `query:"listing_date,omitempty"`
+	Order       *Order         `query:"order,omitempty"`
+	Limit       *int           `query:"limit,omitempty"`
+	Sort        *IPOsSortField `query:"sort,omitempty"`
 }
 
 // WithTicker sets the Ticker parameter.
