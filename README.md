@@ -9,7 +9,6 @@
 
 The official Go client library for the [Polygon](https://polygon.io/) REST and WebSocket API. This client makes use of Go generics and thus requires Go 1.18. See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API.
 
-
 ## Getting Started
 
 This section guides you through setting up a simple project with polygon-io/client-go.
