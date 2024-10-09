@@ -420,3 +420,164 @@ type TickerEvent struct {
 type TickerChangeEvent struct {
 	Ticker string `json:"ticker"`
 }
+
+// GetShortInterestParams contains parameters for the GetShortInterest method.
+type GetShortInterestParams struct {
+	// Path parameters
+	IdentifierType string `validate:"required" path:"identifierType"`
+	Identifier     string `validate:"required" path:"identifier"`
+
+	// Query parameters
+	Date  *string `query:"date,omitempty"`
+	Order *string `query:"order,omitempty"`
+	Limit *int    `query:"limit,omitempty"`
+	Sort  *string `query:"sort,omitempty"`
+}
+
+// WithDate sets the optional Date parameter.
+func (p GetShortInterestParams) WithDate(date string) *GetShortInterestParams {
+	p.Date = &date
+	return &p
+}
+
+// WithOrder sets the optional Order parameter.
+func (p GetShortInterestParams) WithOrder(order string) *GetShortInterestParams {
+	p.Order = &order
+	return &p
+}
+
+// WithLimit sets the optional Limit parameter.
+func (p GetShortInterestParams) WithLimit(limit int) *GetShortInterestParams {
+	p.Limit = &limit
+	return &p
+}
+
+// WithSort sets the optional Sort parameter.
+func (p GetShortInterestParams) WithSort(sort string) *GetShortInterestParams {
+	p.Sort = &sort
+	return &p
+}
+
+// GetShortInterestResponse represents the response from the GetShortInterest method.
+type GetShortInterestResponse struct {
+	BaseResponse
+
+	NextURL   string          `json:"next_url,omitempty"`
+	RequestID string          `json:"request_id,omitempty"`
+	Results   []ShortInterest `json:"results,omitempty"`
+	Status    string          `json:"status,omitempty"`
+}
+
+// ShortInterest represents a single short interest data point.
+type ShortInterest struct {
+	CurrencyCode        string `json:"currency_code,omitempty"`
+	Date                string `json:"date,omitempty"`
+	ISIN                string `json:"isin,omitempty"`
+	Name                string `json:"name,omitempty"`
+	SecurityDescription string `json:"security_description,omitempty"`
+	ShortVolume         int64  `json:"short_volume,omitempty"`
+	ShortVolumeExempt   int64  `json:"short_volume_exempt,omitempty"`
+	Ticker              string `json:"ticker,omitempty"`
+	USCode              string `json:"us_code,omitempty"`
+}
+
+// IPOsSortField defines the sort fields for IPOs.
+type IPOsSortField string
+
+const (
+	IPOsSortTicker       IPOsSortField = "ticker"
+	IPOsSortListingDate  IPOsSortField = "listing_date"
+	IPOsSortUsCode       IPOsSortField = "us_code"
+	IPOsSortIsin         IPOsSortField = "isin"
+	IPOsSortIssueEndDate IPOsSortField = "issue_end_date"
+)
+
+// ListIPOsParams contains parameters for the ListIPOs method.
+type ListIPOsParams struct {
+	// Query parameters
+	Ticker        *string       `query:"ticker,omitempty"`
+	USCode        *string       `query:"us_code,omitempty"`
+	ISIN          *string       `query:"isin,omitempty"`
+	ListingDate   *string       `query:"listing_date,omitempty"`
+	Order         *Order        `query:"order,omitempty"`
+	Limit         *int          `query:"limit,omitempty"`
+	Sort          *IPOsSortField `query:"sort,omitempty"`
+}
+
+// WithTicker sets the Ticker parameter.
+func (p ListIPOsParams) WithTicker(ticker string) *ListIPOsParams {
+	p.Ticker = &ticker
+	return &p
+}
+
+// WithUSCode sets the USCode parameter.
+func (p ListIPOsParams) WithUSCode(usCode string) *ListIPOsParams {
+	p.USCode = &usCode
+	return &p
+}
+
+// WithISIN sets the ISIN parameter.
+func (p ListIPOsParams) WithISIN(isin string) *ListIPOsParams {
+	p.ISIN = &isin
+	return &p
+}
+
+// WithListingDate sets the ListingDate parameter.
+func (p ListIPOsParams) WithListingDate(listingDate string) *ListIPOsParams {
+	p.ListingDate = &listingDate
+	return &p
+}
+
+// WithOrder sets the Order parameter.
+func (p ListIPOsParams) WithOrder(order Order) *ListIPOsParams {
+	p.Order = &order
+	return &p
+}
+
+// WithLimit sets the Limit parameter.
+func (p ListIPOsParams) WithLimit(limit int) *ListIPOsParams {
+	p.Limit = &limit
+	return &p
+}
+
+// WithSort sets the Sort parameter.
+func (p ListIPOsParams) WithSort(sort IPOsSortField) *ListIPOsParams {
+	p.Sort = &sort
+	return &p
+}
+
+// ListIPOsResponse represents the response from the ListIPOs method.
+type ListIPOsResponse struct {
+	BaseResponse
+
+	NextURL   string       `json:"next_url,omitempty"`
+	RequestID string       `json:"request_id,omitempty"`
+	Results   []IPOListing `json:"results,omitempty"`
+	Status    string       `json:"status,omitempty"`
+}
+
+// IPOListing represents a single IPO listing.
+type IPOListing struct {
+	CurrencyCode        string  `json:"currency_code,omitempty"`
+	FinalIssuePrice     float64 `json:"final_issue_price,omitempty"`
+	HighestOfferPrice   float64 `json:"highest_offer_price,omitempty"`
+	IPOStatus           string  `json:"ipo_status,omitempty"`
+	ISIN                string  `json:"isin,omitempty"`
+	IssueEndDate        string  `json:"issue_end_date,omitempty"`
+	IssueStartDate      string  `json:"issue_start_date,omitempty"`
+	IssuerName          string  `json:"issuer_name,omitempty"`
+	LastUpdated         string  `json:"last_updated,omitempty"`
+	ListingDate         string  `json:"listing_date,omitempty"`
+	ListingPrice        float64 `json:"listing_price,omitempty"`
+	LotSize             int64   `json:"lot_size,omitempty"`
+	LowestOfferPrice    float64 `json:"lowest_offer_price,omitempty"`
+	MaxSharesOffered    int64   `json:"max_shares_offered,omitempty"`
+	MinSharesOffered    int64   `json:"min_shares_offered,omitempty"`
+	PrimaryExchange     string  `json:"primary_exchange,omitempty"`
+	SecurityDescription string  `json:"security_description,omitempty"`
+	SecurityType        string  `json:"security_type,omitempty"`
+	SharesOutstanding   int64   `json:"shares_outstanding,omitempty"`
+	Ticker              string  `json:"ticker,omitempty"`
+	TotalOfferSize      float64 `json:"total_offer_size,omitempty"`
+	USCode              string  `json:"us_code,omitempty"`
+}

@@ -16,6 +16,10 @@ const (
 	GetTickerRelatedCompaniesPath = "/v1/related-companies/{ticker}"
 	GetTickerTypesPath            = "/v3/reference/tickers/types"
 
+	GetShortInterestPath = "/v1/reference/short-interest/{identifierType}/{identifier}"
+
+	ListIPOsPath = "/v1/reference/ipos"
+
 	GetMarketHolidaysPath = "/v1/marketstatus/upcoming"
 	GetMarketStatusPath   = "/v1/marketstatus/now"
 
@@ -206,6 +210,24 @@ func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models
 func (c *ReferenceClient) ListOptionsContracts(ctx context.Context, params *models.ListOptionsContractsParams, options ...models.RequestOption) *iter.Iter[models.OptionsContract] {
 	return iter.NewIter(ctx, ListOptionsContractsPath, params, func(uri string) (iter.ListResponse, []models.OptionsContract, error) {
 		res := &models.ListOptionsContractsResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
+}
+
+// GetShortInterest retrieves short interest data for a given identifier and date.
+// For more details, see: https://polygon.io/docs/stocks/get_v1_reference_short-interest__identifiertype___identifier
+func (c *ReferenceClient) GetShortInterest(ctx context.Context, params *models.GetShortInterestParams, options ...models.RequestOption) (*models.GetShortInterestResponse, error) {
+	res := &models.GetShortInterestResponse{}
+	err := c.Call(ctx, http.MethodGet, GetShortInterestPath, params, res, options...)
+	return res, err
+}
+
+// ListIPOs retrieves a list of upcoming or historical IPOs.
+// For more details, see: https://polygon.io/docs/stocks/get_v1_reference_ipos
+func (c *ReferenceClient) ListIPOs(ctx context.Context, params *models.ListIPOsParams, options ...models.RequestOption) *iter.Iter[models.IPOListing] {
+	return iter.NewIter(ctx, ListIPOsPath, params, func(uri string) (iter.ListResponse, []models.IPOListing, error) {
+		res := &models.ListIPOsResponse{}
 		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 		return res, res.Results, err
 	})

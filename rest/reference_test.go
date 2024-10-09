@@ -683,3 +683,109 @@ func TestListOptionsContracts(t *testing.T) {
 	assert.False(t, iter.Next())
 	assert.Nil(t, iter.Err())
 }
+
+func TestGetShortInterest(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := `{
+		"results": [{
+			"currency_code": "USD",
+			"date": "2023-12-31",
+			"isin": "US0378331005",
+			"name": "Apple Inc.",
+			"security_description": "Common Stock",
+			"short_volume": 2006566,
+			"short_volume_exempt": 3000,
+			"ticker": "AAPL",
+			"us_code": "378331005"
+		}],
+		"status": "OK",
+		"request_id": "some-request-id",
+		"next_url": null
+	}`
+
+	// Mock the API response
+	registerResponder("https://api.polygon.io/v1/reference/short-interest/ticker/AAPL", expectedResponse)
+
+	params := models.GetShortInterestParams{
+		IdentifierType: "ticker",
+		Identifier:     "AAPL",
+	}
+	res, err := c.GetShortInterest(context.Background(), &params)
+	assert.Nil(t, err)
+
+	var expect models.GetShortInterestResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
+	assert.Nil(t, err)
+	assert.Equal(t, &expect, res)
+}
+
+func TestListIPOs(t *testing.T) {
+    c := polygon.New("API_KEY")
+
+    httpmock.ActivateNonDefault(c.HTTP.GetClient())
+    defer httpmock.DeactivateAndReset()
+
+    ipo1 := `{
+        "currency_code": "USD",
+        "final_issue_price": 17,
+        "highest_offer_price": 17,
+        "ipo_status": "HISTORY",
+        "isin": "US75383L1026",
+        "issue_end_date": "2024-06-06",
+        "issue_start_date": "2024-06-01",
+        "issuer_name": "Rapport Therapeutics Inc.",
+        "last_updated": "2024-06-27",
+        "listing_date": "2024-06-07",
+        "listing_price": null,
+        "lot_size": 100,
+        "lowest_offer_price": 17,
+        "max_shares_offered": 8000000,
+        "min_shares_offered": 1000000,
+        "primary_exchange": "XNAS",
+        "security_description": "Ordinary Shares",
+        "security_type": "CS",
+        "shares_outstanding": 35376457,
+        "ticker": "RAPP",
+        "total_offer_size": 136000000,
+        "us_code": "75383L102"
+    }`
+
+    // Construct the expected API response with the IPO listing
+    expectedResponse := `{
+        "status": "OK",
+        "count": 1,
+        "next_url": "https://api.polygon.io/v1/reference/ipos?cursor=nextCursorValue",
+        "request_id": "6a7e466379af0a71039d60cc78e72282",
+        "results": [
+    ` + indent(true, ipo1, "\t\t") + `
+        ]
+    }`
+
+    registerResponder("https://api.polygon.io/v1/reference/ipos?limit=10&order=asc&sort=listing_date", expectedResponse)
+    registerResponder("https://api.polygon.io/v1/reference/ipos?cursor=nextCursorValue", "{}")
+
+    iter := c.ListIPOs(context.Background(), models.ListIPOsParams{}.
+        WithLimit(10).
+        WithOrder(models.Asc).
+        WithSort(models.IPOsSortListingDate))
+
+    // iter creation
+    assert.Nil(t, iter.Err())
+    assert.NotNil(t, iter.Item())
+
+    // first item
+    assert.True(t, iter.Next())
+    assert.Nil(t, iter.Err())
+    var expect models.IPOListing
+    err := json.Unmarshal([]byte(ipo1), &expect)
+    assert.Nil(t, err)
+    assert.Equal(t, expect, iter.Item())
+
+    // end of list
+    assert.False(t, iter.Next())
+    assert.Nil(t, iter.Err())
+}
