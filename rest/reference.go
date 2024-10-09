@@ -18,7 +18,6 @@ const (
 
 	GetShortInterestPath = "/v1/reference/short-interest/{identifierType}/{identifier}"
 
-	
 	ListIPOsPath = "/v1/reference/ipos"
 
 	GetMarketHolidaysPath = "/v1/marketstatus/upcoming"

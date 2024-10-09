@@ -724,12 +724,12 @@ func TestGetShortInterest(t *testing.T) {
 }
 
 func TestListIPOs(t *testing.T) {
-    c := polygon.New("API_KEY")
+	c := polygon.New("API_KEY")
 
-    httpmock.ActivateNonDefault(c.HTTP.GetClient())
-    defer httpmock.DeactivateAndReset()
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
 
-    ipo1 := `{
+	ipo1 := `{
         "currency_code": "USD",
         "final_issue_price": 17,
         "highest_offer_price": 17,
@@ -754,8 +754,8 @@ func TestListIPOs(t *testing.T) {
         "us_code": "75383L102"
     }`
 
-    // Construct the expected API response with the IPO listing
-    expectedResponse := `{
+	// Construct the expected API response with the IPO listing
+	expectedResponse := `{
         "status": "OK",
         "count": 1,
         "next_url": "https://api.polygon.io/v1/reference/ipos?cursor=nextCursorValue",
@@ -765,27 +765,27 @@ func TestListIPOs(t *testing.T) {
         ]
     }`
 
-    registerResponder("https://api.polygon.io/v1/reference/ipos?limit=10&order=asc&sort=listing_date", expectedResponse)
-    registerResponder("https://api.polygon.io/v1/reference/ipos?cursor=nextCursorValue", "{}")
+	registerResponder("https://api.polygon.io/v1/reference/ipos?limit=10&order=asc&sort=listing_date", expectedResponse)
+	registerResponder("https://api.polygon.io/v1/reference/ipos?cursor=nextCursorValue", "{}")
 
-    iter := c.ListIPOs(context.Background(), models.ListIPOsParams{}.
-        WithLimit(10).
-        WithOrder(models.Asc).
-        WithSort(models.IPOsSortListingDate))
+	iter := c.ListIPOs(context.Background(), models.ListIPOsParams{}.
+		WithLimit(10).
+		WithOrder(models.Asc).
+		WithSort(models.IPOsSortListingDate))
 
-    // iter creation
-    assert.Nil(t, iter.Err())
-    assert.NotNil(t, iter.Item())
+	// iter creation
+	assert.Nil(t, iter.Err())
+	assert.NotNil(t, iter.Item())
 
-    // first item
-    assert.True(t, iter.Next())
-    assert.Nil(t, iter.Err())
-    var expect models.IPOListing
-    err := json.Unmarshal([]byte(ipo1), &expect)
-    assert.Nil(t, err)
-    assert.Equal(t, expect, iter.Item())
+	// first item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	var expect models.IPOListing
+	err := json.Unmarshal([]byte(ipo1), &expect)
+	assert.Nil(t, err)
+	assert.Equal(t, expect, iter.Item())
 
-    // end of list
-    assert.False(t, iter.Next())
-    assert.Nil(t, iter.Err())
+	// end of list
+	assert.False(t, iter.Next())
+	assert.Nil(t, iter.Err())
 }
