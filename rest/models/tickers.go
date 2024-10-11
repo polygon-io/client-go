@@ -235,6 +235,20 @@ func (p ListTickerNewsParams) WithLimit(q int) *ListTickerNewsParams {
 	return &p
 }
 
+// GetTickerRelatedCompaniesParams is the set of parameters for the GetTickerRelatedCompanies method.
+type GetTickerRelatedCompaniesParams struct {
+	// The ticker symbol of the asset.
+	Ticker string `validate:"required" path:"ticker"`
+}
+
+// GetTickerDetailsResponse is the response returned by the GetTickerRelatedCompanies method.
+type GetTickerRelatedCompaniesResponse struct {
+	BaseResponse
+
+	// List if related tickers.
+	Results []RelatedCompany `json:"results,omitempty"`
+}
+
 // ListTickerNewsResponse is the response returned by the ListTickerNews method.
 type ListTickerNewsResponse struct {
 	BaseResponse
@@ -322,17 +336,25 @@ type Branding struct {
 
 // TickerNews contains information on a ticker news article.
 type TickerNews struct {
-	AMPURL       string    `json:"amp_url,omitempty"`
-	ArticleURL   string    `json:"article_url,omitempty"`
-	Author       string    `json:"author,omitempty"`
-	Description  string    `json:"description,omitempty"`
-	ID           string    `json:"id,omitempty"`
-	ImageURL     string    `json:"image_url,omitempty"`
-	Keywords     []string  `json:"keywords,omitempty"`
-	PublishedUTC Time      `json:"published_utc,omitempty"`
-	Publisher    Publisher `json:"publisher,omitempty"`
-	Tickers      []string  `json:"tickers,omitempty"`
-	Title        string    `json:"title,omitempty"`
+	AMPURL       string     `json:"amp_url,omitempty"`
+	ArticleURL   string     `json:"article_url,omitempty"`
+	Author       string     `json:"author,omitempty"`
+	Description  string     `json:"description,omitempty"`
+	ID           string     `json:"id,omitempty"`
+	ImageURL     string     `json:"image_url,omitempty"`
+	Insights     []Insights `json:"insights"`
+	Keywords     []string   `json:"keywords,omitempty"`
+	PublishedUTC Time       `json:"published_utc,omitempty"`
+	Publisher    Publisher  `json:"publisher,omitempty"`
+	Tickers      []string   `json:"tickers,omitempty"`
+	Title        string     `json:"title,omitempty"`
+}
+
+// Insights contains sentiment, reasoning, and the ticker symbol associated with the insight.
+type Insights struct {
+	Ticker             string `json:"ticker"`
+	Sentiment          string `json:"sentiment"`
+	SentimentReasoning string `json:"sentiment_reasoning"`
 }
 
 // Publisher contains information on a new article publisher.
@@ -341,6 +363,11 @@ type Publisher struct {
 	HomepageURL string `json:"homepage_url,omitempty"`
 	LogoURL     string `json:"logo_url,omitempty"`
 	Name        string `json:"name,omitempty"`
+}
+
+// RelatedCompany represents a related ticker based on news or sec filings.
+type RelatedCompany struct {
+	Ticker string `json:"ticker,omitempty"`
 }
 
 // TickerType represents a type of ticker with a code that the API understands.

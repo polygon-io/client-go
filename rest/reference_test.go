@@ -131,68 +131,76 @@ func TestListTickerNews(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	news1 := `{
-	"id": "nJsSJJdwViHZcw5367rZi7_qkXLfMzacXBfpv-vD9UA",
-	"publisher": {
-		"name": "Benzinga",
-		"homepage_url": "https://www.benzinga.com/",
-		"logo_url": "https://s3.polygon.io/public/public/assets/news/logos/benzinga.svg",
-		"favicon_url": "https://s3.polygon.io/public/public/assets/news/favicons/benzinga.ico"
-	},
-	"title": "Cathie Wood Adds More Coinbase, Skillz, Trims Square",
-	"author": "Rachit Vats",
-	"published_utc": "2021-04-26T02:33:17.000Z",
-	"article_url": "https://www.benzinga.com/markets/cryptocurrency/21/04/20784086/cathie-wood-adds-more-coinbase-skillz-trims-square",
-	"tickers": [
-		"DOCU",
-		"DDD",
-		"NIU",
-		"ARKF",
-		"NVDA",
-		"SKLZ",
-		"PCAR",
-		"MASS",
-		"PSTI",
-		"SPFR",
-		"TREE",
-		"PHR",
-		"IRDM",
-		"BEAM",
-		"ARKW",
-		"ARKK",
-		"ARKG",
-		"PSTG",
-		"SQ",
-		"IONS",
-		"SYRS"
-	],
-	"amp_url": "https://amp.benzinga.com/amp/content/20784086",
-	"image_url": "https://cdn2.benzinga.com/files/imagecache/og_image_social_share_1200x630/images/story/2012/andre-francois-mckenzie-auhr4gcqcce-unsplash.jpg?width=720",
-	"description": "Cathie Wood-led Ark Investment Management on Friday snapped up another 221,167 shares...",
-	"keywords": [
-		"Sector ETFs",
-		"Penny Stocks",
-		"Cryptocurrency",
-		"Small Cap",
-		"Markets",
-		"Trading Ideas",
-		"ETFs"
-	]
+		"id": "1bb0692621da5ab737f4b97ccbef9478ed6820be86474abf8d3b413f8d7d2419",
+		"publisher": {
+			"name": "The Motley Fool",
+			"homepage_url": "https://www.fool.com/",
+			"logo_url": "https://s3.polygon.io/public/assets/news/logos/themotleyfool.svg",
+			"favicon_url": "https://s3.polygon.io/public/assets/news/favicons/themotleyfool.ico"
+		},
+		"title": "Should NVIDIA Investors Be Concerned About This Massive Risk? - The Motley Fool",
+		"author": "Travis Hoium",
+		"published_utc": "2024-07-17T16:08:34Z",
+		"article_url": "https://www.fool.com/investing/2024/07/17/should-nvidia-investors-be-concerned-about-this-ma/",
+		"tickers": [
+			"NVDA",
+			"GOOG",
+			"GOOGL",
+			"META",
+			"MSFT"
+		],
+		"image_url": "https://g.foolcdn.com/editorial/images/783626/ai-chip-black.jpg",
+		"description": "NVIDIA's revenue is heavily concentrated among a few customers, which poses a significant risk to its long-term profitability. The company's growth has been driven by a small number of companies ordering AI chips, and this customer concentration could lead to disappointment for investors.",
+		"keywords": [
+			"NVIDIA",
+			"customer concentration",
+			"risk",
+			"long-term profitability",
+			"AI chips"
+		],
+		"insights": [
+			{
+				"ticker": "NVDA",
+				"sentiment": "negative",
+				"sentiment_reasoning": "The article highlights that a few customers make up a huge amount of NVIDIA's revenue, which is a huge risk for the company's long-term profitability. This customer concentration could lead to disappointment for investors."
+			},
+			{
+				"ticker": "GOOG",
+				"sentiment": "neutral",
+				"sentiment_reasoning": "Suzanne Frey, an executive at Alphabet, is a member of The Motley Fool's board of directors, but the article does not mention Alphabet in the context of NVIDIA's customer concentration risk."
+			},
+			{
+				"ticker": "GOOGL",
+				"sentiment": "neutral",
+				"sentiment_reasoning": "Suzanne Frey, an executive at Alphabet, is a member of The Motley Fool's board of directors, but the article does not mention Alphabet in the context of NVIDIA's customer concentration risk."
+			},
+			{
+				"ticker": "META",
+				"sentiment": "neutral",
+				"sentiment_reasoning": "Randi Zuckerberg, a former director of market development and spokeswoman for Facebook (now Meta Platforms), is a member of The Motley Fool's board of directors, but the article does not mention Meta Platforms in the context of NVIDIA's customer concentration risk."
+			},
+			{
+				"ticker": "MSFT",
+				"sentiment": "neutral",
+				"sentiment_reasoning": "The article does not mention Microsoft in the context of NVIDIA's customer concentration risk."
+			}
+		]
 }`
 
 	expectedResponse := `{
 	"status": "OK",
 	"count": 1,
-	"next_url": "https://api.polygon.io/v2/reference/news?cursor=eyJsaW1pdCI6MSwic29ydCI6InB1Ymxpc2hlZF91dGMiLCJvcmRlciI6ImFzY2VuZGluZyIsInRpY2tlciI6e30sInB1Ymxpc2hlZF91dGMiOnsiZ3RlIjoiMjAyMS0wNC0yNiJ9LCJzZWFyY2hfYWZ0ZXIiOlsxNjE5NDA0Mzk3MDAwLG51bGxdfQ",
-	"request_id": "831afdb0b8078549fed053476984947a",
+	"next_url": "https://api.polygon.io/v2/reference/news?cursor=YXA9MjAyNC0wNy0xN1QxNiUzQTA4JTNBMzRaJmFzPTFiYjA2OTI2MjFkYTVhYjczN2Y0Yjk3Y2NiZWY5NDc4ZWQ2ODIwYmU4NjQ3NGFiZjhkM2I0MTNmOGQ3ZDI0MTkmbGltaXQ9MSZvcmRlcj1kZXNjZW5kaW5nJnRpY2tlcj1NU0ZU",
+	"request_id": "2eff2a5bc193b01555b0d4ec91c8fdbf",
 	"results": [
 ` + indent(true, news1, "\t\t") + `
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v2/reference/news?limit=2&order=asc&published_utc.lt=1626912000000&sort=published_utc&ticker.lte=AAPL", expectedResponse)
-	registerResponder("https://api.polygon.io/v2/reference/news?cursor=eyJsaW1pdCI6MSwic29ydCI6InB1Ymxpc2hlZF91dGMiLCJvcmRlciI6ImFzY2VuZGluZyIsInRpY2tlciI6e30sInB1Ymxpc2hlZF91dGMiOnsiZ3RlIjoiMjAyMS0wNC0yNiJ9LCJzZWFyY2hfYWZ0ZXIiOlsxNjE5NDA0Mzk3MDAwLG51bGxdfQ", "{}")
+	registerResponder("https://api.polygon.io/v2/reference/news?limit=2&order=asc&published_utc.lt=1626912000000&sort=published_utc&ticker.lte=MSFT", expectedResponse)
+	registerResponder("https://api.polygon.io/v2/reference/news?cursor=YXA9MjAyNC0wNy0xN1QxNiUzQTA4JTNBMzRaJmFzPTFiYjA2OTI2MjFkYTVhYjczN2Y0Yjk3Y2NiZWY5NDc4ZWQ2ODIwYmU4NjQ3NGFiZjhkM2I0MTNmOGQ3ZDI0MTkmbGltaXQ9MSZvcmRlcj1kZXNjZW5kaW5nJnRpY2tlcj1NU0ZU", "{}")
 	iter := c.ListTickerNews(context.Background(), models.ListTickerNewsParams{}.
-		WithTicker(models.LTE, "AAPL").WithPublishedUTC(models.LT, models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
+		WithTicker(models.LTE, "MSFT").WithPublishedUTC(models.LT, models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
 		WithSort(models.PublishedUTC).WithOrder(models.Asc).WithLimit(2))
 
 	// iter creation
@@ -210,6 +218,63 @@ func TestListTickerNews(t *testing.T) {
 	// end of list
 	assert.False(t, iter.Next())
 	assert.Nil(t, iter.Err())
+}
+
+func TestGetTickerRelatedCompanies(t *testing.T) {
+	c := polygon.New("API_KEY")
+
+	httpmock.ActivateNonDefault(c.HTTP.GetClient())
+	defer httpmock.DeactivateAndReset()
+
+	expectedResponse := `{
+    "request_id": "0f1dbb2f2781b7d043553bfa400fdfc5",
+    "results": [
+        {
+            "ticker": "MSFT"
+        },
+        {
+            "ticker": "GOOGL"
+        },
+        {
+            "ticker": "AMZN"
+        },
+        {
+            "ticker": "GOOG"
+        },
+        {
+            "ticker": "TSLA"
+        },
+        {
+            "ticker": "NVDA"
+        },
+        {
+            "ticker": "META"
+        },
+        {
+            "ticker": "NFLX"
+        },
+        {
+            "ticker": "DIS"
+        },
+        {
+            "ticker": "BRK.B"
+        }
+    ],
+    "status": "OK",
+    "ticker": "AAPL"
+}`
+
+	registerResponder("https://api.polygon.io/v1/related-companies/AAPL", expectedResponse)
+	params := models.GetTickerRelatedCompaniesParams{
+		Ticker: "AAPL",
+	}
+	res, err := c.GetTickerRelatedCompanies(context.Background(), &params)
+	assert.Nil(t, err)
+
+	var expect models.GetTickerRelatedCompaniesResponse
+	err = json.Unmarshal([]byte(expectedResponse), &expect)
+	assert.Nil(t, err)
+	assert.Equal(t, &expect, res)
 }
 
 func TestGetTickerTypes(t *testing.T) {
