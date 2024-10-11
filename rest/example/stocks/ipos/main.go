@@ -1,4 +1,4 @@
-// Stocks - Company IPOs
+// Stocks - IPOs
 // https://polygon.io/docs/stocks/get_v1_reference_ipos
 package main
 
