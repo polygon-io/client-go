@@ -5,6 +5,8 @@ on:
       - v*
     branches:
       - master
+    paths-ignore:
+      - 'README.md'
   pull_request:
 permissions:
   contents: read
