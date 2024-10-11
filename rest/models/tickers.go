@@ -1,6 +1,9 @@
 package models
 
-import "strings"
+import (
+	"strings"
+	"time"
+)
 
 // ListTickersParams is the set of parameters for the ListTickers method.
 type ListTickersParams struct {
@@ -421,51 +424,66 @@ type TickerChangeEvent struct {
 	Ticker string `json:"ticker"`
 }
 
-// GetShortInterestParams contains parameters for the GetShortInterest method.
-type GetShortInterestParams struct {
+// ListShortInterestParams contains parameters for the ListShortInterest method.
+type ListShortInterestParams struct {
 	// Path parameters
 	IdentifierType string `validate:"required" path:"identifierType"`
 	Identifier     string `validate:"required" path:"identifier"`
 
 	// Query parameters
-	Date  *string `query:"date,omitempty"`
-	Order *string `query:"order,omitempty"`
-	Limit *int    `query:"limit,omitempty"`
-	Sort  *string `query:"sort,omitempty"`
+	DateEQ  *Nanos `query:"date"`
+	DateLT  *Nanos `query:"date.lt"`
+	DateLTE *Nanos `query:"date.lte"`
+	DateGT  *Nanos `query:"date.gt"`
+	DateGTE *Nanos `query:"date.gte"`
+
+	Order *Order `query:"order"`
+	Limit *int   `query:"limit"`
+	Sort  *Sort  `query:"sort"`
 }
 
-// WithDate sets the optional Date parameter.
-func (p GetShortInterestParams) WithDate(date string) *GetShortInterestParams {
-	p.Date = &date
+// WithDate adds date filtering to the parameters.
+func (p ListShortInterestParams) WithDate(c Comparator, q Nanos) *ListShortInterestParams {
+	switch c {
+	case EQ:
+		p.DateEQ = &q
+	case LT:
+		p.DateLT = &q
+	case LTE:
+		p.DateLTE = &q
+	case GT:
+		p.DateGT = &q
+	case GTE:
+		p.DateGTE = &q
+	}
 	return &p
 }
 
-// WithOrder sets the optional Order parameter.
-func (p GetShortInterestParams) WithOrder(order string) *GetShortInterestParams {
+// WithDay allows setting the date via year, month, day.
+func (p ListShortInterestParams) WithDay(c Comparator, year int, month time.Month, day int) *ListShortInterestParams {
+	d := Nanos(time.Date(year, month, day, 0, 0, 0, 0, time.UTC))
+	return p.WithDate(c, d)
+}
+
+func (p ListShortInterestParams) WithOrder(order Order) *ListShortInterestParams {
 	p.Order = &order
 	return &p
 }
 
-// WithLimit sets the optional Limit parameter.
-func (p GetShortInterestParams) WithLimit(limit int) *GetShortInterestParams {
+func (p ListShortInterestParams) WithLimit(limit int) *ListShortInterestParams {
 	p.Limit = &limit
 	return &p
 }
 
-// WithSort sets the optional Sort parameter.
-func (p GetShortInterestParams) WithSort(sort string) *GetShortInterestParams {
+func (p ListShortInterestParams) WithSort(sort Sort) *ListShortInterestParams {
 	p.Sort = &sort
 	return &p
 }
 
-// GetShortInterestResponse represents the response from the GetShortInterest method.
-type GetShortInterestResponse struct {
+// ListShortInterestResponse represents the response from the ListShortInterest method.
+type ListShortInterestResponse struct {
 	BaseResponse
-
-	NextURL   string          `json:"next_url,omitempty"`
-	RequestID string          `json:"request_id,omitempty"`
-	Results   []ShortInterest `json:"results,omitempty"`
-	Status    string          `json:"status,omitempty"`
+	Results []ShortInterest `json:"results,omitempty"`
 }
 
 // ShortInterest represents a single short interest data point.
@@ -485,62 +503,93 @@ type ShortInterest struct {
 type IPOsSortField string
 
 const (
-	IPOsSortTicker       IPOsSortField = "ticker"
-	IPOsSortListingDate  IPOsSortField = "listing_date"
-	IPOsSortUsCode       IPOsSortField = "us_code"
-	IPOsSortIsin         IPOsSortField = "isin"
-	IPOsSortIssueEndDate IPOsSortField = "issue_end_date"
+	IPOsSortListingDate         IPOsSortField = "listing_date"
+	IPOsSortTicker              IPOsSortField = "ticker"
+	IPOsSortLastUpdated         IPOsSortField = "last_updated"
+	IPOsSortSecurityType        IPOsSortField = "security_type"
+	IPOsSortIssuerName          IPOsSortField = "issuer_name"
+	IPOsSortCurrencyCode        IPOsSortField = "currency_code"
+	IPOsSortISIN                IPOsSortField = "isin"
+	IPOsSortUSCode              IPOsSortField = "us_code"
+	IPOsSortFinalIssuePrice     IPOsSortField = "final_issue_price"
+	IPOsSortMinSharesOffered    IPOsSortField = "min_shares_offered"
+	IPOsSortMaxSharesOffered    IPOsSortField = "max_shares_offered"
+	IPOsSortLowestOfferPrice    IPOsSortField = "lowest_offer_price"
+	IPOsSortHighestOfferPrice   IPOsSortField = "highest_offer_price"
+	IPOsSortTotalOfferSize      IPOsSortField = "total_offer_size"
+	IPOsSortSharesOutstanding   IPOsSortField = "shares_outstanding"
+	IPOsSortPrimaryExchange     IPOsSortField = "primary_exchange"
+	IPOsSortLotSize             IPOsSortField = "lot_size"
+	IPOsSortSecurityDescription IPOsSortField = "security_description"
+	IPOsSortIPOStatus           IPOsSortField = "ipo_status"
 )
 
 // ListIPOsParams contains parameters for the ListIPOs method.
 type ListIPOsParams struct {
 	// Query parameters
-	Ticker      *string        `query:"ticker,omitempty"`
-	USCode      *string        `query:"us_code,omitempty"`
-	ISIN        *string        `query:"isin,omitempty"`
-	ListingDate *string        `query:"listing_date,omitempty"`
-	Order       *Order         `query:"order,omitempty"`
-	Limit       *int           `query:"limit,omitempty"`
-	Sort        *IPOsSortField `query:"sort,omitempty"`
+	Ticker *string `query:"ticker"`
+	USCode *string `query:"us_code"`
+	ISIN   *string `query:"isin"`
+
+	ListingDateEQ  *Nanos `query:"listing_date"`
+	ListingDateLT  *Nanos `query:"listing_date.lt"`
+	ListingDateLTE *Nanos `query:"listing_date.lte"`
+	ListingDateGT  *Nanos `query:"listing_date.gt"`
+	ListingDateGTE *Nanos `query:"listing_date.gte"`
+
+	Order *Order         `query:"order"`
+	Limit *int           `query:"limit"`
+	Sort  *IPOsSortField `query:"sort"`
 }
 
-// WithTicker sets the Ticker parameter.
+// WithListingDate adds listing date filtering to the parameters.
+func (p ListIPOsParams) WithListingDate(c Comparator, q Nanos) *ListIPOsParams {
+	switch c {
+	case EQ:
+		p.ListingDateEQ = &q
+	case LT:
+		p.ListingDateLT = &q
+	case LTE:
+		p.ListingDateLTE = &q
+	case GT:
+		p.ListingDateGT = &q
+	case GTE:
+		p.ListingDateGTE = &q
+	}
+	return &p
+}
+
+// WithListingDay allows setting the listing date via year, month, day.
+func (p ListIPOsParams) WithListingDay(c Comparator, year int, month time.Month, day int) *ListIPOsParams {
+	d := Nanos(time.Date(year, month, day, 0, 0, 0, 0, time.UTC))
+	return p.WithListingDate(c, d)
+}
+
 func (p ListIPOsParams) WithTicker(ticker string) *ListIPOsParams {
 	p.Ticker = &ticker
 	return &p
 }
 
-// WithUSCode sets the USCode parameter.
 func (p ListIPOsParams) WithUSCode(usCode string) *ListIPOsParams {
 	p.USCode = &usCode
 	return &p
 }
 
-// WithISIN sets the ISIN parameter.
 func (p ListIPOsParams) WithISIN(isin string) *ListIPOsParams {
 	p.ISIN = &isin
 	return &p
 }
 
-// WithListingDate sets the ListingDate parameter.
-func (p ListIPOsParams) WithListingDate(listingDate string) *ListIPOsParams {
-	p.ListingDate = &listingDate
-	return &p
-}
-
-// WithOrder sets the Order parameter.
 func (p ListIPOsParams) WithOrder(order Order) *ListIPOsParams {
 	p.Order = &order
 	return &p
 }
 
-// WithLimit sets the Limit parameter.
 func (p ListIPOsParams) WithLimit(limit int) *ListIPOsParams {
 	p.Limit = &limit
 	return &p
 }
 
-// WithSort sets the Sort parameter.
 func (p ListIPOsParams) WithSort(sort IPOsSortField) *ListIPOsParams {
 	p.Sort = &sort
 	return &p
@@ -549,11 +598,7 @@ func (p ListIPOsParams) WithSort(sort IPOsSortField) *ListIPOsParams {
 // ListIPOsResponse represents the response from the ListIPOs method.
 type ListIPOsResponse struct {
 	BaseResponse
-
-	NextURL   string       `json:"next_url,omitempty"`
-	RequestID string       `json:"request_id,omitempty"`
-	Results   []IPOListing `json:"results,omitempty"`
-	Status    string       `json:"status,omitempty"`
+	Results []IPOListing `json:"results,omitempty"`
 }
 
 // IPOListing represents a single IPO listing.

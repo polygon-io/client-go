@@ -16,11 +16,8 @@ func main() {
 	// Initialize client
 	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
 
-	// Set parameters (optional)
-	params := models.ListIPOsParams{}.
-		WithLimit(1).
-		WithOrder(models.Asc).
-		WithSort(models.IPOsSortListingDate)
+	// Set parameters
+	params := models.ListIPOsParams{}.WithTicker("RDDT")
 
 	// make request
 	iter := c.ListIPOs(context.Background(), params)

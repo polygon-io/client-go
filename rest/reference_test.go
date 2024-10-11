@@ -684,43 +684,65 @@ func TestListOptionsContracts(t *testing.T) {
 	assert.Nil(t, iter.Err())
 }
 
-func TestGetShortInterest(t *testing.T) {
+func TestListShortInterest(t *testing.T) {
 	c := polygon.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 
+	shortInterest1 := `{
+        "currency_code": "USD",
+        "date": "2023-12-31",
+        "isin": "US0378331005",
+        "name": "Apple Inc.",
+        "security_description": "Common Stock",
+        "short_volume": 2006566,
+        "short_volume_exempt": 3000,
+        "ticker": "AAPL",
+        "us_code": "378331005"
+    }`
+
+	// Construct the expected API response with the short interest listing
 	expectedResponse := `{
-		"results": [{
-			"currency_code": "USD",
-			"date": "2023-12-31",
-			"isin": "US0378331005",
-			"name": "Apple Inc.",
-			"security_description": "Common Stock",
-			"short_volume": 2006566,
-			"short_volume_exempt": 3000,
-			"ticker": "AAPL",
-			"us_code": "378331005"
-		}],
-		"status": "OK",
-		"request_id": "some-request-id",
-		"next_url": null
-	}`
+        "status": "OK",
+        "count": 1,
+        "next_url": "https://api.polygon.io/vX/reference/short-interest/ticker/AAPL?cursor=nextCursorValue",
+        "request_id": "some-request-id",
+        "results": [
+            ` + indent(true, shortInterest1, "\t\t") + `
+        ]
+    }`
 
-	// Mock the API response
-	registerResponder("https://api.polygon.io/v1/reference/short-interest/ticker/AAPL", expectedResponse)
+	// Register responders
+	registerResponder("https://api.polygon.io/vX/reference/short-interest/ticker/AAPL?limit=10&order=asc&sort=date", expectedResponse)
+	registerResponder("https://api.polygon.io/vX/reference/short-interest/ticker/AAPL?cursor=nextCursorValue", "{}")
 
-	params := models.GetShortInterestParams{
+	// Initialize parameters
+	params := models.ListShortInterestParams{
 		IdentifierType: "ticker",
 		Identifier:     "AAPL",
-	}
-	res, err := c.GetShortInterest(context.Background(), &params)
-	assert.Nil(t, err)
+	}.WithLimit(10).
+		WithOrder(models.Asc).
+		WithSort(models.Sort("date"))
 
-	var expect models.GetShortInterestResponse
-	err = json.Unmarshal([]byte(expectedResponse), &expect)
+	// Initialize the iterator
+	iter := c.ListShortInterest(context.Background(), params)
+
+	// iter creation
+	assert.Nil(t, iter.Err())
+
+	// first item
+	assert.True(t, iter.Next())
+	assert.Nil(t, iter.Err())
+	assert.NotNil(t, iter.Item())
+	var expect models.ShortInterest
+	err := json.Unmarshal([]byte(shortInterest1), &expect)
 	assert.Nil(t, err)
-	assert.Equal(t, &expect, res)
+	assert.Equal(t, expect, iter.Item())
+
+	// end of list
+	assert.False(t, iter.Next())
+	assert.Nil(t, iter.Err())
 }
 
 func TestListIPOs(t *testing.T) {
@@ -758,28 +780,32 @@ func TestListIPOs(t *testing.T) {
 	expectedResponse := `{
         "status": "OK",
         "count": 1,
-        "next_url": "https://api.polygon.io/v1/reference/ipos?cursor=nextCursorValue",
+        "next_url": "https://api.polygon.io/vX/reference/ipos?cursor=nextCursorValue",
         "request_id": "6a7e466379af0a71039d60cc78e72282",
         "results": [
-    ` + indent(true, ipo1, "\t\t") + `
+            ` + indent(true, ipo1, "\t\t") + `
         ]
     }`
 
-	registerResponder("https://api.polygon.io/v1/reference/ipos?limit=10&order=asc&sort=listing_date", expectedResponse)
-	registerResponder("https://api.polygon.io/v1/reference/ipos?cursor=nextCursorValue", "{}")
+	// Register responders
+	registerResponder("https://api.polygon.io/vX/reference/ipos?limit=10&order=asc", expectedResponse)
+	registerResponder("https://api.polygon.io/vX/reference/ipos?cursor=nextCursorValue", "{}")
 
-	iter := c.ListIPOs(context.Background(), models.ListIPOsParams{}.
+	// Initialize parameters
+	params := models.ListIPOsParams{}.
 		WithLimit(10).
-		WithOrder(models.Asc).
-		WithSort(models.IPOsSortListingDate))
+		WithOrder(models.Asc)
+
+	// Initialize the iterator
+	iter := c.ListIPOs(context.Background(), params)
 
 	// iter creation
 	assert.Nil(t, iter.Err())
-	assert.NotNil(t, iter.Item())
 
 	// first item
 	assert.True(t, iter.Next())
 	assert.Nil(t, iter.Err())
+	assert.NotNil(t, iter.Item())
 	var expect models.IPOListing
 	err := json.Unmarshal([]byte(ipo1), &expect)
 	assert.Nil(t, err)
