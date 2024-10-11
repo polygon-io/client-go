@@ -10,25 +10,21 @@ import (
 )
 
 const (
-	ListTickersPath               = "/v3/reference/tickers"
+	GetExchangesPath              = "/v3/reference/exchanges"
+	GetMarketHolidaysPath         = "/v1/marketstatus/upcoming"
+	GetMarketStatusPath           = "/v1/marketstatus/now"
+	GetOptionsContractPath        = "/v3/reference/options/contracts/{ticker}"
 	GetTickerDetailsPath          = "/v3/reference/tickers/{ticker}"
-	ListTickerNewsPath            = "/v2/reference/news"
 	GetTickerRelatedCompaniesPath = "/v1/related-companies/{ticker}"
 	GetTickerTypesPath            = "/v3/reference/tickers/types"
-
-	GetMarketHolidaysPath = "/v1/marketstatus/upcoming"
-	GetMarketStatusPath   = "/v1/marketstatus/now"
-
-	ListSplitsPath = "/v3/reference/splits"
-
-	ListDividendsPath = "/v3/reference/dividends"
-
-	ListConditionsPath = "/v3/reference/conditions"
-
-	GetExchangesPath = "/v3/reference/exchanges"
-
-	GetOptionsContractPath   = "/v3/reference/options/contracts/{ticker}"
-	ListOptionsContractsPath = "/v3/reference/options/contracts"
+	ListConditionsPath            = "/v3/reference/conditions"
+	ListDividendsPath             = "/v3/reference/dividends"
+	ListIPOsPath                  = "/vX/reference/ipos"
+	ListOptionsContractsPath      = "/v3/reference/options/contracts"
+	ListShortInterestPath         = "/vX/reference/short-interest/{identifierType}/{identifier}"
+	ListSplitsPath                = "/v3/reference/splits"
+	ListTickerNewsPath            = "/v2/reference/news"
+	ListTickersPath               = "/v3/reference/tickers"
 )
 
 // ReferenceClient defines a REST client for the Polygon reference API.
@@ -206,6 +202,26 @@ func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models
 func (c *ReferenceClient) ListOptionsContracts(ctx context.Context, params *models.ListOptionsContractsParams, options ...models.RequestOption) *iter.Iter[models.OptionsContract] {
 	return iter.NewIter(ctx, ListOptionsContractsPath, params, func(uri string) (iter.ListResponse, []models.OptionsContract, error) {
 		res := &models.ListOptionsContractsResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
+}
+
+// ListShortInterest retrieves short interest data for a given identifier and date.
+// For more details, see: https://polygon.io/docs/stocks/get_v1_reference_short-interest__identifiertype___identifier
+func (c *ReferenceClient) ListShortInterest(ctx context.Context, params *models.ListShortInterestParams, options ...models.RequestOption) *iter.Iter[models.ShortInterest] {
+	return iter.NewIter(ctx, ListShortInterestPath, params, func(uri string) (iter.ListResponse, []models.ShortInterest, error) {
+		res := &models.ListShortInterestResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
+}
+
+// ListIPOs retrieves a list of upcoming or historical IPOs.
+// For more details, see: https://polygon.io/docs/stocks/get_v1_reference_ipos
+func (c *ReferenceClient) ListIPOs(ctx context.Context, params *models.ListIPOsParams, options ...models.RequestOption) *iter.Iter[models.IPOListing] {
+	return iter.NewIter(ctx, ListIPOsPath, params, func(uri string) (iter.ListResponse, []models.IPOListing, error) {
+		res := &models.ListIPOsResponse{}
 		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 		return res, res.Results, err
 	})
