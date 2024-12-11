@@ -1,6 +1,9 @@
 package models
 
-import "strings"
+import (
+	"strings"
+	"time"
+)
 
 // ListTickersParams is the set of parameters for the ListTickers method.
 type ListTickersParams struct {
@@ -419,4 +422,207 @@ type TickerEvent struct {
 // TickerChangeEvent represents the data relevant to a ticker_change typed event.
 type TickerChangeEvent struct {
 	Ticker string `json:"ticker"`
+}
+
+// ListShortInterestParams contains parameters for the ListShortInterest method.
+type ListShortInterestParams struct {
+	// Path parameters
+	IdentifierType string `validate:"required" path:"identifierType"`
+	Identifier     string `validate:"required" path:"identifier"`
+
+	// Query parameters
+	DateEQ  *Nanos `query:"date"`
+	DateLT  *Nanos `query:"date.lt"`
+	DateLTE *Nanos `query:"date.lte"`
+	DateGT  *Nanos `query:"date.gt"`
+	DateGTE *Nanos `query:"date.gte"`
+
+	Order *Order `query:"order"`
+	Limit *int   `query:"limit"`
+	Sort  *Sort  `query:"sort"`
+}
+
+// WithDate adds date filtering to the parameters.
+func (p ListShortInterestParams) WithDate(c Comparator, q Nanos) *ListShortInterestParams {
+	switch c {
+	case EQ:
+		p.DateEQ = &q
+	case LT:
+		p.DateLT = &q
+	case LTE:
+		p.DateLTE = &q
+	case GT:
+		p.DateGT = &q
+	case GTE:
+		p.DateGTE = &q
+	}
+	return &p
+}
+
+// WithDay allows setting the date via year, month, day.
+func (p ListShortInterestParams) WithDay(c Comparator, year int, month time.Month, day int) *ListShortInterestParams {
+	d := Nanos(time.Date(year, month, day, 0, 0, 0, 0, time.UTC))
+	return p.WithDate(c, d)
+}
+
+func (p ListShortInterestParams) WithOrder(order Order) *ListShortInterestParams {
+	p.Order = &order
+	return &p
+}
+
+func (p ListShortInterestParams) WithLimit(limit int) *ListShortInterestParams {
+	p.Limit = &limit
+	return &p
+}
+
+func (p ListShortInterestParams) WithSort(sort Sort) *ListShortInterestParams {
+	p.Sort = &sort
+	return &p
+}
+
+// ListShortInterestResponse represents the response from the ListShortInterest method.
+type ListShortInterestResponse struct {
+	BaseResponse
+	Results []ShortInterest `json:"results,omitempty"`
+}
+
+// ShortInterest represents a single short interest data point.
+type ShortInterest struct {
+	CurrencyCode        string `json:"currency_code,omitempty"`
+	Date                string `json:"date,omitempty"`
+	ISIN                string `json:"isin,omitempty"`
+	Name                string `json:"name,omitempty"`
+	SecurityDescription string `json:"security_description,omitempty"`
+	ShortVolume         int64  `json:"short_volume,omitempty"`
+	ShortVolumeExempt   int64  `json:"short_volume_exempt,omitempty"`
+	Ticker              string `json:"ticker,omitempty"`
+	USCode              string `json:"us_code,omitempty"`
+}
+
+// IPOsSortField defines the sort fields for IPOs.
+type IPOsSortField string
+
+const (
+	IPOsSortListingDate         IPOsSortField = "listing_date"
+	IPOsSortTicker              IPOsSortField = "ticker"
+	IPOsSortLastUpdated         IPOsSortField = "last_updated"
+	IPOsSortSecurityType        IPOsSortField = "security_type"
+	IPOsSortIssuerName          IPOsSortField = "issuer_name"
+	IPOsSortCurrencyCode        IPOsSortField = "currency_code"
+	IPOsSortISIN                IPOsSortField = "isin"
+	IPOsSortUSCode              IPOsSortField = "us_code"
+	IPOsSortFinalIssuePrice     IPOsSortField = "final_issue_price"
+	IPOsSortMinSharesOffered    IPOsSortField = "min_shares_offered"
+	IPOsSortMaxSharesOffered    IPOsSortField = "max_shares_offered"
+	IPOsSortLowestOfferPrice    IPOsSortField = "lowest_offer_price"
+	IPOsSortHighestOfferPrice   IPOsSortField = "highest_offer_price"
+	IPOsSortTotalOfferSize      IPOsSortField = "total_offer_size"
+	IPOsSortSharesOutstanding   IPOsSortField = "shares_outstanding"
+	IPOsSortPrimaryExchange     IPOsSortField = "primary_exchange"
+	IPOsSortLotSize             IPOsSortField = "lot_size"
+	IPOsSortSecurityDescription IPOsSortField = "security_description"
+	IPOsSortIPOStatus           IPOsSortField = "ipo_status"
+)
+
+// ListIPOsParams contains parameters for the ListIPOs method.
+type ListIPOsParams struct {
+	// Query parameters
+	Ticker *string `query:"ticker"`
+	USCode *string `query:"us_code"`
+	ISIN   *string `query:"isin"`
+
+	ListingDateEQ  *Nanos `query:"listing_date"`
+	ListingDateLT  *Nanos `query:"listing_date.lt"`
+	ListingDateLTE *Nanos `query:"listing_date.lte"`
+	ListingDateGT  *Nanos `query:"listing_date.gt"`
+	ListingDateGTE *Nanos `query:"listing_date.gte"`
+
+	Order *Order         `query:"order"`
+	Limit *int           `query:"limit"`
+	Sort  *IPOsSortField `query:"sort"`
+}
+
+// WithListingDate adds listing date filtering to the parameters.
+func (p ListIPOsParams) WithListingDate(c Comparator, q Nanos) *ListIPOsParams {
+	switch c {
+	case EQ:
+		p.ListingDateEQ = &q
+	case LT:
+		p.ListingDateLT = &q
+	case LTE:
+		p.ListingDateLTE = &q
+	case GT:
+		p.ListingDateGT = &q
+	case GTE:
+		p.ListingDateGTE = &q
+	}
+	return &p
+}
+
+// WithListingDay allows setting the listing date via year, month, day.
+func (p ListIPOsParams) WithListingDay(c Comparator, year int, month time.Month, day int) *ListIPOsParams {
+	d := Nanos(time.Date(year, month, day, 0, 0, 0, 0, time.UTC))
+	return p.WithListingDate(c, d)
+}
+
+func (p ListIPOsParams) WithTicker(ticker string) *ListIPOsParams {
+	p.Ticker = &ticker
+	return &p
+}
+
+func (p ListIPOsParams) WithUSCode(usCode string) *ListIPOsParams {
+	p.USCode = &usCode
+	return &p
+}
+
+func (p ListIPOsParams) WithISIN(isin string) *ListIPOsParams {
+	p.ISIN = &isin
+	return &p
+}
+
+func (p ListIPOsParams) WithOrder(order Order) *ListIPOsParams {
+	p.Order = &order
+	return &p
+}
+
+func (p ListIPOsParams) WithLimit(limit int) *ListIPOsParams {
+	p.Limit = &limit
+	return &p
+}
+
+func (p ListIPOsParams) WithSort(sort IPOsSortField) *ListIPOsParams {
+	p.Sort = &sort
+	return &p
+}
+
+// ListIPOsResponse represents the response from the ListIPOs method.
+type ListIPOsResponse struct {
+	BaseResponse
+	Results []IPOListing `json:"results,omitempty"`
+}
+
+// IPOListing represents a single IPO listing.
+type IPOListing struct {
+	CurrencyCode        string  `json:"currency_code,omitempty"`
+	FinalIssuePrice     float64 `json:"final_issue_price,omitempty"`
+	HighestOfferPrice   float64 `json:"highest_offer_price,omitempty"`
+	IPOStatus           string  `json:"ipo_status,omitempty"`
+	ISIN                string  `json:"isin,omitempty"`
+	IssueEndDate        string  `json:"issue_end_date,omitempty"`
+	IssueStartDate      string  `json:"issue_start_date,omitempty"`
+	IssuerName          string  `json:"issuer_name,omitempty"`
+	LastUpdated         string  `json:"last_updated,omitempty"`
+	ListingDate         string  `json:"listing_date,omitempty"`
+	ListingPrice        float64 `json:"listing_price,omitempty"`
+	LotSize             int64   `json:"lot_size,omitempty"`
+	LowestOfferPrice    float64 `json:"lowest_offer_price,omitempty"`
+	MaxSharesOffered    int64   `json:"max_shares_offered,omitempty"`
+	MinSharesOffered    int64   `json:"min_shares_offered,omitempty"`
+	PrimaryExchange     string  `json:"primary_exchange,omitempty"`
+	SecurityDescription string  `json:"security_description,omitempty"`
+	SecurityType        string  `json:"security_type,omitempty"`
+	SharesOutstanding   int64   `json:"shares_outstanding,omitempty"`
+	Ticker              string  `json:"ticker,omitempty"`
+	TotalOfferSize      float64 `json:"total_offer_size,omitempty"`
+	USCode              string  `json:"us_code,omitempty"`
 }
