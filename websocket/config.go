@@ -85,6 +85,7 @@ const (
 	Forex   Market = "forex"
 	Crypto  Market = "crypto"
 	Indices Market = "indices"
+	Futures Market = "futures"
 )
 
 func (m Market) supports(topic Topic) bool {
@@ -155,6 +156,13 @@ const (
 	IndexValue   Topic = 92
 
 	BusinessFairMarketValue Topic = 100
+
+	futuresMin    Topic = 110
+	FutureSecAggs Topic = 111
+	FutureMinAggs Topic = 112
+	FutureTrades  Topic = 113
+	FutureQuotes  Topic = 114
+	futuresMax    Topic = 115
 )
 
 func (t Topic) prefix() string {
