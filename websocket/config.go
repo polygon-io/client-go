@@ -227,6 +227,14 @@ func (t Topic) prefix() string {
 		return "V"
 	case BusinessFairMarketValue:
 		return "FMV"
+	case FutureSecAggs:
+		return "A"
+	case FutureMinAggs:
+		return "AM"
+	case FutureTrades:
+		return "T"
+	case FutureQuotes:
+		return "Q"
 	}
 	return ""
 }
