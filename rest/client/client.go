@@ -77,30 +77,43 @@ func (c *Client) CallURL(ctx context.Context, method, uri string, response any, 
 	req.SetResult(response).SetError(&models.ErrorResponse{})
 
 	res, err := req.Execute(method, uri)
-	if err != nil {
-		return fmt.Errorf("failed to execute request: %w", err)
-	} else if res.IsError() {
-		errRes := res.Error().(*models.ErrorResponse)
-		errRes.StatusCode = res.StatusCode()
-		if errRes.RequestID == "" {
-			errRes.RequestID = res.Header().Get("X-Request-ID")
+	if err != nil || res.IsError() {
+		if options.Trace {
+			c.logRequestTrace(uri, req, res)
 		}
-		return errRes
+
+		if err != nil {
+			return fmt.Errorf("failed to execute request: %w", err)
+		} else {
+			errRes := res.Error().(*models.ErrorResponse)
+			errRes.StatusCode = res.StatusCode()
+			if errRes.RequestID == "" {
+				errRes.RequestID = res.Header().Get("X-Request-ID")
+			}
+			return errRes
+		}
 	}
 
 	if options.Trace {
-		fmt.Printf("Request URL: %s\n", uri)
-		sanitizedHeaders := req.Header
-		for k := range sanitizedHeaders {
-			if k == "Authorization" {
-				sanitizedHeaders[k] = []string{"REDACTED"}
-			}
-		}
-		fmt.Printf("Request Headers: %s\n", sanitizedHeaders)
-		fmt.Printf("Response Headers: %+v\n", res.Header())
+		c.logRequestTrace(uri, req, res)
 	}
 
 	return nil
+}
+
+func (c *Client) logRequestTrace(uri string, req *resty.Request, res *resty.Response) {
+	fmt.Printf("Request URL: %s\n", uri)
+	sanitizedHeaders := req.Header
+	for k := range sanitizedHeaders {
+		if k == "Authorization" {
+			sanitizedHeaders[k] = []string{"REDACTED"}
+		}
+	}
+	fmt.Printf("Request Headers: %s\n", sanitizedHeaders)
+	if res != nil {
+		fmt.Printf("Response Status Code: %d\n", res.StatusCode())
+		fmt.Printf("Response Headers: %+v\n", res.Header())
+	}
 }
 
 func mergeOptions(opts ...models.RequestOption) *models.RequestOptions {
