@@ -94,7 +94,7 @@ type RateLimiter interface {
 	Take() time.Time
 }
 
-// WithTrace enables or disables request tracing.
+// WithRateLimiter sets Ratelimiter to limit request rate.
 func WithRateLimiter(limiter RateLimiter) RequestOption {
 	return func(o *RequestOptions) {
 		o.Limiter = limiter
