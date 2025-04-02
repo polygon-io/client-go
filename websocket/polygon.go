@@ -19,9 +19,9 @@ import (
 
 const (
 	writeWait      = 5 * time.Second
-	pongWait       = 10 * time.Second
-	pingPeriod     = (pongWait * 9) / 10
-	maxMessageSize = 1000000 // 1MB
+	pongWait       = 30 * time.Second
+	pingPeriod     = pongWait - 5*time.Second // send ping 5 seconds before deadline
+	maxMessageSize = 1_000_000                // 1MB
 )
 
 // Client defines a client to the Polygon WebSocket API.
@@ -314,6 +314,9 @@ func (c *Client) read() error {
 					return fmt.Errorf("connection closed unexpectedly: %w", err)
 				}
 				return fmt.Errorf("failed to read message: %w", err)
+			}
+			if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
+				return fmt.Errorf("failed to set read deadline: %w", err)
 			}
 			c.rQueue <- msg
 		}
