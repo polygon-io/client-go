@@ -420,3 +420,401 @@ type TickerEvent struct {
 type TickerChangeEvent struct {
 	Ticker string `json:"ticker"`
 }
+
+// ListIPOsParams is the set of parameters for the ListIPOs method.
+type ListIPOsParams struct {
+	// Specify a case-sensitive ticker symbol.
+	Ticker *string `query:"ticker"`
+
+	// Specify a us_code (CUSIP).
+	USCode *string `query:"us_code"`
+
+	// Specify an International Securities Identification Number (ISIN).
+	ISIN *string `query:"isin"`
+
+	// Specify a listing date (YYYY-MM-DD).
+	ListingDateEQ  *string `query:"listing_date"`
+	ListingDateLT  *string `query:"listing_date.lt"`
+	ListingDateLTE *string `query:"listing_date.lte"`
+	ListingDateGT  *string `query:"listing_date.gt"`
+	ListingDateGTE *string `query:"listing_date.gte"`
+
+	// Specify an IPO status.
+	IPOStatus *string `query:"ipo_status"`
+
+	// Sort field used for ordering. Default is listing_date.
+	Sort *Sort `query:"sort"`
+
+	// Order results based on the sort field. Default is desc.
+	Order *Order `query:"order"`
+
+	// Limit the number of results returned, default is 10 and max is 1000.
+	Limit *int `query:"limit"`
+}
+
+func (p ListIPOsParams) WithTicker(q string) *ListIPOsParams {
+	p.Ticker = &q
+	return &p
+}
+
+func (p ListIPOsParams) WithUSCode(q string) *ListIPOsParams {
+	p.USCode = &q
+	return &p
+}
+
+func (p ListIPOsParams) WithISIN(q string) *ListIPOsParams {
+	p.ISIN = &q
+	return &p
+}
+
+func (p ListIPOsParams) WithListingDate(c Comparator, q string) *ListIPOsParams {
+	switch c {
+	case EQ:
+		p.ListingDateEQ = &q
+	case LT:
+		p.ListingDateLT = &q
+	case LTE:
+		p.ListingDateLTE = &q
+	case GT:
+		p.ListingDateGT = &q
+	case GTE:
+		p.ListingDateGTE = &q
+	}
+	return &p
+}
+
+func (p ListIPOsParams) WithIPOStatus(q string) *ListIPOsParams {
+	p.IPOStatus = &q
+	return &p
+}
+
+func (p ListIPOsParams) WithSort(q Sort) *ListIPOsParams {
+	p.Sort = &q
+	return &p
+}
+
+func (p ListIPOsParams) WithOrder(q Order) *ListIPOsParams {
+	p.Order = &q
+	return &p
+}
+
+func (p ListIPOsParams) WithLimit(q int) *ListIPOsParams {
+	p.Limit = &q
+	return &p
+}
+
+// ListIPOsResponse is the response returned by the ListIPOs method.
+type ListIPOsResponse struct {
+	BaseResponse
+
+	// An array of IPO events that match your query.
+	Results []IPOResult `json:"results,omitempty"`
+}
+
+// IPOResult contains detailed information about an Initial Public Offering (IPO).
+type IPOResult struct {
+	AnnouncedDate       *string  `json:"announced_date,omitempty"`
+	CurrencyCode        *string  `json:"currency_code,omitempty"`
+	FinalIssuePrice     *float64 `json:"final_issue_price,omitempty"`
+	HighestOfferPrice   *float64 `json:"highest_offer_price,omitempty"`
+	IPOStatus           string   `json:"ipo_status"`
+	ISIN                *string  `json:"isin,omitempty"`
+	IssueEndDate        *string  `json:"issue_end_date,omitempty"`
+	IssueStartDate      *string  `json:"issue_start_date,omitempty"`
+	IssuerName          string   `json:"issuer_name"`
+	LastUpdated         string   `json:"last_updated"`
+	ListingDate         *string  `json:"listing_date,omitempty"`
+	LotSize             *float64 `json:"lot_size,omitempty"`
+	LowestOfferPrice    *float64 `json:"lowest_offer_price,omitempty"`
+	MaxSharesOffered    *float64 `json:"max_shares_offered,omitempty"`
+	MinSharesOffered    *float64 `json:"min_shares_offered,omitempty"`
+	PrimaryExchange     *string  `json:"primary_exchange,omitempty"`
+	SecurityDescription *string  `json:"security_description,omitempty"`
+	SecurityType        string   `json:"security_type"`
+	SharesOutstanding   *float64 `json:"shares_outstanding,omitempty"`
+	Ticker              string   `json:"ticker"`
+	TotalOfferSize      *float64 `json:"total_offer_size,omitempty"`
+	USCode              *string  `json:"us_code,omitempty"`
+}
+
+// ListShortInterestParams is the set of parameters for the ListShortInterest method.
+type ListShortInterestParams struct {
+	// The primary ticker symbol for the stock.
+	TickerEQ  *string `query:"ticker"`
+	TickerLT  *string `query:"ticker.lt"`
+	TickerLTE *string `query:"ticker.lte"`
+	TickerGT  *string `query:"ticker.gt"`
+	TickerGTE *string `query:"ticker.gte"`
+
+	// Days to cover (short_interest / avg_daily_volume).
+	DaysToCoverEQ  *string `query:"days_to_cover"`
+	DaysToCoverLT  *string `query:"days_to_cover.lt"`
+	DaysToCoverLTE *string `query:"days_to_cover.lte"`
+	DaysToCoverGT  *string `query:"days_to_cover.gt"`
+	DaysToCoverGTE *string `query:"days_to_cover.gte"`
+
+	// Settlement date (YYYY-MM-DD).
+	SettlementDateEQ  *string `query:"settlement_date"`
+	SettlementDateLT  *string `query:"settlement_date.lt"`
+	SettlementDateLTE *string `query:"settlement_date.lte"`
+	SettlementDateGT  *string `query:"settlement_date.gt"`
+	SettlementDateGTE *string `query:"settlement_date.gte"`
+
+	// Average daily trading volume.
+	AvgDailyVolumeEQ  *string `query:"avg_daily_volume"`
+	AvgDailyVolumeLT  *string `query:"avg_daily_volume.lt"`
+	AvgDailyVolumeLTE *string `query:"avg_daily_volume.lte"`
+	AvgDailyVolumeGT  *string `query:"avg_daily_volume.gt"`
+	AvgDailyVolumeGTE *string `query:"avg_daily_volume.gte"`
+
+	// Sort field used for ordering. Default is ticker.
+	Sort *Sort `query:"sort"`
+
+	// Order results based on the sort field. Default is asc.
+	Order *Order `query:"order"`
+
+	// Limit the number of results returned, default is 10 and max is 50000.
+	Limit *int `query:"limit"`
+}
+
+func (p ListShortInterestParams) WithTicker(c Comparator, q string) *ListShortInterestParams {
+	switch c {
+	case EQ:
+		p.TickerEQ = &q
+	case LT:
+		p.TickerLT = &q
+	case LTE:
+		p.TickerLTE = &q
+	case GT:
+		p.TickerGT = &q
+	case GTE:
+		p.TickerGTE = &q
+	}
+	return &p
+}
+
+func (p ListShortInterestParams) WithDaysToCover(c Comparator, q string) *ListShortInterestParams {
+	switch c {
+	case EQ:
+		p.DaysToCoverEQ = &q
+	case LT:
+		p.DaysToCoverLT = &q
+	case LTE:
+		p.DaysToCoverLTE = &q
+	case GT:
+		p.DaysToCoverGT = &q
+	case GTE:
+		p.DaysToCoverGTE = &q
+	}
+	return &p
+}
+
+func (p ListShortInterestParams) WithSettlementDate(c Comparator, q string) *ListShortInterestParams {
+	switch c {
+	case EQ:
+		p.SettlementDateEQ = &q
+	case LT:
+		p.SettlementDateLT = &q
+	case LTE:
+		p.SettlementDateLTE = &q
+	case GT:
+		p.SettlementDateGT = &q
+	case GTE:
+		p.SettlementDateGTE = &q
+	}
+	return &p
+}
+
+func (p ListShortInterestParams) WithAvgDailyVolume(c Comparator, q string) *ListShortInterestParams {
+	switch c {
+	case EQ:
+		p.AvgDailyVolumeEQ = &q
+	case LT:
+		p.AvgDailyVolumeLT = &q
+	case LTE:
+		p.AvgDailyVolumeLTE = &q
+	case GT:
+		p.AvgDailyVolumeGT = &q
+	case GTE:
+		p.AvgDailyVolumeGTE = &q
+	}
+	return &p
+}
+
+func (p ListShortInterestParams) WithSort(q Sort) *ListShortInterestParams {
+	p.Sort = &q
+	return &p
+}
+
+func (p ListShortInterestParams) WithOrder(q Order) *ListShortInterestParams {
+	p.Order = &q
+	return &p
+}
+
+func (p ListShortInterestParams) WithLimit(q int) *ListShortInterestParams {
+	p.Limit = &q
+	return &p
+}
+
+// ListShortInterestResponse is the response returned by the ListShortInterest method.
+type ListShortInterestResponse struct {
+	BaseResponse
+
+	// An array of short interest data that match your query.
+	Results []ShortInterest `json:"results,omitempty"`
+}
+
+// ShortInterest contains short interest data for a specific stock on a settlement date.
+type ShortInterest struct {
+	AvgDailyVolume *int64   `json:"avg_daily_volume,omitempty"`
+	DaysToCover    *float64 `json:"days_to_cover,omitempty"`
+	SettlementDate *string  `json:"settlement_date,omitempty"`
+	ShortInterest  *int64   `json:"short_interest,omitempty"`
+	Ticker         *string  `json:"ticker,omitempty"`
+}
+
+// ListShortVolumeParams is the set of parameters for the ListShortVolume method.
+type ListShortVolumeParams struct {
+	// The primary ticker symbol for the stock.
+	TickerEQ  *string `query:"ticker"`
+	TickerLT  *string `query:"ticker.lt"`
+	TickerLTE *string `query:"ticker.lte"`
+	TickerGT  *string `query:"ticker.gt"`
+	TickerGTE *string `query:"ticker.gte"`
+
+	// Date of trade activity (YYYY-MM-DD).
+	DateEQ  *string `query:"date"`
+	DateLT  *string `query:"date.lt"`
+	DateLTE *string `query:"date.lte"`
+	DateGT  *string `query:"date.gt"`
+	DateGTE *string `query:"date.gte"`
+
+	// Short volume ratio ((short_volume / total_volume) * 100).
+	ShortVolumeRatioEQ  *string `query:"short_volume_ratio"`
+	ShortVolumeRatioLT  *string `query:"short_volume_ratio.lt"`
+	ShortVolumeRatioLTE *string `query:"short_volume_ratio.lte"`
+	ShortVolumeRatioGT  *string `query:"short_volume_ratio.gt"`
+	ShortVolumeRatioGTE *string `query:"short_volume_ratio.gte"`
+
+	// Total reported volume.
+	TotalVolumeEQ  *string `query:"total_volume"`
+	TotalVolumeLT  *string `query:"total_volume.lt"`
+	TotalVolumeLTE *string `query:"total_volume.lte"`
+	TotalVolumeGT  *string `query:"total_volume.gt"`
+	TotalVolumeGTE *string `query:"total_volume.gte"`
+
+	// Sort field used for ordering. Default is ticker.
+	Sort *Sort `query:"sort"`
+
+	// Order results based on the sort field. Default is asc.
+	Order *Order `query:"order"`
+
+	// Limit the number of results returned, default is 10 and max is 50000.
+	Limit *int `query:"limit"`
+}
+
+func (p ListShortVolumeParams) WithTicker(c Comparator, q string) *ListShortVolumeParams {
+	switch c {
+	case EQ:
+		p.TickerEQ = &q
+	case LT:
+		p.TickerLT = &q
+	case LTE:
+		p.TickerLTE = &q
+	case GT:
+		p.TickerGT = &q
+	case GTE:
+		p.TickerGTE = &q
+	}
+	return &p
+}
+
+func (p ListShortVolumeParams) WithDate(c Comparator, q string) *ListShortVolumeParams {
+	switch c {
+	case EQ:
+		p.DateEQ = &q
+	case LT:
+		p.DateLT = &q
+	case LTE:
+		p.DateLTE = &q
+	case GT:
+		p.DateGT = &q
+	case GTE:
+		p.DateGTE = &q
+	}
+	return &p
+}
+
+func (p ListShortVolumeParams) WithShortVolumeRatio(c Comparator, q string) *ListShortVolumeParams {
+	switch c {
+	case EQ:
+		p.ShortVolumeRatioEQ = &q
+	case LT:
+		p.ShortVolumeRatioLT = &q
+	case LTE:
+		p.ShortVolumeRatioLTE = &q
+	case GT:
+		p.ShortVolumeRatioGT = &q
+	case GTE:
+		p.ShortVolumeRatioGTE = &q
+	}
+	return &p
+}
+
+func (p ListShortVolumeParams) WithTotalVolume(c Comparator, q string) *ListShortVolumeParams {
+	switch c {
+	case EQ:
+		p.TotalVolumeEQ = &q
+	case LT:
+		p.TotalVolumeLT = &q
+	case LTE:
+		p.TotalVolumeLTE = &q
+	case GT:
+		p.TotalVolumeGT = &q
+	case GTE:
+		p.TotalVolumeGTE = &q
+	}
+	return &p
+}
+
+func (p ListShortVolumeParams) WithSort(q Sort) *ListShortVolumeParams {
+	p.Sort = &q
+	return &p
+}
+
+func (p ListShortVolumeParams) WithOrder(q Order) *ListShortVolumeParams {
+	p.Order = &q
+	return &p
+}
+
+func (p ListShortVolumeParams) WithLimit(q int) *ListShortVolumeParams {
+	p.Limit = &q
+	return &p
+}
+
+// ListShortVolumeResponse is the response returned by the ListShortVolume method.
+type ListShortVolumeResponse struct {
+	BaseResponse
+
+	// An array of short volume data that match your query.
+	Results []ShortVolume `json:"results,omitempty"`
+}
+
+// ShortVolume contains short volume data for a specific stock on a trade date.
+type ShortVolume struct {
+	ADFShortVolume                  *int64   `json:"adf_short_volume,omitempty"`
+	ADFShortVolumeExempt            *int64   `json:"adf_short_volume_exempt,omitempty"`
+	Date                            *string  `json:"date,omitempty"`
+	ExemptVolume                    *int64   `json:"exempt_volume,omitempty"`
+	NasdaqCarteretShortVolume       *int64   `json:"nasdaq_carteret_short_volume,omitempty"`
+	NasdaqCarteretShortVolumeExempt *int64   `json:"nasdaq_carteret_short_volume_exempt,omitempty"`
+	NasdaqChicagoShortVolume        *int64   `json:"nasdaq_chicago_short_volume,omitempty"`
+	NasdaqChicagoShortVolumeExempt  *int64   `json:"nasdaq_chicago_short_volume_exempt,omitempty"`
+	NonExemptVolume                 *int64   `json:"non_exempt_volume,omitempty"`
+	NYSEShortVolume                 *int64   `json:"nyse_short_volume,omitempty"`
+	NYSEShortVolumeExempt           *int64   `json:"nyse_short_volume_exempt,omitempty"`
+	ShortVolume                     *int64   `json:"short_volume,omitempty"`
+	ShortVolumeRatio                *float64 `json:"short_volume_ratio,omitempty"`
+	Ticker                          *string  `json:"ticker,omitempty"`
+	TotalVolume                     *int64   `json:"total_volume,omitempty"`
+}
