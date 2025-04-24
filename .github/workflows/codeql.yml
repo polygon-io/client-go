@@ -7,7 +7,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '24 21 * * 0'
+    - cron: "24 21 * * 0"
 jobs:
   analyze:
     name: analyze
@@ -19,15 +19,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['go']
+        language: ["go"]
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v3
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
