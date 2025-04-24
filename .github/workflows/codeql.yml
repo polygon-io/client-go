@@ -7,7 +7,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '24 21 * * 0'
+    - cron: "24 21 * * 0"
 jobs:
   analyze:
     name: analyze
@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['go']
+        language: ["go"]
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
