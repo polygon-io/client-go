@@ -403,3 +403,40 @@ type FairMarketValue struct {
 	// The Timestamp in nanoseconds.
 	Timestamp int64 `json:"t,omitempty"`
 }
+
+// FuturesTrade represents a futures trade event.
+type FuturesTrade struct {
+	EventType
+	Symbol    string  `json:"sym,omitempty"`
+	Price     float64 `json:"p,omitempty"`
+	Size      int64   `json:"s,omitempty"`
+	Timestamp int64   `json:"t,omitempty"`
+}
+
+// FuturesQuote represents a futures quote event.
+type FuturesQuote struct {
+	EventType
+	Symbol    string  `json:"sym,omitempty"`
+	BidPrice  float64 `json:"bp,omitempty"`
+	BidSize   int64   `json:"bs,omitempty"`
+	AskPrice  float64 `json:"ap,omitempty"`
+	AskSize   int64   `json:"as,omitempty"`
+	Timestamp int64   `json:"t,omitempty"`
+}
+
+// FuturesAggregate represents an aggregate event (e.g., second or minute) for a futures contract.
+type FuturesAggregate struct {
+	EventType         string  `json:"ev,omitempty"`
+	Symbol            string  `json:"sym,omitempty"`
+	Volume            float64 `json:"v,omitempty"`
+	AccumulatedVolume float64 `json:"av,omitempty"`
+	OfficialOpenPrice float64 `json:"op,omitempty"`
+	Open              float64 `json:"o,omitempty"`
+	Close             float64 `json:"c,omitempty"`
+	High              float64 `json:"h,omitempty"`
+	Low               float64 `json:"l,omitempty"`
+	AveragePrice      float64 `json:"a,omitempty"`
+	StartTimestamp    int64   `json:"s,omitempty"`
+	EndTimestamp      int64   `json:"e,omitempty"`
+	OTC               bool    `json:"otc,omitempty"`
+}
