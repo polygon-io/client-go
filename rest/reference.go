@@ -15,20 +15,17 @@ const (
 	ListTickerNewsPath            = "/v2/reference/news"
 	GetTickerRelatedCompaniesPath = "/v1/related-companies/{ticker}"
 	GetTickerTypesPath            = "/v3/reference/tickers/types"
-
-	GetMarketHolidaysPath = "/v1/marketstatus/upcoming"
-	GetMarketStatusPath   = "/v1/marketstatus/now"
-
-	ListSplitsPath = "/v3/reference/splits"
-
-	ListDividendsPath = "/v3/reference/dividends"
-
-	ListConditionsPath = "/v3/reference/conditions"
-
-	GetExchangesPath = "/v3/reference/exchanges"
-
-	GetOptionsContractPath   = "/v3/reference/options/contracts/{ticker}"
-	ListOptionsContractsPath = "/v3/reference/options/contracts"
+	GetMarketHolidaysPath         = "/v1/marketstatus/upcoming"
+	GetMarketStatusPath           = "/v1/marketstatus/now"
+	ListSplitsPath                = "/v3/reference/splits"
+	ListDividendsPath             = "/v3/reference/dividends"
+	ListConditionsPath            = "/v3/reference/conditions"
+	GetExchangesPath              = "/v3/reference/exchanges"
+	GetOptionsContractPath        = "/v3/reference/options/contracts/{ticker}"
+	ListOptionsContractsPath      = "/v3/reference/options/contracts"
+	ListShortInterestPath         = "/stocks/v1/short-interest"
+	ListShortVolumePath           = "/stocks/v1/short-volume"
+	ListTreasuryYieldsPath        = "/fed/v1/treasury-yields"
 )
 
 // ReferenceClient defines a REST client for the Polygon reference API.
@@ -206,6 +203,36 @@ func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models
 func (c *ReferenceClient) ListOptionsContracts(ctx context.Context, params *models.ListOptionsContractsParams, options ...models.RequestOption) *iter.Iter[models.OptionsContract] {
 	return iter.NewIter(ctx, ListOptionsContractsPath, params, func(uri string) (iter.ListResponse, []models.OptionsContract, error) {
 		res := &models.ListOptionsContractsResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
+}
+
+// ListShortInterest retrieves short interest data for stocks, including days to cover and average daily volume.
+// Note: this method utilizes an experimental API and could experience breaking changes or deprecation.
+func (c *ReferenceClient) ListShortInterest(ctx context.Context, params *models.ListShortInterestParams, options ...models.RequestOption) *iter.Iter[models.ShortInterest] {
+	return iter.NewIter(ctx, ListShortInterestPath, params, func(uri string) (iter.ListResponse, []models.ShortInterest, error) {
+		res := &models.ListShortInterestResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
+}
+
+// ListShortVolume retrieves short volume data for stocks, including venue-specific volumes and short volume ratio.
+// Note: this method utilizes an experimental API and could experience breaking changes or deprecation.
+func (c *ReferenceClient) ListShortVolume(ctx context.Context, params *models.ListShortVolumeParams, options ...models.RequestOption) *iter.Iter[models.ShortVolume] {
+	return iter.NewIter(ctx, ListShortVolumePath, params, func(uri string) (iter.ListResponse, []models.ShortVolume, error) {
+		res := &models.ListShortVolumeResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
+}
+
+// ListTreasuryYields retrieves treasury yield data for U.S. Treasury securities at various maturities.
+// Note: this method utilizes an experimental API and could experience breaking changes or deprecation.
+func (c *ReferenceClient) ListTreasuryYields(ctx context.Context, params *models.ListTreasuryYieldsParams, options ...models.RequestOption) *iter.Iter[models.TreasuryYield] {
+	return iter.NewIter(ctx, ListTreasuryYieldsPath, params, func(uri string) (iter.ListResponse, []models.TreasuryYield, error) {
+		res := &models.ListTreasuryYieldsResponse{}
 		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 		return res, res.Results, err
 	})

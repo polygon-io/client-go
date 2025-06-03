@@ -10,12 +10,9 @@ import (
 )
 
 const (
-	ListFinancialsPath     = "/vX/reference/financials"
-	GetTickerEventsPath    = "/vX/reference/tickers/{id}/events"
-	ListTreasuryYieldsPath = "/fed/vX/treasury-yields"
-	ListIPOsPath           = "/vX/reference/ipos"
-	ListShortInterestPath  = "/stocks/vX/short-interest"
-	ListShortVolumePath    = "/stocks/vX/short-volume"
+	ListFinancialsPath  = "/vX/reference/financials"
+	GetTickerEventsPath = "/vX/reference/tickers/{id}/events"
+	ListIPOsPath        = "/vX/reference/ipos"
 )
 
 // VXClient defines a REST client for the Polygon VX (experimental) API.
@@ -53,41 +50,11 @@ func (c *VXClient) GetTickerEvents(ctx context.Context, params *models.GetTicker
 	return res, err
 }
 
-// ListTreasuryYields retrieves treasury yield data for U.S. Treasury securities at various maturities.
-// Note: this method utilizes an experimental API and could experience breaking changes or deprecation.
-func (c *VXClient) ListTreasuryYields(ctx context.Context, params *models.ListTreasuryYieldsParams, options ...models.RequestOption) *iter.Iter[models.TreasuryYield] {
-	return iter.NewIter(ctx, ListTreasuryYieldsPath, params, func(uri string) (iter.ListResponse, []models.TreasuryYield, error) {
-		res := &models.ListTreasuryYieldsResponse{}
-		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
-		return res, res.Results, err
-	})
-}
-
 // ListIPOs retrieves detailed information about Initial Public Offerings (IPOs), including both upcoming and historical events.
 // Note: this method utilizes an experimental API and could experience breaking changes or deprecation.
 func (c *VXClient) ListIPOs(ctx context.Context, params *models.ListIPOsParams, options ...models.RequestOption) *iter.Iter[models.IPOResult] {
 	return iter.NewIter(ctx, ListIPOsPath, params, func(uri string) (iter.ListResponse, []models.IPOResult, error) {
 		res := &models.ListIPOsResponse{}
-		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
-		return res, res.Results, err
-	})
-}
-
-// ListShortInterest retrieves short interest data for stocks, including days to cover and average daily volume.
-// Note: this method utilizes an experimental API and could experience breaking changes or deprecation.
-func (c *VXClient) ListShortInterest(ctx context.Context, params *models.ListShortInterestParams, options ...models.RequestOption) *iter.Iter[models.ShortInterest] {
-	return iter.NewIter(ctx, ListShortInterestPath, params, func(uri string) (iter.ListResponse, []models.ShortInterest, error) {
-		res := &models.ListShortInterestResponse{}
-		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
-		return res, res.Results, err
-	})
-}
-
-// ListShortVolume retrieves short volume data for stocks, including venue-specific volumes and short volume ratio.
-// Note: this method utilizes an experimental API and could experience breaking changes or deprecation.
-func (c *VXClient) ListShortVolume(ctx context.Context, params *models.ListShortVolumeParams, options ...models.RequestOption) *iter.Iter[models.ShortVolume] {
-	return iter.NewIter(ctx, ListShortVolumePath, params, func(uri string) (iter.ListResponse, []models.ShortVolume, error) {
-		res := &models.ListShortVolumeResponse{}
 		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
 		return res, res.Results, err
 	})
