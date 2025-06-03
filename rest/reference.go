@@ -208,7 +208,17 @@ func (c *ReferenceClient) ListOptionsContracts(ctx context.Context, params *mode
 	})
 }
 
-// ListShortInterest retrieves short interest data for stocks, including days to cover and average daily volume.
+// ListShortInterest retrieves bi-monthly aggregated short interest data
+// reported to FINRA by broker-dealers for a specified stock ticker. Short
+// interest represents the total number of shares sold short but not yet
+// covered or closed out, serving as an indicator of market sentiment and
+// potential price movements. High short interest can signal bearish
+// sentiment or highlight opportunities such as potential short squeezes.
+// This endpoint provides essential insights for investors monitoring market
+// positioning and sentiment.
+//
+// Use Cases: Market sentiment analysis, short-squeeze prediction, risk
+// management, trading strategy refinement.
 func (c *ReferenceClient) ListShortInterest(ctx context.Context, params *models.ListShortInterestParams, options ...models.RequestOption) *iter.Iter[models.ShortInterest] {
 	return iter.NewIter(ctx, ListShortInterestPath, params, func(uri string) (iter.ListResponse, []models.ShortInterest, error) {
 		res := &models.ListShortInterestResponse{}
@@ -217,7 +227,17 @@ func (c *ReferenceClient) ListShortInterest(ctx context.Context, params *models.
 	})
 }
 
-// ListShortVolume retrieves short volume data for stocks, including venue-specific volumes and short volume ratio.
+// ListShortVolume retrieves daily aggregated short sale volume data reported
+// to FINRA from off-exchange trading venues and alternative trading systems
+// (ATS) for a specified stock ticker. Unlike short interest, which measures
+// outstanding short positions at specific reporting intervals, short volume
+// captures the daily trading activity of short sales. Monitoring short volume
+// helps users detect immediate market sentiment shifts, analyze trading
+// behavior, and identify trends in short-selling activity that may signal
+// upcoming price movements.
+//
+// Use Cases: Intraday sentiment analysis, short-sale trend identification,
+// liquidity analysis, trading strategy optimization.
 func (c *ReferenceClient) ListShortVolume(ctx context.Context, params *models.ListShortVolumeParams, options ...models.RequestOption) *iter.Iter[models.ShortVolume] {
 	return iter.NewIter(ctx, ListShortVolumePath, params, func(uri string) (iter.ListResponse, []models.ShortVolume, error) {
 		res := &models.ListShortVolumeResponse{}
@@ -226,7 +246,15 @@ func (c *ReferenceClient) ListShortVolume(ctx context.Context, params *models.Li
 	})
 }
 
-// ListTreasuryYields retrieves treasury yield data for U.S. Treasury securities at various maturities.
+// ListTreasuryYields retrieves historical U.S. Treasury yield data for
+// standard timeframes ranging from 1-month to 30-years, with daily
+// historical records back to 1962. This endpoint lets you query by date or
+// date range to see how interest rates have changed over time. Each data
+// point reflects the market yield for Treasury securities of a specific
+// maturity, helping users understand short- and long-term rate movements.
+//
+// Use Cases: Charting rate trends, comparing short vs. long-term yields,
+// economic research.
 func (c *ReferenceClient) ListTreasuryYields(ctx context.Context, params *models.ListTreasuryYieldsParams, options ...models.RequestOption) *iter.Iter[models.TreasuryYield] {
 	return iter.NewIter(ctx, ListTreasuryYieldsPath, params, func(uri string) (iter.ListResponse, []models.TreasuryYield, error) {
 		res := &models.ListTreasuryYieldsResponse{}
