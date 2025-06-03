@@ -21,7 +21,7 @@ func main() {
 		WithLimit(50000)
 
 	// Make request
-	iter := c.VX.ListShortInterest(context.Background(), params)
+	iter := c.ListShortInterest(context.Background(), params)
 
 	// Process results
 	for iter.Next() {
