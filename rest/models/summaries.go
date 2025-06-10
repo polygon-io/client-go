@@ -31,24 +31,6 @@ type SummaryResult struct {
 	Error        string   `json:"error,omitempty"`
 }
 
-type Session struct {
-	Change                      float64 `json:"change,omitempty"`
-	ChangePercent               float64 `json:"change_percent,omitempty"`
-	EarlyTradingChange          float64 `json:"early_trading_change,omitempty"`
-	EarlyTradingChangePercent   float64 `json:"early_trading_change_percent,omitempty"`
-	RegularTradingChange        float64 `json:"regular_trading_change,omitempty"`
-	RegularTradingChangePercent float64 `json:"regular_trading_change_percent,omitempty"`
-	LateTradingChange           float64 `json:"late_trading_change,omitempty"`
-	LateTradingChangePercent    float64 `json:"late_trading_change_percent,omitempty"`
-	Close                       float64 `json:"close,omitempty"`
-	High                        float64 `json:"high,omitempty"`
-	Low                         float64 `json:"low,omitempty"`
-	Open                        float64 `json:"open,omitempty"`
-	PreviousClose               float64 `json:"previous_close,omitempty"`
-	Volume                      float64 `json:"volume,omitempty"`
-	Price                       float64 `json:"price,omitempty"`
-}
-
 //easyjson:json
 type Options struct {
 	ContractType      string  `json:"contract_type,omitempty"`

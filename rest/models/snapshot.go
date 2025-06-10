@@ -459,25 +459,38 @@ type ListUniversalSnapshotsResponse struct {
 
 // SnapshotResponseModel contains all the information that might come back in a SnapshotResponse.
 type SnapshotResponseModel struct {
-	Name              string            `json:"name,omitempty"`
-	MarketStatus      string            `json:"market_status,omitempty"`
-	Ticker            string            `json:"ticker,omitempty"`
-	Type              string            `json:"type,omitempty"`
-	LastQuote         SnapshotLastQuote `json:"last_quote,omitempty"`
-	LastTrade         SnapshotLastTrade `json:"last_trade,omitempty"`
-	Session           Session           `json:"session,omitempty"`
-	BreakEvenPrice    float64           `json:"break_even_price,omitempty"`
-	Details           Details           `json:"details,omitempty"`
-	Greeks            Greeks            `json:"greeks,omitempty"`
-	ImpliedVolatility float64           `json:"implied_volatility,omitempty"`
-	OpenInterest      float64           `json:"open_interest,omitempty"`
-	UnderlyingAsset   UnderlyingAsset   `json:"underlying_asset,omitempty"`
-	Value             float64           `json:"value,omitempty"`
-	LastUpdated       int64             `json:"last_updated,omitempty"`
-	Timeframe         string            `json:"timeframe,omitempty"`
-	FairMarketValue   float64           `json:"fmv,omitempty"`
-	Error             string            `json:"error"`
-	Message           string            `json:"message"`
+	Name              string             `json:"name,omitempty"`
+	MarketStatus      string             `json:"market_status,omitempty"`
+	Ticker            string             `json:"ticker,omitempty"`
+	Type              string             `json:"type,omitempty"`
+	LastMinute        SnapshotLastMinute `json:"last_minute,omitempty"`
+	LastQuote         SnapshotLastQuote  `json:"last_quote,omitempty"`
+	LastTrade         SnapshotLastTrade  `json:"last_trade,omitempty"`
+	Session           Session            `json:"session,omitempty"`
+	BreakEvenPrice    float64            `json:"break_even_price,omitempty"`
+	Details           Details            `json:"details,omitempty"`
+	Greeks            Greeks             `json:"greeks,omitempty"`
+	ImpliedVolatility float64            `json:"implied_volatility,omitempty"`
+	OpenInterest      float64            `json:"open_interest,omitempty"`
+	UnderlyingAsset   UnderlyingAsset    `json:"underlying_asset,omitempty"`
+	Value             float64            `json:"value,omitempty"`
+	LastUpdated       int64              `json:"last_updated,omitempty"`
+	Timeframe         string             `json:"timeframe,omitempty"`
+	FairMarketValue   float64            `json:"fmv,omitempty"`
+	Error             string             `json:"error"`
+	Message           string             `json:"message"`
+}
+
+// SnapshotLastMinute contains all the information that might come back in the last_minute attribute of a SnapshotResponseModel.
+type SnapshotLastMinute struct {
+	Close        float64 `json:"close,omitempty"`
+	High         float64 `json:"high,omitempty"`
+	Low          float64 `json:"low,omitempty"`
+	Transactions int64   `json:"transactions,omitempty"`
+	Open         float64 `json:"open,omitempty"`
+	Volume       float64 `json:"volume,omitempty"`
+	VWAP         float64 `json:"vwap,omitempty"`
+	LastUpdated  int64   `json:"last_updated,omitempty"`
 }
 
 // SnapshotLastQuote contains all the information that might come back in the last_quote attribute of a SnapshotResponse.
@@ -503,6 +516,27 @@ type SnapshotLastTrade struct {
 	Timeframe            string  `json:"timeframe,omitempty"`
 	ID                   string  `json:"id,omitempty"`
 	LastUpdated          int64   `json:"last_updated,omitempty"`
+}
+
+// Session contains all the information that might come back in the Session attribute of a SnapshotResponseModel or SummaryResult.
+type Session struct {
+	Change                      float64 `json:"change,omitempty"`
+	ChangePercent               float64 `json:"change_percent,omitempty"`
+	EarlyTradingChange          float64 `json:"early_trading_change,omitempty"`
+	EarlyTradingChangePercent   float64 `json:"early_trading_change_percent,omitempty"`
+	RegularTradingChange        float64 `json:"regular_trading_change,omitempty"`
+	RegularTradingChangePercent float64 `json:"regular_trading_change_percent,omitempty"`
+	LateTradingChange           float64 `json:"late_trading_change,omitempty"`
+	LateTradingChangePercent    float64 `json:"late_trading_change_percent,omitempty"`
+	Close                       float64 `json:"close,omitempty"`
+	High                        float64 `json:"high,omitempty"`
+	Low                         float64 `json:"low,omitempty"`
+	Open                        float64 `json:"open,omitempty"`
+	PreviousClose               float64 `json:"previous_close,omitempty"`
+	Volume                      float64 `json:"volume,omitempty"`
+	Price                       float64 `json:"price,omitempty"`
+	LastUpdated                 int64   `json:"last_updated,omitempty"`
+	VWAP                        float64 `json:"vwap,omitempty"`
 }
 
 // Details contains all the information that might come back in the details attribute of a SnapshotResponse.
