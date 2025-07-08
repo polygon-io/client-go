@@ -3,24 +3,29 @@ package models
 
 // ListFuturesAggsParams defines parameters for the ListFuturesAggs endpoint.
 type ListFuturesAggsParams struct {
-	Ticker      string  `validate:"required" path:"ticker"`
-	Resolution  string  `query:"resolution"`
-	WindowStart *Nanos  `query:"window_start"`
+	Ticker         string  `validate:"required" path:"ticker"`
+	Resolution     string  `query:"resolution"`
+	WindowStart    *Nanos  `query:"window_start"`
 	WindowStartLT  *Nanos  `query:"window_start.lt"`
 	WindowStartLTE *Nanos  `query:"window_start.lte"`
 	WindowStartGT  *Nanos  `query:"window_start.gt"`
 	WindowStartGTE *Nanos  `query:"window_start.gte"`
-	Limit       *int    `query:"limit"`
-	Sort        *string `query:"sort"`
+	Limit          *int    `query:"limit"`
+	Sort           *string `query:"sort"`
 }
 
 func (p ListFuturesAggsParams) WithWindowStart(c Comparator, q Nanos) *ListFuturesAggsParams {
 	switch c {
-	case EQ:  p.WindowStart = &q
-	case LT:  p.WindowStartLT = &q
-	case LTE: p.WindowStartLTE = &q
-	case GT:  p.WindowStartGT = &q
-	case GTE: p.WindowStartGTE = &q
+	case EQ:
+		p.WindowStart = &q
+	case LT:
+		p.WindowStartLT = &q
+	case LTE:
+		p.WindowStartLTE = &q
+	case GT:
+		p.WindowStartGT = &q
+	case GTE:
+		p.WindowStartGTE = &q
 	}
 	return &p
 }
@@ -59,14 +64,14 @@ type FuturesAggregate struct {
 
 // ListFuturesContractsParams defines parameters for the ListFuturesContracts endpoint.
 type ListFuturesContractsParams struct {
-	ProductCode     *string `query:"product_code"`
-	FirstTradeDate  *Date   `query:"first_trade_date"`
-	LastTradeDate   *Date   `query:"last_trade_date"`
-	AsOf            *Date   `query:"as_of"`
-	Active          *string `query:"active"`
-	Type            *string `query:"type"`
-	Limit           *int    `query:"limit"`
-	Sort            *string `query:"sort"`
+	ProductCode    *string `query:"product_code"`
+	FirstTradeDate *Date   `query:"first_trade_date"`
+	LastTradeDate  *Date   `query:"last_trade_date"`
+	AsOf           *Date   `query:"as_of"`
+	Active         *string `query:"active"`
+	Type           *string `query:"type"`
+	Limit          *int    `query:"limit"`
+	Sort           *string `query:"sort"`
 }
 
 // ListFuturesContractsResponse defines the response for the ListFuturesContracts endpoint.
@@ -77,22 +82,22 @@ type ListFuturesContractsResponse struct {
 
 // FuturesContract represents a futures contract.
 type FuturesContract struct {
-	Active            bool    `json:"active,omitempty"`
-	AsOf              Date    `json:"as_of,omitempty"`
-	DaysToMaturity    int     `json:"days_to_maturity,omitempty"`
-	FirstTradeDate    Date    `json:"first_trade_date,omitempty"`
-	LastTradeDate     Date    `json:"last_trade_date,omitempty"`
-	MaxOrderQuantity  int     `json:"max_order_quantity,omitempty"`
-	MinOrderQuantity  int     `json:"min_order_quantity,omitempty"`
-	Name              string  `json:"name,omitempty"`
-	ProductCode       string  `json:"product_code,omitempty"`
-	SettlementDate    Date    `json:"settlement_date,omitempty"`
+	Active             bool    `json:"active,omitempty"`
+	AsOf               Date    `json:"as_of,omitempty"`
+	DaysToMaturity     int     `json:"days_to_maturity,omitempty"`
+	FirstTradeDate     Date    `json:"first_trade_date,omitempty"`
+	LastTradeDate      Date    `json:"last_trade_date,omitempty"`
+	MaxOrderQuantity   int     `json:"max_order_quantity,omitempty"`
+	MinOrderQuantity   int     `json:"min_order_quantity,omitempty"`
+	Name               string  `json:"name,omitempty"`
+	ProductCode        string  `json:"product_code,omitempty"`
+	SettlementDate     Date    `json:"settlement_date,omitempty"`
 	SettlementTickSize float64 `json:"settlement_tick_size,omitempty"`
-	SpreadTickSize    float64 `json:"spread_tick_size,omitempty"`
-	Ticker            string  `json:"ticker,omitempty"`
-	TradeTickSize     float64 `json:"trade_tick_size,omitempty"`
-	TradingVenue      string  `json:"trading_venue,omitempty"`
-	Type              string  `json:"type,omitempty"`
+	SpreadTickSize     float64 `json:"spread_tick_size,omitempty"`
+	Ticker             string  `json:"ticker,omitempty"`
+	TradeTickSize      float64 `json:"trade_tick_size,omitempty"`
+	TradingVenue       string  `json:"trading_venue,omitempty"`
+	Type               string  `json:"type,omitempty"`
 }
 
 // GetFuturesContractParams defines parameters for the GetFuturesContract endpoint.
@@ -131,17 +136,17 @@ type FuturesMarketStatus struct {
 
 // ListFuturesProductsParams defines parameters for the ListFuturesProducts endpoint.
 type ListFuturesProductsParams struct {
-	Name           *string `query:"name"`
-	AsOf           *Date   `query:"as_of"`
-	TradingVenue   *string `query:"trading_venue"`
-	Sector         *string `query:"sector"`
-	SubSector      *string `query:"sub_sector"`
-	AssetClass     *string `query:"asset_class"`
-	AssetSubClass  *string `query:"asset_sub_class"`
-	Type           *string `query:"type"`
-	Limit          *int    `query:"limit"`
-	NameSearch     *string `query:"name.search"`
-	Sort           *string `query:"sort"`
+	Name          *string `query:"name"`
+	AsOf          *Date   `query:"as_of"`
+	TradingVenue  *string `query:"trading_venue"`
+	Sector        *string `query:"sector"`
+	SubSector     *string `query:"sub_sector"`
+	AssetClass    *string `query:"asset_class"`
+	AssetSubClass *string `query:"asset_sub_class"`
+	Type          *string `query:"type"`
+	Limit         *int    `query:"limit"`
+	NameSearch    *string `query:"name.search"`
+	Sort          *string `query:"sort"`
 }
 
 // ListFuturesProductsResponse defines the response for the ListFuturesProducts endpoint.
@@ -152,29 +157,29 @@ type ListFuturesProductsResponse struct {
 
 // FuturesProduct represents a futures product.
 type FuturesProduct struct {
-	AsOf                 Date    `json:"as_of,omitempty"`
-	AssetClass           string  `json:"asset_class,omitempty"`
-	AssetSubClass        string  `json:"asset_sub_class,omitempty"`
-	ClearingChannel      string  `json:"clearing_channel,omitempty"`
-	LastUpdated          string  `json:"last_updated,omitempty"`
-	Name                 string  `json:"name,omitempty"`
-	PriceQuotation       string  `json:"price_quotation,omitempty"`
-	ProductCode          string  `json:"product_code,omitempty"`
-	Sector               string  `json:"sector,omitempty"`
-	SettlementCurrencyCode string `json:"settlement_currency_code,omitempty"`
-	SettlementMethod     string  `json:"settlement_method,omitempty"`
-	SettlementType       string  `json:"settlement_type,omitempty"`
-	SubSector            string  `json:"sub_sector,omitempty"`
-	TradeCurrencyCode    string `json:"trade_currency_code,omitempty"`
-	TradingVenue         string `json:"trading_venue,omitempty"`
-	Type                 string  `json:"type,omitempty"`
-	UnitOfMeasure        string `json:"unit_of_measure,omitempty"`
-	UnitOfMeasureQuantity float64 `json:"unit_of_measure_quantity,omitempty"`
+	AsOf                   Date    `json:"as_of,omitempty"`
+	AssetClass             string  `json:"asset_class,omitempty"`
+	AssetSubClass          string  `json:"asset_sub_class,omitempty"`
+	ClearingChannel        string  `json:"clearing_channel,omitempty"`
+	LastUpdated            string  `json:"last_updated,omitempty"`
+	Name                   string  `json:"name,omitempty"`
+	PriceQuotation         string  `json:"price_quotation,omitempty"`
+	ProductCode            string  `json:"product_code,omitempty"`
+	Sector                 string  `json:"sector,omitempty"`
+	SettlementCurrencyCode string  `json:"settlement_currency_code,omitempty"`
+	SettlementMethod       string  `json:"settlement_method,omitempty"`
+	SettlementType         string  `json:"settlement_type,omitempty"`
+	SubSector              string  `json:"sub_sector,omitempty"`
+	TradeCurrencyCode      string  `json:"trade_currency_code,omitempty"`
+	TradingVenue           string  `json:"trading_venue,omitempty"`
+	Type                   string  `json:"type,omitempty"`
+	UnitOfMeasure          string  `json:"unit_of_measure,omitempty"`
+	UnitOfMeasureQuantity  float64 `json:"unit_of_measure_quantity,omitempty"`
 }
 
 // GetFuturesProductParams defines parameters for the GetFuturesProduct endpoint.
 type GetFuturesProductParams struct {
-	ProductCode string `validate:"required" path:"product_code"`
+	ProductCode string  `validate:"required" path:"product_code"`
 	Type        *string `query:"type"`
 	AsOf        *Date   `query:"as_of"`
 }
@@ -187,23 +192,28 @@ type GetFuturesProductResponse struct {
 
 // ListFuturesProductSchedulesParams defines parameters for the ListFuturesProductSchedules endpoint.
 type ListFuturesProductSchedulesParams struct {
-	ProductCode      string  `validate:"required" path:"product_code"`
-	SessionEndDate   *Date   `query:"session_end_date"`
-	SessionEndDateLT  *Date  `query:"session_end_date.lt"`
-	SessionEndDateLTE *Date  `query:"session_end_date.lte"`
-	SessionEndDateGT  *Date  `query:"session_end_date.gt"`
-	SessionEndDateGTE *Date  `query:"session_end_date.gte"`
-	Limit            *int    `query:"limit"`
-	Sort             *string `query:"sort"`
+	ProductCode       string  `validate:"required" path:"product_code"`
+	SessionEndDate    *Date   `query:"session_end_date"`
+	SessionEndDateLT  *Date   `query:"session_end_date.lt"`
+	SessionEndDateLTE *Date   `query:"session_end_date.lte"`
+	SessionEndDateGT  *Date   `query:"session_end_date.gt"`
+	SessionEndDateGTE *Date   `query:"session_end_date.gte"`
+	Limit             *int    `query:"limit"`
+	Sort              *string `query:"sort"`
 }
 
 func (p ListFuturesProductSchedulesParams) WithSessionEndDate(c Comparator, q Date) *ListFuturesProductSchedulesParams {
 	switch c {
-	case EQ:  p.SessionEndDate = &q
-	case LT:  p.SessionEndDateLT = &q
-	case LTE: p.SessionEndDateLTE = &q
-	case GT:  p.SessionEndDateGT = &q
-	case GTE: p.SessionEndDateGTE = &q
+	case EQ:
+		p.SessionEndDate = &q
+	case LT:
+		p.SessionEndDateLT = &q
+	case LTE:
+		p.SessionEndDateLTE = &q
+	case GT:
+		p.SessionEndDateGT = &q
+	case GTE:
+		p.SessionEndDateGTE = &q
 	}
 	return &p
 }
@@ -216,11 +226,11 @@ type ListFuturesProductSchedulesResponse struct {
 
 // FuturesSchedule represents a trading schedule for a futures product.
 type FuturesSchedule struct {
-	ProductCode   string        `json:"product_code,omitempty"`
-	ProductName   string        `json:"product_name,omitempty"`
-	Schedule      []ScheduleEvent `json:"schedule,omitempty"`
-	SessionEndDate Date          `json:"session_end_date,omitempty"`
-	TradingVenue  string        `json:"trading_venue,omitempty"`
+	ProductCode    string          `json:"product_code,omitempty"`
+	ProductName    string          `json:"product_name,omitempty"`
+	Schedule       []ScheduleEvent `json:"schedule,omitempty"`
+	SessionEndDate Date            `json:"session_end_date,omitempty"`
+	TradingVenue   string          `json:"trading_venue,omitempty"`
 }
 
 type ScheduleEvent struct {
@@ -230,39 +240,49 @@ type ScheduleEvent struct {
 
 // ListFuturesQuotesParams defines parameters for the ListFuturesQuotes endpoint.
 type ListFuturesQuotesParams struct {
-	Ticker           string  `validate:"required" path:"ticker"`
-	Timestamp        *Nanos  `query:"timestamp"`
-	TimestampLT      *Nanos  `query:"timestamp.lt"`
-	TimestampLTE     *Nanos  `query:"timestamp.lte"`
-	TimestampGT      *Nanos  `query:"timestamp.gt"`
-	TimestampGTE     *Nanos  `query:"timestamp.gte"`
-	SessionEndDate   *string `query:"session_end_date"`
+	Ticker            string  `validate:"required" path:"ticker"`
+	Timestamp         *Nanos  `query:"timestamp"`
+	TimestampLT       *Nanos  `query:"timestamp.lt"`
+	TimestampLTE      *Nanos  `query:"timestamp.lte"`
+	TimestampGT       *Nanos  `query:"timestamp.gt"`
+	TimestampGTE      *Nanos  `query:"timestamp.gte"`
+	SessionEndDate    *string `query:"session_end_date"`
 	SessionEndDateLT  *string `query:"session_end_date.lt"`
 	SessionEndDateLTE *string `query:"session_end_date.lte"`
 	SessionEndDateGT  *string `query:"session_end_date.gt"`
 	SessionEndDateGTE *string `query:"session_end_date.gte"`
-	Limit            *int    `query:"limit"`
-	Sort             *string `query:"sort"`
+	Limit             *int    `query:"limit"`
+	Sort              *string `query:"sort"`
 }
 
 func (p ListFuturesQuotesParams) WithTimestamp(c Comparator, q Nanos) *ListFuturesQuotesParams {
 	switch c {
-	case EQ:  p.Timestamp = &q
-	case LT:  p.TimestampLT = &q
-	case LTE: p.TimestampLTE = &q
-	case GT:  p.TimestampGT = &q
-	case GTE: p.TimestampGTE = &q
+	case EQ:
+		p.Timestamp = &q
+	case LT:
+		p.TimestampLT = &q
+	case LTE:
+		p.TimestampLTE = &q
+	case GT:
+		p.TimestampGT = &q
+	case GTE:
+		p.TimestampGTE = &q
 	}
 	return &p
 }
 
 func (p ListFuturesQuotesParams) WithSessionEndDate(c Comparator, q string) *ListFuturesQuotesParams {
 	switch c {
-	case EQ:  p.SessionEndDate = &q
-	case LT:  p.SessionEndDateLT = &q
-	case LTE: p.SessionEndDateLTE = &q
-	case GT:  p.SessionEndDateGT = &q
-	case GTE: p.SessionEndDateGTE = &q
+	case EQ:
+		p.SessionEndDate = &q
+	case LT:
+		p.SessionEndDateLT = &q
+	case LTE:
+		p.SessionEndDateLTE = &q
+	case GT:
+		p.SessionEndDateGT = &q
+	case GTE:
+		p.SessionEndDateGTE = &q
 	}
 	return &p
 }
@@ -275,15 +295,15 @@ type ListFuturesQuotesResponse struct {
 
 // FuturesQuote represents a quote for a futures contract.
 type FuturesQuote struct {
-	AskPrice     float64 `json:"ask_price,omitempty"`
-	AskSize      float64 `json:"ask_size,omitempty"`
-	AskTimestamp Nanos   `json:"ask_timestamp,omitempty"`
-	BidPrice     float64 `json:"bid_price,omitempty"`
-	BidSize      float64 `json:"bid_size,omitempty"`
-	BidTimestamp Nanos   `json:"bid_timestamp,omitempty"`
-	SessionEndDate string `json:"session_end_date,omitempty"`
-	Ticker       string `json:"ticker,omitempty"`
-	Timestamp    Nanos   `json:"timestamp,omitempty"`
+	AskPrice       float64 `json:"ask_price,omitempty"`
+	AskSize        float64 `json:"ask_size,omitempty"`
+	AskTimestamp   Nanos   `json:"ask_timestamp,omitempty"`
+	BidPrice       float64 `json:"bid_price,omitempty"`
+	BidSize        float64 `json:"bid_size,omitempty"`
+	BidTimestamp   Nanos   `json:"bid_timestamp,omitempty"`
+	SessionEndDate string  `json:"session_end_date,omitempty"`
+	Ticker         string  `json:"ticker,omitempty"`
+	Timestamp      Nanos   `json:"timestamp,omitempty"`
 }
 
 // ListFuturesSchedulesParams defines parameters for the ListFuturesSchedules endpoint.
@@ -302,39 +322,49 @@ type ListFuturesSchedulesResponse struct {
 
 // ListFuturesTradesParams defines parameters for the ListFuturesTrades endpoint.
 type ListFuturesTradesParams struct {
-	Ticker           string  `validate:"required" path:"ticker"`
-	Timestamp        *Nanos  `query:"timestamp"`
-	TimestampLT      *Nanos  `query:"timestamp.lt"`
-	TimestampLTE     *Nanos  `query:"timestamp.lte"`
-	TimestampGT      *Nanos  `query:"timestamp.gt"`
-	TimestampGTE     *Nanos  `query:"timestamp.gte"`
-	SessionEndDate   *string `query:"session_end_date"`
+	Ticker            string  `validate:"required" path:"ticker"`
+	Timestamp         *Nanos  `query:"timestamp"`
+	TimestampLT       *Nanos  `query:"timestamp.lt"`
+	TimestampLTE      *Nanos  `query:"timestamp.lte"`
+	TimestampGT       *Nanos  `query:"timestamp.gt"`
+	TimestampGTE      *Nanos  `query:"timestamp.gte"`
+	SessionEndDate    *string `query:"session_end_date"`
 	SessionEndDateLT  *string `query:"session_end_date.lt"`
 	SessionEndDateLTE *string `query:"session_end_date.lte"`
 	SessionEndDateGT  *string `query:"session_end_date.gt"`
 	SessionEndDateGTE *string `query:"session_end_date.gte"`
-	Limit            *int    `query:"limit"`
-	Sort             *string `query:"sort"`
+	Limit             *int    `query:"limit"`
+	Sort              *string `query:"sort"`
 }
 
 func (p ListFuturesTradesParams) WithTimestamp(c Comparator, q Nanos) *ListFuturesTradesParams {
 	switch c {
-	case EQ:  p.Timestamp = &q
-	case LT:  p.TimestampLT = &q
-	case LTE: p.TimestampLTE = &q
-	case GT:  p.TimestampGT = &q
-	case GTE: p.TimestampGTE = &q
+	case EQ:
+		p.Timestamp = &q
+	case LT:
+		p.TimestampLT = &q
+	case LTE:
+		p.TimestampLTE = &q
+	case GT:
+		p.TimestampGT = &q
+	case GTE:
+		p.TimestampGTE = &q
 	}
 	return &p
 }
 
 func (p ListFuturesTradesParams) WithSessionEndDate(c Comparator, q string) *ListFuturesTradesParams {
 	switch c {
-	case EQ:  p.SessionEndDate = &q
-	case LT:  p.SessionEndDateLT = &q
-	case LTE: p.SessionEndDateLTE = &q
-	case GT:  p.SessionEndDateGT = &q
-	case GTE: p.SessionEndDateGTE = &q
+	case EQ:
+		p.SessionEndDate = &q
+	case LT:
+		p.SessionEndDateLT = &q
+	case LTE:
+		p.SessionEndDateLTE = &q
+	case GT:
+		p.SessionEndDateGT = &q
+	case GTE:
+		p.SessionEndDateGTE = &q
 	}
 	return &p
 }
@@ -347,9 +377,9 @@ type ListFuturesTradesResponse struct {
 
 // FuturesTrade represents a trade for a futures contract.
 type FuturesTrade struct {
-	Price         float64 `json:"price,omitempty"`
-	SessionEndDate string `json:"session_end_date,omitempty"`
-	Size          float64 `json:"size,omitempty"`
-	Ticker        string `json:"ticker,omitempty"`
-	Timestamp     Nanos   `json:"timestamp,omitempty"`
+	Price          float64 `json:"price,omitempty"`
+	SessionEndDate string  `json:"session_end_date,omitempty"`
+	Size           float64 `json:"size,omitempty"`
+	Ticker         string  `json:"ticker,omitempty"`
+	Timestamp      Nanos   `json:"timestamp,omitempty"`
 }
