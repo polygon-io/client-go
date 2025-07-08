@@ -17,6 +17,7 @@ type Client struct {
 	SnapshotClient
 	IndicatorsClient
 	SummariesClient
+	FuturesClient
 	VX VXClient
 }
 
@@ -47,6 +48,7 @@ func newClient(apiKey string, hc *http.Client) *Client {
 		ReferenceClient:  ReferenceClient{Client: c},
 		TradesClient:     TradesClient{Client: c},
 		SnapshotClient:   SnapshotClient{Client: c},
+		FuturesClient:    FuturesClient{Client: c},
 		VX:               VXClient{Client: c},
 	}
 }
