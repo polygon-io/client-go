@@ -66,6 +66,7 @@ const (
 	LaunchpadFeed                     Feed = "wss://launchpad.polygon.io"
 	BusinessFeed                      Feed = "wss://business.polygon.io"
 	EdgxBusinessFeed                  Feed = "wss://edgx-business.polygon.io"
+	IEXBusiness                       Feed = "wss://iex-business.polygon.io"
 	DelayedBusinessFeed               Feed = "wss://delayed-business.polygon.io"
 	DelayedEdgxBusinessFeed           Feed = "wss://delayed-edgx-business.polygon.io"
 	DelayedNasdaqLastSaleBusinessFeed Feed = "wss://delayed-nasdaq-last-sale-business.polygon.io"

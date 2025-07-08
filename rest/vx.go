@@ -12,6 +12,7 @@ import (
 const (
 	ListFinancialsPath  = "/vX/reference/financials"
 	GetTickerEventsPath = "/vX/reference/tickers/{id}/events"
+	ListIPOsPath        = "/vX/reference/ipos"
 )
 
 // VXClient defines a REST client for the Polygon VX (experimental) API.
@@ -47,4 +48,14 @@ func (c *VXClient) GetTickerEvents(ctx context.Context, params *models.GetTicker
 	res := &models.GetTickerEventsResponse{}
 	err := c.Call(ctx, http.MethodGet, GetTickerEventsPath, params, res, options...)
 	return res, err
+}
+
+// ListIPOs retrieves detailed information about Initial Public Offerings (IPOs), including both upcoming and historical events.
+// Note: this method utilizes an experimental API and could experience breaking changes or deprecation.
+func (c *VXClient) ListIPOs(ctx context.Context, params *models.ListIPOsParams, options ...models.RequestOption) *iter.Iter[models.IPOResult] {
+	return iter.NewIter(ctx, ListIPOsPath, params, func(uri string) (iter.ListResponse, []models.IPOResult, error) {
+		res := &models.ListIPOsResponse{}
+		err := c.CallURL(ctx, http.MethodGet, uri, res, options...)
+		return res, res.Results, err
+	})
 }
