@@ -1,11 +1,13 @@
+// futures.go
 package polygon
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/polygon-io/client-go/rest/client"
 	"github.com/polygon-io/client-go/rest/iter"
 	"github.com/polygon-io/client-go/rest/models"
-	"net/http"
 )
 
 const (
