@@ -57,7 +57,6 @@ type FuturesAggregate struct {
 	SettlementPrice float64 `json:"settlement_price,omitempty"`
 	Ticker          string  `json:"ticker,omitempty"`
 	Transactions    int64   `json:"transaction_count,omitempty"`
-	UnderlyingAsset string  `json:"underlying_asset,omitempty"`
 	Volume          int64   `json:"volume,omitempty"`
 	WindowStart     Nanos   `json:"window_start,omitempty"`
 }
@@ -84,6 +83,7 @@ type ListFuturesContractsResponse struct {
 type FuturesContract struct {
 	Active             bool    `json:"active,omitempty"`
 	AsOf               Date    `json:"as_of,omitempty"`
+	Maturity           string  `json:"maturity,omitempty"`
 	DaysToMaturity     int     `json:"days_to_maturity,omitempty"`
 	FirstTradeDate     Date    `json:"first_trade_date,omitempty"`
 	LastTradeDate      Date    `json:"last_trade_date,omitempty"`
