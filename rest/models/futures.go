@@ -73,6 +73,46 @@ type ListFuturesContractsParams struct {
 	Sort           *string `query:"sort"`
 }
 
+func (p ListFuturesContractsParams) WithProductCode(q string) *ListFuturesContractsParams {
+	p.ProductCode = &q
+	return &p
+}
+
+func (p ListFuturesContractsParams) WithFirstTradeDate(q Date) *ListFuturesContractsParams {
+	p.FirstTradeDate = &q
+	return &p
+}
+
+func (p ListFuturesContractsParams) WithLastTradeDate(q Date) *ListFuturesContractsParams {
+	p.LastTradeDate = &q
+	return &p
+}
+
+func (p ListFuturesContractsParams) WithAsOf(q Date) *ListFuturesContractsParams {
+	p.AsOf = &q
+	return &p
+}
+
+func (p ListFuturesContractsParams) WithActive(q string) *ListFuturesContractsParams {
+	p.Active = &q
+	return &p
+}
+
+func (p ListFuturesContractsParams) WithType(q string) *ListFuturesContractsParams {
+	p.Type = &q
+	return &p
+}
+
+func (p ListFuturesContractsParams) WithLimit(q int) *ListFuturesContractsParams {
+	p.Limit = &q
+	return &p
+}
+
+func (p ListFuturesContractsParams) WithSort(q string) *ListFuturesContractsParams {
+	p.Sort = &q
+	return &p
+}
+
 // ListFuturesContractsResponse defines the response for the ListFuturesContracts endpoint.
 type ListFuturesContractsResponse struct {
 	BaseResponse
@@ -106,6 +146,11 @@ type GetFuturesContractParams struct {
 	AsOf   *Date  `query:"as_of"`
 }
 
+func (p GetFuturesContractParams) WithAsOf(q Date) *GetFuturesContractParams {
+	p.AsOf = &q
+	return &p
+}
+
 // GetFuturesContractResponse defines the response for the GetFuturesContract endpoint.
 type GetFuturesContractResponse struct {
 	BaseResponse
@@ -118,6 +163,26 @@ type ListFuturesMarketStatusesParams struct {
 	ProductCode      *string `query:"product_code"`
 	Limit            *int    `query:"limit"`
 	Sort             *string `query:"sort"`
+}
+
+func (p ListFuturesMarketStatusesParams) WithProductCodeAnyOf(q string) *ListFuturesMarketStatusesParams {
+	p.ProductCodeAnyOf = &q
+	return &p
+}
+
+func (p ListFuturesMarketStatusesParams) WithProductCode(q string) *ListFuturesMarketStatusesParams {
+	p.ProductCode = &q
+	return &p
+}
+
+func (p ListFuturesMarketStatusesParams) WithLimit(q int) *ListFuturesMarketStatusesParams {
+	p.Limit = &q
+	return &p
+}
+
+func (p ListFuturesMarketStatusesParams) WithSort(q string) *ListFuturesMarketStatusesParams {
+	p.Sort = &q
+	return &p
 }
 
 // ListFuturesMarketStatusesResponse defines the response for the ListFuturesMarketStatuses endpoint.
@@ -147,6 +212,61 @@ type ListFuturesProductsParams struct {
 	Limit         *int    `query:"limit"`
 	NameSearch    *string `query:"name.search"`
 	Sort          *string `query:"sort"`
+}
+
+func (p ListFuturesProductsParams) WithName(q string) *ListFuturesProductsParams {
+	p.Name = &q
+	return &p
+}
+
+func (p ListFuturesProductsParams) WithAsOf(q Date) *ListFuturesProductsParams {
+	p.AsOf = &q
+	return &p
+}
+
+func (p ListFuturesProductsParams) WithTradingVenue(q string) *ListFuturesProductsParams {
+	p.TradingVenue = &q
+	return &p
+}
+
+func (p ListFuturesProductsParams) WithSector(q string) *ListFuturesProductsParams {
+	p.Sector = &q
+	return &p
+}
+
+func (p ListFuturesProductsParams) WithSubSector(q string) *ListFuturesProductsParams {
+	p.SubSector = &q
+	return &p
+}
+
+func (p ListFuturesProductsParams) WithAssetClass(q string) *ListFuturesProductsParams {
+	p.AssetClass = &q
+	return &p
+}
+
+func (p ListFuturesProductsParams) WithAssetSubClass(q string) *ListFuturesProductsParams {
+	p.AssetSubClass = &q
+	return &p
+}
+
+func (p ListFuturesProductsParams) WithType(q string) *ListFuturesProductsParams {
+	p.Type = &q
+	return &p
+}
+
+func (p ListFuturesProductsParams) WithLimit(q int) *ListFuturesProductsParams {
+	p.Limit = &q
+	return &p
+}
+
+func (p ListFuturesProductsParams) WithNameSearch(q string) *ListFuturesProductsParams {
+	p.NameSearch = &q
+	return &p
+}
+
+func (p ListFuturesProductsParams) WithSort(q string) *ListFuturesProductsParams {
+	p.Sort = &q
+	return &p
 }
 
 // ListFuturesProductsResponse defines the response for the ListFuturesProducts endpoint.
@@ -184,6 +304,16 @@ type GetFuturesProductParams struct {
 	AsOf        *Date   `query:"as_of"`
 }
 
+func (p GetFuturesProductParams) WithType(q string) *GetFuturesProductParams {
+	p.Type = &q
+	return &p
+}
+
+func (p GetFuturesProductParams) WithAsOf(q Date) *GetFuturesProductParams {
+	p.AsOf = &q
+	return &p
+}
+
 // GetFuturesProductResponse defines the response for the GetFuturesProduct endpoint.
 type GetFuturesProductResponse struct {
 	BaseResponse
@@ -215,6 +345,16 @@ func (p ListFuturesProductSchedulesParams) WithSessionEndDate(c Comparator, q Da
 	case GTE:
 		p.SessionEndDateGTE = &q
 	}
+	return &p
+}
+
+func (p ListFuturesProductSchedulesParams) WithLimit(q int) *ListFuturesProductSchedulesParams {
+	p.Limit = &q
+	return &p
+}
+
+func (p ListFuturesProductSchedulesParams) WithSort(q string) *ListFuturesProductSchedulesParams {
+	p.Sort = &q
 	return &p
 }
 
@@ -287,6 +427,16 @@ func (p ListFuturesQuotesParams) WithSessionEndDate(c Comparator, q string) *Lis
 	return &p
 }
 
+func (p ListFuturesQuotesParams) WithLimit(q int) *ListFuturesQuotesParams {
+	p.Limit = &q
+	return &p
+}
+
+func (p ListFuturesQuotesParams) WithSort(q string) *ListFuturesQuotesParams {
+	p.Sort = &q
+	return &p
+}
+
 // ListFuturesQuotesResponse defines the response for the ListFuturesQuotes endpoint.
 type ListFuturesQuotesResponse struct {
 	BaseResponse
@@ -312,6 +462,26 @@ type ListFuturesSchedulesParams struct {
 	TradingVenue   *string `query:"trading_venue"`
 	Limit          *int    `query:"limit"`
 	Sort           *string `query:"sort"`
+}
+
+func (p ListFuturesSchedulesParams) WithSessionEndDate(q Date) *ListFuturesSchedulesParams {
+	p.SessionEndDate = &q
+	return &p
+}
+
+func (p ListFuturesSchedulesParams) WithTradingVenue(q string) *ListFuturesSchedulesParams {
+	p.TradingVenue = &q
+	return &p
+}
+
+func (p ListFuturesSchedulesParams) WithLimit(q int) *ListFuturesSchedulesParams {
+	p.Limit = &q
+	return &p
+}
+
+func (p ListFuturesSchedulesParams) WithSort(q string) *ListFuturesSchedulesParams {
+	p.Sort = &q
+	return &p
 }
 
 // ListFuturesSchedulesResponse defines the response for the ListFuturesSchedules endpoint.
@@ -366,6 +536,16 @@ func (p ListFuturesTradesParams) WithSessionEndDate(c Comparator, q string) *Lis
 	case GTE:
 		p.SessionEndDateGTE = &q
 	}
+	return &p
+}
+
+func (p ListFuturesTradesParams) WithLimit(q int) *ListFuturesTradesParams {
+	p.Limit = &q
+	return &p
+}
+
+func (p ListFuturesTradesParams) WithSort(q string) *ListFuturesTradesParams {
+	p.Sort = &q
 	return &p
 }
 
