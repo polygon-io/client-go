@@ -303,6 +303,7 @@ type OptionContractSnapshot struct {
 	OpenInterest      float64                         `json:"open_interest,omitempty"`
 	UnderlyingAsset   UnderlyingAsset                 `json:"underlying_asset,omitempty"`
 	FairMarketValue   float64                         `json:"fmv,omitempty"`
+	FMVLastUpdated    Nanos                           `json:"fmv_last_updated,omitempty"`
 }
 
 // IndexSnapshot is a collection of data for an index ticker including the current session information and the most recent value.
@@ -477,6 +478,7 @@ type SnapshotResponseModel struct {
 	LastUpdated       int64              `json:"last_updated,omitempty"`
 	Timeframe         string             `json:"timeframe,omitempty"`
 	FairMarketValue   float64            `json:"fmv,omitempty"`
+	FMVLastUpdated    Nanos              `json:"fmv_last_updated,omitempty"`
 	Error             string             `json:"error"`
 	Message           string             `json:"message"`
 }
