@@ -81,12 +81,12 @@ const (
 type Market string
 
 const (
-	Stocks  Market = "stocks"
-	Options Market = "options"
-	Forex   Market = "forex"
-	Crypto  Market = "crypto"
-	Indices Market = "indices"
-	Futures Market = "futures"
+	Stocks       Market = "stocks"
+	Options      Market = "options"
+	Forex        Market = "forex"
+	Crypto       Market = "crypto"
+	Indices      Market = "indices"
+	Futures      Market = "futures"
 	FuturesCME   Market = "futures/cme"
 	FuturesCBOT  Market = "futures/cbot"
 	FuturesNYMEX Market = "futures/nymex"
