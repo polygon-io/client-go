@@ -81,12 +81,16 @@ const (
 type Market string
 
 const (
-	Stocks  Market = "stocks"
-	Options Market = "options"
-	Forex   Market = "forex"
-	Crypto  Market = "crypto"
-	Indices Market = "indices"
-	Futures Market = "futures"
+	Stocks       Market = "stocks"
+	Options      Market = "options"
+	Forex        Market = "forex"
+	Crypto       Market = "crypto"
+	Indices      Market = "indices"
+	Futures      Market = "futures"
+	FuturesCME   Market = "futures/cme"
+	FuturesCBOT  Market = "futures/cbot"
+	FuturesNYMEX Market = "futures/nymex"
+	FuturesCOMEX Market = "futures/comex"
 )
 
 func (m Market) supports(topic Topic) bool {
@@ -103,6 +107,10 @@ func (m Market) supports(topic Topic) bool {
 		return isBusinessFairMarketValue || (topic > forexMin && topic < forexMax)
 	case Crypto:
 		return isBusinessFairMarketValue || (topic > cryptoMin && topic < cryptoMax)
+	case Indices:
+		return topic == IndexSecAggs || topic == IndexMinAggs || topic == IndexValue
+	case Futures, FuturesCME, FuturesCBOT, FuturesNYMEX, FuturesCOMEX:
+		return topic > futuresMin && topic < futuresMax
 	}
 
 	return true // assume user knows what they're doing if they use some unknown market

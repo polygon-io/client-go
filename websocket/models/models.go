@@ -407,21 +407,24 @@ type FairMarketValue struct {
 // FuturesTrade represents a futures trade event.
 type FuturesTrade struct {
 	EventType
-	Symbol    string  `json:"sym,omitempty"`
-	Price     float64 `json:"p,omitempty"`
-	Size      int64   `json:"s,omitempty"`
-	Timestamp int64   `json:"t,omitempty"`
+	Symbol         string  `json:"sym,omitempty"`
+	Price          float64 `json:"p,omitempty"`
+	Size           int64   `json:"s,omitempty"`
+	Timestamp      int64   `json:"t,omitempty"`
+	SequenceNumber int64   `json:"q,omitempty"`
 }
 
 // FuturesQuote represents a futures quote event.
 type FuturesQuote struct {
 	EventType
-	Symbol    string  `json:"sym,omitempty"`
-	BidPrice  float64 `json:"bp,omitempty"`
-	BidSize   int64   `json:"bs,omitempty"`
-	AskPrice  float64 `json:"ap,omitempty"`
-	AskSize   int64   `json:"as,omitempty"`
-	Timestamp int64   `json:"t,omitempty"`
+	Symbol       string  `json:"sym,omitempty"`
+	BidPrice     float64 `json:"bp,omitempty"`
+	BidSize      int64   `json:"bs,omitempty"`
+	BidTimestamp int64   `json:"bt,omitempty"`
+	AskPrice     float64 `json:"ap,omitempty"`
+	AskSize      int64   `json:"as,omitempty"`
+	AskTimestamp int64   `json:"at,omitempty"`
+	Timestamp    int64   `json:"t,omitempty"`
 }
 
 // FuturesAggregate represents an aggregate event (e.g., second or minute) for a futures contract.
