@@ -543,13 +543,6 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 				return
 			}
 			c.output <- out
-		case "AM":
-			var out models.EquityAgg
-			if err := json.Unmarshal(msg, &out); err != nil {
-				c.log.Errorf("failed to unmarshal message: %v", err)
-				return
-			}
-			c.output <- out
 		case "C":
 			var out models.ForexQuote
 			if err := json.Unmarshal(msg, &out); err != nil {
@@ -578,13 +571,6 @@ func (c *Client) handleData(eventType string, msg json.RawMessage) {
 		switch eventType {
 		case "XA", "XAS":
 			var out models.CurrencyAgg
-			if err := json.Unmarshal(msg, &out); err != nil {
-				c.log.Errorf("failed to unmarshal message: %v", err)
-				return
-			}
-			c.output <- out
-		case "AM":
-			var out models.EquityAgg
 			if err := json.Unmarshal(msg, &out); err != nil {
 				c.log.Errorf("failed to unmarshal message: %v", err)
 				return
