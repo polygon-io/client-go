@@ -27,7 +27,7 @@ type ListAggsParams struct {
 
 	// Limits the number of base aggregates queried to create the aggregate results. Max 50000 and Default 5000. Read
 	// more about how limit is used to calculate aggregate results in our article on Aggregate Data API Improvements:
-	// https://polygon.io/blog/aggs-api-updates/.
+	// https://massive.com/blog/aggs-api-updates/.
 	Limit *int `query:"limit"`
 }
 
@@ -83,7 +83,7 @@ type GetAggsParams struct {
 
 	// Limits the number of base aggregates queried to create the aggregate results. Max 50000 and Default 5000. Read
 	// more about how limit is used to calculate aggregate results in our article on Aggregate Data API Improvements:
-	// https://polygon.io/blog/aggs-api-updates/.
+	// https://massive.com/blog/aggs-api-updates/.
 	Limit *int `query:"limit"`
 }
 

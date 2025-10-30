@@ -37,7 +37,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = os.WriteFile(".polygon/rest.json", out.Bytes(), 0644)
+	err = os.WriteFile(".massive/rest.json", out.Bytes(), 0644)
 	if err != nil {
 		log.Fatal(err)
 	}

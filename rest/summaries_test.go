@@ -1,4 +1,4 @@
-package polygon_test
+package massive_test
 
 import (
 	"context"
@@ -6,13 +6,13 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/rest"
+	"github.com/massive-com/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetSummary(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -21,8 +21,8 @@ func TestGetSummary(t *testing.T) {
 		"results": [
 		 {
 		  "branding": {
-		   "icon_url": "https://api.polygon.io/icon.png",
-		   "logo_url": "https://api.polygon.io/logo.svg"
+		   "icon_url": "https://api.massive.com/icon.png",
+		   "logo_url": "https://api.massive.com/logo.svg"
 		  },
 		  "market_status": "closed",
 		  "name": "Norwegian Cruise Lines",
@@ -91,8 +91,8 @@ func TestGetSummary(t *testing.T) {
 		 },
 		 {
 		  "branding": {
-		   "icon_url": "https://api.polygon.io/icon.png",
-		   "logo_url": "https://api.polygon.io/logo.svg"
+		   "icon_url": "https://api.massive.com/icon.png",
+		   "logo_url": "https://api.massive.com/logo.svg"
 		  },
 		  "market_status": "open",
 		  "name": "Bitcoin - United States Dollar",
@@ -117,7 +117,7 @@ func TestGetSummary(t *testing.T) {
 		],
 		"status": "OK"
 	   }`
-	expectedGetSummaryUrl := "https://api.polygon.io/v1/summaries?ticker.any_of=NCLH%2CO%3ANCLH221014C00005000%2CC%3AEURUSD%2CX%3ABTCUSD%2CAPx"
+	expectedGetSummaryUrl := "https://api.massive.com/v1/summaries?ticker.any_of=NCLH%2CO%3ANCLH221014C00005000%2CC%3AEURUSD%2CX%3ABTCUSD%2CAPx"
 	registerResponder(expectedGetSummaryUrl, expectedSummaryResponse)
 	tickerAnyOf := []string{"NCLH", "O:NCLH221014C00005000", "C:EURUSD", "X:BTCUSD", "APx"}
 

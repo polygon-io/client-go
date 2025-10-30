@@ -55,11 +55,11 @@ func QueryParam(key, value string) RequestOption {
 // Headers required to use the Launchpad product.
 const (
 	// HeaderEdgeID is a required Launchpad header. It identifies the Edge User requesting data.
-	HeaderEdgeID = "X-Polygon-Edge-ID"
+	HeaderEdgeID = "X-Massive-Edge-ID"
 	// HeaderEdgeIPAddress is a required Launchpad header. It denotes the originating IP Address of the Edge User requesting data.
-	HeaderEdgeIPAddress = "X-Polygon-Edge-IP-Address"
+	HeaderEdgeIPAddress = "X-Massive-Edge-IP-Address"
 	// HeaderEdgeUserAgent is an optional Launchpad header. It denotes the originating UserAgent of the Edge User requesting data.
-	HeaderEdgeUserAgent = "X-Polygon-Edge-User-Agent"
+	HeaderEdgeUserAgent = "X-Massive-Edge-User-Agent"
 )
 
 // RequiredEdgeHeaders sets the required headers for the Launchpad product.

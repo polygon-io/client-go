@@ -1,4 +1,4 @@
-package polygonws
+package massivews
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/gorilla/websocket"
-	"github.com/polygon-io/client-go/websocket/models"
+	"github.com/massive-com/client-go/websocket/models"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 	"gopkg.in/tomb.v2"
@@ -24,7 +24,7 @@ const (
 	maxMessageSize = 1_000_000                // 1MB
 )
 
-// Client defines a client to the Polygon WebSocket API.
+// Client defines a client to the Massive WebSocket API.
 type Client struct {
 	apiKey string
 	feed   Feed
@@ -52,7 +52,7 @@ type Client struct {
 	log               Logger
 }
 
-// New creates a client for the Polygon WebSocket API.
+// New creates a client for the Massive WebSocket API.
 func New(config Config) (*Client, error) {
 	if err := config.validate(); err != nil {
 		return nil, fmt.Errorf("invalid client options: %w", err)

@@ -1,12 +1,12 @@
-package polygon
+package massive
 
 import (
 	"context"
 	"net/http"
 
-	"github.com/polygon-io/client-go/rest/client"
-	"github.com/polygon-io/client-go/rest/iter"
-	"github.com/polygon-io/client-go/rest/models"
+	"github.com/massive-com/client-go/rest/client"
+	"github.com/massive-com/client-go/rest/iter"
+	"github.com/massive-com/client-go/rest/models"
 )
 
 const (
@@ -15,7 +15,7 @@ const (
 	ListIPOsPath        = "/vX/reference/ipos"
 )
 
-// VXClient defines a REST client for the Polygon VX (experimental) API.
+// VXClient defines a REST client for the Massive VX (experimental) API.
 type VXClient struct {
 	client.Client
 }
@@ -43,7 +43,7 @@ func (c *VXClient) ListStockFinancials(ctx context.Context, params *models.ListS
 }
 
 // GetTickerEvents retrieves a timeline of events for the entity associated with the given ticker, CUSIP, or Composite FIGI.
-// // For more details see https://polygon.io/docs/stocks/get_vx_reference_tickers__id__events.
+// // For more details see https://massive.com/docs/stocks/get_vx_reference_tickers__id__events.
 func (c *VXClient) GetTickerEvents(ctx context.Context, params *models.GetTickerEventsParams, options ...models.RequestOption) (*models.GetTickerEventsResponse, error) {
 	res := &models.GetTickerEventsResponse{}
 	err := c.Call(ctx, http.MethodGet, GetTickerEventsPath, params, res, options...)

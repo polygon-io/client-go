@@ -5,13 +5,13 @@ import (
 	"log"
 	"os"
 
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/rest"
+	"github.com/massive-com/client-go/rest/models"
 )
 
 func main() {
 	// Initialize client
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	// Set parameters
 	params := models.ListShortVolumeParams{}.

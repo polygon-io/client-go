@@ -383,7 +383,7 @@ type GetTickerEventsParams struct {
 	// ID Identifier of an asset. This can currently be a Ticker, CUSIP, or Composite FIGI.
 	// When given a ticker, we return events for the entity currently represented by that ticker.
 	// To find events for entities previously associated with a ticker, find the relevant identifier
-	// using the Ticker Details Endpoint (https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker).
+	// using the Ticker Details Endpoint (https://massive.com/docs/stocks/get_v3_reference_tickers__ticker).
 	ID string `validate:"required" path:"id"`
 
 	// A comma-separated list of the types of event to include. Currently, ticker_change is the only supported event_type. Leave blank to return all supported event_types.

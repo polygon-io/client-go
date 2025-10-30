@@ -1,4 +1,4 @@
-package polygon_test
+package massive_test
 
 import (
 	"context"
@@ -9,13 +9,13 @@ import (
 	"time"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/rest"
+	"github.com/massive-com/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 
 const (
-	expectedAggsResponseURL = "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&limit=2&sort=desc"
+	expectedAggsResponseURL = "https://api.massive.com/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&limit=2&sort=desc"
 
 	agg1 = `{
 	"v": 135647456,
@@ -44,7 +44,7 @@ var (
 	expectedAggsResponse = `{
 	"status": "OK",
 	"request_id": "6a7e466379af0a71039d60cc78e72282",
-	"next_url": "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?cursor=AGGSCURSOR",
+	"next_url": "https://api.massive.com/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?cursor=AGGSCURSOR",
 	"ticker": "AAPL",
 	"queryCount": 2,
 	"resultsCount": 2,
@@ -57,12 +57,12 @@ var (
 )
 
 func TestListAggs(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
 	registerResponder(expectedAggsResponseURL, expectedAggsResponse)
-	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?cursor=AGGSCURSOR", "{}")
+	registerResponder("https://api.massive.com/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?cursor=AGGSCURSOR", "{}")
 
 	iter := c.ListAggs(context.Background(), models.ListAggsParams{
 		Ticker:     "AAPL",
@@ -98,7 +98,7 @@ func TestListAggs(t *testing.T) {
 }
 
 func TestGetAggs(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -120,7 +120,7 @@ func TestGetAggs(t *testing.T) {
 }
 
 func TestGetAggsWithQueryParam(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -142,7 +142,7 @@ func TestGetAggsWithQueryParam(t *testing.T) {
 }
 
 func TestGetGroupedDailyAggs(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -189,7 +189,7 @@ func TestGetGroupedDailyAggs(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/2021-07-22", expectedResponse)
+	registerResponder("https://api.massive.com/v2/aggs/grouped/locale/us/market/stocks/2021-07-22", expectedResponse)
 	res, err := c.GetGroupedDailyAggs(context.Background(), models.GetGroupedDailyAggsParams{
 		Locale:     models.US,
 		MarketType: models.Stocks,
@@ -204,7 +204,7 @@ func TestGetGroupedDailyAggs(t *testing.T) {
 }
 
 func TestGetDailyOpenCloseAgg(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -222,7 +222,7 @@ func TestGetDailyOpenCloseAgg(t *testing.T) {
 	"preMarket": 324.5
 }`
 
-	registerResponder("https://api.polygon.io/v1/open-close/AAPL/2020-10-14?adjusted=true", expectedResponse)
+	registerResponder("https://api.massive.com/v1/open-close/AAPL/2020-10-14?adjusted=true", expectedResponse)
 	res, err := c.GetDailyOpenCloseAgg(context.Background(), models.GetDailyOpenCloseAggParams{
 		Ticker: "AAPL",
 		Date:   models.Date(time.Date(2020, 10, 14, 0, 0, 0, 0, time.Local)),
@@ -236,7 +236,7 @@ func TestGetDailyOpenCloseAgg(t *testing.T) {
 }
 
 func TestGetPreviousCloseAgg(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -262,7 +262,7 @@ func TestGetPreviousCloseAgg(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v2/aggs/ticker/AAPL/prev", expectedResponse)
+	registerResponder("https://api.massive.com/v2/aggs/ticker/AAPL/prev", expectedResponse)
 	res, err := c.GetPreviousCloseAgg(context.Background(), models.GetPreviousCloseAggParams{
 		Ticker: "AAPL",
 	}.WithAdjusted(true))

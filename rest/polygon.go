@@ -1,13 +1,13 @@
-// Package polygon defines a REST client for the Polygon API.
-package polygon
+// Package massive defines a REST client for the Massive API.
+package massive
 
 import (
 	"net/http"
 
-	"github.com/polygon-io/client-go/rest/client"
+	"github.com/massive-com/client-go/rest/client"
 )
 
-// Client defines a client to the Polygon REST API.
+// Client defines a client to the Massive REST API.
 type Client struct {
 	client.Client
 	AggsClient
@@ -21,12 +21,12 @@ type Client struct {
 	VX VXClient
 }
 
-// New creates a client for the Polygon REST API.
+// New creates a client for the Massive REST API.
 func New(apiKey string) *Client {
 	return newClient(apiKey, nil)
 }
 
-// NewWithClient creates a client for the Polygon REST API using a custom HTTP client.
+// NewWithClient creates a client for the Massive REST API using a custom HTTP client.
 func NewWithClient(apiKey string, hc *http.Client) *Client {
 	return newClient(apiKey, hc)
 }

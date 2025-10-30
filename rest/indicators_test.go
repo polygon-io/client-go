@@ -1,4 +1,4 @@
-package polygon_test
+package massive_test
 
 import (
 	"context"
@@ -7,17 +7,17 @@ import (
 	"time"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/rest"
+	"github.com/massive-com/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 
 const (
-	expectedGetSMAURL      = "https://api.polygon.io/v1/indicators/sma/AAPL"
+	expectedGetSMAURL      = "https://api.massive.com/v1/indicators/sma/AAPL"
 	expectedGetSMAResponse = `{
 		"status": "OK",
 		"request_id": "6a7e466379af0a71039d60cc78e72282",
-		"next_url": "https://api.polygon.io/v1/indicators/SMA/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZ",
+		"next_url": "https://api.massive.com/v1/indicators/SMA/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZ",
 		"results": {
 			"values":[
 				{
@@ -56,7 +56,7 @@ const (
 						"n": 1
 					}
 				],
-				"url": "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
+				"url": "https://api.massive.com/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
 			}
 		}
 	}`
@@ -72,14 +72,14 @@ const (
 				}
 			],
 			"underlying": {
-				"url": "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
+				"url": "https://api.massive.com/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
 			}
 		}
 	}`
 )
 
 func TestGetSMA(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -97,11 +97,11 @@ func TestGetSMA(t *testing.T) {
 }
 
 func TestGetSMAWithQueryParams(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
-	registerResponder("https://api.polygon.io/v1/indicators/sma/AAPL?adjusted=false&order=asc&series_type=open&timespan=week&timestamp.gte=1041379200000&timestamp.lte=1658707200000&window=6", expectedGetSMAResponseNoAggsNoNextURL)
+	registerResponder("https://api.massive.com/v1/indicators/sma/AAPL?adjusted=false&order=asc&series_type=open&timespan=week&timestamp.gte=1041379200000&timestamp.lte=1658707200000&window=6", expectedGetSMAResponseNoAggsNoNextURL)
 
 	res, err := c.GetSMA(context.Background(), models.GetSMAParams{
 		Ticker: "AAPL",
@@ -122,7 +122,7 @@ func TestGetSMAWithQueryParams(t *testing.T) {
 }
 
 func TestGetEMA(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -130,7 +130,7 @@ func TestGetEMA(t *testing.T) {
 	expectedEMAResponse := `{
 		"status": "OK",
 		"request_id": "6a7e466379af0a71039d60cc78e72282",
-		"next_url": "https://api.polygon.io/v1/indicators/EMA/X:BTC-USD?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZ",
+		"next_url": "https://api.massive.com/v1/indicators/EMA/X:BTC-USD?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZ",
 		"results": {
 			"values":[
 				{
@@ -151,12 +151,12 @@ func TestGetEMA(t *testing.T) {
 						"n": 1
 					}
 				],
-				"url": "https://api.polygon.io/v2/aggs/ticker/X:BTC-USD/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
+				"url": "https://api.massive.com/v2/aggs/ticker/X:BTC-USD/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
 			}
 		}
 	}`
 
-	registerResponder("https://api.polygon.io/v1/indicators/ema/X:BTC-USD?order=desc&timestamp.gte=1041379200000&window=10", expectedEMAResponse)
+	registerResponder("https://api.massive.com/v1/indicators/ema/X:BTC-USD?order=desc&timestamp.gte=1041379200000&window=10", expectedEMAResponse)
 
 	res, err := c.GetEMA(context.Background(), models.GetEMAParams{
 		Ticker: "X:BTC-USD",
@@ -173,7 +173,7 @@ func TestGetEMA(t *testing.T) {
 }
 
 func TestGetRSI(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -181,15 +181,15 @@ func TestGetRSI(t *testing.T) {
 	expectedRSIResponse := `{
 		"status": "OK",
 		"request_id": "6a7e466379af0a71039d60cc78e72282",
-		"next_url": "https://api.polygon.io/v1/indicators/RSI/O:SPY241220P00720000?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZ",
+		"next_url": "https://api.massive.com/v1/indicators/RSI/O:SPY241220P00720000?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZ",
 		"results": {
 			"underlying": {
-				"url": "https://api.polygon.io/v2/aggs/ticker/O:SPY241220P00720000/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
+				"url": "https://api.massive.com/v2/aggs/ticker/O:SPY241220P00720000/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
 			}
 		}
 	}`
 
-	registerResponder("https://api.polygon.io/v1/indicators/rsi/O:SPY241220P00720000?order=desc&timestamp.gte=1041379200000&window=10", expectedRSIResponse)
+	registerResponder("https://api.massive.com/v1/indicators/rsi/O:SPY241220P00720000?order=desc&timestamp.gte=1041379200000&window=10", expectedRSIResponse)
 
 	res, err := c.GetRSI(context.Background(), models.GetRSIParams{
 		Ticker: "O:SPY241220P00720000",
@@ -206,7 +206,7 @@ func TestGetRSI(t *testing.T) {
 }
 
 func TestGetMACD(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -216,7 +216,7 @@ func TestGetMACD(t *testing.T) {
 		"request_id": "6a7e466379af0a71039d60cc78e72282",
 		"results": {
 			"underlying": {
-				"url": "https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
+				"url": "https://api.massive.com/v2/aggs/ticker/AAPL/range/1/day/1626912000000/1629590400000?adjusted=true&limit=1&sort=desc"
 			},
 			"values":[
 				{
@@ -235,7 +235,7 @@ func TestGetMACD(t *testing.T) {
 		}
 	}`
 
-	registerResponder("https://api.polygon.io/v1/indicators/macd/AAPL?long_window=26&order=desc&short_window=12&signal_window=9&timestamp.lte=1041379200000", expectedMACDResponse)
+	registerResponder("https://api.massive.com/v1/indicators/macd/AAPL?long_window=26&order=desc&short_window=12&signal_window=9&timestamp.lte=1041379200000", expectedMACDResponse)
 
 	res, err := c.GetMACD(context.Background(), models.GetMACDParams{
 		Ticker: "AAPL",

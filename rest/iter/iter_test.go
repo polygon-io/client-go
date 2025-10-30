@@ -9,9 +9,9 @@ import (
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/polygon-io/client-go/rest/client"
-	"github.com/polygon-io/client-go/rest/iter"
-	"github.com/polygon-io/client-go/rest/models"
+	"github.com/massive-com/client-go/rest/client"
+	"github.com/massive-com/client-go/rest/iter"
+	"github.com/massive-com/client-go/rest/models"
 )
 
 const (
@@ -52,13 +52,13 @@ func TestListResource(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	resource1 := Resource{Price: "price1"}
-	registerResponder(200, "https://api.polygon.io/resource/ticker1", ListResourceResponse{
+	registerResponder(200, "https://api.massive.com/resource/ticker1", ListResourceResponse{
 		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req1",
 			Count:     1,
 			PaginationHooks: models.PaginationHooks{
-				NextURL: "https://api.polygon.io/resource/ticker1?cursor=NEXT",
+				NextURL: "https://api.massive.com/resource/ticker1?cursor=NEXT",
 			},
 		},
 		Results: []Resource{resource1},
@@ -66,25 +66,25 @@ func TestListResource(t *testing.T) {
 
 	resource2 := Resource{Price: "price2"}
 	resource3 := Resource{Price: "price3"}
-	registerResponder(200, "https://api.polygon.io/resource/ticker1?cursor=NEXT", ListResourceResponse{
+	registerResponder(200, "https://api.massive.com/resource/ticker1?cursor=NEXT", ListResourceResponse{
 		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req2",
 			Count:     2,
 			PaginationHooks: models.PaginationHooks{
-				NextURL: "https://api.polygon.io/resource/ticker1?cursor=NEXTER",
+				NextURL: "https://api.massive.com/resource/ticker1?cursor=NEXTER",
 			},
 		},
 		Results: []Resource{resource2, resource3},
 	})
 
-	registerResponder(200, "https://api.polygon.io/resource/ticker1?cursor=NEXTER", ListResourceResponse{
+	registerResponder(200, "https://api.massive.com/resource/ticker1?cursor=NEXTER", ListResourceResponse{
 		BaseResponse: models.BaseResponse{
 			Status:    "OK",
 			RequestID: "req3",
 			Count:     0,
 			PaginationHooks: models.PaginationHooks{
-				NextURL: "https://api.polygon.io/resource/ticker1?cursor=NEXTER",
+				NextURL: "https://api.massive.com/resource/ticker1?cursor=NEXTER",
 			},
 		},
 	})
@@ -129,7 +129,7 @@ func TestListResourceError(t *testing.T) {
 		StatusCode:   404,
 		BaseResponse: baseRes,
 	}
-	registerResponder(404, "https://api.polygon.io/resource/ticker1", ListResourceResponse{
+	registerResponder(404, "https://api.massive.com/resource/ticker1", ListResourceResponse{
 		BaseResponse: baseRes,
 	})
 

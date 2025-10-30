@@ -4,8 +4,8 @@ import (
 	"os"
 	"os/signal"
 
-	polygonws "github.com/polygon-io/client-go/websocket"
-	"github.com/polygon-io/client-go/websocket/models"
+	massivews "github.com/massive-com/client-go/websocket"
+	"github.com/massive-com/client-go/websocket/models"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,10 +13,10 @@ func main() {
 	log := logrus.New()
 	log.SetLevel(logrus.DebugLevel)
 	log.SetFormatter(&logrus.JSONFormatter{})
-	c, err := polygonws.New(polygonws.Config{
-		APIKey: os.Getenv("POLYGON_API_KEY"),
-		Feed:   polygonws.LaunchpadFeed,
-		Market: polygonws.Stocks, // Change Market to match examples below (Stocks, Options, Forex, or Crypto)
+	c, err := massivews.New(massivews.Config{
+		APIKey: os.Getenv("MASSIVE_API_KEY"),
+		Feed:   massivews.LaunchpadFeed,
+		Market: massivews.Stocks, // Change Market to match examples below (Stocks, Options, Forex, or Crypto)
 		Log:    log,
 	})
 	if err != nil {
@@ -24,21 +24,21 @@ func main() {
 	}
 	defer c.Close()
 
-	// Stocks - make sure you change "Market: polygonws.Stocks" above in the polygonws.Config
-	err = c.Subscribe(polygonws.StocksLaunchpadMinAggs, "*")
-	//err = c.Subscribe(polygonws.StocksLaunchpadValue, "*")
+	// Stocks - make sure you change "Market: massivews.Stocks" above in the massivews.Config
+	err = c.Subscribe(massivews.StocksLaunchpadMinAggs, "*")
+	//err = c.Subscribe(massivews.StocksLaunchpadValue, "*")
 
-	// Options - make sure you change "Market: polygonws.Options" above in the polygonws.Config
-	//err = c.Subscribe(polygonws.OptionsLaunchpadMinAggs, "O:A230616C00070000")
-	//err = c.Subscribe(polygonws.OptionsLaunchpadValue, "O:A230616C00070000")
+	// Options - make sure you change "Market: massivews.Options" above in the massivews.Config
+	//err = c.Subscribe(massivews.OptionsLaunchpadMinAggs, "O:A230616C00070000")
+	//err = c.Subscribe(massivews.OptionsLaunchpadValue, "O:A230616C00070000")
 
-	// Forex - make sure you change "Market: polygonws.Forex" above in the polygonws.Config
-	//err = c.Subscribe(polygonws.ForexLaunchpadMinAggs, "*")
-	//err = c.Subscribe(polygonws.ForexLaunchpadValue, "*")
+	// Forex - make sure you change "Market: massivews.Forex" above in the massivews.Config
+	//err = c.Subscribe(massivews.ForexLaunchpadMinAggs, "*")
+	//err = c.Subscribe(massivews.ForexLaunchpadValue, "*")
 
-	// Crypto - make sure you change "Market: polygonws.Crypto" above in the polygonws.Config
-	//err = c.Subscribe(polygonws.CryptoLaunchpadMinAggs, "*")
-	//err = c.Subscribe(polygonws.CryptoLaunchpadValue, "*")
+	// Crypto - make sure you change "Market: massivews.Crypto" above in the massivews.Config
+	//err = c.Subscribe(massivews.CryptoLaunchpadMinAggs, "*")
+	//err = c.Subscribe(massivews.CryptoLaunchpadValue, "*")
 
 	if err != nil {
 		log.Error(err)

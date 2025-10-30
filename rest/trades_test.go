@@ -1,4 +1,4 @@
-package polygon_test
+package massive_test
 
 import (
 	"context"
@@ -7,13 +7,13 @@ import (
 	"time"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/rest"
+	"github.com/massive-com/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListTrades(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -51,15 +51,15 @@ func TestListTrades(t *testing.T) {
 	expectedResponse := `{
 	"status": "OK",
 	"request_id": "a47d1beb8c11b6ae897ab76cdbbf35a3",
-	"next_url": "https://api.polygon.io/v3/trades/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy",
+	"next_url": "https://api.massive.com/v3/trades/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy",
 	"results": [
 ` + indent(true, trade1, "\t\t") + `,
 ` + indent(true, trade2, "\t\t") + `
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/trades/AAPL?limit=2&order=asc&sort=timestamp&timestamp.gte=1626948000000000000", expectedResponse)
-	registerResponder("https://api.polygon.io/v3/trades/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy&sort=timestamp", "{}")
+	registerResponder("https://api.massive.com/v3/trades/AAPL?limit=2&order=asc&sort=timestamp&timestamp.gte=1626948000000000000", expectedResponse)
+	registerResponder("https://api.massive.com/v3/trades/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy&sort=timestamp", "{}")
 	iter := c.ListTrades(context.Background(), models.ListTradesParams{Ticker: "AAPL"}.
 		WithTimestamp(models.GTE, models.Nanos(time.Date(2021, 7, 22, 10, 0, 0, 0, time.UTC))).
 		WithOrder(models.Asc).WithLimit(2), models.QueryParam("sort", string(models.Timestamp)))
@@ -90,7 +90,7 @@ func TestListTrades(t *testing.T) {
 }
 
 func TestGetLastTrade(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -116,7 +116,7 @@ func TestGetLastTrade(t *testing.T) {
 	}
 }`
 
-	registerResponder("https://api.polygon.io/v2/last/trade/AAPL", expectedResponse)
+	registerResponder("https://api.massive.com/v2/last/trade/AAPL", expectedResponse)
 	res, err := c.GetLastTrade(context.Background(), &models.GetLastTradeParams{
 		Ticker: "AAPL",
 	})
@@ -129,7 +129,7 @@ func TestGetLastTrade(t *testing.T) {
 }
 
 func TestGetLastCryptoTrade(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -149,7 +149,7 @@ func TestGetLastCryptoTrade(t *testing.T) {
 	}
 }`
 
-	registerResponder("https://api.polygon.io/v1/last/crypto/BTC/USD", expectedResponse)
+	registerResponder("https://api.massive.com/v1/last/crypto/BTC/USD", expectedResponse)
 	res, err := c.GetLastCryptoTrade(context.Background(), &models.GetLastCryptoTradeParams{
 		From: "BTC",
 		To:   "USD",

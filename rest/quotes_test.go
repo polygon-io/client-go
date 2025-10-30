@@ -1,4 +1,4 @@
-package polygon_test
+package massive_test
 
 import (
 	"context"
@@ -7,13 +7,13 @@ import (
 	"time"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/rest"
+	"github.com/massive-com/client-go/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListQuotes(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -53,15 +53,15 @@ func TestListQuotes(t *testing.T) {
 	expectedResponse := `{
 	"status": "OK",
 	"request_id": "a47d1beb8c11b6ae897ab76cdbbf35a3",
-	"next_url": "https://api.polygon.io/v3/quotes/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy",
+	"next_url": "https://api.massive.com/v3/quotes/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy",
 	"results": [
 ` + indent(true, quote1, "\t\t") + `,
 ` + indent(true, quote2, "\t\t") + `
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp=2021-07-22", expectedResponse)
-	registerResponder("https://api.polygon.io/v3/quotes/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
+	registerResponder("https://api.massive.com/v3/quotes/AAPL?limit=2&order=asc&sort=timestamp&timestamp=2021-07-22", expectedResponse)
+	registerResponder("https://api.massive.com/v3/quotes/AAPL?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
 	iter := c.ListQuotes(context.Background(), models.ListQuotesParams{Ticker: "AAPL"}.
 		WithTimestamp(models.EQ, models.Nanos(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
 		WithSort(models.Timestamp).WithOrder(models.Asc).WithLimit(2))
@@ -92,7 +92,7 @@ func TestListQuotes(t *testing.T) {
 }
 
 func TestGetLastQuote(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -115,7 +115,7 @@ func TestGetLastQuote(t *testing.T) {
 	}
 }`
 
-	registerResponder("https://api.polygon.io/v2/last/nbbo/AAPL", expectedResponse)
+	registerResponder("https://api.massive.com/v2/last/nbbo/AAPL", expectedResponse)
 	res, err := c.GetLastQuote(context.Background(), &models.GetLastQuoteParams{
 		Ticker: "AAPL",
 	})
@@ -128,7 +128,7 @@ func TestGetLastQuote(t *testing.T) {
 }
 
 func TestGetLastForexQuote(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -145,7 +145,7 @@ func TestGetLastForexQuote(t *testing.T) {
 	}
 }`
 
-	registerResponder("https://api.polygon.io/v1/last_quote/currencies/USD/GBP", expectedResponse)
+	registerResponder("https://api.massive.com/v1/last_quote/currencies/USD/GBP", expectedResponse)
 	res, err := c.GetLastForexQuote(context.Background(), &models.GetLastForexQuoteParams{
 		From: "USD",
 		To:   "GBP",
@@ -159,7 +159,7 @@ func TestGetLastForexQuote(t *testing.T) {
 }
 
 func TestGetRealTimeCurrencyConversion(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -178,7 +178,7 @@ func TestGetRealTimeCurrencyConversion(t *testing.T) {
 	}
 }`
 
-	registerResponder("https://api.polygon.io/v1/conversion/USD/GBP", expectedResponse)
+	registerResponder("https://api.massive.com/v1/conversion/USD/GBP", expectedResponse)
 	res, err := c.GetRealTimeCurrencyConversion(context.Background(), &models.GetRealTimeCurrencyConversionParams{
 		From: "USD",
 		To:   "GBP",

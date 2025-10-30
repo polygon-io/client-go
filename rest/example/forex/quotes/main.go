@@ -1,6 +1,6 @@
 // Forex - Quotes (BBO)
-// https://polygon.io/docs/forex/get_v3_quotes__fxticker
-// https://github.com/polygon-io/client-go/blob/master/rest/quotes.go
+// https://massive.com/docs/forex/get_v3_quotes__fxticker
+// https://github.com/massive-com/client-go/blob/master/rest/quotes.go
 package main
 
 import (
@@ -9,13 +9,13 @@ import (
 	"os"
 	"time"
 
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/rest"
+	"github.com/massive-com/client-go/rest/models"
 )
 
 func main() {
 	// init client
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	// set params
 	params := models.ListQuotesParams{

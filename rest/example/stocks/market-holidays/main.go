@@ -1,6 +1,6 @@
 // Stocks - Market Holidays
-// https://polygon.io/docs/stocks/get_v1_marketstatus_upcoming
-// https://github.com/polygon-io/client-go/blob/master/rest/reference.go
+// https://massive.com/docs/stocks/get_v1_marketstatus_upcoming
+// https://github.com/massive-com/client-go/blob/master/rest/reference.go
 package main
 
 import (
@@ -8,13 +8,13 @@ import (
 	"log"
 	"os"
 
-	polygon "github.com/polygon-io/client-go/rest"
+	massive "github.com/massive-com/client-go/rest"
 )
 
 func main() {
 
 	// init client
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	// make request
 	res, err := c.GetMarketHolidays(context.Background())

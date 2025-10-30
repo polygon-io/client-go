@@ -1,6 +1,6 @@
 // Crypto - Grouped Daily (Bars)
-// https://polygon.io/docs/crypto/get_v2_aggs_grouped_locale_global_market_crypto__date
-// https://github.com/polygon-io/client-go/blob/master/rest/aggs.go
+// https://massive.com/docs/crypto/get_v2_aggs_grouped_locale_global_market_crypto__date
+// https://github.com/massive-com/client-go/blob/master/rest/aggs.go
 package main
 
 import (
@@ -9,13 +9,13 @@ import (
 	"os"
 	"time"
 
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/rest"
+	"github.com/massive-com/client-go/rest/models"
 )
 
 func main() {
 	// init client
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	// set params
 	params := models.GetGroupedDailyAggsParams{

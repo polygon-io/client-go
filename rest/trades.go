@@ -1,12 +1,12 @@
-package polygon
+package massive
 
 import (
 	"context"
 	"net/http"
 
-	"github.com/polygon-io/client-go/rest/client"
-	"github.com/polygon-io/client-go/rest/iter"
-	"github.com/polygon-io/client-go/rest/models"
+	"github.com/massive-com/client-go/rest/client"
+	"github.com/massive-com/client-go/rest/iter"
+	"github.com/massive-com/client-go/rest/models"
 )
 
 const (
@@ -15,13 +15,13 @@ const (
 	GetLastCryptoTradePath = "/v1/last/crypto/{from}/{to}"
 )
 
-// TradesClient defines a REST client for the Polygon trades API.
+// TradesClient defines a REST client for the Massive trades API.
 type TradesClient struct {
 	client.Client
 }
 
 // ListTrades retrieves trades for a specified ticker. For more details see
-// https://polygon.io/docs/stocks/get_v3_trades__stockticker.
+// https://massive.com/docs/stocks/get_v3_trades__stockticker.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
@@ -41,7 +41,7 @@ func (c *TradesClient) ListTrades(ctx context.Context, params *models.ListTrades
 }
 
 // GetLastTrade retrieves the last trade for a specified ticker. For more details see
-// https://polygon.io/docs/stocks/get_v2_last_trade__stocksticker.
+// https://massive.com/docs/stocks/get_v2_last_trade__stocksticker.
 func (c *TradesClient) GetLastTrade(ctx context.Context, params *models.GetLastTradeParams, options ...models.RequestOption) (*models.GetLastTradeResponse, error) {
 	res := &models.GetLastTradeResponse{}
 	err := c.Call(ctx, http.MethodGet, GetLastTradePath, params, res, options...)
@@ -49,7 +49,7 @@ func (c *TradesClient) GetLastTrade(ctx context.Context, params *models.GetLastT
 }
 
 // GetLastCryptoTrade retrieves the last trade for a crypto pair. For more details see
-// https://polygon.io/docs/crypto/get_v1_last_crypto__from___to.
+// https://massive.com/docs/crypto/get_v1_last_crypto__from___to.
 func (c *TradesClient) GetLastCryptoTrade(ctx context.Context, params *models.GetLastCryptoTradeParams, options ...models.RequestOption) (*models.GetLastCryptoTradeResponse, error) {
 	res := &models.GetLastCryptoTradeResponse{}
 	err := c.Call(ctx, http.MethodGet, GetLastCryptoTradePath, params, res, options...)

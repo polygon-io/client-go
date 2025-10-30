@@ -39,12 +39,12 @@ test:
 ## Update the REST API spec
 rest-spec:
 	@echo Updating the REST API spec
-	@go run .polygon/rest.go https://api.polygon.io/openapi
+	@go run .massive/rest.go https://api.massive.io/openapi
 
 ## Update the WebSocket API spec
 ws-spec:
 	@echo Updating the WebSocket API spec
-	@curl https://api.polygon.io/specs/websocket.json > .polygon/websocket.json
+	@curl https://api.massive.io/specs/websocket.json > .massive/websocket.json
 
 ## Run the REST example
 rest-example:

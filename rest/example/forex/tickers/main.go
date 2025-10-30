@@ -1,6 +1,6 @@
 // Forex - Tickers
-// https://polygon.io/docs/forex/get_v3_reference_tickers
-// https://github.com/polygon-io/client-go/blob/master/rest/reference.go
+// https://massive.com/docs/forex/get_v3_reference_tickers
+// https://github.com/massive-com/client-go/blob/master/rest/reference.go
 package main
 
 import (
@@ -8,13 +8,13 @@ import (
 	"log"
 	"os"
 
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/rest"
+	"github.com/massive-com/client-go/rest/models"
 )
 
 func main() {
 	// init client
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	// set params
 	params := models.ListTickersParams{}.

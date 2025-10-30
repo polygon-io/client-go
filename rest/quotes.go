@@ -1,12 +1,12 @@
-package polygon
+package massive
 
 import (
 	"context"
 	"net/http"
 
-	"github.com/polygon-io/client-go/rest/client"
-	"github.com/polygon-io/client-go/rest/iter"
-	"github.com/polygon-io/client-go/rest/models"
+	"github.com/massive-com/client-go/rest/client"
+	"github.com/massive-com/client-go/rest/iter"
+	"github.com/massive-com/client-go/rest/models"
 )
 
 const (
@@ -16,13 +16,13 @@ const (
 	GetRealTimeCurrencyConversionPath = "/v1/conversion/{from}/{to}"
 )
 
-// QuotesClient defines a REST client for the Polygon quotes API.
+// QuotesClient defines a REST client for the Massive quotes API.
 type QuotesClient struct {
 	client.Client
 }
 
 // ListQuotes retrieves quotes for a specified ticker. For more details see
-// https://polygon.io/docs/stocks/get_v3_quotes__stockticker.
+// https://massive.com/docs/stocks/get_v3_quotes__stockticker.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
@@ -42,7 +42,7 @@ func (c *QuotesClient) ListQuotes(ctx context.Context, params *models.ListQuotes
 }
 
 // GetLastQuote retrieves the last quote (NBBO) for a specified ticker. For more details see
-// https://polygon.io/docs/stocks/get_v2_last_nbbo__stocksticker.
+// https://massive.com/docs/stocks/get_v2_last_nbbo__stocksticker.
 func (c *QuotesClient) GetLastQuote(ctx context.Context, params *models.GetLastQuoteParams, options ...models.RequestOption) (*models.GetLastQuoteResponse, error) {
 	res := &models.GetLastQuoteResponse{}
 	err := c.Call(ctx, http.MethodGet, GetLastQuotePath, params, res, options...)
@@ -50,7 +50,7 @@ func (c *QuotesClient) GetLastQuote(ctx context.Context, params *models.GetLastQ
 }
 
 // GetLastForexQuote retrieves the last quote (BBO) for a forex currency pair. For more details see
-// https://polygon.io/docs/forex/get_v1_last_quote_currencies__from___to.
+// https://massive.com/docs/forex/get_v1_last_quote_currencies__from___to.
 func (c *QuotesClient) GetLastForexQuote(ctx context.Context, params *models.GetLastForexQuoteParams, options ...models.RequestOption) (*models.GetLastForexQuoteResponse, error) {
 	res := &models.GetLastForexQuoteResponse{}
 	err := c.Call(ctx, http.MethodGet, GetLastForexQuotePath, params, res, options...)
@@ -59,7 +59,7 @@ func (c *QuotesClient) GetLastForexQuote(ctx context.Context, params *models.Get
 
 // GetRealTimeCurrencyConversion retrieves retrieves currency conversion using the latest market conversion rates. Note
 // that you can convert in both directions. For more details see
-// https://polygon.io/docs/forex/get_v1_conversion__from___to.
+// https://massive.com/docs/forex/get_v1_conversion__from___to.
 func (c *QuotesClient) GetRealTimeCurrencyConversion(ctx context.Context, params *models.GetRealTimeCurrencyConversionParams, options ...models.RequestOption) (*models.GetRealTimeCurrencyConversionResponse, error) {
 	res := &models.GetRealTimeCurrencyConversionResponse{}
 	err := c.Call(ctx, http.MethodGet, GetRealTimeCurrencyConversionPath, params, res, options...)

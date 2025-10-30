@@ -1,12 +1,12 @@
-package polygon
+package massive
 
 import (
 	"context"
 	"net/http"
 
-	"github.com/polygon-io/client-go/rest/client"
-	"github.com/polygon-io/client-go/rest/iter"
-	"github.com/polygon-io/client-go/rest/models"
+	"github.com/massive-com/client-go/rest/client"
+	"github.com/massive-com/client-go/rest/iter"
+	"github.com/massive-com/client-go/rest/models"
 )
 
 const (
@@ -28,13 +28,13 @@ const (
 	ListTreasuryYieldsPath        = "/fed/v1/treasury-yields"
 )
 
-// ReferenceClient defines a REST client for the Polygon reference API.
+// ReferenceClient defines a REST client for the Massive reference API.
 type ReferenceClient struct {
 	client.Client
 }
 
 // ListTickers retrieves reference tickers. For more details see
-// https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker.
+// https://massive.com/docs/stocks/get_v3_reference_tickers__ticker.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
@@ -54,7 +54,7 @@ func (c *ReferenceClient) ListTickers(ctx context.Context, params *models.ListTi
 }
 
 // GetTickerDetails retrieves details for a specified ticker. For more details see
-// https://polygon.io/docs/stocks/get_v3_reference_tickers__ticker.
+// https://massive.com/docs/stocks/get_v3_reference_tickers__ticker.
 func (c *ReferenceClient) GetTickerDetails(ctx context.Context, params *models.GetTickerDetailsParams, options ...models.RequestOption) (*models.GetTickerDetailsResponse, error) {
 	res := &models.GetTickerDetailsResponse{}
 	err := c.Call(ctx, http.MethodGet, GetTickerDetailsPath, params, res, options...)
@@ -62,7 +62,7 @@ func (c *ReferenceClient) GetTickerDetails(ctx context.Context, params *models.G
 }
 
 // ListTickerNews retrieves news articles for a specified ticker. For more details see
-// https://polygon.io/docs/stocks/get_v2_reference_news.
+// https://massive.com/docs/stocks/get_v2_reference_news.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
@@ -82,7 +82,7 @@ func (c *ReferenceClient) ListTickerNews(ctx context.Context, params *models.Lis
 }
 
 // GetTickerRelatedCompanies gets a list of related tickers based on news and returns data. For more details see
-// https://polygon.io/docs/stocks/get_v1_related-companies__ticker.
+// https://massive.com/docs/stocks/get_v1_related-companies__ticker.
 func (c *ReferenceClient) GetTickerRelatedCompanies(ctx context.Context, params *models.GetTickerRelatedCompaniesParams, options ...models.RequestOption) (*models.GetTickerRelatedCompaniesResponse, error) {
 	res := &models.GetTickerRelatedCompaniesResponse{}
 	err := c.Call(ctx, http.MethodGet, GetTickerRelatedCompaniesPath, params, res, options...)
@@ -90,7 +90,7 @@ func (c *ReferenceClient) GetTickerRelatedCompanies(ctx context.Context, params 
 }
 
 // GetTickerTypes retrieves all the possible ticker types that can be queried. For more details see
-// https://polygon.io/docs/stocks/get_v3_reference_tickers_types.
+// https://massive.com/docs/stocks/get_v3_reference_tickers_types.
 func (c *ReferenceClient) GetTickerTypes(ctx context.Context, params *models.GetTickerTypesParams, options ...models.RequestOption) (*models.GetTickerTypesResponse, error) {
 	res := &models.GetTickerTypesResponse{}
 	err := c.Call(ctx, http.MethodGet, GetTickerTypesPath, params, res, options...)
@@ -98,7 +98,7 @@ func (c *ReferenceClient) GetTickerTypes(ctx context.Context, params *models.Get
 }
 
 // GetMarketHolidays retrieves upcoming market holidays and their open/close times. For more details see
-// https://polygon.io/docs/stocks/get_v1_marketstatus_upcoming.
+// https://massive.com/docs/stocks/get_v1_marketstatus_upcoming.
 func (c *ReferenceClient) GetMarketHolidays(ctx context.Context, options ...models.RequestOption) (*models.GetMarketHolidaysResponse, error) {
 	res := &models.GetMarketHolidaysResponse{}
 	err := c.CallURL(ctx, http.MethodGet, GetMarketHolidaysPath, res, options...)
@@ -106,14 +106,14 @@ func (c *ReferenceClient) GetMarketHolidays(ctx context.Context, options ...mode
 }
 
 // GetMarketStatus retrieves the current trading status of the exchanges and overall financial markets. For more details
-// see https://polygon.io/docs/stocks/get_v1_marketstatus_now.
+// see https://massive.com/docs/stocks/get_v1_marketstatus_now.
 func (c *ReferenceClient) GetMarketStatus(ctx context.Context, options ...models.RequestOption) (*models.GetMarketStatusResponse, error) {
 	res := &models.GetMarketStatusResponse{}
 	err := c.CallURL(ctx, http.MethodGet, GetMarketStatusPath, res, options...)
 	return res, err
 }
 
-// ListSplits retrieves reference splits. For more details see https://polygon.io/docs/stocks/get_v3_reference_splits.
+// ListSplits retrieves reference splits. For more details see https://massive.com/docs/stocks/get_v3_reference_splits.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
@@ -133,7 +133,7 @@ func (c *ReferenceClient) ListSplits(ctx context.Context, params *models.ListSpl
 }
 
 // ListDividends retrieves reference dividends. For more details see
-// https://polygon.io/docs/stocks/get_v3_reference_dividends.
+// https://massive.com/docs/stocks/get_v3_reference_dividends.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
@@ -153,7 +153,7 @@ func (c *ReferenceClient) ListDividends(ctx context.Context, params *models.List
 }
 
 // ListConditions retrieves reference conditions. For more details see
-// https://polygon.io/docs/stocks/get_v3_reference_conditions.
+// https://massive.com/docs/stocks/get_v3_reference_conditions.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
@@ -172,8 +172,8 @@ func (c *ReferenceClient) ListConditions(ctx context.Context, params *models.Lis
 	})
 }
 
-// GetExchanges lists all exchanges that Polygon knows about. For more details see
-// https://polygon.io/docs/stocks/get_v3_reference_exchanges.
+// GetExchanges lists all exchanges that Massive knows about. For more details see
+// https://massive.com/docs/stocks/get_v3_reference_exchanges.
 func (c *ReferenceClient) GetExchanges(ctx context.Context, params *models.GetExchangesParams, options ...models.RequestOption) (*models.GetExchangesResponse, error) {
 	res := &models.GetExchangesResponse{}
 	err := c.Call(ctx, http.MethodGet, GetExchangesPath, params, res, options...)
@@ -181,7 +181,7 @@ func (c *ReferenceClient) GetExchanges(ctx context.Context, params *models.GetEx
 }
 
 // GetOptionsContract retrieves a historical options contract. For more details see
-// https://polygon.io/docs/options/get_v3_reference_options_contracts__options_ticker.
+// https://massive.com/docs/options/get_v3_reference_options_contracts__options_ticker.
 func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models.GetOptionsContractParams, options ...models.RequestOption) (*models.GetOptionsContractResponse, error) {
 	res := &models.GetOptionsContractResponse{}
 	err := c.Call(ctx, http.MethodGet, GetOptionsContractPath, params, res, options...)
@@ -189,7 +189,7 @@ func (c *ReferenceClient) GetOptionsContract(ctx context.Context, params *models
 }
 
 // ListOptionsContracts lists historical options contracts. For more details see
-// https://polygon.io/docs/options/get_v3_reference_options_contracts.
+// https://massive.com/docs/options/get_v3_reference_options_contracts.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
