@@ -1,4 +1,4 @@
-package polygon_test
+package massive_test
 
 import (
 	"context"
@@ -6,14 +6,14 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestListStockFinancials(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -319,8 +319,8 @@ func TestListStockFinancials(t *testing.T) {
 		"company_name":"MINERALS TECHNOLOGIES INC.",
 		"fiscal_period":"Q1",
 		"fiscal_year":"2022",
-		"source_filing_url":"https://api.polygon.io/v1/reference/sec/filings/0000891014-22-000022",
-		"source_filing_file_url":"https://api.polygon.io/v1/reference/sec/filings/0000891014-22-000022/files/form10q_htm.xml"
+		"source_filing_url":"https://api.massive.com/v1/reference/sec/filings/0000891014-22-000022",
+		"source_filing_file_url":"https://api.massive.com/v1/reference/sec/filings/0000891014-22-000022/files/form10q_htm.xml"
 	}
 	`
 
@@ -328,14 +328,14 @@ func TestListStockFinancials(t *testing.T) {
 	"status": "OK",
 	"request_id":"874d62dbbce4b437bde7885d44a6be36",
 	"count":1,
-	"next_url":"https://api.polygon.io/vX/reference/financials?cursor=YXA9MjAyMjA0MDMmYXM9MDAwMDg5MTAxNC0yMi0wMDAwMjImaGFzX3hicmw9dHJ1ZSZsaW1pdD0xJnNvcnQ9cGVyaW9kX29mX3JlcG9ydF9kYXRlJnR5cGU9MTAtUQ",
+	"next_url":"https://api.massive.com/vX/reference/financials?cursor=YXA9MjAyMjA0MDMmYXM9MDAwMDg5MTAxNC0yMi0wMDAwMjImaGFzX3hicmw9dHJ1ZSZsaW1pdD0xJnNvcnQ9cGVyaW9kX29mX3JlcG9ydF9kYXRlJnR5cGU9MTAtUQ",
 	"results": [
 ` + indent(true, financial, "\t\t") + `
 	]
 }`
 
-	registerResponder("https://api.polygon.io/vX/reference/financials?ticker=MTX", expectedResponse)
-	registerResponder("https://api.polygon.io/vX/reference/financials?cursor=YXA9MjAyMjA0MDMmYXM9MDAwMDg5MTAxNC0yMi0wMDAwMjImaGFzX3hicmw9dHJ1ZSZsaW1pdD0xJnNvcnQ9cGVyaW9kX29mX3JlcG9ydF9kYXRlJnR5cGU9MTAtUQ", "{}")
+	registerResponder("https://api.massive.com/vX/reference/financials?ticker=MTX", expectedResponse)
+	registerResponder("https://api.massive.com/vX/reference/financials?cursor=YXA9MjAyMjA0MDMmYXM9MDAwMDg5MTAxNC0yMi0wMDAwMjImaGFzX3hicmw9dHJ1ZSZsaW1pdD0xJnNvcnQ9cGVyaW9kX29mX3JlcG9ydF9kYXRlJnR5cGU9MTAtUQ", "{}")
 	iter := c.VX.ListStockFinancials(context.Background(), models.ListStockFinancialsParams{}.WithTicker("MTX"))
 
 	// iter creation
@@ -356,7 +356,7 @@ func TestListStockFinancials(t *testing.T) {
 }
 
 func TestGetTickerEvents(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -387,13 +387,13 @@ func TestGetTickerEvents(t *testing.T) {
 	"status": "OK",
 	"request_id":"874d62dbbce4b437bde7885d44a6be36",
 	"count":1,
-	"next_url":"https://api.polygon.io/vX/reference/financials?cursor=YXA9MjAyMjA0MDMmYXM9MDAwMDg5MTAxNC0yMi0wMDAwMjImaGFzX3hicmw9dHJ1ZSZsaW1pdD0xJnNvcnQ9cGVyaW9kX29mX3JlcG9ydF9kYXRlJnR5cGU9MTAtUQ",
+	"next_url":"https://api.massive.com/vX/reference/financials?cursor=YXA9MjAyMjA0MDMmYXM9MDAwMDg5MTAxNC0yMi0wMDAwMjImaGFzX3hicmw9dHJ1ZSZsaW1pdD0xJnNvcnQ9cGVyaW9kX29mX3JlcG9ydF9kYXRlJnR5cGU9MTAtUQ",
 	"results": [
 ` + indent(true, events, "\t\t") + `
 	]
 }`
 
-	registerResponder("https://api.polygon.io/vX/reference/tickers/META/events", expectedResponse)
+	registerResponder("https://api.massive.com/vX/reference/tickers/META/events", expectedResponse)
 
 	res, err := c.VX.GetTickerEvents(context.Background(), &models.GetTickerEventsParams{ID: "META"})
 	require.NoError(t, err)

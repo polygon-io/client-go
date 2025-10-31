@@ -1,18 +1,14 @@
-# Polygon Go Client
-![Coverage](https://img.shields.io/badge/Coverage-77.4%25-brightgreen)
+# Massive (formerly Polygon.io) Go Client - WebSocket & RESTful APIs
 
-<!-- todo: add a codecov badge -->
-<!-- todo: figure out a way to show all build statuses -->
-<!-- todo: consider moving some stuff into separate readmes -->
+The official Go client library for the [Massive](https://massive.com/) REST and WebSocket API. This client makes use of Go generics and thus requires Go 1.18. See the [docs](https://massive.com/docs/stocks/getting-started) for more details on our API.
 
-[![docs][doc-img]][doc] [![Build][build-img]][build] [![Go Report Card][report-card-img]][report-card]
+**Note:** Polygon.io has rebranded as [Massive.com](https://massive.com) on Oct 30, 2025. Existing API keys, accounts, and integrations continue to work exactly as before. The only change in this SDK is that it now defaults to the new API base at `api.massive.com`, while `api.polygon.io` remains supported for an extended period.
 
-The official Go client library for the [Polygon](https://polygon.io/) REST and WebSocket API. This client makes use of Go generics and thus requires Go 1.18. See the [docs](https://polygon.io/docs/stocks/getting-started) for more details on our API.
-
+For details, see our [rebrand announcement blog post](https://massive.com/blog/polygon-is-now-massive/) or open an issue / contact [support@massive.com](mailto:support@massive.com) if you have questions.
 
 ## Getting Started
 
-This section guides you through setting up a simple project with polygon-io/client-go.
+This section guides you through setting up a simple project with massive.com/client-go.
 
 First, make a new directory for your project and navigate into it:
 ```bash
@@ -24,13 +20,13 @@ Next, initialize a new module for dependency management. This creates a `go.mod`
 go mod init example
 ```
 
-Then, create a `main.go` file. For quick start, you can find over 100+ [example code snippets](https://github.com/polygon-io/client-go/tree/master/rest/example) that demonstrate connecting to both the REST and WebSocket APIs. Here's an example that fetches the last trade for `AAPL`.
+Then, create a `main.go` file. For quick start, you can find over 100+ [example code snippets](https://github.com/massive-com/client-go/tree/master/rest/example) that demonstrate connecting to both the REST and WebSocket APIs. Here's an example that fetches the last trade for `AAPL`.
 
 ```bash
 cat > main.go <<EOF
 // Stocks - Last Trade
-// https://polygon.io/docs/stocks/get_v2_last_trade__stocksticker
-// https://github.com/polygon-io/client-go/blob/master/rest/trades.go
+// https://massive.com/docs/stocks/get_v2_last_trade__stocksticker
+// https://github.com/massive-com/client-go/blob/master/rest/trades.go
 package main
 
 import (
@@ -38,14 +34,14 @@ import (
 	"log"
 	"os"
 
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {
 
 	// init client
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	// set params
 	params := &models.GetLastTradeParams{
@@ -65,11 +61,11 @@ func main() {
 EOF
 ```
 
-Please remember to set your Polygon API key, which you can find on the polygon.io dashboard, in the environment variable `POLYGON_API_KEY`. Or, as a less secure option, by hardcoding it in your code. But please note that hardcoding the API key can be risky if your code is shared or exposed. You can configure the environment variable by running:
+Please remember to set your Massive API key, which you can find on the massive.com dashboard, in the environment variable `MASSIVE_API_KEY`. Or, as a less secure option, by hardcoding it in your code. But please note that hardcoding the API key can be risky if your code is shared or exposed. You can configure the environment variable by running:
 
 ```
-export POLYGON_API_KEY="<your_api_key>"        <- mac/linux
-xset POLYGON_API_KEY "<your_api_key>"          <- windows
+export MASSIVE_API_KEY="<your_api_key>"        <- mac/linux
+xset MASSIVE_API_KEY "<your_api_key>"          <- windows
 ```
 
 Then, run `go mod tidy` to automatically download and install the necessary dependencies. This command ensures your `go.mod` file reflects all dependencies used in your project:
@@ -90,27 +86,27 @@ To get started, you'll need to import two main packages.
 
 ```golang
 import (
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 ```
 
-Next, create a new client with your [API key](https://polygon.io/dashboard/signup).
+Next, create a new client with your [API key](https://massive.com/dashboard/signup).
 
 ```golang
-c := polygon.New("YOUR_API_KEY")
+c := massive.New("YOUR_API_KEY")
 ```
 
 Or create a client with a custom HTTP client implementation.
 
 ```golang
 hc := http.Client{} // some custom HTTP client
-c := polygon.NewWithClient("YOUR_API_KEY", hc)
+c := massive.NewWithClient("YOUR_API_KEY", hc)
 ```
 
 ### Using the client
 
-After creating the client, making calls to the Polygon API is simple.
+After creating the client, making calls to the Massive API is simple.
 
 ```golang
 params := models.GetTickerDetailsParams{
@@ -184,11 +180,6 @@ if err != nil {
 log.Print(res) // do something with the result
 ```
 
-#### Launchpad Usage
-
-Users of the Launchpad product will need to pass in certain headers in order to make API requests.
-Example can be found [here](./rest/example/launchpad).
-
 ### Debugging
 
 Sometimes you may find it useful to see the actual request and response details while working with the API. The client allows for this through its `models.WithTrace(true)` option.
@@ -211,7 +202,7 @@ For instance, if you made a request for `TSLA` data for the date `2023-08-01`, y
 
 ```
 Request URL: /v2/aggs/ticker/AAPL/range/1/day/1672531200000/1678320000000?adjusted=true&limit=50000&sort=desc
-Request Headers: map[Accept-Encoding:[gzip] Authorization:[REDACTED] User-Agent:[Polygon.io GoClient/v1.14.1]]
+Request Headers: map[Accept-Encoding:[gzip] Authorization:[REDACTED] User-Agent:[Massive.com GoClient/v1.14.1]]
 Response Headers: map[Content-Encoding:[gzip] Content-Length:[1639] Content-Type:[application/json] Date:[Tue, 05 Sep 2023 23:25:00 GMT] Server:[nginx/1.19.2] Strict-Transport-Security:[max-age=15724800; includeSubDomains] Vary:[Accept-Encoding] X-Request-Id:[ba3d3e9f42622bd16d05dafe01200f72]]
 ```
 
@@ -225,8 +216,8 @@ Import the WebSocket client and models packages to get started.
 
 ```golang
 import (
-    polygonws "github.com/polygon-io/client-go/websocket"
-    "github.com/polygon-io/client-go/websocket/models"
+    massivews "github.com/massive-com/client-go/v2/websocket"
+    "github.com/massive-com/client-go/v2/websocket/models"
 )
 ```
 
@@ -234,10 +225,10 @@ Next, create a new client with your API key and a couple other config options.
 
 ```golang
 // create a new client
-c, err := polygonws.New(polygonws.Config{
+c, err := massivews.New(massivews.Config{
     APIKey:    "YOUR_API_KEY",
-    Feed:      polygonws.RealTime,
-    Market:    polygonws.Stocks,
+    Feed:      massivews.RealTime,
+    Market:    massivews.Stocks,
 })
 if err != nil {
     log.Fatal(err)
@@ -259,10 +250,10 @@ After creating a client, subscribe to one or more topics and start accessing dat
 
 ```golang
 // passing a topic by itself will subscribe to all tickers
-if err := c.Subscribe(polygonws.StocksSecAggs); err != nil {
+if err := c.Subscribe(massivews.StocksSecAggs); err != nil {
     log.Fatal(err)
 }
-if err := c.Subscribe(polygonws.StocksTrades, "TSLA", "GME"); err != nil {
+if err := c.Subscribe(massivews.StocksTrades, "TSLA", "GME"); err != nil {
     log.Fatal(err)
 }
 
@@ -295,17 +286,17 @@ There are a couple exceptions to this. When we find small breaking issues with t
 
 ## Contributing
 
-If you found a bug or have an idea for a new feature, please first discuss it with us by [submitting a new issue](https://github.com/polygon-io/client-go/issues/new/choose). We will respond to issues within at most 3 weeks. We're also open to volunteers if you want to submit a PR for any open issues but please discuss it with us beforehand. PRs that aren't linked to an existing issue or discussed with us ahead of time will generally be declined. If you have more general feedback or want to discuss using this client with other users, feel free to reach out on our [Slack channel](https://polygon-io.slack.com/archives/C03FCSBSAFL).
+If you found a bug or have an idea for a new feature, please first discuss it with us by [submitting a new issue](https://github.com/massive-com/client-go/issues/new/choose). We will respond to issues within at most 3 weeks. We're also open to volunteers if you want to submit a PR for any open issues but please discuss it with us beforehand. PRs that aren't linked to an existing issue or discussed with us ahead of time will generally be declined.
 
 -------------------------------------------------------------------------------
 
-[doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go
-[doc]: https://pkg.go.dev/github.com/polygon-io/client-go
-[rest-doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go/rest
-[rest-doc]: https://pkg.go.dev/github.com/polygon-io/client-go/rest
-[ws-doc-img]: https://pkg.go.dev/badge/github.com/polygon-io/client-go/websocket
-[ws-doc]: https://pkg.go.dev/github.com/polygon-io/client-go/websocket
-[build-img]: https://github.com/polygon-io/client-go/actions/workflows/test.yml/badge.svg
-[build]: https://github.com/polygon-io/client-go/actions
-[report-card-img]: https://goreportcard.com/badge/github.com/polygon-io/client-go
-[report-card]: https://goreportcard.com/report/github.com/polygon-io/client-go
+[doc-img]: https://pkg.go.dev/badge/github.com/massive-com/client-go/v2
+[doc]: https://pkg.go.dev/github.com/massive-com/client-go/v2
+[rest-doc-img]: https://pkg.go.dev/badge/github.com/massive-com/client-go/v2/rest
+[rest-doc]: https://pkg.go.dev/github.com/massive-com/client-go/v2/rest
+[ws-doc-img]: https://pkg.go.dev/badge/github.com/massive-com/client-go/v2/websocket
+[ws-doc]: https://pkg.go.dev/github.com/massive-com/client-go/v2/websocket
+[build-img]: https://github.com/massive-com/client-go/v2/actions/workflows/test.yml/badge.svg
+[build]: https://github.com/massive-com/client-go/v2/actions
+[report-card-img]: https://goreportcard.com/badge/github.com/massive-com/client-go/v2
+[report-card]: https://goreportcard.com/report/github.com/massive-com/client-go/v2

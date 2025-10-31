@@ -1,4 +1,4 @@
-package polygon_test
+package massive_test
 
 import (
 	"context"
@@ -7,13 +7,13 @@ import (
 	"time"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestListTickers(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -36,15 +36,15 @@ func TestListTickers(t *testing.T) {
 	expectedResponse := `{
 	"status": "OK",
 	"count": 1,
-	"next_url": "https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy",
+	"next_url": "https://api.massive.com/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy",
 	"request_id": "e70013d92930de90e089dc8fa098888e",
 	"results": [
 ` + indent(true, ticker1, "\t\t") + `
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/reference/tickers?active=true&cik=5&cusip=10&date=2021-07-22&exchange=XNAS&limit=2&market=stocks&order=asc&sort=ticker&type=CS", expectedResponse)
-	registerResponder("https://api.polygon.io/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
+	registerResponder("https://api.massive.com/v3/reference/tickers?active=true&cik=5&cusip=10&date=2021-07-22&exchange=XNAS&limit=2&market=stocks&order=asc&sort=ticker&type=CS", expectedResponse)
+	registerResponder("https://api.massive.com/v3/reference/tickers?cursor=YWN0aXZlPXRydWUmZGF0ZT0yMDIxLTA0LTI1JmxpbWl0PTEmb3JkZXI9YXNjJnBhZ2VfbWFya2VyPUElN0M5YWRjMjY0ZTgyM2E1ZjBiOGUyNDc5YmZiOGE1YmYwNDVkYzU0YjgwMDcyMWE2YmI1ZjBjMjQwMjU4MjFmNGZiJnNvcnQ9dGlja2Vy", "{}")
 	iter := c.ListTickers(context.Background(), models.ListTickersParams{}.
 		WithType("CS").WithMarket(models.AssetStocks).
 		WithExchange("XNAS").WithCUSIP(10).WithCIK(5).
@@ -69,7 +69,7 @@ func TestListTickers(t *testing.T) {
 }
 
 func TestGetTickerDetails(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -104,15 +104,15 @@ func TestGetTickerDetails(t *testing.T) {
 		"total_employees": 154000,
 		"list_date": "1980-12-12",
 		"branding": {
-			"logo_url": "https://api.polygon.io/v1/reference/company-branding/d3d3LmFwcGxlLmNvbQ/images/2022-01-10_logo.svg",
-			"icon_url": "https://api.polygon.io/v1/reference/company-branding/d3d3LmFwcGxlLmNvbQ/images/2022-01-10_icon.png"
+			"logo_url": "https://api.massive.com/v1/reference/company-branding/d3d3LmFwcGxlLmNvbQ/images/2022-01-10_logo.svg",
+			"icon_url": "https://api.massive.com/v1/reference/company-branding/d3d3LmFwcGxlLmNvbQ/images/2022-01-10_icon.png"
 		},
 		"share_class_shares_outstanding": 16406400000,
 		"weighted_shares_outstanding": 16334371000
 	}
 }`
 
-	registerResponder("https://api.polygon.io/v3/reference/tickers/A?date=2021-07-22", expectedResponse)
+	registerResponder("https://api.massive.com/v3/reference/tickers/A?date=2021-07-22", expectedResponse)
 	res, err := c.GetTickerDetails(context.Background(), models.GetTickerDetailsParams{
 		Ticker: "A",
 	}.WithDate(models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))))
@@ -125,7 +125,7 @@ func TestGetTickerDetails(t *testing.T) {
 }
 
 func TestListTickerNews(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -135,8 +135,8 @@ func TestListTickerNews(t *testing.T) {
 		"publisher": {
 			"name": "The Motley Fool",
 			"homepage_url": "https://www.fool.com/",
-			"logo_url": "https://s3.polygon.io/public/assets/news/logos/themotleyfool.svg",
-			"favicon_url": "https://s3.polygon.io/public/assets/news/favicons/themotleyfool.ico"
+			"logo_url": "https://s3.massive.com/public/assets/news/logos/themotleyfool.svg",
+			"favicon_url": "https://s3.massive.com/public/assets/news/favicons/themotleyfool.ico"
 		},
 		"title": "Should NVIDIA Investors Be Concerned About This Massive Risk? - The Motley Fool",
 		"author": "Travis Hoium",
@@ -190,15 +190,15 @@ func TestListTickerNews(t *testing.T) {
 	expectedResponse := `{
 	"status": "OK",
 	"count": 1,
-	"next_url": "https://api.polygon.io/v2/reference/news?cursor=YXA9MjAyNC0wNy0xN1QxNiUzQTA4JTNBMzRaJmFzPTFiYjA2OTI2MjFkYTVhYjczN2Y0Yjk3Y2NiZWY5NDc4ZWQ2ODIwYmU4NjQ3NGFiZjhkM2I0MTNmOGQ3ZDI0MTkmbGltaXQ9MSZvcmRlcj1kZXNjZW5kaW5nJnRpY2tlcj1NU0ZU",
+	"next_url": "https://api.massive.com/v2/reference/news?cursor=YXA9MjAyNC0wNy0xN1QxNiUzQTA4JTNBMzRaJmFzPTFiYjA2OTI2MjFkYTVhYjczN2Y0Yjk3Y2NiZWY5NDc4ZWQ2ODIwYmU4NjQ3NGFiZjhkM2I0MTNmOGQ3ZDI0MTkmbGltaXQ9MSZvcmRlcj1kZXNjZW5kaW5nJnRpY2tlcj1NU0ZU",
 	"request_id": "2eff2a5bc193b01555b0d4ec91c8fdbf",
 	"results": [
 ` + indent(true, news1, "\t\t") + `
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v2/reference/news?limit=2&order=asc&published_utc.lt=1626912000000&sort=published_utc&ticker.lte=MSFT", expectedResponse)
-	registerResponder("https://api.polygon.io/v2/reference/news?cursor=YXA9MjAyNC0wNy0xN1QxNiUzQTA4JTNBMzRaJmFzPTFiYjA2OTI2MjFkYTVhYjczN2Y0Yjk3Y2NiZWY5NDc4ZWQ2ODIwYmU4NjQ3NGFiZjhkM2I0MTNmOGQ3ZDI0MTkmbGltaXQ9MSZvcmRlcj1kZXNjZW5kaW5nJnRpY2tlcj1NU0ZU", "{}")
+	registerResponder("https://api.massive.com/v2/reference/news?limit=2&order=asc&published_utc.lt=1626912000000&sort=published_utc&ticker.lte=MSFT", expectedResponse)
+	registerResponder("https://api.massive.com/v2/reference/news?cursor=YXA9MjAyNC0wNy0xN1QxNiUzQTA4JTNBMzRaJmFzPTFiYjA2OTI2MjFkYTVhYjczN2Y0Yjk3Y2NiZWY5NDc4ZWQ2ODIwYmU4NjQ3NGFiZjhkM2I0MTNmOGQ3ZDI0MTkmbGltaXQ9MSZvcmRlcj1kZXNjZW5kaW5nJnRpY2tlcj1NU0ZU", "{}")
 	iter := c.ListTickerNews(context.Background(), models.ListTickerNewsParams{}.
 		WithTicker(models.LTE, "MSFT").WithPublishedUTC(models.LT, models.Millis(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).
 		WithSort(models.PublishedUTC).WithOrder(models.Asc).WithLimit(2))
@@ -221,7 +221,7 @@ func TestListTickerNews(t *testing.T) {
 }
 
 func TestGetTickerRelatedCompanies(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -264,7 +264,7 @@ func TestGetTickerRelatedCompanies(t *testing.T) {
     "ticker": "AAPL"
 }`
 
-	registerResponder("https://api.polygon.io/v1/related-companies/AAPL", expectedResponse)
+	registerResponder("https://api.massive.com/v1/related-companies/AAPL", expectedResponse)
 	params := models.GetTickerRelatedCompaniesParams{
 		Ticker: "AAPL",
 	}
@@ -278,7 +278,7 @@ func TestGetTickerRelatedCompanies(t *testing.T) {
 }
 
 func TestGetTickerTypes(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -297,7 +297,7 @@ func TestGetTickerTypes(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/reference/tickers/types?asset_class=stocks&locale=us", expectedResponse)
+	registerResponder("https://api.massive.com/v3/reference/tickers/types?asset_class=stocks&locale=us", expectedResponse)
 	res, err := c.GetTickerTypes(context.Background(), models.GetTickerTypesParams{}.WithAssetClass("stocks").WithLocale(models.US))
 	assert.Nil(t, err)
 
@@ -308,7 +308,7 @@ func TestGetTickerTypes(t *testing.T) {
 }
 
 func TestGetMarketHolidays(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -350,7 +350,7 @@ func TestGetMarketHolidays(t *testing.T) {
 	}
 ]`
 
-	registerResponder("https://api.polygon.io/v1/marketstatus/upcoming", expectedResponse)
+	registerResponder("https://api.massive.com/v1/marketstatus/upcoming", expectedResponse)
 	res, err := c.GetMarketHolidays(context.Background())
 	assert.Nil(t, err)
 
@@ -361,7 +361,7 @@ func TestGetMarketHolidays(t *testing.T) {
 }
 
 func TestGetMarketStatus(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -382,7 +382,7 @@ func TestGetMarketStatus(t *testing.T) {
 	"serverTime": "2022-05-17T10:26:06-04:00"
 }`
 
-	registerResponder("https://api.polygon.io/v1/marketstatus/now", expectedResponse)
+	registerResponder("https://api.massive.com/v1/marketstatus/now", expectedResponse)
 	res, err := c.GetMarketStatus(context.Background())
 	assert.Nil(t, err)
 
@@ -393,7 +393,7 @@ func TestGetMarketStatus(t *testing.T) {
 }
 
 func TestListSplits(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -413,7 +413,7 @@ func TestListSplits(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/reference/splits?execution_date=2021-07-22&limit=2&order=asc&reverse_split=false&sort=ticker&ticker=AAPL", expectedResponse)
+	registerResponder("https://api.massive.com/v3/reference/splits?execution_date=2021-07-22&limit=2&order=asc&reverse_split=false&sort=ticker&ticker=AAPL", expectedResponse)
 	iter := c.ListSplits(context.Background(), models.ListSplitsParams{}.
 		WithTicker(models.EQ, "AAPL").WithExecutionDate(models.EQ, models.Date(time.Date(2021, 7, 22, 0, 0, 0, 0, time.UTC))).WithReverseSplit(false).
 		WithSort(models.TickerSymbol).WithOrder(models.Asc).WithLimit(2))
@@ -436,7 +436,7 @@ func TestListSplits(t *testing.T) {
 }
 
 func TestListDividends(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -455,14 +455,14 @@ func TestListDividends(t *testing.T) {
 	expectedResponse := `{
 	"status": "OK",
 	"request_id": "eca6d9a0d8dc1cd1b29d2d3112fe938e",
-	"next_url": "https://api.polygon.io/v3/reference/dividends?cursor=YXA9MjUmYXM9JmxpbWl0PTEwJm9yZGVyPWRlc2Mmc29ydD1leF9kaXZpZGVuZF9kYXRlJnRpY2tlcj1DU1NFTg",
+	"next_url": "https://api.massive.com/v3/reference/dividends?cursor=YXA9MjUmYXM9JmxpbWl0PTEwJm9yZGVyPWRlc2Mmc29ydD1leF9kaXZpZGVuZF9kYXRlJnRpY2tlcj1DU1NFTg",
 	"results": [
 ` + indent(true, dividend, "\t\t") + `
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/reference/dividends?dividend_type=CD&ticker=CSSEN", expectedResponse)
-	registerResponder("https://api.polygon.io/v3/reference/dividends?cursor=YXA9MjUmYXM9JmxpbWl0PTEwJm9yZGVyPWRlc2Mmc29ydD1leF9kaXZpZGVuZF9kYXRlJnRpY2tlcj1DU1NFTg", "{}")
+	registerResponder("https://api.massive.com/v3/reference/dividends?dividend_type=CD&ticker=CSSEN", expectedResponse)
+	registerResponder("https://api.massive.com/v3/reference/dividends?cursor=YXA9MjUmYXM9JmxpbWl0PTEwJm9yZGVyPWRlc2Mmc29ydD1leF9kaXZpZGVuZF9kYXRlJnRpY2tlcj1DU1NFTg", "{}")
 	iter := c.ListDividends(context.Background(), models.ListDividendsParams{}.WithTicker(models.EQ, "CSSEN").WithDividendType(models.DividendCD))
 
 	// iter creation
@@ -483,7 +483,7 @@ func TestListDividends(t *testing.T) {
 }
 
 func TestListConditions(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -518,14 +518,14 @@ func TestListConditions(t *testing.T) {
 	"status": "OK",
 	"request_id": "4599a4e2ba5e19e2e732f711e97b0d84",
 	"count": 1,
-	"next_url": "https://api.polygon.io/v3/reference/conditions?cursor=YXA9MiZhcz0mYXNzZXRfY2xhc3M9c3RvY2tzJmRhdGFfdHlwZT10cmFkZSZsaW1pdD0yJnNvcnQ9YXNzZXRfY2xhc3M",
+	"next_url": "https://api.massive.com/v3/reference/conditions?cursor=YXA9MiZhcz0mYXNzZXRfY2xhc3M9c3RvY2tzJmRhdGFfdHlwZT10cmFkZSZsaW1pdD0yJnNvcnQ9YXNzZXRfY2xhc3M",
 	"results": [
 ` + indent(true, condition, "\t\t") + `
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/reference/conditions?asset_class=stocks&data_type=trade&limit=1", expectedResponse)
-	registerResponder("https://api.polygon.io/v3/reference/conditions?cursor=YXA9MiZhcz0mYXNzZXRfY2xhc3M9c3RvY2tzJmRhdGFfdHlwZT10cmFkZSZsaW1pdD0yJnNvcnQ9YXNzZXRfY2xhc3M", "{}")
+	registerResponder("https://api.massive.com/v3/reference/conditions?asset_class=stocks&data_type=trade&limit=1", expectedResponse)
+	registerResponder("https://api.massive.com/v3/reference/conditions?cursor=YXA9MiZhcz0mYXNzZXRfY2xhc3M9c3RvY2tzJmRhdGFfdHlwZT10cmFkZSZsaW1pdD0yJnNvcnQ9YXNzZXRfY2xhc3M", "{}")
 	iter := c.ListConditions(context.Background(), models.ListConditionsParams{}.WithAssetClass(models.AssetStocks).WithDataType(models.DataTrade).WithLimit(1))
 
 	// iter creation
@@ -546,7 +546,7 @@ func TestListConditions(t *testing.T) {
 }
 
 func TestGetExchanges(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -571,7 +571,7 @@ func TestGetExchanges(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/reference/exchanges?asset_class=stocks&locale=us", expectedResponse)
+	registerResponder("https://api.massive.com/v3/reference/exchanges?asset_class=stocks&locale=us", expectedResponse)
 	res, err := c.GetExchanges(context.Background(), models.GetExchangesParams{}.WithAssetClass(models.AssetStocks).WithLocale(models.US))
 	assert.Nil(t, err)
 
@@ -582,7 +582,7 @@ func TestGetExchanges(t *testing.T) {
 }
 
 func TestGetOptionsContract(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -603,7 +603,7 @@ func TestGetOptionsContract(t *testing.T) {
 	"request_id": "52fccf652441fc4d4fd35e2d0d2dd1f2"
 }`
 
-	registerResponder("https://api.polygon.io/v3/reference/options/contracts/O:EVRI240119C00002500", expectedResponse)
+	registerResponder("https://api.massive.com/v3/reference/options/contracts/O:EVRI240119C00002500", expectedResponse)
 	res, err := c.GetOptionsContract(context.Background(), models.GetOptionsContractParams{
 		Ticker: "O:EVRI240119C00002500",
 	}.WithAsOf(models.Date(time.Date(2022, 5, 16, 0, 0, 0, 0, time.Local))))
@@ -616,7 +616,7 @@ func TestGetOptionsContract(t *testing.T) {
 }
 
 func TestListOptionsContracts(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -648,15 +648,15 @@ func TestListOptionsContracts(t *testing.T) {
 	expectedResponse := `{
 	"status": "OK",
 	"request_id": "975d5e1aacc6c147c94934b016b8d1a7",
-	"next_url": "https://api.polygon.io/v3/reference/options/contracts?cursor=YXA9JTdCJTIySUQlMjIlM0ElMjIyNzI2MTY3OTUxMjgzOTI1NTI5JTIyJTJDJTIyU3RhcnREYXRlVXRjJTIyJTNBJTdCJTIyVGltZSUyMiUzQSUyMjIwMjEtMDktMjFUMDAlM0EwMCUzQTAwWiUyMiUyQyUyMlZhbGlkJTIyJTNBdHJ1ZSU3RCUyQyUyMkVuZERhdGVVdGMlMjIlM0ElN0IlMjJUaW1lJTIyJTNBJTIyMDAwMS0wMS0wMVQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyVmFsaWQlMjIlM0FmYWxzZSU3RCUyQyUyMnVuZGVybHlpbmdfdGlja2VyJTIyJTNBJTIyQSUyMiUyQyUyMnRpY2tlciUyMiUzQSUyMk8lM0FBMjIwNTIwQzAwMTEwMDAwJTIyJTJDJTIyZXhwaXJhdGlvbl9kYXRlJTIyJTNBJTIyMjAyMi0wNS0yMFQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyc3RyaWtlX3ByaWNlJTIyJTNBMTEwJTJDJTIyY2ZpJTIyJTNBJTIyT0NBU1BTJTIyJTJDJTIyY29udHJhY3RfdHlwZSUyMiUzQSUyMmNhbGwlMjIlMkMlMjJleGVyY2lzZV9zdHlsZSUyMiUzQSUyMmFtZXJpY2FuJTIyJTJDJTIycHJpbWFyeV9leGNoYW5nZSUyMiUzQSU3QiUyMlN0cmluZyUyMiUzQSUyMkJBVE8lMjIlMkMlMjJWYWxpZCUyMiUzQXRydWUlN0QlMkMlMjJzaGFyZXNfcGVyX2NvbnRyYWN0JTIyJTNBMTAwJTJDJTIyYWRkaXRpb25hbF91bmRlcmx5aW5ncyUyMiUzQSUyMm51bGwlMjIlN0QmYXM9JmNvbnRyYWN0X3R5cGU9Y2FsbCZsaW1pdD0xMCZzb3J0PXRpY2tlcg",
+	"next_url": "https://api.massive.com/v3/reference/options/contracts?cursor=YXA9JTdCJTIySUQlMjIlM0ElMjIyNzI2MTY3OTUxMjgzOTI1NTI5JTIyJTJDJTIyU3RhcnREYXRlVXRjJTIyJTNBJTdCJTIyVGltZSUyMiUzQSUyMjIwMjEtMDktMjFUMDAlM0EwMCUzQTAwWiUyMiUyQyUyMlZhbGlkJTIyJTNBdHJ1ZSU3RCUyQyUyMkVuZERhdGVVdGMlMjIlM0ElN0IlMjJUaW1lJTIyJTNBJTIyMDAwMS0wMS0wMVQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyVmFsaWQlMjIlM0FmYWxzZSU3RCUyQyUyMnVuZGVybHlpbmdfdGlja2VyJTIyJTNBJTIyQSUyMiUyQyUyMnRpY2tlciUyMiUzQSUyMk8lM0FBMjIwNTIwQzAwMTEwMDAwJTIyJTJDJTIyZXhwaXJhdGlvbl9kYXRlJTIyJTNBJTIyMjAyMi0wNS0yMFQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyc3RyaWtlX3ByaWNlJTIyJTNBMTEwJTJDJTIyY2ZpJTIyJTNBJTIyT0NBU1BTJTIyJTJDJTIyY29udHJhY3RfdHlwZSUyMiUzQSUyMmNhbGwlMjIlMkMlMjJleGVyY2lzZV9zdHlsZSUyMiUzQSUyMmFtZXJpY2FuJTIyJTJDJTIycHJpbWFyeV9leGNoYW5nZSUyMiUzQSU3QiUyMlN0cmluZyUyMiUzQSUyMkJBVE8lMjIlMkMlMjJWYWxpZCUyMiUzQXRydWUlN0QlMkMlMjJzaGFyZXNfcGVyX2NvbnRyYWN0JTIyJTNBMTAwJTJDJTIyYWRkaXRpb25hbF91bmRlcmx5aW5ncyUyMiUzQSUyMm51bGwlMjIlN0QmYXM9JmNvbnRyYWN0X3R5cGU9Y2FsbCZsaW1pdD0xMCZzb3J0PXRpY2tlcg",
 	"results": [
 ` + indent(true, contract1, "\t\t") + `,
 ` + indent(true, contract2, "\t\t") + `
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v3/reference/options/contracts?contract_type=call", expectedResponse)
-	registerResponder("https://api.polygon.io/v3/reference/options/contracts?cursor=YXA9JTdCJTIySUQlMjIlM0ElMjIyNzI2MTY3OTUxMjgzOTI1NTI5JTIyJTJDJTIyU3RhcnREYXRlVXRjJTIyJTNBJTdCJTIyVGltZSUyMiUzQSUyMjIwMjEtMDktMjFUMDAlM0EwMCUzQTAwWiUyMiUyQyUyMlZhbGlkJTIyJTNBdHJ1ZSU3RCUyQyUyMkVuZERhdGVVdGMlMjIlM0ElN0IlMjJUaW1lJTIyJTNBJTIyMDAwMS0wMS0wMVQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyVmFsaWQlMjIlM0FmYWxzZSU3RCUyQyUyMnVuZGVybHlpbmdfdGlja2VyJTIyJTNBJTIyQSUyMiUyQyUyMnRpY2tlciUyMiUzQSUyMk8lM0FBMjIwNTIwQzAwMTEwMDAwJTIyJTJDJTIyZXhwaXJhdGlvbl9kYXRlJTIyJTNBJTIyMjAyMi0wNS0yMFQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyc3RyaWtlX3ByaWNlJTIyJTNBMTEwJTJDJTIyY2ZpJTIyJTNBJTIyT0NBU1BTJTIyJTJDJTIyY29udHJhY3RfdHlwZSUyMiUzQSUyMmNhbGwlMjIlMkMlMjJleGVyY2lzZV9zdHlsZSUyMiUzQSUyMmFtZXJpY2FuJTIyJTJDJTIycHJpbWFyeV9leGNoYW5nZSUyMiUzQSU3QiUyMlN0cmluZyUyMiUzQSUyMkJBVE8lMjIlMkMlMjJWYWxpZCUyMiUzQXRydWUlN0QlMkMlMjJzaGFyZXNfcGVyX2NvbnRyYWN0JTIyJTNBMTAwJTJDJTIyYWRkaXRpb25hbF91bmRlcmx5aW5ncyUyMiUzQSUyMm51bGwlMjIlN0QmYXM9JmNvbnRyYWN0X3R5cGU9Y2FsbCZsaW1pdD0xMCZzb3J0PXRpY2tlcg", "{}")
+	registerResponder("https://api.massive.com/v3/reference/options/contracts?contract_type=call", expectedResponse)
+	registerResponder("https://api.massive.com/v3/reference/options/contracts?cursor=YXA9JTdCJTIySUQlMjIlM0ElMjIyNzI2MTY3OTUxMjgzOTI1NTI5JTIyJTJDJTIyU3RhcnREYXRlVXRjJTIyJTNBJTdCJTIyVGltZSUyMiUzQSUyMjIwMjEtMDktMjFUMDAlM0EwMCUzQTAwWiUyMiUyQyUyMlZhbGlkJTIyJTNBdHJ1ZSU3RCUyQyUyMkVuZERhdGVVdGMlMjIlM0ElN0IlMjJUaW1lJTIyJTNBJTIyMDAwMS0wMS0wMVQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyVmFsaWQlMjIlM0FmYWxzZSU3RCUyQyUyMnVuZGVybHlpbmdfdGlja2VyJTIyJTNBJTIyQSUyMiUyQyUyMnRpY2tlciUyMiUzQSUyMk8lM0FBMjIwNTIwQzAwMTEwMDAwJTIyJTJDJTIyZXhwaXJhdGlvbl9kYXRlJTIyJTNBJTIyMjAyMi0wNS0yMFQwMCUzQTAwJTNBMDBaJTIyJTJDJTIyc3RyaWtlX3ByaWNlJTIyJTNBMTEwJTJDJTIyY2ZpJTIyJTNBJTIyT0NBU1BTJTIyJTJDJTIyY29udHJhY3RfdHlwZSUyMiUzQSUyMmNhbGwlMjIlMkMlMjJleGVyY2lzZV9zdHlsZSUyMiUzQSUyMmFtZXJpY2FuJTIyJTJDJTIycHJpbWFyeV9leGNoYW5nZSUyMiUzQSU3QiUyMlN0cmluZyUyMiUzQSUyMkJBVE8lMjIlMkMlMjJWYWxpZCUyMiUzQXRydWUlN0QlMkMlMjJzaGFyZXNfcGVyX2NvbnRyYWN0JTIyJTNBMTAwJTJDJTIyYWRkaXRpb25hbF91bmRlcmx5aW5ncyUyMiUzQSUyMm51bGwlMjIlN0QmYXM9JmNvbnRyYWN0X3R5cGU9Y2FsbCZsaW1pdD0xMCZzb3J0PXRpY2tlcg", "{}")
 	iter := c.ListOptionsContracts(context.Background(), models.ListOptionsContractsParams{}.WithContractType("call"))
 
 	// iter creation

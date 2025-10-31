@@ -4,8 +4,8 @@ import (
 	"os"
 	"os/signal"
 
-	polygonws "github.com/polygon-io/client-go/websocket"
-	"github.com/polygon-io/client-go/websocket/models"
+	massivews "github.com/massive-com/client-go/v2/websocket"
+	"github.com/massive-com/client-go/v2/websocket/models"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,10 +13,10 @@ func main() {
 	log := logrus.New()
 	log.SetLevel(logrus.DebugLevel)
 	log.SetFormatter(&logrus.JSONFormatter{})
-	c, err := polygonws.New(polygonws.Config{
-		APIKey: os.Getenv("POLYGON_API_KEY"),
-		Feed:   polygonws.RealTime,
-		Market: polygonws.Stocks,
+	c, err := massivews.New(massivews.Config{
+		APIKey: os.Getenv("MASSIVE_API_KEY"),
+		Feed:   massivews.RealTime,
+		Market: massivews.Stocks,
 		Log:    log,
 	})
 	if err != nil {
@@ -25,16 +25,16 @@ func main() {
 	defer c.Close()
 
 	// aggregates
-	//_ = c.Subscribe(polygonws.StocksMinAggs, "*")
-	//_ = c.Subscribe(polygonws.StocksSecAggs, "*")
+	//_ = c.Subscribe(massivews.StocksMinAggs, "*")
+	//_ = c.Subscribe(massivews.StocksSecAggs, "*")
 
 	// trades
-	//_ = c.Subscribe(polygonws.StocksTrades, "*")
-	_ = c.Subscribe(polygonws.StocksTrades, "SPY")
+	//_ = c.Subscribe(massivews.StocksTrades, "*")
+	_ = c.Subscribe(massivews.StocksTrades, "SPY")
 
 	// quotes
-	//_ = c.Subscribe(polygonws.StocksQuotes, "*")
-	_ = c.Subscribe(polygonws.StocksQuotes, "SPY")
+	//_ = c.Subscribe(massivews.StocksQuotes, "*")
+	_ = c.Subscribe(massivews.StocksQuotes, "SPY")
 
 	if err := c.Connect(); err != nil {
 		log.Error(err)

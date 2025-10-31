@@ -1,6 +1,6 @@
 // Options - Market Status
-// https://polygon.io/docs/options/get_v1_marketstatus_now
-// https://github.com/polygon-io/client-go/blob/master/rest/reference.go
+// https://massive.com/docs/options/get_v1_marketstatus_now
+// https://github.com/massive-com/client-go/v2/blob/master/rest/reference.go
 package main
 
 import (
@@ -8,13 +8,13 @@ import (
 	"log"
 	"os"
 
-	polygon "github.com/polygon-io/client-go/rest"
+	massive "github.com/massive-com/client-go/v2/rest"
 )
 
 func main() {
 
 	// init client
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	// make request
 	res, err := c.GetMarketStatus(context.Background())

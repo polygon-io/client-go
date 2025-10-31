@@ -7,18 +7,18 @@ import (
 	"time"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/polygon-io/client-go/rest/encoder"
-	"github.com/polygon-io/client-go/rest/models"
+	"github.com/massive-com/client-go/v2/rest/encoder"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 const clientVersion = "v1.16.0"
 
 const (
-	APIURL            = "https://api.polygon.io"
+	APIURL            = "https://api.massive.com"
 	DefaultRetryCount = 3
 )
 
-// Client defines an HTTP client for the Polygon REST API.
+// Client defines an HTTP client for the Massive REST API.
 type Client struct {
 	HTTP    *resty.Client
 	encoder *encoder.Encoder
@@ -46,7 +46,7 @@ func newClient(apiKey string, hc *http.Client) Client {
 	c.SetAuthToken(apiKey)
 	c.SetRetryCount(DefaultRetryCount)
 	c.SetTimeout(10 * time.Second)
-	c.SetHeader("User-Agent", fmt.Sprintf("Polygon.io GoClient/%v", clientVersion))
+	c.SetHeader("User-Agent", fmt.Sprintf("Massive.com GoClient/%v", clientVersion))
 	c.SetHeader("Accept-Encoding", "gzip")
 
 	return Client{

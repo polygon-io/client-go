@@ -1,6 +1,6 @@
 // Options - Tickers
-// https://polygon.io/docs/options/get_v3_reference_tickers
-// https://github.com/polygon-io/client-go/blob/master/rest/reference.go
+// https://massive.com/docs/options/get_v3_reference_tickers
+// https://github.com/massive-com/client-go/v2/blob/master/rest/reference.go
 package main
 
 import (
@@ -8,14 +8,14 @@ import (
 	"log"
 	"os"
 
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {
 
 	// init client
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	// set params
 	params := models.ListTickersParams{}.

@@ -1,6 +1,6 @@
 // Indices - Snapshot
-// https://polygon.io/docs/indices/get_v3_snapshot_indices
-// https://github.com/polygon-io/client-go/blob/master/rest/snapshot.go
+// https://massive.com/docs/indices/get_v3_snapshot_indices
+// https://github.com/massive-com/client-go/v2/blob/master/rest/snapshot.go
 package main
 
 import (
@@ -9,13 +9,13 @@ import (
 	"os"
 	"strings"
 
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {
 	// init client
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	// define tickers
 	tickers := []string{"I:SPX", "I:DJI"}

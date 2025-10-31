@@ -174,7 +174,7 @@ type CryptoTrade struct {
 	// The Timestamp in Unix MS.
 	Timestamp int64 `json:"t,omitempty"`
 
-	// The timestamp that the tick was received by Polygon.
+	// The timestamp that the tick was received by Massive.
 	ReceivedTimestamp int64 `json:"r,omitempty"`
 }
 
@@ -209,7 +209,7 @@ type EquityQuote struct {
 	// The condition.
 	Condition int32 `json:"c,omitempty"`
 
-	// The indicators. For more information, see our glossary: https://polygon.io/glossary/us/stocks/conditions-indicators.
+	// The indicators. For more information, see our glossary: https://massive.com/glossary/us/stocks/conditions-indicators.
 	Indicators []int32 `json:"i,omitempty"`
 
 	// The Timestamp in Unix MS.
@@ -270,7 +270,7 @@ type CryptoQuote struct {
 	// The crypto exchange ID.
 	ExchangeID int32 `json:"x,omitempty"`
 
-	// The timestamp that the tick was received by Polygon.
+	// The timestamp that the tick was received by Massive.
 	ReceivedTimestamp int64 `json:"r,omitempty"`
 }
 
@@ -357,7 +357,7 @@ type Level2Book struct {
 	// The crypto exchange ID.
 	ExchangeID int32 `json:"x,omitempty"`
 
-	// The timestamp that the tick was received by Polygon.
+	// The timestamp that the tick was received by Massive.
 	ReceivedTimestamp int64 `json:"r,omitempty"`
 }
 

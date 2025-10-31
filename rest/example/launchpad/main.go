@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 }
 
 func getAggregateBarsLaunchpad() {
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	params := &models.ListAggsParams{
 		Ticker:     "CORN",

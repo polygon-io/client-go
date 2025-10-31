@@ -1,10 +1,10 @@
-package polygonws
+package massivews
 
 import (
 	"encoding/json"
 	"strings"
 
-	"github.com/polygon-io/client-go/websocket/models"
+	"github.com/massive-com/client-go/v2/websocket/models"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 )

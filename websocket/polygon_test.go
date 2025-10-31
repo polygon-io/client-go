@@ -1,4 +1,4 @@
-package polygonws
+package massivews
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/polygon-io/client-go/websocket/models"
+	"github.com/massive-com/client-go/v2/websocket/models"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
@@ -54,7 +54,7 @@ func TestNew(t *testing.T) {
 	})
 	assert.NotNil(t, c)
 	assert.Nil(t, err)
-	assert.Equal(t, "wss://polyfeed.polygon.io/options", c.url)
+	assert.Equal(t, "wss://polyfeed.massive.com/options", c.url)
 	assert.Equal(t, &nopLogger{}, c.log)
 
 	// empty config

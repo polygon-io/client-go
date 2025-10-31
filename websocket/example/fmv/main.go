@@ -4,8 +4,8 @@ import (
 	"os"
 	"os/signal"
 
-	polygonws "github.com/polygon-io/client-go/websocket"
-	"github.com/polygon-io/client-go/websocket/models"
+	massivews "github.com/massive-com/client-go/v2/websocket"
+	"github.com/massive-com/client-go/v2/websocket/models"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,10 +13,10 @@ func main() {
 	log := logrus.New()
 	log.SetLevel(logrus.DebugLevel)
 	log.SetFormatter(&logrus.JSONFormatter{})
-	c, err := polygonws.New(polygonws.Config{
-		APIKey: os.Getenv("POLYGON_API_KEY"),
-		Feed:   polygonws.BusinessFeed,
-		Market: polygonws.Stocks,
+	c, err := massivews.New(massivews.Config{
+		APIKey: os.Getenv("MASSIVE_API_KEY"),
+		Feed:   massivews.BusinessFeed,
+		Market: massivews.Stocks,
 		Log:    log,
 	})
 	if err != nil {
@@ -25,7 +25,7 @@ func main() {
 	defer c.Close()
 
 	// FMV
-	_ = c.Subscribe(polygonws.BusinessFairMarketValue, "*")
+	_ = c.Subscribe(massivews.BusinessFairMarketValue, "*")
 
 	if err := c.Connect(); err != nil {
 		log.Error(err)

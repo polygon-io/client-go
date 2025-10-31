@@ -1,4 +1,4 @@
-package polygon_test
+package massive_test
 
 import (
 	"context"
@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -116,7 +116,7 @@ var snapshot2 = `{
 }`
 
 func TestListSnapshotAllTickers(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -130,7 +130,7 @@ func TestListSnapshotAllTickers(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=AAPL%2CMSFT", expectedResponse)
+	registerResponder("https://api.massive.com/v2/snapshot/locale/us/markets/stocks/tickers?tickers=AAPL%2CMSFT", expectedResponse)
 	res, err := c.GetAllTickersSnapshot(context.Background(), models.GetAllTickersSnapshotParams{
 		Locale:     "us",
 		MarketType: "stocks",
@@ -144,7 +144,7 @@ func TestListSnapshotAllTickers(t *testing.T) {
 }
 
 func TestGetTickerSnapshot(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -155,7 +155,7 @@ func TestGetTickerSnapshot(t *testing.T) {
 	"ticker": ` + indent(false, snapshot1, "\t") + `
 }`
 
-	registerResponder("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers/AAPL", expectedResponse)
+	registerResponder("https://api.massive.com/v2/snapshot/locale/us/markets/stocks/tickers/AAPL", expectedResponse)
 	res, err := c.GetTickerSnapshot(context.Background(), &models.GetTickerSnapshotParams{
 		Ticker:     "AAPL",
 		Locale:     "us",
@@ -170,7 +170,7 @@ func TestGetTickerSnapshot(t *testing.T) {
 }
 
 func TestGetGainersLosersSnapshot(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -184,7 +184,7 @@ func TestGetGainersLosersSnapshot(t *testing.T) {
 	]
 }`
 
-	registerResponder("https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/gainers", expectedResponse)
+	registerResponder("https://api.massive.com/v2/snapshot/locale/us/markets/stocks/gainers", expectedResponse)
 	res, err := c.GetGainersLosersSnapshot(context.Background(), &models.GetGainersLosersSnapshotParams{
 		Locale:     "us",
 		MarketType: "stocks",
@@ -199,7 +199,7 @@ func TestGetGainersLosersSnapshot(t *testing.T) {
 }
 
 func TestGetOptionContractSnapshot(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -267,7 +267,7 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 	}
 }`
 
-	registerResponder("https://api.polygon.io/v3/snapshot/options/AAPL/O:AAPL230616C00150000", expectedResponse)
+	registerResponder("https://api.massive.com/v3/snapshot/options/AAPL/O:AAPL230616C00150000", expectedResponse)
 	res, err := c.GetOptionContractSnapshot(context.Background(), &models.GetOptionContractSnapshotParams{
 		UnderlyingAsset: "AAPL",
 		OptionContract:  "O:AAPL230616C00150000",
@@ -281,7 +281,7 @@ func TestGetOptionContractSnapshot(t *testing.T) {
 }
 
 func TestListOptionsChainSnapshot(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -451,11 +451,11 @@ func TestListOptionsChainSnapshot(t *testing.T) {
 	  ],
 	  "status": "OK",
 	  "request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
-	  "next_url": "https://api.polygon.io/v3/snapshot/options/AAPL?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+	  "next_url": "https://api.massive.com/v3/snapshot/options/AAPL?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
 	}`
 
-	registerResponder("https://api.polygon.io/v3/snapshot/options/AAPL", expectedResponse)
-	registerResponder("https://api.polygon.io/v3/snapshot/options/AAPL?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
+	registerResponder("https://api.massive.com/v3/snapshot/options/AAPL", expectedResponse)
+	registerResponder("https://api.massive.com/v3/snapshot/options/AAPL?cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
 
 	iter := c.ListOptionsChainSnapshot(context.Background(), &models.ListOptionsChainParams{UnderlyingAsset: "AAPL"})
 
@@ -493,7 +493,7 @@ func TestListOptionsChainSnapshot(t *testing.T) {
 }
 
 func TestGetCryptoFullBookSnapshot(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -538,7 +538,7 @@ func TestGetCryptoFullBookSnapshot(t *testing.T) {
 	}
 }`
 
-	registerResponder("https://api.polygon.io/v2/snapshot/locale/global/markets/crypto/tickers/X:BTCUSD/book", expectedResponse)
+	registerResponder("https://api.massive.com/v2/snapshot/locale/global/markets/crypto/tickers/X:BTCUSD/book", expectedResponse)
 	res, err := c.GetCryptoFullBookSnapshot(context.Background(), &models.GetCryptoFullBookSnapshotParams{
 		Ticker: "X:BTCUSD",
 	})
@@ -551,7 +551,7 @@ func TestGetCryptoFullBookSnapshot(t *testing.T) {
 }
 
 func TestGetIndicesSnapshot(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -596,7 +596,7 @@ func TestGetIndicesSnapshot(t *testing.T) {
 
 `
 
-	expectedGetIndicesSnapshotUrl := "https://api.polygon.io/v3/snapshot/indices?ticker.any_of=I%3AA1HCR%2CI%3ASPX"
+	expectedGetIndicesSnapshotUrl := "https://api.massive.com/v3/snapshot/indices?ticker.any_of=I%3AA1HCR%2CI%3ASPX"
 	registerResponder(expectedGetIndicesSnapshotUrl, expectedIndicesSnapshotResponse)
 	tickerAnyOf := []string{"I:A1HCR", "I:SPX"}
 
@@ -610,7 +610,7 @@ func TestGetIndicesSnapshot(t *testing.T) {
 }
 
 func TestListUniversalSnapshots(t *testing.T) {
-	c := polygon.New("API_KEY")
+	c := massive.New("API_KEY")
 
 	httpmock.ActivateNonDefault(c.HTTP.GetClient())
 	defer httpmock.DeactivateAndReset()
@@ -626,7 +626,7 @@ func TestListUniversalSnapshots(t *testing.T) {
 		{
 			name:           "Stock tickers",
 			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("AAPL,META,F"),
-			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CMETA%2CF",
+			haveRequestURL: "https://api.massive.com/v3/snapshot?ticker.any_of=AAPL%2CMETA%2CF",
 			wantResponse: `{
 				"results": [
 					` + indent(true, stockSnapshotsTestData[0], "\t\t") + `,
@@ -635,7 +635,7 @@ func TestListUniversalSnapshots(t *testing.T) {
 					],
 					"status": "OK",
 					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
-					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+					"next_url": "https://api.massive.com/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
 				}`,
 			testData: stockSnapshotsTestData,
 			wantErr:  false,
@@ -643,7 +643,7 @@ func TestListUniversalSnapshots(t *testing.T) {
 		{
 			name:           "Options tickers",
 			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("O:AAPL230512C00050000,O:META230512C00020000,O:F230512C00005000"),
-			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=O%3AAAPL230512C00050000%2CO%3AMETA230512C00020000%2CO%3AF230512C00005000",
+			haveRequestURL: "https://api.massive.com/v3/snapshot?ticker.any_of=O%3AAAPL230512C00050000%2CO%3AMETA230512C00020000%2CO%3AF230512C00005000",
 			wantResponse: `{
 				"results": [
 					` + indent(true, optionsSnapshotsTestData[0], "\t\t") + `,
@@ -652,14 +652,14 @@ func TestListUniversalSnapshots(t *testing.T) {
 					],
 					"status": "OK",
 					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
-					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+					"next_url": "https://api.massive.com/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
 				}`,
 			testData: optionsSnapshotsTestData,
 		},
 		{
 			name:           "Crypto Snapshot",
 			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("X:BTCUSD,X:ETHUSD,X:FLOWUSD"),
-			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=X%3ABTCUSD%2CX%3AETHUSD%2CX%3AFLOWUSD",
+			haveRequestURL: "https://api.massive.com/v3/snapshot?ticker.any_of=X%3ABTCUSD%2CX%3AETHUSD%2CX%3AFLOWUSD",
 			wantResponse: `{
 				"results": [
 					` + indent(true, cryptoSnapshotsTestData[0], "\t\t") + `,
@@ -668,14 +668,14 @@ func TestListUniversalSnapshots(t *testing.T) {
 					],
 					"status": "OK",
 					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
-					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+					"next_url": "https://api.massive.com/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
 				}`,
 			testData: cryptoSnapshotsTestData,
 		},
 		{
 			name:           "Forex Snapshot",
 			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("C:USDCAD,C:USDEUR,C:USDAUD"),
-			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=C%3AUSDCAD%2CC%3AUSDEUR%2CC%3AUSDAUD",
+			haveRequestURL: "https://api.massive.com/v3/snapshot?ticker.any_of=C%3AUSDCAD%2CC%3AUSDEUR%2CC%3AUSDAUD",
 			wantResponse: `{
 				"results": [
 					` + indent(true, forexSnapshotTestData[0], "\t\t") + `,
@@ -684,14 +684,14 @@ func TestListUniversalSnapshots(t *testing.T) {
 					],
 					"status": "OK",
 					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
-					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+					"next_url": "https://api.massive.com/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
 				}`,
 			testData: forexSnapshotTestData,
 		},
 		{
 			name:           "Indices Snapshot",
 			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("I:SPX,I:DJI,I:A1BSC"),
-			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=I%3ASPX%2CI%3ADJI%2CI%3AA1BSC",
+			haveRequestURL: "https://api.massive.com/v3/snapshot?ticker.any_of=I%3ASPX%2CI%3ADJI%2CI%3AA1BSC",
 			wantResponse: `{
 				"results": [
 					` + indent(true, indicesSnapshotTestData[0], "\t\t") + `,
@@ -700,14 +700,14 @@ func TestListUniversalSnapshots(t *testing.T) {
 					],
 					"status": "OK",
 					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
-					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+					"next_url": "https://api.massive.com/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
 				}`,
 			testData: indicesSnapshotTestData,
 		},
 		{
 			name:           "Partial success (200/OK with an error message in the body)",
 			haveParams:     models.ListUniversalSnapshotsParams{}.WithTickerAnyOf("AAPL,APx"),
-			haveRequestURL: "https://api.polygon.io/v3/snapshot?ticker.any_of=AAPL%2CAPx",
+			haveRequestURL: "https://api.massive.com/v3/snapshot?ticker.any_of=AAPL%2CAPx",
 			wantResponse: `{
 				"results": [
 					` + indent(true, partialSuccessWithStocksTestData[0], "\t\t") + `,
@@ -715,7 +715,7 @@ func TestListUniversalSnapshots(t *testing.T) {
 					],
 					"status": "OK",
 					"request_id": "0d350849-a2a8-43c5-8445-9c6f55d371e6",
-					"next_url": "https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
+					"next_url": "https://api.massive.com/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg"
 				}`,
 			testData: partialSuccessWithStocksTestData,
 			wantErr:  true,
@@ -726,7 +726,7 @@ func TestListUniversalSnapshots(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 
 			registerResponder(tc.haveRequestURL, tc.wantResponse)
-			registerResponder("https://api.polygon.io/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
+			registerResponder("https://api.massive.com/v3/snapshot/cursor=YXA9MSZhcz0mbGltaXQ9MSZzb3J0PXRpY2tlcg", "{}")
 
 			iter := c.ListUniversalSnapshots(
 				context.Background(),

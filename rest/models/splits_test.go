@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/polygon-io/client-go/rest/models"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func TestListSplitsParams(t *testing.T) {

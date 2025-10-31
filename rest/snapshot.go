@@ -1,12 +1,12 @@
-package polygon
+package massive
 
 import (
 	"context"
 	"net/http"
 
-	"github.com/polygon-io/client-go/rest/client"
-	"github.com/polygon-io/client-go/rest/iter"
-	"github.com/polygon-io/client-go/rest/models"
+	"github.com/massive-com/client-go/v2/rest/client"
+	"github.com/massive-com/client-go/v2/rest/iter"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 const (
@@ -23,13 +23,13 @@ const (
 	ListAssetSnapshots = ListUniversalSnapshotsPath
 )
 
-// SnapshotClient defines a REST client for the Polygon snapshot API.
+// SnapshotClient defines a REST client for the Massive snapshot API.
 type SnapshotClient struct {
 	client.Client
 }
 
 // ListOptionsChainSnapshot retrieves the snapshot of all options contracts for an underlying ticker. For more details see
-// https://polygon.io/docs/options/get_v3_snapshot_options__underlyingasset.
+// https://massive.com/docs/options/get_v3_snapshot_options__underlyingasset.
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //
@@ -54,7 +54,7 @@ func (ac *SnapshotClient) ListOptionsChainSnapshot(ctx context.Context, params *
 // Note: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges. This can happen
 // as early as 4am EST.
 //
-// For more details see https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks_tickers.
+// For more details see https://massive.com/docs/stocks/get_v2_snapshot_locale_us_markets_stocks_tickers.
 func (ac *SnapshotClient) GetAllTickersSnapshot(ctx context.Context, params *models.GetAllTickersSnapshotParams, opts ...models.RequestOption) (*models.GetAllTickersSnapshotResponse, error) {
 	res := &models.GetAllTickersSnapshotResponse{}
 	err := ac.Call(ctx, http.MethodGet, GetAllTickersSnapshotPath, params, res, opts...)
@@ -67,7 +67,7 @@ func (ac *SnapshotClient) GetAllTickersSnapshot(ctx context.Context, params *mod
 // Note: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges. This can happen
 // as early as 4am EST.
 //
-// For more details see https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks_tickers__stocksticker.
+// For more details see https://massive.com/docs/stocks/get_v2_snapshot_locale_us_markets_stocks_tickers__stocksticker.
 func (ac *SnapshotClient) GetTickerSnapshot(ctx context.Context, params *models.GetTickerSnapshotParams, opts ...models.RequestOption) (*models.GetTickerSnapshotResponse, error) {
 	res := &models.GetTickerSnapshotResponse{}
 	err := ac.Call(ctx, http.MethodGet, GetTickerSnapshotPath, params, res, opts...)
@@ -81,7 +81,7 @@ func (ac *SnapshotClient) GetTickerSnapshot(ctx context.Context, params *models.
 //
 // Note: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges.
 //
-// For more details see https://polygon.io/docs/stocks/get_v2_snapshot_locale_us_markets_stocks__direction.
+// For more details see https://massive.com/docs/stocks/get_v2_snapshot_locale_us_markets_stocks__direction.
 func (ac *SnapshotClient) GetGainersLosersSnapshot(ctx context.Context, params *models.GetGainersLosersSnapshotParams, opts ...models.RequestOption) (*models.GetGainersLosersSnapshotResponse, error) {
 	res := &models.GetGainersLosersSnapshotResponse{}
 	err := ac.Call(ctx, http.MethodGet, GetGainersLosersSnapshotPath, params, res, opts...)
@@ -89,7 +89,7 @@ func (ac *SnapshotClient) GetGainersLosersSnapshot(ctx context.Context, params *
 }
 
 // GetOptionContractSnapshot gets the snapshot of an option contract for a stock equity. For more details see
-// https://polygon.io/docs/options/get_v3_snapshot_options__underlyingasset___optioncontract.
+// https://massive.com/docs/options/get_v3_snapshot_options__underlyingasset___optioncontract.
 func (ac *SnapshotClient) GetOptionContractSnapshot(ctx context.Context, params *models.GetOptionContractSnapshotParams, opts ...models.RequestOption) (*models.GetOptionContractSnapshotResponse, error) {
 	res := &models.GetOptionContractSnapshotResponse{}
 	err := ac.Call(ctx, http.MethodGet, GetOptionContractSnapshotPath, params, res, opts...)
@@ -102,7 +102,7 @@ func (ac *SnapshotClient) GetOptionContractSnapshot(ctx context.Context, params 
 // Note: Snapshot data is cleared at 12am EST and gets populated as data is received from the exchanges.
 //
 // For more details see
-// https://polygon.io/docs/crypto/get_v2_snapshot_locale_global_markets_crypto_tickers__ticker__book.
+// https://massive.com/docs/crypto/get_v2_snapshot_locale_global_markets_crypto_tickers__ticker__book.
 func (ac *SnapshotClient) GetCryptoFullBookSnapshot(ctx context.Context, params *models.GetCryptoFullBookSnapshotParams, opts ...models.RequestOption) (*models.GetCryptoFullBookSnapshotResponse, error) {
 	res := &models.GetCryptoFullBookSnapshotResponse{}
 	err := ac.Call(ctx, http.MethodGet, GetCryptoFullBookSnapshotPath, params, res, opts...)
@@ -121,8 +121,8 @@ func (ac *SnapshotClient) ListAssetSnapshots(ctx context.Context, params *models
 }
 
 // ListUniversalSnapshots retrieves the snapshots for the specified tickers for the specified time. For more details see:
-// - https://staging.polygon.io/docs/stocks/get_v3_snapshot
-// - https://staging.polygon.io/docs/options/get_v3_snapshot
+// - https://staging.massive.com/docs/stocks/get_v3_snapshot
+// - https://staging.massive.com/docs/options/get_v3_snapshot
 //
 // This method returns an iterator that should be used to access the results via this pattern:
 //

@@ -1,6 +1,6 @@
 // Forex - Snapshot Ticker
-// https://polygon.io/docs/forex/get_v2_snapshot_locale_global_markets_forex_tickers__ticker
-// https://github.com/polygon-io/client-go/blob/master/rest/snapshot.go
+// https://massive.com/docs/forex/get_v2_snapshot_locale_global_markets_forex_tickers__ticker
+// https://github.com/massive-com/client-go/v2/blob/master/rest/snapshot.go
 package main
 
 import (
@@ -8,13 +8,13 @@ import (
 	"log"
 	"os"
 
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {
 	// init client
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	// set params
 	params := &models.GetTickerSnapshotParams{

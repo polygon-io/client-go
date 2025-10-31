@@ -3,7 +3,7 @@ package iter
 import (
 	"context"
 
-	"github.com/polygon-io/client-go/rest/encoder"
+	"github.com/massive-com/client-go/v2/rest/encoder"
 )
 
 // ListResponse defines an interface that list API responses must implement.

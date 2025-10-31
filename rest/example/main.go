@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	polygon "github.com/polygon-io/client-go/rest"
-	"github.com/polygon-io/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 }
 
 func getAllTickersSnapshot() {
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	params := models.GetAllTickersSnapshotParams{
 		Locale:     models.US,
@@ -30,7 +30,7 @@ func getAllTickersSnapshot() {
 }
 
 func listTrades() {
-	c := polygon.New(os.Getenv("POLYGON_API_KEY"))
+	c := massive.New(os.Getenv("MASSIVE_API_KEY"))
 
 	params2 := models.ListTradesParams{
 		Ticker: "CORN",
