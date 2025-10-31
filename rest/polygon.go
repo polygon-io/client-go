@@ -4,7 +4,7 @@ package massive
 import (
 	"net/http"
 
-	"github.com/massive-com/client-go/rest/client"
+	"github.com/massive-com/client-go/v2/rest/client"
 )
 
 // Client defines a client to the Massive REST API.

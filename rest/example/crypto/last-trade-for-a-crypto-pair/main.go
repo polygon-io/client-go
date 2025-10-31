@@ -1,6 +1,6 @@
 // Crypto - Last Trade for a Crypto Pair
 // https://massive.com/docs/crypto/get_v1_last_crypto__from___to
-// https://github.com/massive-com/client-go/blob/master/rest/trades.go
+// https://github.com/massive-com/client-go/v2/blob/master/rest/trades.go
 package main
 
 import (
@@ -8,8 +8,8 @@ import (
 	"log"
 	"os"
 
-	massive "github.com/massive-com/client-go/rest"
-	"github.com/massive-com/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {

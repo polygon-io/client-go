@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-playground/form/v4"
 	"github.com/go-playground/validator/v10"
-	"github.com/massive-com/client-go/rest/models"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 // Encoder defines a path and query param encoder that plays nicely with the Massive REST API.

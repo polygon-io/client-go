@@ -1,6 +1,6 @@
 // Indices - Snapshot
 // https://massive.com/docs/indices/get_v3_snapshot_indices
-// https://github.com/massive-com/client-go/blob/master/rest/snapshot.go
+// https://github.com/massive-com/client-go/v2/blob/master/rest/snapshot.go
 package main
 
 import (
@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	massive "github.com/massive-com/client-go/rest"
-	"github.com/massive-com/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {

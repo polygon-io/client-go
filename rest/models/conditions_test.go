@@ -3,7 +3,7 @@ package models_test
 import (
 	"testing"
 
-	"github.com/massive-com/client-go/rest/models"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func TestListConditionsParams(t *testing.T) {

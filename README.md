@@ -34,8 +34,8 @@ import (
 	"log"
 	"os"
 
-	massive "github.com/massive-com/client-go/rest"
-	"github.com/massive-com/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {
@@ -86,8 +86,8 @@ To get started, you'll need to import two main packages.
 
 ```golang
 import (
-	massive "github.com/massive-com/client-go/rest"
-	"github.com/massive-com/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 ```
 
@@ -216,8 +216,8 @@ Import the WebSocket client and models packages to get started.
 
 ```golang
 import (
-    massivews "github.com/massive-com/client-go/websocket"
-    "github.com/massive-com/client-go/websocket/models"
+    massivews "github.com/massive-com/client-go/v2/websocket"
+    "github.com/massive-com/client-go/v2/websocket/models"
 )
 ```
 
@@ -290,13 +290,13 @@ If you found a bug or have an idea for a new feature, please first discuss it wi
 
 -------------------------------------------------------------------------------
 
-[doc-img]: https://pkg.go.dev/badge/github.com/massive-com/client-go
-[doc]: https://pkg.go.dev/github.com/massive-com/client-go
-[rest-doc-img]: https://pkg.go.dev/badge/github.com/massive-com/client-go/rest
-[rest-doc]: https://pkg.go.dev/github.com/massive-com/client-go/rest
-[ws-doc-img]: https://pkg.go.dev/badge/github.com/massive-com/client-go/websocket
-[ws-doc]: https://pkg.go.dev/github.com/massive-com/client-go/websocket
-[build-img]: https://github.com/massive-com/client-go/actions/workflows/test.yml/badge.svg
-[build]: https://github.com/massive-com/client-go/actions
-[report-card-img]: https://goreportcard.com/badge/github.com/massive-com/client-go
-[report-card]: https://goreportcard.com/report/github.com/massive-com/client-go
+[doc-img]: https://pkg.go.dev/badge/github.com/massive-com/client-go/v2
+[doc]: https://pkg.go.dev/github.com/massive-com/client-go/v2
+[rest-doc-img]: https://pkg.go.dev/badge/github.com/massive-com/client-go/v2/rest
+[rest-doc]: https://pkg.go.dev/github.com/massive-com/client-go/v2/rest
+[ws-doc-img]: https://pkg.go.dev/badge/github.com/massive-com/client-go/v2/websocket
+[ws-doc]: https://pkg.go.dev/github.com/massive-com/client-go/v2/websocket
+[build-img]: https://github.com/massive-com/client-go/v2/actions/workflows/test.yml/badge.svg
+[build]: https://github.com/massive-com/client-go/v2/actions
+[report-card-img]: https://goreportcard.com/badge/github.com/massive-com/client-go/v2
+[report-card]: https://goreportcard.com/report/github.com/massive-com/client-go/v2

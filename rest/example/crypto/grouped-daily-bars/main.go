@@ -1,6 +1,6 @@
 // Crypto - Grouped Daily (Bars)
 // https://massive.com/docs/crypto/get_v2_aggs_grouped_locale_global_market_crypto__date
-// https://github.com/massive-com/client-go/blob/master/rest/aggs.go
+// https://github.com/massive-com/client-go/v2/blob/master/rest/aggs.go
 package main
 
 import (
@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	massive "github.com/massive-com/client-go/rest"
-	"github.com/massive-com/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/massive-com/client-go/rest/models"
+	"github.com/massive-com/client-go/v2/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 

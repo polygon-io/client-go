@@ -4,8 +4,8 @@ import (
 	"os"
 	"os/signal"
 
-	massivews "github.com/massive-com/client-go/websocket"
-	"github.com/massive-com/client-go/websocket/models"
+	massivews "github.com/massive-com/client-go/v2/websocket"
+	"github.com/massive-com/client-go/v2/websocket/models"
 	"github.com/sirupsen/logrus"
 )
 

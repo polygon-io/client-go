@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/massive-com/client-go/websocket/models"
+	"github.com/massive-com/client-go/v2/websocket/models"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )

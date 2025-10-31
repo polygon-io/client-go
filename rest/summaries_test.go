@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
-	massive "github.com/massive-com/client-go/rest"
-	"github.com/massive-com/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 	"github.com/stretchr/testify/assert"
 )
 

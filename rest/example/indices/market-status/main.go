@@ -1,6 +1,6 @@
 // Indices - Market Status
 // https://massive.com/docs/indices/get_v1_marketstatus_now
-// https://github.com/massive-com/client-go/blob/master/rest/reference.go
+// https://github.com/massive-com/client-go/v2/blob/master/rest/reference.go
 package main
 
 import (
@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	massive "github.com/massive-com/client-go/rest"
+	massive "github.com/massive-com/client-go/v2/rest"
 )
 
 func main() {

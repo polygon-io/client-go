@@ -1,6 +1,6 @@
 // Indices - Daily Open/Close
 // https://massive.com/docs/indices/get_v1_open-close__indicesticker___date
-// https://github.com/massive-com/client-go/blob/master/rest/aggs.go
+// https://github.com/massive-com/client-go/v2/blob/master/rest/aggs.go
 package main
 
 import (
@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	massive "github.com/massive-com/client-go/rest"
-	"github.com/massive-com/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {

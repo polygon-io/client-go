@@ -1,6 +1,6 @@
 // Stocks - Ticker Events
 // https://massive.com/docs/stocks/get_vx_reference_tickers__id__events
-// https://github.com/massive-com/client-go/blob/master/rest/vx.go
+// https://github.com/massive-com/client-go/v2/blob/master/rest/vx.go
 package main
 
 import (
@@ -8,8 +8,8 @@ import (
 	"log"
 	"os"
 
-	massive "github.com/massive-com/client-go/rest"
-	"github.com/massive-com/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {

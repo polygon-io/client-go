@@ -1,6 +1,6 @@
 // Crypto - Trades
 // https://massive.com/docs/crypto/get_v3_trades__cryptoticker
-// https://github.com/massive-com/client-go/blob/master/rest/trades.go
+// https://github.com/massive-com/client-go/v2/blob/master/rest/trades.go
 package main
 
 import (
@@ -8,8 +8,8 @@ import (
 	"log"
 	"os"
 
-	massive "github.com/massive-com/client-go/rest"
-	"github.com/massive-com/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {

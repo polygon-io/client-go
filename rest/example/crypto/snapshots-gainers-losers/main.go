@@ -1,6 +1,6 @@
 // Crypto - Snapshot Gainers/Losers
 // https://massive.com/docs/crypto/get_v2_snapshot_locale_global_markets_crypto__direction
-// https://github.com/massive-com/client-go/blob/master/rest/snapshot.go
+// https://github.com/massive-com/client-go/v2/blob/master/rest/snapshot.go
 package main
 
 import (
@@ -8,8 +8,8 @@ import (
 	"log"
 	"os"
 
-	massive "github.com/massive-com/client-go/rest"
-	"github.com/massive-com/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {

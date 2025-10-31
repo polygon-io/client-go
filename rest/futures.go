@@ -5,9 +5,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/massive-com/client-go/rest/client"
-	"github.com/massive-com/client-go/rest/iter"
-	"github.com/massive-com/client-go/rest/models"
+	"github.com/massive-com/client-go/v2/rest/client"
+	"github.com/massive-com/client-go/v2/rest/iter"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 const (

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/massive-com/client-go/rest/encoder"
-	"github.com/massive-com/client-go/rest/models"
+	"github.com/massive-com/client-go/v2/rest/encoder"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 const clientVersion = "v1.16.0"

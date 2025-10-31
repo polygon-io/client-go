@@ -1,6 +1,6 @@
 // Stocks - Quotes (NBBO)
 // https://massive.com/docs/stocks/get_v3_quotes__stockticker
-// https://github.com/massive-com/client-go/blob/master/rest/quotes.go
+// https://github.com/massive-com/client-go/v2/blob/master/rest/quotes.go
 package main
 
 import (
@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	massive "github.com/massive-com/client-go/rest"
-	"github.com/massive-com/client-go/rest/models"
+	massive "github.com/massive-com/client-go/v2/rest"
+	"github.com/massive-com/client-go/v2/rest/models"
 )
 
 func main() {
