@@ -1,8 +1,7 @@
+// Deprecated: This module has been rebranded and moved to github.com/massive-com/client-go. Please update your imports and dependencies.
 module github.com/polygon-io/client-go
 
 go 1.21
-
-// Deprecated: This module has been rebranded and moved to github.com/massive-com/client-go. Please update your imports and dependencies.
 
 require (
 	github.com/cenkalti/backoff/v4 v4.3.0
